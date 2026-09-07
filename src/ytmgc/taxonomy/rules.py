@@ -82,6 +82,11 @@ class Taxonomy:
             canonical = self.canonical_style(style)
             if canonical is None:
                 continue
+            if fold(canonical) in {fold(genre), fold(display)}:
+                # Style homonyme de son genre (Discogs a par exemple le style
+                # "Reggae" dans le genre "Reggae") : il n'ajoute aucune
+                # information et donnerait une playlist "Reggae — Reggae".
+                continue
             item = GenreStyle(display, canonical)
             if item.key not in seen:
                 seen.add(item.key)

@@ -53,3 +53,15 @@ def test_playlist_name_encodes_the_hierarchy_in_the_title():
 def test_genre_style_key_is_slug_based():
     assert GenreStyle("Funk & Soul", "Drum & Bass").key == "funk-and-soul/drum-and-bass"
     assert GenreStyle("Rock", None).key == "rock"
+
+
+def test_style_homonym_of_its_genre_does_not_duplicate_the_name():
+    """Évite les playlists « Reggae — Reggae »."""
+    taxonomy = load_taxonomy()
+    assert taxonomy.resolve(("Reggae",), ("Reggae",)) == (GenreStyle("Reggae", None),)
+    assert taxonomy.resolve(("Reggae",), ("Reggae", "Dub")) == (GenreStyle("Reggae", "Dub"),)
+
+
+def test_hip_hop_substyles_are_preserved():
+    """Boom Bap est un style à part entière : le fusionner effaçait l'information."""
+    assert load_taxonomy().canonical_style("Boom Bap") == "Boom Bap"
