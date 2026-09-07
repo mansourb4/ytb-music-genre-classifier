@@ -12,12 +12,47 @@ sorte que le tri alphabétique de la bibliothèque regroupe les styles d'un mêm
 genre :
 
 ```
-Electronic — Ambient
 Electronic — Deep House
+Electronic — Drum & Bass
+Electronic — Jungle
 Electronic — Techno
 Rock — Grunge
 Rock — Post-Punk
+Rock — Shoegaze
 ```
+
+## Comprendre, pas seulement ranger
+
+Le nommage est volontairement fin : Jungle n'est pas rangé dans Drum & Bass,
+Indie Rock n'est pas rangé dans Indie. Les alias de styles ne servent qu'à
+réunir des **variantes d'écriture** d'un même style ; fusionner deux styles
+réellement distincts effacerait l'information recherchée.
+
+Chaque playlist porte en description la définition de son genre et de son
+style :
+
+```
+[ytmgc] key=electronic/deep-house
+
+Electronic — Deep House · 34 titre(s)
+
+GENRE — Electronic
+Musiques dont le son est produit ou transformé par des moyens électroniques —
+synthétiseurs, boîtes à rythmes, échantillonneurs, ordinateurs. Recouvre aussi
+bien la musique de club que l'écoute domestique et l'expérimentation.
+
+STYLE — Deep House
+Branche la plus soul de la house : tempo modéré, accords de septième et de
+neuvième empruntés au jazz, nappes profondes et voix feutrées.
+
+Playlist générée automatiquement à partir de la taxonomie Discogs.
+Les modifications manuelles seront écrasées au prochain run.
+```
+
+Ces définitions vivent dans `src/ytmgc/taxonomy/descriptions.toml` : 15 genres
+et près de 200 styles. Un style non encore décrit reste parfaitement utilisable,
+sa playlist est simplement créée sans définition — Discogs en ajoute
+régulièrement.
 
 ## Installation
 
@@ -95,10 +130,23 @@ ytmgc review     # appariements incertains, à vérifier à la main
 - Les titres mis en ligne par l'utilisateur (*uploads*) sont rarement présents
   dans Discogs et finissent le plus souvent en `unmatched`.
 
+## Réglages
+
+Les deux réglages qui déterminent le résultat final :
+
+| Réglage | Défaut | Effet |
+|---|---|---|
+| `min_tracks_per_style` | `4` | Nombre de titres à partir duquel un style obtient sa playlist. Bas par défaut, pour nommer précisément ce qu'on écoute. |
+| `min_tracks_per_genre` | `3` | Idem au niveau du genre. En deçà, les titres partent dans « Divers — genres isolés ». |
+
+Un style sous le seuil rejoint la playlist `Genre — Autres styles`, dont la
+description explique ce regroupement. `ytmgc plan` permet de balayer ces valeurs
+sans aucune écriture ni appel réseau.
+
 ## Développement
 
 ```bash
-python -m pytest        # 99 tests, aucun appel réseau
+python -m pytest        # 112 tests, aucun appel réseau
 ```
 
 Les API externes sont derrière des adaptateurs (`src/ytmgc/sources/`) ; toute la

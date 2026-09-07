@@ -36,27 +36,21 @@ order = [
     "Non-Music",
 ]
 
-# Fusion de styles quasi identiques, pour éviter deux playlists concurrentes.
-# Clé = style tel que renvoyé par Discogs, valeur = style retenu.
+# Alias de styles. Volontairement limités aux **variantes d'écriture** d'un même
+# style : fusionner deux styles réellement distincts (Jungle dans Drum & Bass,
+# Indie Rock dans Indie) détruirait l'information que le projet cherche à
+# restituer. Clé = libellé Discogs, valeur = libellé retenu.
 [style_aliases]
 "Drum n Bass" = "Drum & Bass"
-"Jungle" = "Drum & Bass"
-"Alternative Rock" = "Alternative"
-"Indie Rock" = "Indie"
-"Rock & Roll" = "Rock'n'Roll"
-"RnB/Swing" = "R&B"
-"Rhythm & Blues" = "R&B"
-"Contemporary R&B" = "R&B"
 "Hip-Hop" = "Hip Hop"
-"Prog Rock" = "Progressive Rock"
-"Euro House" = "House"
-"Hard House" = "House"
-"Deep Techno" = "Techno"
-"Minimal Techno" = "Minimal"
 "Synth-pop" = "Synth-Pop"
-"Electro House" = "Electro"
+"Rock & Roll" = "Rock'n'Roll"
+"Prog Rock" = "Progressive Rock"
+"RnB/Swing" = "Contemporary R&B"
+# Discogs emploie "Modern" presque exclusivement dans le genre Classical.
+"Modern" = "Modern Classical"
 
-# Styles trop génériques pour mériter leur propre playlist : le titre est
-# rattaché à la playlist de genre à la place.
+# Styles qui ne décrivent pas la musique mais l'objet ou l'édition : ils ne
+# doivent jamais donner de playlist.
 [style_blocklist]
-styles = ["Modern", "Contemporary", "Reissue", "Compilation", "Album", "Single"]
+styles = ["Reissue", "Compilation", "Album", "Single", "Promo", "Unofficial Release"]

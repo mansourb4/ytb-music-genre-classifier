@@ -42,7 +42,7 @@ et relancés sans perte, et `plan`/`apply` se rejouent hors ligne.
 | `sources/ytmusic.py` | Adaptateur `ytmusicapi` : scan, lecture et écriture de playlists. |
 | `sources/discogs.py` | Client HTTP Discogs : recherche, limitation de débit, reprises sur erreur. |
 | `matching/` | Normalisation des libellés et scoring des candidats. Pur, sans état. |
-| `taxonomy/` | Alias de styles, priorité des genres, nommage des playlists. |
+| `taxonomy/` | Alias de styles, priorité des genres, nommage, et définitions des genres et styles (`descriptions.toml`). |
 | `classifier.py` | Orchestration titre → candidats → classification. |
 | `planner.py` | Classifications → ensemble de playlists souhaité. Hors ligne. |
 | `sync.py` | Diff état souhaité / état distant, puis application. |
@@ -58,7 +58,23 @@ bibliothèque regroupe alors les styles d'un même genre. Une **clé stable**
 (`electronic/deep-house`) est inscrite dans la description ; elle survit à un
 renommage manuel et relie la playlist à son couple genre/style.
 
-### 2. Le marqueur en description délimite ce que l'outil peut toucher
+### 2. La description explique ce que la playlist contient
+
+Le but du projet n'est pas seulement de ranger, mais de comprendre ce qu'on
+écoute. La description de chaque playlist définit donc son genre et son style,
+à partir de `taxonomy/descriptions.toml` (15 genres, près de 200 styles). Les
+playlists de regroupement (`Genre — Autres styles`, `Divers — genres isolés`)
+expliquent en plus la raison de leur existence.
+
+Deux conséquences sur le nommage : les alias de styles sont limités aux
+variantes d'écriture — confondre Jungle et Drum & Bass effacerait l'information
+recherchée — et les seuils de repli sont bas par défaut (4 titres pour un style,
+3 pour un genre), pour privilégier la précision au regroupement.
+
+La description est aussi le support technique du marqueur et de la clé ; les
+chevrons y sont remplacés, YouTube Music les refusant.
+
+### 3. Le marqueur en description délimite ce que l'outil peut toucher
 
 Seules les playlists dont la description contient `[ytmgc]` sont lues comme
 gérées ; les autres sont ignorées par le diff. C'est la garantie que les
@@ -66,21 +82,21 @@ playlists faites à la main ne sont jamais modifiées. Une playlist gérée deve
 obsolète est **vidée, jamais supprimée** : l'API ne sait pas restaurer une
 playlist, et un scan partiel ne doit pas détruire du travail.
 
-### 3. Le cache Discogs est indexé par (artiste, album), pas par titre
+### 4. Le cache Discogs est indexé par (artiste, album), pas par titre
 
 L'API Discogs plafonne à 60 requêtes/minute avec jeton. Comme la taxonomie est
 portée par la *release*, tous les titres d'un même album partagent une requête :
 une bibliothèque de 5 000 titres issus de 800 albums coûte ~800 appels au
 premier run, zéro ensuite (TTL 90 jours).
 
-### 4. La taxonomie brute est stockée telle quelle
+### 5. La taxonomie brute est stockée telle quelle
 
 `classifications` conserve les genres et styles renvoyés par Discogs, sans
 transformation. Les alias, les seuils et les gabarits de nommage ne sont
 appliqués qu'à la planification : les retoucher se rejoue avec `plan` et
 `apply`, sans un seul appel réseau supplémentaire.
 
-### 5. Le scoring rejette la similarité de hasard
+### 6. Le scoring rejette la similarité de hasard
 
 Trois composantes, chacune dans [0, 1] :
 
@@ -98,7 +114,7 @@ faire passer un mauvais appariement au-dessus du seuil d'acceptation.
 Le score décide ensuite du statut : `matched` (≥ `min_score`), `review`
 (≥ `review_score`, conservé mais hors playlists), `unmatched`.
 
-### 6. Le repli en cascade évite l'émiettement
+### 7. Le repli en cascade évite l'émiettement
 
 C'est l'écueil principal du projet : sans regroupement, une grosse bibliothèque
 produit des centaines de playlists de deux titres, illisibles dans une interface
@@ -127,7 +143,7 @@ titre dans chaque playlist de style, jusqu'à `max_styles_per_track`.
 
 ## Tests
 
-99 tests, aucun appel réseau. Les adaptateurs externes sont doublés en mémoire
+112 tests, aucun appel réseau. Les adaptateurs externes sont doublés en mémoire
 (`tests/fakes.py`), y compris pour un test de bout en bout scan → classify →
 plan → apply qui vérifie l'idempotence du second run et l'intégrité des
 playlists manuelles.

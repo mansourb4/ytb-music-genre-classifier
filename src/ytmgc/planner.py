@@ -21,18 +21,61 @@ from ytmgc.models import Classification, MatchStatus, PlaylistPlan
 from ytmgc.taxonomy.rules import GenreStyle, Taxonomy, playlist_name
 
 
-def build_description(marker: str, key: str, name: str, count: int) -> str:
+#: YouTube Music refuse les chevrons dans une description de playlist.
+_FORBIDDEN = str.maketrans({"<": "(", ">": ")"})
+
+
+def build_description(
+    marker: str,
+    key: str,
+    name: str,
+    count: int,
+    *,
+    kind: str,
+    item: GenreStyle | None,
+    taxonomy: Taxonomy,
+) -> str:
     """Description d'une playlist gérée.
 
-    Elle porte le marqueur (qui autorise l'outil à modifier la playlist) et la
-    clé (qui la relie à un couple genre/style même après un renommage).
+    Elle remplit deux rôles distincts :
+
+    * technique — le marqueur autorise l'outil à modifier la playlist, et la
+      clé la relie à son couple genre/style même après un renommage manuel ;
+    * éditorial — elle définit le genre et le style, pour que la bibliothèque
+      se lise comme une cartographie de ce qu'on écoute et pas seulement comme
+      un rangement.
     """
-    return (
-        f"{marker} key={key}\n"
-        f"{name} — {count} titre(s).\n"
-        "Playlist générée automatiquement à partir des genres et styles Discogs. "
+    lines = [f"{marker} key={key}", "", f"{name} · {count} titre(s)", ""]
+
+    if item is not None:
+        genre_text = taxonomy.describe_genre(item.genre)
+        lines.append(f"GENRE — {item.genre}")
+        lines.append(genre_text or "Genre Discogs (définition non encore renseignée).")
+
+        if item.style:
+            style_text = taxonomy.describe_style(item.style)
+            lines.append("")
+            lines.append(f"STYLE — {item.style}")
+            lines.append(style_text or "Style Discogs (définition non encore renseignée).")
+
+    if kind == "genre":
+        lines.append("")
+        lines.append(
+            "Cette playlist rassemble les titres du genre dont le style est trop "
+            "peu représenté dans la bibliothèque pour justifier sa propre playlist."
+        )
+    elif kind == "fallback":
+        lines.append(
+            "Cette playlist rassemble les titres des genres trop peu représentés "
+            "dans la bibliothèque pour justifier leur propre playlist."
+        )
+
+    lines.append("")
+    lines.append(
+        "Playlist générée automatiquement à partir de la taxonomie Discogs. "
         "Les modifications manuelles seront écrasées au prochain run."
     )
+    return "\n".join(lines).translate(_FORBIDDEN)
 
 
 def _selected_styles(
@@ -110,7 +153,7 @@ def plan_playlists(
 
     # Passe 2 : affectation de chaque titre, avec repli style -> genre.
     members: dict[str, list[str]] = defaultdict(list)
-    labels: dict[str, tuple[str, str]] = {}  # clé -> (nom, type)
+    labels: dict[str, tuple[str, str, GenreStyle]] = {}  # clé -> (nom, type, couple)
 
     for video_id in order:
         for item in selected.get(video_id, ()):
@@ -128,7 +171,7 @@ def plan_playlists(
                 kind = "genre"
             if video_id not in members[key]:
                 members[key].append(video_id)
-            labels[key] = (name, kind)
+            labels[key] = (name, kind, surviving or GenreStyle(item.genre, None))
 
     # Passe 3 : repli des genres sous le seuil vers la playlist fourre-tout.
     fallback_key = slugify(settings.fallback_playlist)
@@ -136,7 +179,7 @@ def plan_playlists(
     plans: list[PlaylistPlan] = []
 
     for key, video_ids in members.items():
-        name, kind = labels[key]
+        name, kind, described = labels[key]
         if kind == "genre" and len(video_ids) < settings.min_tracks_per_genre:
             fallback.extend(v for v in video_ids if v not in fallback)
             continue
@@ -144,7 +187,10 @@ def plan_playlists(
             PlaylistPlan(
                 key=key,
                 name=name,
-                description=build_description(config.sync.marker, key, name, len(video_ids)),
+                description=build_description(
+                    config.sync.marker, key, name, len(video_ids),
+                    kind=kind, item=described, taxonomy=taxonomy,
+                ),
                 video_ids=tuple(video_ids),
                 kind=kind,
             )
@@ -156,7 +202,8 @@ def plan_playlists(
                 key=fallback_key,
                 name=settings.fallback_playlist,
                 description=build_description(
-                    config.sync.marker, fallback_key, settings.fallback_playlist, len(fallback)
+                    config.sync.marker, fallback_key, settings.fallback_playlist,
+                    len(fallback), kind="fallback", item=None, taxonomy=taxonomy,
                 ),
                 video_ids=tuple(fallback),
                 kind="fallback",

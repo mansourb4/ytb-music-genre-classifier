@@ -35,14 +35,16 @@ multi_style = "primary"
 # Nombre max de playlists de style par titre quand multi_style = "all".
 max_styles_per_track = 2
 # Un style n'obtient sa playlist qu'à partir de ce nombre de titres.
-min_tracks_per_style = 15
+# Seuil volontairement bas : l'objectif est de nommer précisément ce qu'on
+# écoute. Le monter regroupe davantage et donne moins de playlists.
+min_tracks_per_style = 4
 # Un genre n'obtient sa playlist qu'à partir de ce nombre de titres.
-min_tracks_per_genre = 8
+min_tracks_per_genre = 3
 # Playlist fourre-tout pour les titres sous les seuils.
-fallback_playlist = "Divers"
+fallback_playlist = "Divers — genres isolés"
 # Gabarits de nommage (voir docs/ARCHITECTURE.md).
 style_name_template = "{genre} — {style}"
-genre_name_template = "{genre}"
+genre_name_template = "{genre} — Autres styles"
 
 [sync]
 # Préfixe inscrit dans la description des playlists gérées par l'outil.

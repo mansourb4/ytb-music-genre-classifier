@@ -37,8 +37,8 @@ def test_rare_style_folds_into_its_genre_playlist(taxonomy, config):
 
 def test_rare_genre_folds_into_the_catch_all_playlist(taxonomy, config):
     plans = plan([matched("v0", ("Jazz",), ("Bebop",))], taxonomy, config)
-    assert set(plans) == {"divers"}
-    assert plans["divers"].kind == "fallback"
+    assert set(plans) == {"divers-genres-isoles"}
+    assert plans["divers-genres-isoles"].kind == "fallback"
 
 
 def test_unmatched_tracks_never_reach_a_playlist(taxonomy, config):
@@ -111,4 +111,45 @@ def test_track_joins_an_existing_style_playlist_rather_than_the_catch_all(taxono
 def test_rescue_does_not_apply_when_no_style_survives(taxonomy, config):
     classifications = [matched("solo", ("Electronic",), ("Drone", "Ambient"))]
     plans = plan(classifications, taxonomy, config)
-    assert set(plans) == {"divers"}
+    assert set(plans) == {"divers-genres-isoles"}
+
+
+def test_description_defines_the_genre_and_the_style(taxonomy, config):
+    plans = plan([matched(f"v{i}", ("Electronic",), ("Deep House",)) for i in range(2)], taxonomy, config)
+    description = plans["electronic/deep-house"].description
+
+    assert "GENRE — Electronic" in description
+    assert "STYLE — Deep House" in description
+    assert taxonomy.describe_genre("Electronic") in description
+    assert taxonomy.describe_style("Deep House") in description
+    assert "2 titre(s)" in description
+
+
+def test_genre_playlist_description_explains_why_it_exists(taxonomy, config):
+    classifications = [matched("v0", ("Rock",), ("Grunge",)), matched("v1", ("Rock",), ("Shoegaze",))]
+    description = plan(classifications, taxonomy, config)["rock"].description
+
+    assert "GENRE — Rock" in description
+    assert "STYLE" not in description
+    assert "trop peu représenté" in description
+
+
+def test_fallback_playlist_description_explains_why_it_exists(taxonomy, config):
+    description = plan([matched("v0", ("Jazz",), ("Bebop",))], taxonomy, config)["divers-genres-isoles"].description
+    assert "trop peu représentés" in description
+    assert "GENRE" not in description
+
+
+def test_description_contains_no_angle_brackets(taxonomy, config):
+    """YouTube Music refuse les chevrons dans une description de playlist."""
+    config.taxonomy.style_name_template = "{genre} <{style}>"
+    plans = plan([matched(f"v{i}", ("Electronic",), ("Deep House",)) for i in range(2)], taxonomy, config)
+    assert "<" not in plans["electronic/deep-house"].description
+    assert ">" not in plans["electronic/deep-house"].description
+
+
+def test_an_undescribed_style_still_produces_a_usable_description(taxonomy, config):
+    plans = plan([matched(f"v{i}", ("Electronic",), ("Style Inventé",)) for i in range(2)], taxonomy, config)
+    description = plans["electronic/style-invente"].description
+    assert "STYLE — Style Inventé" in description
+    assert "non encore renseignée" in description

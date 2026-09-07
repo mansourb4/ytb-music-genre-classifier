@@ -43,11 +43,11 @@ class MatchingConfig:
 class TaxonomyConfig:
     multi_style: str = "primary"
     max_styles_per_track: int = 2
-    min_tracks_per_style: int = 15
-    min_tracks_per_genre: int = 8
-    fallback_playlist: str = "Divers"
+    min_tracks_per_style: int = 4
+    min_tracks_per_genre: int = 3
+    fallback_playlist: str = "Divers — genres isolés"
     style_name_template: str = "{genre} — {style}"
-    genre_name_template: str = "{genre}"
+    genre_name_template: str = "{genre} — Autres styles"
 
 
 @dataclass(slots=True)

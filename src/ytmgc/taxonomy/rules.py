@@ -14,6 +14,7 @@ from pathlib import Path
 from ytmgc.matching.normalize import fold, slugify
 
 DEFAULT_ALIASES = Path(__file__).with_name("aliases.toml")
+DEFAULT_DESCRIPTIONS = Path(__file__).with_name("descriptions.toml")
 
 
 @dataclass(frozen=True, slots=True)
@@ -37,11 +38,36 @@ class Taxonomy:
         genre_priority: list[str],
         style_aliases: dict[str, str],
         style_blocklist: list[str],
+        genre_descriptions: dict[str, str] | None = None,
+        style_descriptions: dict[str, str] | None = None,
     ) -> None:
         self._genre_display = genre_display
         self._priority = {fold(name): rank for rank, name in enumerate(genre_priority)}
         self._style_aliases = {fold(key): value for key, value in style_aliases.items()}
         self._blocklist = {fold(name) for name in style_blocklist}
+
+        # Les descriptions sont indexées sur le libellé Discogs brut ; on les
+        # enregistre aussi sous le libellé affiché ("Funk / Soul" et
+        # "Funk & Soul" désignent le même genre côté utilisateur).
+        self._genre_descriptions: dict[str, str] = {}
+        for raw, text in (genre_descriptions or {}).items():
+            self._genre_descriptions[fold(raw)] = text
+            self._genre_descriptions[fold(genre_display.get(raw, raw))] = text
+        self._style_descriptions = {
+            fold(name): text for name, text in (style_descriptions or {}).items()
+        }
+
+    def describe_genre(self, genre: str) -> str | None:
+        """Définition du genre, ou None s'il n'en existe pas encore."""
+        return self._genre_descriptions.get(fold(genre))
+
+    def describe_style(self, style: str) -> str | None:
+        """Définition du style, ou None s'il n'en existe pas encore.
+
+        Discogs compte plusieurs centaines de styles et en ajoute
+        régulièrement : une absence est normale et ne doit rien casser.
+        """
+        return self._style_descriptions.get(fold(style))
 
     def display_genre(self, genre: str) -> str:
         return self._genre_display.get(genre, genre)
@@ -95,13 +121,20 @@ class Taxonomy:
         return tuple(resolved) if resolved else (GenreStyle(display, None),)
 
 
-def load_taxonomy(path: Path | None = None) -> Taxonomy:
+def load_taxonomy(
+    path: Path | None = None, descriptions_path: Path | None = None
+) -> Taxonomy:
     data = tomllib.loads((path or DEFAULT_ALIASES).read_text(encoding="utf-8"))
+    described = tomllib.loads(
+        (descriptions_path or DEFAULT_DESCRIPTIONS).read_text(encoding="utf-8")
+    )
     return Taxonomy(
         genre_display=data.get("genre_display", {}),
         genre_priority=data.get("genre_priority", {}).get("order", []),
         style_aliases=data.get("style_aliases", {}),
         style_blocklist=data.get("style_blocklist", {}).get("styles", []),
+        genre_descriptions=described.get("genres", {}),
+        style_descriptions=described.get("styles", {}),
     )
 
 

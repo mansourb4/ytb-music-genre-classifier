@@ -50,17 +50,19 @@ def test_full_run_creates_the_expected_playlists(repository, config):
 
     titles = playlists_by_title(client)
     # Ambient (3 titres) dépasse le seuil de style ; Grunge (2) aussi.
-    assert set(titles) == {"Electronic — Ambient", "Rock — Grunge", "Divers"}
+    assert set(titles) == {"Electronic — Ambient", "Rock — Grunge", "Divers — genres isolés"}
     assert set(titles["Electronic — Ambient"].video_ids) == {"e1", "e2", "e3"}
     assert titles["Rock — Grunge"].video_ids == ("g1", "g2")
     # Jazz n'a qu'un titre : sous les deux seuils, il finit au fourre-tout.
-    assert titles["Divers"].video_ids == ("j1",)
+    assert titles["Divers — genres isolés"].video_ids == ("j1",)
 
 
 def test_managed_playlists_are_recorded_for_the_next_run(repository, config):
     client = FakePlaylistClient()
     run_pipeline(repository, config, client)
-    assert set(repository.managed_playlists()) == {"electronic/ambient", "rock/grunge", "divers"}
+    assert set(repository.managed_playlists()) == {
+        "electronic/ambient", "rock/grunge", "divers-genres-isoles"
+    }
 
 
 def test_second_run_is_idempotent(repository, config):
@@ -108,4 +110,6 @@ def test_taxonomy_can_be_replanned_without_new_api_calls(repository, config):
     plans = plan_playlists(repository.classifications(), load_taxonomy(), config)
 
     assert len(source.searches) == calls
-    assert {p.name for p in plans} == {"Electronic", "Rock", "Divers"}
+    assert {p.name for p in plans} == {
+        "Electronic — Autres styles", "Rock — Autres styles", "Divers — genres isolés"
+    }
