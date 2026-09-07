@@ -60,10 +60,16 @@ CREATE TABLE IF NOT EXISTS meta (
 
 
 def connect(path: str | Path) -> sqlite3.Connection:
-    """Ouvre la base (en la créant si besoin) et applique le schéma."""
+    """Ouvre la base (en la créant si besoin) et applique le schéma.
+
+    `check_same_thread=False` est nécessaire : l'interface web exécute les
+    traitements longs dans un fil de fond tout en servant les requêtes d'état
+    depuis un autre. Les accès concurrents sont sérialisés par le verrou du
+    dépôt (`Repository`), qui est le seul point d'entrée de la base.
+    """
     if str(path) != ":memory:":
         Path(path).parent.mkdir(parents=True, exist_ok=True)
-    connection = sqlite3.connect(path)
+    connection = sqlite3.connect(path, check_same_thread=False)
     connection.row_factory = sqlite3.Row
     connection.execute("PRAGMA foreign_keys = ON")
     connection.execute("PRAGMA journal_mode = WAL")

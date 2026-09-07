@@ -8,7 +8,7 @@ def test_example_config_matches_the_dataclasses():
     from pathlib import Path
 
     config = load_config(Path("config/config.example.toml"), env={})
-    assert config.taxonomy.multi_style == "primary"
+    assert config.taxonomy.multi_style == "all"
     assert config.sync.marker == "[ytmgc]"
 
 

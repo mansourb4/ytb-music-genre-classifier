@@ -29,9 +29,12 @@ review_score = 0.55
 max_candidates = 10
 
 [taxonomy]
-# "primary" : un seul style par titre (le plus fréquent dans la bibliothèque).
 # "all"     : le titre est ajouté à chaque playlist de style correspondante.
-multi_style = "primary"
+#             Une release "Deep House, Tech House" apparaît donc dans les deux :
+#             c'est la vue la plus fidèle à ce que décrit Discogs.
+# "primary" : un seul style par titre (le plus fréquent dans la bibliothèque),
+#             pour une cartographie sans doublon.
+multi_style = "all"
 # Nombre max de playlists de style par titre quand multi_style = "all".
 max_styles_per_track = 2
 # Un style n'obtient sa playlist qu'à partir de ce nombre de titres.

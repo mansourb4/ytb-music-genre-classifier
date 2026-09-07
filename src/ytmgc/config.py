@@ -41,7 +41,7 @@ class MatchingConfig:
 
 @dataclass(slots=True)
 class TaxonomyConfig:
-    multi_style: str = "primary"
+    multi_style: str = "all"
     max_styles_per_track: int = 2
     min_tracks_per_style: int = 4
     min_tracks_per_genre: int = 3

@@ -75,6 +75,10 @@ class FakePlaylistClient:
         )
         self.calls.append(f"edit:{playlist_id}")
 
+    def delete_playlist(self, playlist_id: str) -> None:
+        del self._playlists[playlist_id]
+        self.calls.append(f"delete:{playlist_id}")
+
 
 class FakeDiscogs:
     """Source de candidats pilotée par une table artiste -> releases."""

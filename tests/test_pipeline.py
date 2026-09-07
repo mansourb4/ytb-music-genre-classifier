@@ -49,9 +49,13 @@ def test_full_run_creates_the_expected_playlists(repository, config):
     run_pipeline(repository, config, client)
 
     titles = playlists_by_title(client)
-    # Ambient (3 titres) dépasse le seuil de style ; Grunge (2) aussi.
-    assert set(titles) == {"Electronic — Ambient", "Rock — Grunge", "Divers — genres isolés"}
+    # En mode "all" (défaut), les releases étiquetées "Ambient, IDM" alimentent
+    # les deux playlists : c'est la vue la plus fidèle à ce que décrit Discogs.
+    assert set(titles) == {
+        "Electronic — Ambient", "Electronic — IDM", "Rock — Grunge", "Divers — genres isolés"
+    }
     assert set(titles["Electronic — Ambient"].video_ids) == {"e1", "e2", "e3"}
+    assert set(titles["Electronic — IDM"].video_ids) == {"e1", "e2", "e3"}
     assert titles["Rock — Grunge"].video_ids == ("g1", "g2")
     # Jazz n'a qu'un titre : sous les deux seuils, il finit au fourre-tout.
     assert titles["Divers — genres isolés"].video_ids == ("j1",)
@@ -61,7 +65,7 @@ def test_managed_playlists_are_recorded_for_the_next_run(repository, config):
     client = FakePlaylistClient()
     run_pipeline(repository, config, client)
     assert set(repository.managed_playlists()) == {
-        "electronic/ambient", "rock/grunge", "divers-genres-isoles"
+        "electronic/ambient", "electronic/idm", "rock/grunge", "divers-genres-isoles"
     }
 
 

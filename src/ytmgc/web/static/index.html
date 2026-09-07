@@ -1,0 +1,394 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ytmgc — organiser sa bibliothèque YouTube Music</title>
+<style>
+:root {
+  color-scheme: light dark;
+  --bg: #f6f6f4;
+  --surface: #ffffff;
+  --border: #dcdcd6;
+  --text: #1b1b19;
+  --muted: #6b6b64;
+  --accent: #7a4bd0;
+  --accent-soft: #efe9fb;
+  --ok: #2e7d54;
+  --warn: #9a6414;
+  --danger: #b3392f;
+  --danger-soft: #fbeceb;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #16161a;
+    --surface: #1e1e23;
+    --border: #33333b;
+    --text: #ececf0;
+    --muted: #9a9aa4;
+    --accent: #a888f0;
+    --accent-soft: #2a2338;
+    --ok: #6cc79a;
+    --warn: #d9a441;
+    --danger: #e0796e;
+    --danger-soft: #33211f;
+  }
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0; padding: 0 1rem 5rem;
+  background: var(--bg); color: var(--text);
+  font: 15px/1.55 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+.wrap { max-width: 60rem; margin: 0 auto; }
+header { padding: 2.5rem 0 1.5rem; }
+h1 { font-size: 1.5rem; margin: 0 0 .35rem; letter-spacing: -.01em; }
+header p { margin: 0; color: var(--muted); }
+section {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 10px; padding: 1.25rem 1.35rem; margin-bottom: 1rem;
+}
+section h2 {
+  font-size: .78rem; text-transform: uppercase; letter-spacing: .07em;
+  color: var(--muted); margin: 0 0 .9rem; font-weight: 600;
+}
+.step { display: inline-block; width: 1.35rem; height: 1.35rem; line-height: 1.35rem;
+  text-align: center; border-radius: 50%; background: var(--accent-soft);
+  color: var(--accent); font-size: .72rem; margin-right: .5rem; }
+button {
+  font: inherit; font-weight: 500; padding: .5rem 1rem; border-radius: 7px;
+  border: 1px solid var(--border); background: var(--surface); color: var(--text);
+  cursor: pointer;
+}
+button:hover:not(:disabled) { border-color: var(--accent); }
+button:disabled { opacity: .45; cursor: not-allowed; }
+button.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+button.danger { background: var(--danger); border-color: var(--danger); color: #fff; }
+textarea {
+  width: 100%; min-height: 8rem; font: 12px/1.4 ui-monospace, SFMono-Regular, Menlo, monospace;
+  padding: .7rem; border-radius: 7px; border: 1px solid var(--border);
+  background: var(--bg); color: var(--text); resize: vertical;
+}
+.stats { display: flex; flex-wrap: wrap; gap: 1.6rem; }
+.stat b { display: block; font-size: 1.5rem; font-weight: 600; letter-spacing: -.02em; }
+.stat span { color: var(--muted); font-size: .8rem; }
+.modes { display: grid; gap: .6rem; grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr)); }
+.mode { border: 1px solid var(--border); border-radius: 8px; padding: .8rem .9rem; cursor: pointer; }
+.mode:hover { border-color: var(--accent); }
+.mode input { margin-right: .4rem; }
+.mode.selected { border-color: var(--accent); background: var(--accent-soft); }
+.mode b { font-weight: 600; }
+.mode p { margin: .3rem 0 0; color: var(--muted); font-size: .84rem; }
+.mode .detail { font-size: .76rem; margin-top: .3rem; color: var(--muted); font-style: italic; }
+.pl { border-top: 1px solid var(--border); padding: .6rem 0; }
+.pl:first-of-type { border-top: 0; }
+.pl summary { cursor: pointer; display: flex; align-items: baseline; gap: .6rem; list-style: none; }
+.pl summary::-webkit-details-marker { display: none; }
+.pl summary::before { content: "▸"; color: var(--muted); font-size: .75rem; }
+.pl[open] summary::before { content: "▾"; }
+.pl .name { font-weight: 500; flex: 1; }
+.pl .count { color: var(--muted); font-variant-numeric: tabular-nums; font-size: .85rem; }
+.badge { font-size: .7rem; padding: .1rem .45rem; border-radius: 4px; border: 1px solid var(--border); color: var(--muted); }
+.badge.creation { color: var(--ok); border-color: var(--ok); }
+.badge.maj { color: var(--warn); border-color: var(--warn); }
+.pl .body { padding: .6rem 0 .4rem 1.4rem; }
+.pl pre { white-space: pre-wrap; font: 12px/1.5 ui-monospace, Menlo, monospace;
+  background: var(--bg); border: 1px solid var(--border); border-radius: 6px; padding: .7rem; margin: 0 0 .6rem; }
+.pl ul { margin: 0; padding-left: 1.1rem; color: var(--muted); font-size: .86rem; }
+.progress { height: 6px; background: var(--bg); border-radius: 3px; overflow: hidden; margin: .7rem 0 .4rem; }
+.progress i { display: block; height: 100%; background: var(--accent); width: 0; transition: width .3s; }
+.msg { color: var(--muted); font-size: .86rem; }
+.error { color: var(--danger); }
+.hint { color: var(--muted); font-size: .85rem; }
+.hint code { background: var(--bg); padding: .05rem .3rem; border-radius: 4px; }
+.row { display: flex; gap: .6rem; align-items: center; flex-wrap: wrap; }
+.spacer { margin-top: .9rem; }
+.danger-zone { border-color: var(--danger); background: var(--danger-soft); }
+.hidden { display: none !important; }
+ol.steps { margin: .4rem 0 .9rem; padding-left: 1.2rem; color: var(--muted); font-size: .86rem; }
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <h1>Organiser sa bibliothèque YouTube Music</h1>
+  <p>Analyse la bibliothèque, l'apparie à Discogs, et propose un rangement par genre et style. Rien n'est écrit sans confirmation.</p>
+</header>
+
+<section>
+  <h2>État</h2>
+  <div class="stats" id="stats"></div>
+</section>
+
+<section id="connect-section">
+  <h2><span class="step">1</span>Connecter le compte</h2>
+  <div id="connected-box" class="hidden">
+    <p class="msg">Compte connecté (<code id="auth-file"></code>). <button id="reconnect">Reconnecter</button></p>
+  </div>
+  <div id="connect-form">
+    <ol class="steps">
+      <li>Ouvre <b>music.youtube.com</b> connecté, puis les outils de développement (F12), onglet Réseau.</li>
+      <li>Recharge la page et sélectionne une requête vers <code>/youtubei/v1/</code>.</li>
+      <li>Copie l'intégralité des en-têtes de la requête et colle-les ci-dessous.</li>
+    </ol>
+    <textarea id="headers" placeholder="accept: */*&#10;cookie: ...&#10;user-agent: ..."></textarea>
+    <div class="row spacer">
+      <button class="primary" id="connect-btn">Connecter</button>
+      <span class="msg" id="connect-msg"></span>
+    </div>
+    <p class="hint spacer">Ces en-têtes contiennent les identifiants de ta session. Ils ne sont écrits que dans le fichier local d'authentification et ne quittent jamais ta machine.</p>
+  </div>
+</section>
+
+<section>
+  <h2><span class="step">2</span>Analyser la bibliothèque</h2>
+  <div class="row">
+    <button class="primary" id="analyse-btn">Lancer l'analyse</button>
+    <span class="msg" id="analyse-msg"></span>
+  </div>
+  <p class="hint spacer">Lit la bibliothèque, puis interroge Discogs pour chaque album. La première analyse peut prendre plusieurs minutes ; les suivantes sont servies par le cache.</p>
+</section>
+
+<section>
+  <h2><span class="step">3</span>Choisir le type de tri</h2>
+  <div class="modes" id="modes"></div>
+</section>
+
+<section>
+  <h2><span class="step">4</span>Aperçu du résultat</h2>
+  <div class="row">
+    <button id="preview-btn">Calculer l'aperçu</button>
+    <span class="msg" id="preview-msg"></span>
+  </div>
+  <div id="preview-summary" class="stats spacer hidden"></div>
+  <div id="preview-list" class="spacer"></div>
+</section>
+
+<section>
+  <h2><span class="step">5</span>Appliquer</h2>
+  <div class="row">
+    <button class="primary" id="apply-btn" disabled>Appliquer à mon compte</button>
+    <span class="msg" id="apply-msg"></span>
+  </div>
+  <p class="hint spacer">Seules les playlists créées par cet outil sont modifiées. Les playlists que tu as faites toi-même ne sont jamais touchées.</p>
+</section>
+
+<section class="danger-zone">
+  <h2>Annuler</h2>
+  <p class="msg">Supprime toutes les playlists générées par l'outil et rend le compte à son état initial. Les playlists personnelles sont conservées. <b>Cette action est irréversible.</b></p>
+  <div class="row spacer">
+    <button class="danger" id="purge-btn">Supprimer les playlists générées</button>
+    <span class="msg" id="purge-msg"></span>
+  </div>
+</section>
+
+<div id="job-box" class="hidden">
+  <section>
+    <h2 id="job-kind">Traitement</h2>
+    <div class="progress"><i id="job-bar"></i></div>
+    <p class="msg" id="job-msg"></p>
+  </section>
+</div>
+</div>
+
+<script>
+const $ = (id) => document.getElementById(id);
+let sortMode = null;
+let pollTimer = null;
+
+async function api(path, body) {
+  const options = body === undefined
+    ? {}
+    : { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) };
+  const response = await fetch(path, options);
+  const payload = await response.json().catch(() => ({}));
+  if (!response.ok) throw new Error(payload.detail || `Erreur ${response.status}`);
+  return payload;
+}
+
+function stat(value, label) {
+  return `<div class="stat"><b>${value}</b><span>${label}</span></div>`;
+}
+
+async function refreshStatus() {
+  const s = await api("/api/status");
+  $("stats").innerHTML =
+    stat(s.tracks, "titres scannés") +
+    stat(s.classified, "classés") +
+    stat(s.review, "à vérifier") +
+    stat(s.unmatched, "sans correspondance") +
+    stat(s.unclassified, "non traités") +
+    stat(s.managed_playlists, "playlists gérées");
+  $("connected-box").classList.toggle("hidden", !s.connected);
+  $("connect-form").classList.toggle("hidden", s.connected);
+  $("auth-file").textContent = s.auth_file;
+  if (s.job && s.job.status === "en cours") watchJob(s.job.id);
+  return s;
+}
+
+function watchJob(jobId) {
+  clearInterval(pollTimer);
+  $("job-box").classList.remove("hidden");
+  const tick = async () => {
+    const job = await api(`/api/jobs/${jobId}`);
+    $("job-kind").textContent = job.kind;
+    $("job-msg").textContent = job.error ? `Échec : ${job.error}` : job.message || "…";
+    $("job-msg").classList.toggle("error", job.status === "échoué");
+    const ratio = job.total ? Math.round((job.progress / job.total) * 100) : (job.status === "terminé" ? 100 : 8);
+    $("job-bar").style.width = `${ratio}%`;
+    if (job.status !== "en cours") {
+      clearInterval(pollTimer);
+      setBusy(false);
+      await refreshStatus();
+      if (job.status === "terminé") setTimeout(() => $("job-box").classList.add("hidden"), 2500);
+    }
+  };
+  tick();
+  pollTimer = setInterval(tick, 1500);
+}
+
+function setBusy(busy) {
+  ["analyse-btn", "apply-btn", "purge-btn", "preview-btn"].forEach((id) => { $(id).disabled = busy; });
+  if (!busy) $("apply-btn").disabled = !sortMode;
+}
+
+async function loadModes() {
+  const { modes, default: fallback } = await api("/api/sort-modes");
+  sortMode = fallback;
+  $("modes").innerHTML = modes.map((mode) => `
+    <label class="mode ${mode.key === fallback ? "selected" : ""}" data-key="${mode.key}">
+      <b><input type="radio" name="mode" value="${mode.key}" ${mode.key === fallback ? "checked" : ""}>${mode.label}</b>
+      <p>${mode.summary}</p>
+      <div class="detail">${mode.detail}</div>
+    </label>`).join("");
+  $("modes").querySelectorAll(".mode").forEach((node) => {
+    node.addEventListener("click", () => {
+      sortMode = node.dataset.key;
+      $("modes").querySelectorAll(".mode").forEach((n) => n.classList.toggle("selected", n === node));
+      node.querySelector("input").checked = true;
+      $("preview-list").innerHTML = "";
+      $("preview-summary").classList.add("hidden");
+      $("apply-btn").disabled = true;
+      $("preview-msg").textContent = "Type de tri modifié : recalcule l'aperçu.";
+    });
+  });
+}
+
+function renderPreview(data) {
+  const p = data.preview;
+  $("preview-summary").classList.remove("hidden");
+  $("preview-summary").innerHTML =
+    stat(p.playlists.length, "playlists") +
+    stat(p.assignments, "affectations") +
+    stat(p.created, "à créer") +
+    stat(p.updated, "à mettre à jour") +
+    stat(p.unchanged, "inchangées");
+
+  if (!p.playlists.length) {
+    $("preview-list").innerHTML = `<p class="msg">Aucune playlist à proposer : lance d'abord l'analyse.</p>`;
+    $("apply-btn").disabled = true;
+    return;
+  }
+
+  const warning = data.remote_known
+    ? ""
+    : `<p class="msg">Compte non joignable : l'aperçu présente tout comme une création.</p>`;
+  const obsolete = p.obsolete.length
+    ? `<p class="msg">Playlists gérées devenues sans objet, qui seront vidées : ${p.obsolete.join(", ")}.</p>`
+    : "";
+
+  $("preview-list").innerHTML = warning + obsolete + p.playlists.map((pl) => {
+    const badge = pl.change === "création"
+      ? `<span class="badge creation">création</span>`
+      : pl.change === "mise à jour"
+        ? `<span class="badge maj">+${pl.added} / −${pl.removed}</span>`
+        : `<span class="badge">inchangée</span>`;
+    const sample = pl.sample.map((t) => `<li>${escapeHtml(t)}</li>`).join("");
+    return `<details class="pl">
+      <summary>
+        <span class="name">${escapeHtml(pl.name)}</span>
+        ${badge}
+        <span class="count">${pl.count} titres</span>
+      </summary>
+      <div class="body">
+        <pre>${escapeHtml(pl.description)}</pre>
+        <ul>${sample}</ul>
+      </div>
+    </details>`;
+  }).join("");
+  $("apply-btn").disabled = false;
+}
+
+function escapeHtml(text) {
+  return text.replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+}
+
+$("connect-btn").addEventListener("click", async () => {
+  $("connect-msg").textContent = "Connexion…";
+  $("connect-msg").classList.remove("error");
+  try {
+    await api("/api/connect", { headers: $("headers").value });
+    $("headers").value = "";
+    $("connect-msg").textContent = "Compte connecté.";
+    await refreshStatus();
+  } catch (error) {
+    $("connect-msg").textContent = error.message;
+    $("connect-msg").classList.add("error");
+  }
+});
+
+$("reconnect").addEventListener("click", () => {
+  $("connected-box").classList.add("hidden");
+  $("connect-form").classList.remove("hidden");
+});
+
+$("analyse-btn").addEventListener("click", async () => {
+  setBusy(true);
+  try {
+    watchJob((await api("/api/analyse", {})).id);
+  } catch (error) {
+    $("analyse-msg").textContent = error.message;
+    $("analyse-msg").classList.add("error");
+    setBusy(false);
+  }
+});
+
+$("preview-btn").addEventListener("click", async () => {
+  $("preview-msg").textContent = "Calcul…";
+  try {
+    renderPreview(await api("/api/preview", { sort_mode: sortMode }));
+    $("preview-msg").textContent = "";
+  } catch (error) {
+    $("preview-msg").textContent = error.message;
+    $("preview-msg").classList.add("error");
+  }
+});
+
+$("apply-btn").addEventListener("click", async () => {
+  if (!confirm("Appliquer ces changements à ton compte YouTube Music ?")) return;
+  setBusy(true);
+  try {
+    watchJob((await api("/api/apply", { sort_mode: sortMode, confirm: true })).id);
+  } catch (error) {
+    $("apply-msg").textContent = error.message;
+    $("apply-msg").classList.add("error");
+    setBusy(false);
+  }
+});
+
+$("purge-btn").addEventListener("click", async () => {
+  if (!confirm("Supprimer définitivement toutes les playlists générées par l'outil ?")) return;
+  setBusy(true);
+  try {
+    watchJob((await api("/api/purge", { confirm: true })).id);
+  } catch (error) {
+    $("purge-msg").textContent = error.message;
+    $("purge-msg").classList.add("error");
+    setBusy(false);
+  }
+});
+
+loadModes().then(refreshStatus);
+</script>
+</body>
+</html>

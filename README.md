@@ -90,7 +90,36 @@ cp config/config.example.toml config/config.toml
 Toutes les options sont commentées dans le fichier d'exemple : sources scannées,
 seuils d'appariement, seuils de regroupement, politique multi-styles.
 
-## Utilisation
+## Utilisation — interface web
+
+```bash
+pip install -e ".[web]"
+ytmgc web            # http://127.0.0.1:8765
+```
+
+Le parcours tient en cinq étapes : connecter le compte, lancer l'analyse,
+choisir un type de tri, examiner l'aperçu, confirmer. **Rien n'est écrit sur le
+compte tant que la confirmation n'a pas été donnée**, et l'aperçu montre
+exactement ce qui sera créé : nom de chaque playlist, nombre de titres,
+description complète et échantillon de morceaux.
+
+Une section « Annuler » supprime en un clic toutes les playlists générées et
+rend le compte à son état initial.
+
+L'interface est **locale par défaut** (`127.0.0.1`) : elle manipule les
+identifiants de session YouTube Music, qui ne doivent jamais transiter par un
+serveur tiers.
+
+### Types de tri
+
+| Mode | Résultat |
+|---|---|
+| `detaille` (défaut) | Une playlist par style, un titre pouvant relever de deux styles. |
+| `exhaustif` | Le plus fin possible : chaque style représenté obtient sa playlist. |
+| `sans-doublon` | Chaque titre n'apparaît que dans une playlist : une cartographie exacte. |
+| `genre` | Une poignée de grandes playlists, sans détail de style. |
+
+## Utilisation — ligne de commande
 
 Le pipeline est découpé en étapes reprenables — chacune est persistée en base,
 une interruption ne fait rien perdre :
@@ -103,7 +132,11 @@ ytmgc apply      # simulation du diff
 ytmgc apply --execute   # écriture réelle sur YouTube Music
 ytmgc status     # avancement
 ytmgc review     # appariements incertains, à vérifier à la main
+ytmgc purge --execute   # supprime les playlists générées (annulation complète)
 ```
+
+`plan` et `apply` acceptent `--tri` pour choisir un type de tri :
+`ytmgc plan --tri sans-doublon`.
 
 `apply` est **en mode simulation par défaut** : il faut `--execute` pour écrire.
 
@@ -113,6 +146,8 @@ ytmgc review     # appariements incertains, à vérifier à la main
   les playlists dont la description porte son marqueur (`[ytmgc]`) ; tout le
   reste lui est invisible.
 - **Idempotent.** Un second run sans changement ne produit aucune écriture.
+- **Annulable.** `ytmgc purge` (ou le bouton « Annuler » de l'interface)
+  supprime toutes les playlists générées, et seulement celles-là.
 - **Économe en appels.** Le cache Discogs est indexé par (artiste, album) : une
   bibliothèque de 5 000 titres issus de 800 albums coûte ~800 requêtes, et zéro
   au run suivant. C'est ce qui rend supportable la limite de 60 requêtes/minute.
@@ -136,6 +171,7 @@ Les deux réglages qui déterminent le résultat final :
 
 | Réglage | Défaut | Effet |
 |---|---|---|
+| `multi_style` | `all` | `all` place un titre dans chaque playlist de style correspondante (vue la plus fidèle à Discogs) ; `primary` n'en retient qu'une. |
 | `min_tracks_per_style` | `4` | Nombre de titres à partir duquel un style obtient sa playlist. Bas par défaut, pour nommer précisément ce qu'on écoute. |
 | `min_tracks_per_genre` | `3` | Idem au niveau du genre. En deçà, les titres partent dans « Divers — genres isolés ». |
 
@@ -146,7 +182,7 @@ sans aucune écriture ni appel réseau.
 ## Développement
 
 ```bash
-python -m pytest        # 112 tests, aucun appel réseau
+python -m pytest        # 146 tests, aucun appel réseau
 ```
 
 Les API externes sont derrière des adaptateurs (`src/ytmgc/sources/`) ; toute la

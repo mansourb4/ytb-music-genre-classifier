@@ -37,6 +37,8 @@ class PlaylistClient(Protocol):
         self, playlist_id: str, *, title: str | None = None, description: str | None = None
     ) -> None: ...
 
+    def delete_playlist(self, playlist_id: str) -> None: ...
+
 
 def extract_key(description: str, marker: str) -> str | None:
     """Clé de playlist lue dans la description, si la playlist est gérée par l'outil."""
@@ -192,4 +194,36 @@ def apply(
                 description=descriptions.get(action.key),
             )
 
+    return log
+
+
+def purge(
+    remote: Iterable[RemotePlaylist],
+    client: PlaylistClient,
+    config: Config,
+    *,
+    dry_run: bool = True,
+    on_deleted=None,
+) -> list[str]:
+    """Supprime toutes les playlists générées par l'outil.
+
+    C'est l'annulation complète : elle rend le compte à son état d'avant la
+    première synchronisation. Comme partout ailleurs, le marqueur délimite la
+    portée — une playlist sans marqueur n'est jamais candidate, quelle que soit
+    la ressemblance de son nom.
+
+    L'opération est irréversible : YouTube Music ne restaure pas une playlist
+    supprimée. Le mode simulation est donc le défaut ici aussi.
+    """
+    log: list[str] = []
+    for key, playlist in sorted(managed_by_key(remote, config.sync.marker).items()):
+        log.append(
+            ("[à blanc] " if dry_run else "")
+            + f"supprimer « {playlist.title} » ({len(playlist.video_ids)} titres)"
+        )
+        if dry_run:
+            continue
+        client.delete_playlist(playlist.playlist_id)
+        if on_deleted is not None:
+            on_deleted(key)
     return log

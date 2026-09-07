@@ -46,7 +46,10 @@ et relancés sans perte, et `plan`/`apply` se rejouent hors ligne.
 | `classifier.py` | Orchestration titre → candidats → classification. |
 | `planner.py` | Classifications → ensemble de playlists souhaité. Hors ligne. |
 | `sync.py` | Diff état souhaité / état distant, puis application. |
-| `cli.py` | Interface utilisateur. |
+| `sorting.py` | Types de tri prédéfinis, partagés par le CLI et l'interface web. |
+| `preview.py` | Assemble plan, état distant et titres en un aperçu sérialisable. Ni HTTP ni terminal. |
+| `web/` | Application FastAPI locale et son interface (page unique, sans build). |
+| `cli.py` | Interface en ligne de commande. |
 
 ## Décisions structurantes
 
@@ -130,6 +133,25 @@ style le plus représenté dans la bibliothèque (à égalité, l'ordre Discogs
 tranche : le premier style listé est le plus représentatif). `"all"` duplique le
 titre dans chaque playlist de style, jusqu'à `max_styles_per_track`.
 
+### 8. L'écriture est toujours précédée d'un aperçu, et toujours annulable
+
+`preview.build_preview` calcule hors ligne ce que deviendra le compte, à partir
+du plan, de l'état distant et des titres concernés. Le CLI l'affiche, l'API web
+le sérialise ; l'écriture réutilise le même calcul. Aucun appel d'écriture n'a
+lieu sans confirmation explicite (`--execute`, ou `confirm: true` côté API).
+
+`sync.purge` fournit l'annulation complète : suppression de toutes les
+playlists portant le marqueur, et d'elles seules. C'est la seule opération
+destructrice du projet ; elle est irréversible côté YouTube Music, d'où la même
+exigence de confirmation.
+
+### 9. La base est protégée par un verrou
+
+L'interface web exécute les traitements longs dans un fil de fond tout en
+servant les requêtes d'état. La connexion SQLite est donc ouverte avec
+`check_same_thread=False`, et `Repository` sérialise tous ses accès : c'est le
+seul point d'entrée de la base, ce qui rend la garantie tenable.
+
 ## Contraintes des API
 
 | Contrainte | Conséquence |
@@ -143,7 +165,7 @@ titre dans chaque playlist de style, jusqu'à `max_styles_per_track`.
 
 ## Tests
 
-112 tests, aucun appel réseau. Les adaptateurs externes sont doublés en mémoire
+146 tests, aucun appel réseau, y compris l'API web complète (aperçu, application, annulation). Les adaptateurs externes sont doublés en mémoire
 (`tests/fakes.py`), y compris pour un test de bout en bout scan → classify →
 plan → apply qui vérifie l'idempotence du second run et l'intégrité des
 playlists manuelles.

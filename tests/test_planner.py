@@ -53,6 +53,7 @@ def test_unmatched_tracks_never_reach_a_playlist(taxonomy, config):
 
 
 def test_primary_mode_assigns_each_track_once(taxonomy, config):
+    config.taxonomy.multi_style = "primary"
     classifications = [matched(f"v{i}", ("Electronic",), ("Deep House", "Tech House")) for i in range(3)]
     plans = plan(classifications, taxonomy, config)
     assert len(plans) == 1
@@ -61,6 +62,7 @@ def test_primary_mode_assigns_each_track_once(taxonomy, config):
 
 def test_primary_mode_prefers_the_most_common_style_in_the_library(taxonomy, config):
     """Le titre ambigu rejoint la playlist déjà peuplée plutôt qu'une nouvelle."""
+    config.taxonomy.multi_style = "primary"
     classifications = [matched(f"v{i}", ("Electronic",), ("Techno",)) for i in range(3)]
     classifications.append(matched("amb", ("Electronic",), ("Ambient", "Techno")))
     plans = plan(classifications, taxonomy, config)
@@ -99,6 +101,7 @@ def test_plans_are_sorted_by_name_so_genres_group_together(taxonomy, config):
 
 def test_track_joins_an_existing_style_playlist_rather_than_the_catch_all(taxonomy, config):
     """Le style élu n'a pas de playlist, mais un autre style du titre en a une."""
+    config.taxonomy.multi_style = "primary"
     classifications = [matched(f"a{i}", ("Electronic",), ("Ambient", "IDM")) for i in range(2)]
     classifications.append(matched("solo", ("Electronic",), ("Drone", "Ambient")))
 

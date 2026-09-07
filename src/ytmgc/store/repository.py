@@ -2,9 +2,12 @@
 
 from __future__ import annotations
 
+import functools
 import json
 import sqlite3
+import threading
 from datetime import datetime, timedelta, timezone
+from typing import Callable, TypeVar
 
 from ytmgc.models import Classification, MatchStatus, ReleaseCandidate, Track
 
@@ -19,12 +22,33 @@ def _split(value: str) -> tuple[str, ...]:
     return tuple(part for part in value.split(_SEP) if part)
 
 
+_T = TypeVar("_T")
+
+
+def _locked(method: Callable[..., _T]) -> Callable[..., _T]:
+    """Sérialise l'accès à la connexion SQLite.
+
+    La connexion est partagée entre le fil qui sert l'interface et celui qui
+    exécute les traitements longs ; sans ce verrou, les deux se marcheraient
+    dessus au milieu d'une transaction.
+    """
+
+    @functools.wraps(method)
+    def wrapper(self: "Repository", *args, **kwargs) -> _T:
+        with self._lock:
+            return method(self, *args, **kwargs)
+
+    return wrapper
+
+
 class Repository:
     def __init__(self, connection: sqlite3.Connection) -> None:
         self._db = connection
+        self._lock = threading.RLock()
 
     # ---------------------------------------------------------------- tracks
 
+    @_locked
     def upsert_tracks(self, tracks: list[Track]) -> int:
         """Insère ou met à jour des titres. Renvoie le nombre de lignes traitées."""
         rows = [
@@ -48,10 +72,12 @@ class Repository:
         self._db.commit()
         return len(rows)
 
+    @_locked
     def all_tracks(self) -> list[Track]:
         cursor = self._db.execute("SELECT * FROM tracks ORDER BY video_id")
         return [self._row_to_track(row) for row in cursor]
 
+    @_locked
     def unclassified_tracks(self) -> list[Track]:
         """Titres jamais soumis à Discogs : permet de reprendre un run interrompu."""
         cursor = self._db.execute(
@@ -77,6 +103,7 @@ class Repository:
 
     # ------------------------------------------------------- discogs cache
 
+    @_locked
     def cached_candidates(self, query: str, ttl_days: int) -> list[ReleaseCandidate] | None:
         """Candidats en cache, ou None si absents ou périmés."""
         row = self._db.execute(
@@ -100,6 +127,7 @@ class Repository:
             for item in json.loads(row["payload"])
         ]
 
+    @_locked
     def store_candidates(self, query: str, candidates: list[ReleaseCandidate]) -> None:
         payload = json.dumps(
             [
@@ -129,6 +157,7 @@ class Repository:
 
     # ------------------------------------------------------ classifications
 
+    @_locked
     def save_classification(self, classification: Classification) -> None:
         self._db.execute(
             """
@@ -153,6 +182,7 @@ class Repository:
         )
         self._db.commit()
 
+    @_locked
     def classifications(self, status: MatchStatus | None = None) -> list[Classification]:
         if status is None:
             cursor = self._db.execute("SELECT * FROM classifications ORDER BY video_id")
@@ -173,6 +203,7 @@ class Repository:
             for row in cursor
         ]
 
+    @_locked
     def counts_by_status(self) -> dict[str, int]:
         cursor = self._db.execute(
             "SELECT status, COUNT(*) AS n FROM classifications GROUP BY status"
@@ -181,6 +212,7 @@ class Repository:
 
     # ---------------------------------------------------- managed playlists
 
+    @_locked
     def remember_playlist(self, key: str, playlist_id: str, name: str) -> None:
         self._db.execute(
             """
@@ -194,6 +226,12 @@ class Repository:
         )
         self._db.commit()
 
+    @_locked
+    def forget_playlist(self, key: str) -> None:
+        self._db.execute("DELETE FROM managed_playlists WHERE key = ?", (key,))
+        self._db.commit()
+
+    @_locked
     def managed_playlists(self) -> dict[str, tuple[str, str]]:
         """Clé de playlist -> (playlist_id, nom)."""
         cursor = self._db.execute("SELECT key, playlist_id, name FROM managed_playlists")

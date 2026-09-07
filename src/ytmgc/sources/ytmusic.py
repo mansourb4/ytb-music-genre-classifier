@@ -157,3 +157,7 @@ class YouTubeMusicClient:
             kwargs["description"] = description
         if kwargs:
             self._api.edit_playlist(playlist_id, **kwargs)
+
+    def delete_playlist(self, playlist_id: str) -> None:
+        self._api.delete_playlist(playlist_id)
+        self._playlist_cache.pop(playlist_id, None)
