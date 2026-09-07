@@ -1,0 +1,55 @@
+# Copie ce fichier en config/config.toml et adapte-le.
+
+[store]
+# Base SQLite : cache Discogs, bibliothèque scannée, classifications.
+path = "data/ytmgc.db"
+
+[youtube]
+# Fichier d'auth ytmusicapi (browser.json ou oauth.json).
+auth_file = "browser.json"
+# Sources à scanner : "library" (titres ajoutés), "liked", "uploads",
+# ou "playlist:<playlistId>" pour cibler une playlist précise.
+sources = ["library", "liked"]
+# Visibilité des playlists créées : PRIVATE | UNLISTED | PUBLIC
+playlist_privacy = "PRIVATE"
+
+[discogs]
+user_agent = "ytb-music-genre-classifier/0.1"
+# Requêtes/minute. L'API authentifiée autorise 60/min ; on garde une marge.
+rate_limit_per_minute = 50
+# Durée de validité du cache de recherche, en jours.
+cache_ttl_days = 90
+
+[matching]
+# Score minimal (0-1) pour accepter un appariement Discogs automatiquement.
+min_score = 0.72
+# En dessous de ce score, le titre part en revue manuelle plutôt qu'en playlist.
+review_score = 0.55
+# Nombre de candidats Discogs examinés par titre.
+max_candidates = 10
+
+[taxonomy]
+# "primary" : un seul style par titre (le plus fréquent dans la bibliothèque).
+# "all"     : le titre est ajouté à chaque playlist de style correspondante.
+multi_style = "primary"
+# Nombre max de playlists de style par titre quand multi_style = "all".
+max_styles_per_track = 2
+# Un style n'obtient sa playlist qu'à partir de ce nombre de titres.
+min_tracks_per_style = 15
+# Un genre n'obtient sa playlist qu'à partir de ce nombre de titres.
+min_tracks_per_genre = 8
+# Playlist fourre-tout pour les titres sous les seuils.
+fallback_playlist = "Divers"
+# Gabarits de nommage (voir docs/ARCHITECTURE.md).
+style_name_template = "{genre} — {style}"
+genre_name_template = "{genre}"
+
+[sync]
+# Préfixe inscrit dans la description des playlists gérées par l'outil.
+# Toute playlist sans ce marqueur est ignorée : les playlists manuelles
+# de l'utilisateur ne sont jamais modifiées.
+marker = "[ytmgc]"
+# Retirer des playlists gérées les titres qui n'y appartiennent plus.
+prune = true
+# Nombre max de titres envoyés par appel d'API.
+batch_size = 50

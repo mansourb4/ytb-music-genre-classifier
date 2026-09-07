@@ -1,0 +1,64 @@
+# Table de normalisation de la taxonomie Discogs.
+#
+# Discogs expose deux niveaux : `genre` (15 valeurs) et `style` (~500 valeurs).
+# Ce fichier ne fait que nettoyer ces valeurs ; il ne les invente pas.
+
+# Libellé affiché dans le nom de playlist. Les genres Discogs contenant "/"
+# ou "," produisent des noms de playlist illisibles.
+[genre_display]
+"Funk / Soul" = "Funk & Soul"
+"Folk, World, & Country" = "Folk & World"
+"Stage & Screen" = "BO & Scène"
+"Brass & Military" = "Fanfare"
+"Children's" = "Jeunesse"
+"Non-Music" = "Hors-musique"
+
+# Ordre de préférence quand une release porte plusieurs genres. Le premier
+# genre présent dans cette liste devient le genre principal du titre.
+# Les genres les plus spécifiques passent avant les plus génériques : une
+# release "Electronic, Pop" décrit mieux la playlist sous "Electronic".
+[genre_priority]
+order = [
+    "Hip Hop",
+    "Electronic",
+    "Jazz",
+    "Reggae",
+    "Funk / Soul",
+    "Blues",
+    "Latin",
+    "Classical",
+    "Folk, World, & Country",
+    "Stage & Screen",
+    "Brass & Military",
+    "Rock",
+    "Pop",
+    "Children's",
+    "Non-Music",
+]
+
+# Fusion de styles quasi identiques, pour éviter deux playlists concurrentes.
+# Clé = style tel que renvoyé par Discogs, valeur = style retenu.
+[style_aliases]
+"Drum n Bass" = "Drum & Bass"
+"Jungle" = "Drum & Bass"
+"Alternative Rock" = "Alternative"
+"Indie Rock" = "Indie"
+"Rock & Roll" = "Rock'n'Roll"
+"RnB/Swing" = "R&B"
+"Rhythm & Blues" = "R&B"
+"Contemporary R&B" = "R&B"
+"Hip-Hop" = "Hip Hop"
+"Conscious" = "Hip Hop"
+"Boom Bap" = "Hip Hop"
+"Prog Rock" = "Progressive Rock"
+"Euro House" = "House"
+"Hard House" = "House"
+"Deep Techno" = "Techno"
+"Minimal Techno" = "Minimal"
+"Synth-pop" = "Synth-Pop"
+"Electro House" = "Electro"
+
+# Styles trop génériques pour mériter leur propre playlist : le titre est
+# rattaché à la playlist de genre à la place.
+[style_blocklist]
+styles = ["Modern", "Contemporary", "Reissue", "Compilation", "Album", "Single"]
