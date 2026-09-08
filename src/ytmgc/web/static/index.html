@@ -211,19 +211,19 @@ select {
 
       <ol class="steps" id="sub-firefox">
         <li>Ouvre <b>music.youtube.com</b>, connecté à ton compte.</li>
-        <li>Appuie sur <b>F12</b>, puis va dans l'onglet <b>Réseau</b>.</li>
-        <li>Recharge la page avec <b>F5</b> : la liste des requêtes se remplit.</li>
-        <li>Dans le champ de filtre, tape <code>browse</code>. Clique sur une ligne <b>POST</b> vers <code>/youtubei/v1/browse</code>.</li>
-        <li><b>Clic droit sur cette ligne</b> → <i>Copier</i> → <b>« Copier les en-têtes de requête »</b>.</li>
+        <li>Appuie sur <b>F12</b>, puis va dans l'onglet <b>Réseau</b>. Laisse-le ouvert.</li>
+        <li>Dans le champ de filtre, tape <code>youtubei</code>, et vérifie que le bouton <b>Tout</b> est sélectionné dans la rangée de types juste à côté.</li>
+        <li><b>Clique sur « Bibliothèque » dans la page YouTube Music.</b> Une ou plusieurs lignes <b>POST</b> vers <code>/youtubei/v1/…</code> apparaissent aussitôt.</li>
+        <li><b>Clic droit sur l'une d'elles</b> → <i>Copier</i> → <b>« Copier les en-têtes de requête »</b>.</li>
         <li>Colle le résultat ci-dessous.</li>
       </ol>
 
       <ol class="steps hidden" id="sub-chrome">
         <li>Ouvre <b>music.youtube.com</b>, connecté à ton compte.</li>
-        <li>Appuie sur <b>F12</b>, puis va dans l'onglet <b>Network</b>.</li>
-        <li>Recharge la page avec <b>F5</b> : la liste des requêtes se remplit.</li>
-        <li>Dans le champ de filtre, tape <code>browse</code>. Clique sur une ligne <b>POST</b> vers <code>/youtubei/v1/browse</code>.</li>
-        <li>Panneau de droite, onglet <b>Headers</b> → section <b>Request Headers</b> → clique le bouton <b>Raw</b> à droite du titre.</li>
+        <li>Appuie sur <b>F12</b>, puis va dans l'onglet <b>Network</b>. Laisse-le ouvert.</li>
+        <li>Dans le champ <b>Filter</b>, tape <code>youtubei</code>, et vérifie que <b>All</b> est sélectionné dans la rangée de types juste à côté.</li>
+        <li><b>Clique sur « Bibliothèque » dans la page YouTube Music.</b> Une ou plusieurs lignes <b>POST</b> vers <code>/youtubei/v1/…</code> apparaissent aussitôt.</li>
+        <li>Clique sur l'une d'elles → onglet <b>Headers</b> → section <b>Request Headers</b> → bouton <b>Raw</b> à droite du titre.</li>
         <li>Sélectionne tout le texte affiché et colle-le ci-dessous.</li>
       </ol>
 
@@ -233,6 +233,7 @@ select {
         <span class="msg" id="connect-msg"></span>
       </div>
       <p class="hint spacer">Le texte collé doit contenir une ligne <code>cookie:</code> (très longue) et une ligne <code>x-goog-authuser:</code>. S'il manque le cookie, la requête choisie n'était pas la bonne : reprends une requête <b>POST</b> vers <code>/youtubei/v1/</code>, pas une image ni un script.</p>
+      <p class="hint">Liste vide malgré le filtre ? L'inspecteur a sans doute été ouvert après le chargement de la page : garde-le ouvert et navigue dans YouTube Music, les requêtes n'apparaissent qu'à partir de son ouverture.</p>
       <p class="hint">Ces en-têtes contiennent les identifiants de ta session. Ils ne sont écrits que dans le fichier local d'authentification et ne quittent jamais ta machine.</p>
     </div>
   </div>

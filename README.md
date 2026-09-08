@@ -96,11 +96,16 @@ de `YTMGC_OAUTH_CLIENT_ID` / `YTMGC_OAUTH_CLIENT_SECRET`.
 
 **4. En-têtes (avancé)** — collage des en-têtes d'une requête réseau, à
 réserver aux cas où les autres échouent. Dans Firefox : ouvrir
-`music.youtube.com` connecté, `F12` → onglet **Réseau**, `F5`, filtrer sur
-`browse`, puis **clic droit sur une ligne POST vers `/youtubei/v1/browse`** →
+`music.youtube.com` connecté, `F12` → onglet **Réseau**, filtrer sur
+`youtubei`, puis **cliquer sur « Bibliothèque » dans la page** pour provoquer
+une requête ; **clic droit sur une ligne POST vers `/youtubei/v1/…`** →
 *Copier* → **« Copier les en-têtes de requête »**. Dans Chrome ou Edge, mêmes
 étapes, puis onglet **Headers** → **Request Headers** → bouton **Raw**, et
 copier le texte affiché.
+
+L'inspecteur ne montre que les requêtes émises **après** son ouverture : une
+liste vide signifie presque toujours qu'il faut naviguer dans la page, ou
+vérifier qu'aucun filtre de type (`XHR`, `JS`…) n'est actif.
 
 Le texte collé doit contenir une ligne `cookie:` et une ligne
 `x-goog-authuser:` ; l'interface le vérifie et dit ce qui manque. En ligne de
