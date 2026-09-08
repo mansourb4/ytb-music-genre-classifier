@@ -40,7 +40,9 @@ et relancés sans perte, et `plan`/`apply` se rejouent hors ligne.
 | `config.py` | Défauts < `config.toml` < environnement. Les secrets viennent uniquement de l'environnement. |
 | `store/` | Schéma SQLite et accès typés. Aucun SQL ailleurs dans le projet. |
 | `sources/ytmusic.py` | Adaptateur `ytmusicapi` : scan, lecture et écriture de playlists. |
-| `sources/oauth.py` | Connexion OAuth par code d'appareil, pour les appareils sans outils de développement. |
+| `sources/oauth.py` | Connexion OAuth par code d'appareil. |
+| `sources/browser_session.py` | Reprise d'une session ouverte dans un navigateur installé ; construit le fichier d'en-têtes attendu par `ytmusicapi`. |
+| `sources/browser_login.py` | Fenêtre de connexion pilotée, qui capture la session une fois l'utilisateur identifié. |
 | `sources/discogs.py` | Client HTTP Discogs : recherche, limitation de débit, reprises sur erreur. |
 | `matching/` | Normalisation des libellés et scoring des candidats. Pur, sans état. |
 | `taxonomy/` | Alias de styles, priorité des genres, nommage, et définitions des genres et styles (`descriptions.toml`). |
@@ -168,13 +170,30 @@ sur un téléphone), puis déposé en cookie `HttpOnly` ; la comparaison passe p
 celle de GitHub sur un port transféré privé — sans la remplacer : il couvre le
 cas où ce port passerait en visibilité publique.
 
-### 11. Deux voies de connexion, dont une sans ordinateur
+### 11. Quatre voies de connexion, parce qu'aucune n'est fiable partout
 
-La connexion par en-têtes de navigateur suppose des outils de développement,
-donc un ordinateur. Le flux OAuth « limited input » de Google contourne
-l'obstacle : l'application affiche une URL et un code, l'utilisateur valide sur
-n'importe quel appareil, l'application récupère le jeton en interrogeant Google
-à intervalle régulier.
+YouTube Music n'a pas d'API publique. L'API officielle YouTube Data v3
+n'expose pas la bibliothèque YouTube Music, et son quota (10 000 unités par
+jour, 50 par insertion dans une playlist) plafonne à environ 200 titres ajoutés
+par jour : inutilisable pour ranger une bibliothèque entière. Aucune connexion
+« officielle » n'est donc possible, et chaque contournement a son domaine de
+validité — d'où quatre voies, présentées de la plus simple à la plus manuelle.
+
+**Session du navigateur.** Les cookies nécessaires sont déjà dans le navigateur
+de l'utilisateur. `ytmusicapi` recalcule l'en-tête `authorization` à chaque
+requête à partir du cookie `__Secure-3PAPISID` ; le fichier écrit en contient
+néanmoins un, car c'est à sa présence que la bibliothèque reconnaît une
+authentification de type navigateur plutôt qu'OAuth. Limite : Chrome chiffre
+ses cookies sous Windows depuis la version 127.
+
+**Fenêtre de connexion.** Un navigateur piloté est ouvert sur YouTube Music et
+la session est relevée dès que le cookie de signature apparaît. Le profil est
+persistant, ce qui évite de rejouer une connexion que Google pourrait refuser —
+il bloque régulièrement l'authentification dans un navigateur automatisé.
+
+**OAuth par code d'appareil.** Le flux « limited input » de Google : une URL,
+un code, une validation sur n'importe quel appareil. Seule voie indépendante
+d'un navigateur local, donc la seule utilisable dans un conteneur distant.
 
 La contrepartie est que Google exige un identifiant client OAuth propre à
 l'application, que l'utilisateur crée lui-même. Il est traité comme un secret
@@ -200,7 +219,7 @@ normal tant que l'utilisateur n'a pas validé.
 
 ## Tests
 
-183 tests, aucun appel réseau, y compris l'API web complète (aperçu, application, annulation), son contrôle d'accès et les deux voies de connexion. Les adaptateurs externes sont doublés en mémoire
+200 tests, aucun appel réseau, y compris l'API web complète (aperçu, application, annulation), son contrôle d'accès et les quatre voies de connexion. Les adaptateurs externes sont doublés en mémoire
 (`tests/fakes.py`), y compris pour un test de bout en bout scan → classify →
 plan → apply qui vérifie l'idempotence du second run et l'intégrité des
 playlists manuelles.

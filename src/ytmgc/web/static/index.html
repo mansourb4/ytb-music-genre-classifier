@@ -114,6 +114,10 @@ input[type=text], input:not([type]), input[type=password] {
   width: 100%; font: inherit; padding: .5rem .7rem; border-radius: 7px;
   border: 1px solid var(--border); background: var(--bg); color: var(--text);
 }
+select {
+  width: 100%; font: inherit; padding: .5rem .7rem; border-radius: 7px;
+  border: 1px solid var(--border); background: var(--bg); color: var(--text);
+}
 .code { font: 600 1.1rem ui-monospace, Menlo, monospace; letter-spacing: .08em; }
 #oauth-url { color: var(--accent); word-break: break-all; }
 </style>
@@ -137,12 +141,37 @@ input[type=text], input:not([type]), input[type=password] {
   </div>
   <div id="connect-form">
     <div class="tabs">
-      <button class="tab selected" data-tab="oauth">Depuis un téléphone (OAuth)</button>
-      <button class="tab" data-tab="headers">Depuis un ordinateur (en-têtes)</button>
+      <button class="tab selected" data-tab="session">Ma session de navigateur</button>
+      <button class="tab" data-tab="login">Fenêtre de connexion</button>
+      <button class="tab" data-tab="oauth">Compte Google (OAuth)</button>
+      <button class="tab" data-tab="headers">En-têtes (avancé)</button>
     </div>
 
-    <div class="tab-panel" id="tab-oauth">
-      <p class="hint">Aucun outil de développement nécessaire : Google affiche un code à valider. Il faut en revanche créer une fois un identifiant client OAuth, ce qui se fait depuis un téléphone.</p>
+    <div class="tab-panel" id="tab-session">
+      <p class="hint">Si tu es déjà connecté à YouTube Music dans un navigateur, l'application reprend cette session. Rien à saisir.</p>
+      <div class="row spacer">
+        <select id="browser-choice">
+          <option value="">Chercher dans tous les navigateurs</option>
+        </select>
+      </div>
+      <div class="row spacer">
+        <button class="primary" id="session-btn">Utiliser ma session</button>
+        <span class="msg" id="session-msg"></span>
+      </div>
+      <p class="hint spacer">Fiable sur Firefox, macOS et Linux. Sous Windows, Chrome chiffre ses cookies depuis la version 127 : préfère Firefox, ou une autre méthode.</p>
+    </div>
+
+    <div class="tab-panel hidden" id="tab-login">
+      <p class="hint">L'application ouvre une fenêtre sur YouTube Music. Connecte-toi normalement : la fenêtre se referme d'elle-même une fois la session récupérée.</p>
+      <div class="row spacer">
+        <button class="primary" id="login-btn">Ouvrir la fenêtre de connexion</button>
+        <span class="msg" id="login-msg"></span>
+      </div>
+      <p class="hint spacer">Google refuse parfois la connexion dans une fenêtre pilotée automatiquement. Si c'est le cas, utilise l'un des autres onglets.</p>
+    </div>
+
+    <div class="tab-panel hidden" id="tab-oauth">
+      <p class="hint">Connexion par ton compte Google, sans dépendre d'un navigateur local. Il faut en revanche créer une fois un identifiant client OAuth : Google impose à chaque application de s'enregistrer.</p>
       <ol class="steps">
         <li>Ouvre <b>console.cloud.google.com</b> et crée un projet.</li>
         <li>Active l'API <b>YouTube Data API v3</b> pour ce projet.</li>
@@ -171,6 +200,7 @@ input[type=text], input:not([type]), input[type=password] {
     </div>
 
     <div class="tab-panel hidden" id="tab-headers">
+      <p class="hint">Méthode manuelle, à réserver aux cas où les autres échouent.</p>
       <ol class="steps">
         <li>Ouvre <b>music.youtube.com</b> connecté, puis les outils de développement (F12), onglet Réseau.</li>
         <li>Recharge la page et sélectionne une requête vers <code>/youtubei/v1/</code>.</li>
@@ -369,12 +399,38 @@ function escapeHtml(text) {
   return text.replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
 }
 
-$("modes") && document.querySelectorAll(".tab").forEach((tab) => {
+document.querySelectorAll(".tab").forEach((tab) => {
   tab.addEventListener("click", () => {
     document.querySelectorAll(".tab").forEach((t) => t.classList.toggle("selected", t === tab));
-    $("tab-oauth").classList.toggle("hidden", tab.dataset.tab !== "oauth");
-    $("tab-headers").classList.toggle("hidden", tab.dataset.tab !== "headers");
+    document.querySelectorAll(".tab-panel").forEach((panel) => {
+      panel.classList.toggle("hidden", panel.id !== `tab-${tab.dataset.tab}`);
+    });
   });
+});
+
+$("session-btn").addEventListener("click", async () => {
+  $("session-msg").textContent = "Lecture de la session…";
+  $("session-msg").classList.remove("error");
+  try {
+    const { source } = await api("/api/connect/browser-session", { browser: $("browser-choice").value || null });
+    $("session-msg").textContent = `Session reprise depuis ${source}.`;
+    await refreshStatus();
+  } catch (error) {
+    $("session-msg").textContent = error.message;
+    $("session-msg").classList.add("error");
+  }
+});
+
+$("login-btn").addEventListener("click", async () => {
+  $("login-msg").textContent = "";
+  setBusy(true);
+  try {
+    watchJob((await api("/api/connect/browser-login", {})).id);
+  } catch (error) {
+    $("login-msg").textContent = error.message;
+    $("login-msg").classList.add("error");
+    setBusy(false);
+  }
 });
 
 let oauthTimer = null;
@@ -486,7 +542,18 @@ $("purge-btn").addEventListener("click", async () => {
   }
 });
 
-loadModes().then(refreshStatus);
+async function loadConnectMethods() {
+  const { browsers } = await api("/api/connect/methods");
+  const select = $("browser-choice");
+  browsers.forEach((name) => {
+    const option = document.createElement("option");
+    option.value = name;
+    option.textContent = name.charAt(0).toUpperCase() + name.slice(1);
+    select.appendChild(option);
+  });
+}
+
+loadModes().then(loadConnectMethods).then(refreshStatus);
 </script>
 </body>
 </html>

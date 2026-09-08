@@ -68,6 +68,11 @@ class ConnectRequest(BaseModel):
     headers: str = Field(min_length=1)
 
 
+class BrowserImportRequest(BaseModel):
+    #: None = chercher dans tous les navigateurs installés.
+    browser: str | None = None
+
+
 class OAuthStartRequest(BaseModel):
     """Identifiant client OAuth créé par l'utilisateur dans Google Cloud."""
 
@@ -168,6 +173,7 @@ def create_app(services: Services) -> FastAPI:
     @app.get("/api/connect/methods")
     def connect_methods() -> dict:
         """Méthodes de connexion disponibles, et laquelle est déjà configurée."""
+        from ytmgc.sources.browser_session import BROWSERS
         from ytmgc.sources.oauth import load_client
 
         client = load_client(config.youtube.oauth_client_file)
@@ -175,7 +181,50 @@ def create_app(services: Services) -> FastAPI:
             "oauth_client_configured": client is not None,
             "auth_file": config.youtube.auth_file,
             "connected": Path(config.youtube.auth_file).exists(),
+            "browsers": list(BROWSERS),
         }
+
+    @app.post("/api/connect/browser-session")
+    def connect_browser_session(request: BrowserImportRequest) -> dict:
+        """Reprend la session d'un navigateur où l'utilisateur est déjà connecté.
+
+        Voie la plus directe : aucune saisie, aucun formulaire. Elle échoue
+        proprement quand aucune session n'est trouvée, l'interface renvoyant
+        alors vers les autres méthodes.
+        """
+        from ytmgc.sources.browser_session import BrowserSessionError, import_session
+
+        try:
+            source = import_session(config.youtube.auth_file, request.browser)
+        except BrowserSessionError as exc:
+            raise HTTPException(400, str(exc)) from exc
+        return {"connected": True, "source": source}
+
+    @app.post("/api/connect/browser-login")
+    def connect_browser_login() -> dict:
+        """Ouvre une fenêtre de connexion et attend que l'utilisateur s'identifie.
+
+        L'attente peut durer plusieurs minutes : c'est donc un traitement de
+        fond, suivi comme les autres depuis l'interface.
+        """
+        if jobs.busy():
+            raise HTTPException(409, "Un traitement est déjà en cours")
+
+        def work(job: Job) -> dict:
+            from ytmgc.sources.browser_login import DEFAULT_TIMEOUT_S, login_and_capture
+
+            job.total = DEFAULT_TIMEOUT_S
+            job.message = "Fenêtre ouverte : connecte-toi à YouTube Music."
+
+            def on_wait(remaining: int) -> None:
+                job.progress = DEFAULT_TIMEOUT_S - remaining
+                job.message = f"En attente de ta connexion… ({remaining} s restantes)"
+
+            source = login_and_capture(config.youtube.auth_file, on_wait=on_wait)
+            job.message = "Compte connecté."
+            return {"connected": True, "source": source}
+
+        return jobs.start("connexion", work).to_dict()
 
     @app.post("/api/connect/oauth/start")
     def oauth_start(request: OAuthStartRequest) -> dict:
