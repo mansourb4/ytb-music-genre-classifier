@@ -159,6 +159,16 @@ def create_app(services: Services) -> FastAPI:
         """Écrit le fichier d'authentification à partir des en-têtes collés."""
         from ytmusicapi import setup
 
+        from ytmgc.sources.browser_session import missing_header_lines
+
+        if missing := missing_header_lines(request.headers):
+            raise HTTPException(
+                400,
+                "Il manque la ligne « " + " » et « ".join(missing) + " » dans les en-têtes "
+                "collés. Reprends une requête POST vers /youtubei/v1/ (et non une image "
+                "ou un script), en étant connecté à ton compte.",
+            )
+
         try:
             setup(filepath=config.youtube.auth_file, headers_raw=request.headers)
         except Exception as exc:  # noqa: BLE001 - message d'erreur remonté tel quel

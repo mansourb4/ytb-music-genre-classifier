@@ -129,3 +129,27 @@ def test_an_unknown_browser_is_rejected():
 
     with pytest.raises(BrowserSessionError, match="Navigateur inconnu"):
         _default_reader("navigateur-imaginaire")
+
+
+# ------------------------------------------------- en-têtes collés à la main
+
+
+def test_valid_pasted_headers_pass_the_check():
+    from ytmgc.sources.browser_session import missing_header_lines
+
+    raw = "accept: */*\ncookie: SID=a; __Secure-3PAPISID=b\nx-goog-authuser: 0"
+    assert missing_header_lines(raw) == []
+
+
+def test_the_missing_line_is_named_precisely():
+    """L'erreur type : une requête sans session choisie dans l'inspecteur."""
+    from ytmgc.sources.browser_session import missing_header_lines
+
+    assert missing_header_lines("accept: */*\nuser-agent: Mozilla") == ["cookie", "x-goog-authuser"]
+    assert missing_header_lines("cookie: SID=a\naccept: */*") == ["x-goog-authuser"]
+
+
+def test_the_check_tolerates_case_and_spacing():
+    from ytmgc.sources.browser_session import missing_header_lines
+
+    assert missing_header_lines("Cookie : SID=a\nX-Goog-AuthUser : 0") == []

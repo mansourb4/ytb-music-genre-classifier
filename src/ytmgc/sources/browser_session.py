@@ -165,3 +165,18 @@ def import_session(
     session = read_session(browser, reader)
     write_auth_file(session.header(), path)
     return session.source
+
+
+#: Lignes indispensables dans des en-têtes collés à la main.
+PASTED_REQUIRED = ("cookie", "x-goog-authuser")
+
+
+def missing_header_lines(raw: str) -> list[str]:
+    """En-têtes obligatoires absents d'un collage manuel.
+
+    L'erreur est presque toujours la même — une requête sans session choisie
+    dans l'inspecteur réseau — et le message de `ytmusicapi` est en anglais.
+    Ce contrôle permet de dire précisément ce qui manque et quoi refaire.
+    """
+    lines = [line.split(":", 1)[0].strip().lower() for line in raw.splitlines() if ":" in line]
+    return [name for name in PASTED_REQUIRED if name not in lines]

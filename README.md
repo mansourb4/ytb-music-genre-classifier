@@ -95,7 +95,16 @@ Google impose à chaque application de s'enregistrer. L'identifiant peut venir
 de `YTMGC_OAUTH_CLIENT_ID` / `YTMGC_OAUTH_CLIENT_SECRET`.
 
 **4. En-têtes (avancé)** — collage des en-têtes d'une requête réseau, à
-réserver aux cas où les autres échouent :
+réserver aux cas où les autres échouent. Dans Firefox : ouvrir
+`music.youtube.com` connecté, `F12` → onglet **Réseau**, `F5`, filtrer sur
+`browse`, puis **clic droit sur une ligne POST vers `/youtubei/v1/browse`** →
+*Copier* → **« Copier les en-têtes de requête »**. Dans Chrome ou Edge, mêmes
+étapes, puis onglet **Headers** → **Request Headers** → bouton **Raw**, et
+copier le texte affiché.
+
+Le texte collé doit contenir une ligne `cookie:` et une ligne
+`x-goog-authuser:` ; l'interface le vérifie et dit ce qui manque. En ligne de
+commande, l'équivalent est :
 
 ```bash
 ytmusicapi browser   # crée browser.json en suivant les instructions affichées
@@ -255,7 +264,7 @@ sans aucune écriture ni appel réseau.
 ## Développement
 
 ```bash
-python -m pytest        # 200 tests, aucun appel réseau
+python -m pytest        # 204 tests, aucun appel réseau
 ```
 
 Les API externes sont derrière des adaptateurs (`src/ytmgc/sources/`) ; toute la

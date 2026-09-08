@@ -110,6 +110,8 @@ ol.steps li { margin-bottom: .25rem; }
 .tabs { display: flex; gap: .4rem; margin-bottom: 1rem; flex-wrap: wrap; }
 .tab { font-size: .85rem; padding: .35rem .75rem; }
 .tab.selected { background: var(--accent-soft); border-color: var(--accent); color: var(--accent); }
+.tabs.sub { margin: .9rem 0 .5rem; }
+.subtab { font-size: .8rem; padding: .25rem .6rem; }
 input[type=text], input:not([type]), input[type=password] {
   width: 100%; font: inherit; padding: .5rem .7rem; border-radius: 7px;
   border: 1px solid var(--border); background: var(--bg); color: var(--text);
@@ -200,18 +202,38 @@ select {
     </div>
 
     <div class="tab-panel hidden" id="tab-headers">
-      <p class="hint">Méthode manuelle, à réserver aux cas où les autres échouent.</p>
-      <ol class="steps">
-        <li>Ouvre <b>music.youtube.com</b> connecté, puis les outils de développement (F12), onglet Réseau.</li>
-        <li>Recharge la page et sélectionne une requête vers <code>/youtubei/v1/</code>.</li>
-        <li>Copie l'intégralité des en-têtes de la requête et colle-les ci-dessous.</li>
+      <p class="hint">Méthode manuelle, à réserver aux cas où les autres échouent. Les étapes diffèrent selon le navigateur.</p>
+
+      <div class="tabs sub">
+        <button class="tab subtab selected" data-sub="firefox">Firefox</button>
+        <button class="tab subtab" data-sub="chrome">Chrome / Edge</button>
+      </div>
+
+      <ol class="steps" id="sub-firefox">
+        <li>Ouvre <b>music.youtube.com</b>, connecté à ton compte.</li>
+        <li>Appuie sur <b>F12</b>, puis va dans l'onglet <b>Réseau</b>.</li>
+        <li>Recharge la page avec <b>F5</b> : la liste des requêtes se remplit.</li>
+        <li>Dans le champ de filtre, tape <code>browse</code>. Clique sur une ligne <b>POST</b> vers <code>/youtubei/v1/browse</code>.</li>
+        <li><b>Clic droit sur cette ligne</b> → <i>Copier</i> → <b>« Copier les en-têtes de requête »</b>.</li>
+        <li>Colle le résultat ci-dessous.</li>
       </ol>
-      <textarea id="headers" placeholder="accept: */*&#10;cookie: ...&#10;user-agent: ..."></textarea>
+
+      <ol class="steps hidden" id="sub-chrome">
+        <li>Ouvre <b>music.youtube.com</b>, connecté à ton compte.</li>
+        <li>Appuie sur <b>F12</b>, puis va dans l'onglet <b>Network</b>.</li>
+        <li>Recharge la page avec <b>F5</b> : la liste des requêtes se remplit.</li>
+        <li>Dans le champ de filtre, tape <code>browse</code>. Clique sur une ligne <b>POST</b> vers <code>/youtubei/v1/browse</code>.</li>
+        <li>Panneau de droite, onglet <b>Headers</b> → section <b>Request Headers</b> → clique le bouton <b>Raw</b> à droite du titre.</li>
+        <li>Sélectionne tout le texte affiché et colle-le ci-dessous.</li>
+      </ol>
+
+      <textarea id="headers" placeholder="accept: */*&#10;cookie: VISITOR_INFO1_LIVE=...; SID=...; __Secure-3PAPISID=...&#10;x-goog-authuser: 0&#10;user-agent: Mozilla/5.0 ..."></textarea>
       <div class="row spacer">
         <button class="primary" id="connect-btn">Connecter</button>
         <span class="msg" id="connect-msg"></span>
       </div>
-      <p class="hint spacer">Ces en-têtes contiennent les identifiants de ta session. Ils ne sont écrits que dans le fichier local d'authentification et ne quittent jamais ta machine.</p>
+      <p class="hint spacer">Le texte collé doit contenir une ligne <code>cookie:</code> (très longue) et une ligne <code>x-goog-authuser:</code>. S'il manque le cookie, la requête choisie n'était pas la bonne : reprends une requête <b>POST</b> vers <code>/youtubei/v1/</code>, pas une image ni un script.</p>
+      <p class="hint">Ces en-têtes contiennent les identifiants de ta session. Ils ne sont écrits que dans le fichier local d'authentification et ne quittent jamais ta machine.</p>
     </div>
   </div>
 </section>
@@ -477,11 +499,33 @@ function pollOAuth(deviceCode, intervalMs) {
   oauthTimer = setInterval(tick, intervalMs);
 }
 
+document.querySelectorAll(".subtab").forEach((tab) => {
+  tab.addEventListener("click", () => {
+    document.querySelectorAll(".subtab").forEach((t) => t.classList.toggle("selected", t === tab));
+    $("sub-firefox").classList.toggle("hidden", tab.dataset.sub !== "firefox");
+    $("sub-chrome").classList.toggle("hidden", tab.dataset.sub !== "chrome");
+  });
+});
+
+function missingHeaderLines(raw) {
+  const required = { "cookie": /^\s*cookie\s*:/im, "x-goog-authuser": /^\s*x-goog-authuser\s*:/im };
+  return Object.keys(required).filter((name) => !required[name].test(raw));
+}
+
 $("connect-btn").addEventListener("click", async () => {
+  const raw = $("headers").value;
+  const missing = missingHeaderLines(raw);
+  if (missing.length) {
+    // Diagnostic immédiat : l'erreur vient presque toujours d'une requête mal choisie.
+    $("connect-msg").textContent =
+      `Il manque la ligne « ${missing.join(" » et « ")} ». Reprends une requête POST vers /youtubei/v1/.`;
+    $("connect-msg").classList.add("error");
+    return;
+  }
   $("connect-msg").textContent = "Connexion…";
   $("connect-msg").classList.remove("error");
   try {
-    await api("/api/connect", { headers: $("headers").value });
+    await api("/api/connect", { headers: raw });
     $("headers").value = "";
     $("connect-msg").textContent = "Compte connecté.";
     await refreshStatus();

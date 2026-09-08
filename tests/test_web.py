@@ -298,3 +298,10 @@ def test_oauth_poll_without_a_registered_client_is_refused(client):
     response = client.post("/api/connect/oauth/poll", json={"device_code": "dev"})
     assert response.status_code == 400
     assert "identifiant client" in response.json()["detail"].lower()
+
+
+def test_pasted_headers_missing_the_cookie_are_refused_with_guidance(client):
+    response = client.post("/api/connect", json={"headers": "accept: */*\nuser-agent: Mozilla"})
+    assert response.status_code == 400
+    detail = response.json()["detail"]
+    assert "cookie" in detail and "/youtubei/v1/" in detail
