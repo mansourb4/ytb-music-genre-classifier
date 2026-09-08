@@ -154,9 +154,33 @@ def cmd_web(args: argparse.Namespace, config: Config) -> int:
         return 1
 
     from ytmgc.web.app import build_default_app
+    from ytmgc.web.links import access_url, in_codespace
+    from ytmgc.web.security import generate_token
 
-    print(f"Interface disponible sur http://{args.host}:{args.port}")
-    uvicorn.run(build_default_app(args.config), host=args.host, port=args.port, log_level="warning")
+    if args.host is not None:
+        config.web.host = args.host
+    if args.port is not None:
+        config.web.port = args.port
+    if args.no_token:
+        config.web.require_token = False
+
+    if config.web.token_required() and not config.web.access_token:
+        config.web.access_token = generate_token()
+        print("Jeton d'accès engendré pour cette session.")
+        print("Définis YTMGC_ACCESS_TOKEN pour en conserver un stable d'un démarrage à l'autre.")
+
+    token = config.web.access_token if config.web.token_required() else ""
+    print(f"\nInterface disponible sur :\n  {access_url(config.web.host, config.web.port, token)}\n")
+    if token:
+        print("Ce lien contient le jeton : ouvre-le tel quel, y compris depuis un téléphone.")
+    if in_codespace():
+        print("Codespace détecté : le port 8765 doit être transféré (onglet « Ports »).")
+        print("Garde sa visibilité sur « Private » — le lien reste alors lié à ton compte GitHub.")
+
+    uvicorn.run(
+        build_default_app(args.config, config),
+        host=config.web.host, port=config.web.port, log_level="warning",
+    )
     return 0
 
 
@@ -227,8 +251,12 @@ def build_parser() -> argparse.ArgumentParser:
     purge_cmd.set_defaults(func=cmd_purge)
 
     web = subparsers.add_parser("web", help="Lancer l'interface locale")
-    web.add_argument("--host", default="127.0.0.1", help="Interface d'écoute (défaut : locale uniquement)")
-    web.add_argument("--port", type=int, default=8765)
+    web.add_argument("--host", default=None, help="Interface d'écoute (défaut : locale uniquement)")
+    web.add_argument("--port", type=int, default=None)
+    web.add_argument(
+        "--no-token", action="store_true",
+        help="Servir sans jeton même hors boucle locale (déconseillé)",
+    )
     web.set_defaults(func=cmd_web)
 
     status = subparsers.add_parser("status", help="État d'avancement")

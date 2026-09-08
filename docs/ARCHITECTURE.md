@@ -48,7 +48,7 @@ et relancés sans perte, et `plan`/`apply` se rejouent hors ligne.
 | `sync.py` | Diff état souhaité / état distant, puis application. |
 | `sorting.py` | Types de tri prédéfinis, partagés par le CLI et l'interface web. |
 | `preview.py` | Assemble plan, état distant et titres en un aperçu sérialisable. Ni HTTP ni terminal. |
-| `web/` | Application FastAPI locale et son interface (page unique, sans build). |
+| `web/` | Application FastAPI et son interface (page unique, sans build), contrôle d'accès et construction des liens. |
 | `cli.py` | Interface en ligne de commande. |
 
 ## Décisions structurantes
@@ -152,6 +152,21 @@ servant les requêtes d'état. La connexion SQLite est donc ouverte avec
 `check_same_thread=False`, et `Repository` sérialise tous ses accès : c'est le
 seul point d'entrée de la base, ce qui rend la garantie tenable.
 
+### 10. L'exposition hors boucle locale impose un jeton
+
+L'application pilote un compte YouTube Music : la joindre, c'est pouvoir
+réécrire une bibliothèque. Tant qu'elle n'écoute que sur `127.0.0.1`,
+l'isolement réseau suffit et aucune friction n'est imposée. Dès que `web.host`
+sort de la boucle locale — réseau local, port transféré d'un Codespace — un
+jeton devient obligatoire, et l'application **refuse de démarrer** sans lui
+plutôt que de servir un accès ouvert.
+
+Le jeton est accepté en paramètre d'URL (pour qu'un lien soit ouvrable tel quel
+sur un téléphone), puis déposé en cookie `HttpOnly` ; la comparaison passe par
+`secrets.compare_digest`. Il s'ajoute à l'authentification de l'hébergeur —
+celle de GitHub sur un port transféré privé — sans la remplacer : il couvre le
+cas où ce port passerait en visibilité publique.
+
 ## Contraintes des API
 
 | Contrainte | Conséquence |
@@ -162,10 +177,11 @@ seul point d'entrée de la base, ce qui rend la garantie tenable.
 | YouTube Music : 5 000 titres/playlist | Les seuils de repli maintiennent les playlists loin du plafond. |
 | YouTube Music : suppression par `setVideoId` | `sync` relit la playlist avant tout retrait. |
 | YouTube Music : API interne, non officielle | Toute la dépendance est isolée dans un seul adaptateur, importé paresseusement. |
+| YouTube Music : session par cookies de navigateur | Le fichier d'authentification expire au bout de quelques semaines et se renouvelle depuis l'interface. Une session utilisée depuis une IP de centre de données déclenche plus facilement un contrôle Google : le Codespace convient à un usage ponctuel, moins à un service permanent. |
 
 ## Tests
 
-146 tests, aucun appel réseau, y compris l'API web complète (aperçu, application, annulation). Les adaptateurs externes sont doublés en mémoire
+161 tests, aucun appel réseau, y compris l'API web complète (aperçu, application, annulation) et son contrôle d'accès. Les adaptateurs externes sont doublés en mémoire
 (`tests/fakes.py`), y compris pour un test de bout en bout scan → classify →
 plan → apply qui vérifie l'idempotence du second run et l'intégrité des
 playlists manuelles.

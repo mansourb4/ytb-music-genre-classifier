@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+# Démarre l'interface. Dans un Codespace, ouvre ensuite l'URL affichée depuis
+# l'onglet « Ports » (ou depuis ton téléphone, connecté au même compte GitHub).
+set -euo pipefail
+exec python -m ytmgc web "$@"

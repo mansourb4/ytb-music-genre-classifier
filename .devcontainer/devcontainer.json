@@ -1,0 +1,35 @@
+{
+  "name": "ytmgc",
+  "image": "mcr.microsoft.com/devcontainers/python:1-3.11-bookworm",
+
+  "postCreateCommand": "bash .devcontainer/setup.sh",
+
+  "forwardPorts": [8765],
+  "portsAttributes": {
+    "8765": {
+      "label": "Interface ytmgc",
+      "onAutoForward": "notify",
+      "requireLocalPort": false
+    }
+  },
+
+  "secrets": {
+    "DISCOGS_TOKEN": {
+      "description": "Jeton personnel Discogs (https://www.discogs.com/settings/developers). Sans lui, l'étape d'analyse ne peut pas interroger Discogs.",
+      "documentationUrl": "https://www.discogs.com/settings/developers"
+    },
+    "YTMGC_ACCESS_TOKEN": {
+      "description": "Facultatif. Jeton d'accès à l'interface. S'il est absent, un jeton est engendré à chaque démarrage et affiché dans le lien à ouvrir."
+    }
+  },
+
+  "customizations": {
+    "vscode": {
+      "extensions": ["ms-python.python"],
+      "settings": {
+        "python.testing.pytestEnabled": true,
+        "python.testing.pytestArgs": ["tests"]
+      }
+    }
+  }
+}

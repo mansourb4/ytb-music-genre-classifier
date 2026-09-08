@@ -51,6 +51,30 @@ class TaxonomyConfig:
 
 
 @dataclass(slots=True)
+class WebConfig:
+    """Interface web locale.
+
+    `access_token` ne vient jamais du fichier de configuration : c'est un
+    secret, il est lu dans l'environnement (`YTMGC_ACCESS_TOKEN`) ou engendré
+    au démarrage.
+    """
+
+    host: str = "127.0.0.1"
+    port: int = 8765
+    #: Exiger le jeton dès que l'écoute dépasse la boucle locale. Le désactiver
+    #: rend l'interface librement utilisable par quiconque atteint le port.
+    require_token: bool = True
+    access_token: str = ""
+
+    def is_loopback(self) -> bool:
+        return self.host in {"127.0.0.1", "localhost", "::1"}
+
+    def token_required(self) -> bool:
+        """Un jeton n'est imposé que si l'interface est joignable de l'extérieur."""
+        return self.require_token and not self.is_loopback()
+
+
+@dataclass(slots=True)
 class SyncConfig:
     marker: str = "[ytmgc]"
     prune: bool = True
@@ -65,6 +89,7 @@ class Config:
     matching: MatchingConfig = field(default_factory=MatchingConfig)
     taxonomy: TaxonomyConfig = field(default_factory=TaxonomyConfig)
     sync: SyncConfig = field(default_factory=SyncConfig)
+    web: WebConfig = field(default_factory=WebConfig)
 
     def validate(self) -> None:
         if self.taxonomy.multi_style not in {"primary", "all"}:
@@ -75,6 +100,8 @@ class Config:
             raise ValueError("matching.review_score doit être <= matching.min_score")
         if self.youtube.playlist_privacy not in {"PRIVATE", "UNLISTED", "PUBLIC"}:
             raise ValueError("youtube.playlist_privacy doit valoir PRIVATE, UNLISTED ou PUBLIC")
+        if not 1 <= self.web.port <= 65535:
+            raise ValueError("web.port doit être un port valide")
         if not self.sync.marker:
             raise ValueError("sync.marker ne peut pas être vide : il protège les playlists manuelles")
 
@@ -106,6 +133,7 @@ def load_config(path: Path | None = None, env: dict[str, str] | None = None) -> 
             _apply_section(section, values, name)
 
     config.discogs.token = env.get("DISCOGS_TOKEN", "")
+    config.web.access_token = env.get("YTMGC_ACCESS_TOKEN", "")
     if user_agent := env.get("DISCOGS_USER_AGENT"):
         config.discogs.user_agent = user_agent
     if auth_file := env.get("YTMUSIC_AUTH_FILE"):

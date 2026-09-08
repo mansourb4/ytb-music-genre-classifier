@@ -58,3 +58,15 @@ marker = "[ytmgc]"
 prune = true
 # Nombre max de titres envoyés par appel d'API.
 batch_size = 50
+
+[web]
+# Interface d'écoute. "127.0.0.1" = cette machine uniquement.
+# Mettre "0.0.0.0" pour rendre l'interface joignable depuis le réseau local ou
+# depuis un port transféré (Codespaces) — un jeton d'accès est alors exigé.
+host = "127.0.0.1"
+port = 8765
+# Exiger un jeton dès que l'écoute dépasse la boucle locale. À ne désactiver
+# que si l'accès est déjà protégé par ailleurs.
+require_token = true
+# Le jeton lui-même n'est jamais lu ici : il vient de YTMGC_ACCESS_TOKEN, ou
+# est engendré au démarrage et affiché dans l'URL à ouvrir.

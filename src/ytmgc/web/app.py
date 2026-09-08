@@ -30,6 +30,7 @@ from ytmgc.store import Repository, connect
 from ytmgc.sync import apply as apply_actions
 from ytmgc.sync import purge
 from ytmgc.web.jobs import Job, JobRunner
+from ytmgc.web.security import install_token_guard
 
 STATIC_DIR = Path(__file__).parent / "static"
 
@@ -80,6 +81,13 @@ class PurgeRequest(BaseModel):
 def create_app(services: Services) -> FastAPI:
     app = FastAPI(title="ytmgc", docs_url=None, redoc_url=None)
     config = services.config
+    if config.web.token_required():
+        if not config.web.access_token:
+            raise ValueError(
+                "L'interface est exposée hors de la boucle locale : un jeton "
+                "d'accès est obligatoire (YTMGC_ACCESS_TOKEN)."
+            )
+        install_token_guard(app, config.web.access_token)
     repository = services.repository
     jobs = services.jobs
 
@@ -274,8 +282,8 @@ def create_app(services: Services) -> FastAPI:
     return app
 
 
-def build_default_app(config_path: Path | None = None) -> FastAPI:
-    config = load_config(config_path)
+def build_default_app(config_path: Path | None = None, config: Config | None = None) -> FastAPI:
+    config = config if config is not None else load_config(config_path)
     return create_app(
         Services(
             config=config,

@@ -97,6 +97,44 @@ pip install -e ".[web]"
 ytmgc web            # http://127.0.0.1:8765
 ```
 
+### Depuis un téléphone, via GitHub Codespaces
+
+Le dépôt contient un `.devcontainer/` prêt à l'emploi :
+
+1. Sur GitHub : **Code → Codespaces → Create codespace**. Les dépendances
+   s'installent seules et `config/config.toml` est créé, réglé pour écouter sur
+   toutes les interfaces.
+2. Dans le terminal du Codespace : `./start`
+3. Ouvre le lien affiché — une adresse `https://<codespace>-8765.app.github.dev`
+   qui contient déjà le jeton d'accès. Il fonctionne tel quel depuis un
+   téléphone, connecté au même compte GitHub.
+
+Deux réglages avant de commencer :
+
+- **`DISCOGS_TOKEN`** en secret de Codespace (Settings → Codespaces →
+  Repository secrets), sinon l'analyse ne peut pas interroger Discogs.
+- **Garde le port 8765 en visibilité « Private »** : le lien reste alors lié à
+  ton compte GitHub. Le jeton d'accès de l'application s'ajoute à cette
+  protection, il ne la remplace pas.
+
+Le Codespace s'arrête après une période d'inactivité et l'offre gratuite est
+limitée en heures-machine. Le fichier d'authentification YouTube et la base
+SQLite vivent dans le conteneur : les supprimer avec le Codespace impose de
+reconnecter le compte et de relancer une analyse (les playlists déjà créées,
+elles, restent sur ton compte).
+
+### Accès depuis le réseau local
+
+```bash
+ytmgc web --host 0.0.0.0
+```
+
+Un jeton d'accès est alors **obligatoire** — l'application peut réécrire ta
+bibliothèque, elle ne doit pas être ouverte à qui atteint le port. Il est
+engendré au démarrage et inclus dans le lien affiché ; définis
+`YTMGC_ACCESS_TOKEN` pour en garder un stable. `--no-token` lève l'exigence,
+à ne faire que si l'accès est déjà protégé par ailleurs.
+
 Le parcours tient en cinq étapes : connecter le compte, lancer l'analyse,
 choisir un type de tri, examiner l'aperçu, confirmer. **Rien n'est écrit sur le
 compte tant que la confirmation n'a pas été donnée**, et l'aperçu montre
@@ -182,7 +220,7 @@ sans aucune écriture ni appel réseau.
 ## Développement
 
 ```bash
-python -m pytest        # 146 tests, aucun appel réseau
+python -m pytest        # 161 tests, aucun appel réseau
 ```
 
 Les API externes sont derrière des adaptateurs (`src/ytmgc/sources/`) ; toute la
