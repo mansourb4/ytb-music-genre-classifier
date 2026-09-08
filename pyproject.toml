@@ -20,6 +20,8 @@ browser = ["browser-cookie3>=0.19", "playwright>=1.40"]
 dev = [
     "pytest>=8", "httpx>=0.27", "fastapi>=0.110", "uvicorn>=0.27",
     "browser-cookie3>=0.19",
+    # Tests d'interface dans un vrai navigateur ; ignorés s'il est absent.
+    "playwright>=1.40",
 ]
 
 [project.scripts]

@@ -421,9 +421,13 @@ function escapeHtml(text) {
   return text.replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
 }
 
-document.querySelectorAll(".tab").forEach((tab) => {
+// Les sous-onglets portent aussi la classe .tab : sans le filtre sur
+// [data-tab], un clic sur "Firefox" déclenchait ce gestionnaire avec un
+// data-tab indéfini, ce qui masquait tous les panneaux à la fois.
+document.querySelectorAll(".tab[data-tab]").forEach((tab) => {
   tab.addEventListener("click", () => {
-    document.querySelectorAll(".tab").forEach((t) => t.classList.toggle("selected", t === tab));
+    // La sélection ne change que dans la barre d'onglets concernée.
+    tab.parentElement.querySelectorAll(".tab").forEach((t) => t.classList.toggle("selected", t === tab));
     document.querySelectorAll(".tab-panel").forEach((panel) => {
       panel.classList.toggle("hidden", panel.id !== `tab-${tab.dataset.tab}`);
     });
@@ -499,9 +503,9 @@ function pollOAuth(deviceCode, intervalMs) {
   oauthTimer = setInterval(tick, intervalMs);
 }
 
-document.querySelectorAll(".subtab").forEach((tab) => {
+document.querySelectorAll(".subtab[data-sub]").forEach((tab) => {
   tab.addEventListener("click", () => {
-    document.querySelectorAll(".subtab").forEach((t) => t.classList.toggle("selected", t === tab));
+    tab.parentElement.querySelectorAll(".subtab").forEach((t) => t.classList.toggle("selected", t === tab));
     $("sub-firefox").classList.toggle("hidden", tab.dataset.sub !== "firefox");
     $("sub-chrome").classList.toggle("hidden", tab.dataset.sub !== "chrome");
   });

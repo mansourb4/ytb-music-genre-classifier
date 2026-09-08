@@ -264,9 +264,15 @@ sans aucune écriture ni appel réseau.
 ## Développement
 
 ```bash
-python -m pytest        # 204 tests, aucun appel réseau
+python -m pytest        # 212 tests, aucun appel réseau
 ```
 
 Les API externes sont derrière des adaptateurs (`src/ytmgc/sources/`) ; toute la
 logique métier — appariement, taxonomie, planification, diff — est testée avec
-des doubles en mémoire. Voir [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
+des doubles en mémoire.
+
+`tests/test_ui.py` charge en plus l'interface dans un vrai navigateur : le
+câblage du DOM échappe aux tests Python. Ces tests sont ignorés si Playwright
+ou son navigateur ne sont pas installés (`playwright install chromium`).
+
+Voir [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).

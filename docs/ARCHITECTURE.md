@@ -219,7 +219,14 @@ normal tant que l'utilisateur n'a pas validé.
 
 ## Tests
 
-200 tests, aucun appel réseau, y compris l'API web complète (aperçu, application, annulation), son contrôle d'accès et les quatre voies de connexion. Les adaptateurs externes sont doublés en mémoire
+212 tests, aucun appel réseau, y compris l'API web complète (aperçu,
+application, annulation), son contrôle d'accès et les quatre voies de connexion.
+
+Huit d'entre eux chargent l'interface dans un vrai navigateur (`tests/test_ui.py`).
+Le câblage du DOM échappe aux tests Python : deux défauts d'onglets sont passés
+au travers de la suite avant d'être vus à l'écran. Ces tests sont ignorés
+lorsque Playwright ou son navigateur sont absents, pour que la suite reste
+exécutable avec les seules dépendances de base. Les adaptateurs externes sont doublés en mémoire
 (`tests/fakes.py`), y compris pour un test de bout en bout scan → classify →
 plan → apply qui vérifie l'idempotence du second run et l'intégrité des
 playlists manuelles.
