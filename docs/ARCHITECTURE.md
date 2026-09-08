@@ -40,6 +40,7 @@ et relancés sans perte, et `plan`/`apply` se rejouent hors ligne.
 | `config.py` | Défauts < `config.toml` < environnement. Les secrets viennent uniquement de l'environnement. |
 | `store/` | Schéma SQLite et accès typés. Aucun SQL ailleurs dans le projet. |
 | `sources/ytmusic.py` | Adaptateur `ytmusicapi` : scan, lecture et écriture de playlists. |
+| `sources/oauth.py` | Connexion OAuth par code d'appareil, pour les appareils sans outils de développement. |
 | `sources/discogs.py` | Client HTTP Discogs : recherche, limitation de débit, reprises sur erreur. |
 | `matching/` | Normalisation des libellés et scoring des candidats. Pur, sans état. |
 | `taxonomy/` | Alias de styles, priorité des genres, nommage, et définitions des genres et styles (`descriptions.toml`). |
@@ -167,6 +168,24 @@ sur un téléphone), puis déposé en cookie `HttpOnly` ; la comparaison passe p
 celle de GitHub sur un port transféré privé — sans la remplacer : il couvre le
 cas où ce port passerait en visibilité publique.
 
+### 11. Deux voies de connexion, dont une sans ordinateur
+
+La connexion par en-têtes de navigateur suppose des outils de développement,
+donc un ordinateur. Le flux OAuth « limited input » de Google contourne
+l'obstacle : l'application affiche une URL et un code, l'utilisateur valide sur
+n'importe quel appareil, l'application récupère le jeton en interrogeant Google
+à intervalle régulier.
+
+La contrepartie est que Google exige un identifiant client OAuth propre à
+l'application, que l'utilisateur crée lui-même. Il est traité comme un secret
+local : jamais versionné, fichier en 0600, lisible aussi depuis
+l'environnement.
+
+Deux pièges spécifiques au flux, couverts par des tests : le code d'appareil
+est **à usage unique** (l'échanger deux fois échoue), et les réponses
+« authorization_pending » et « slow_down » ne sont pas des erreurs mais l'état
+normal tant que l'utilisateur n'a pas validé.
+
 ## Contraintes des API
 
 | Contrainte | Conséquence |
@@ -181,7 +200,7 @@ cas où ce port passerait en visibilité publique.
 
 ## Tests
 
-161 tests, aucun appel réseau, y compris l'API web complète (aperçu, application, annulation) et son contrôle d'accès. Les adaptateurs externes sont doublés en mémoire
+183 tests, aucun appel réseau, y compris l'API web complète (aperçu, application, annulation), son contrôle d'accès et les deux voies de connexion. Les adaptateurs externes sont doublés en mémoire
 (`tests/fakes.py`), y compris pour un test de bout en bout scan → classify →
 plan → apply qui vérifie l'idempotence du second run et l'intégrité des
 playlists manuelles.

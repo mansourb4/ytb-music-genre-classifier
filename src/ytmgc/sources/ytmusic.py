@@ -49,11 +49,14 @@ def _to_track(entry: dict[str, Any], source: str) -> Track | None:
 class YouTubeMusicClient:
     """Implémente `sync.PlaylistClient` et expose le scan de bibliothèque."""
 
-    def __init__(self, auth_file: str, api: Any | None = None) -> None:
+    def __init__(self, auth_file: str, api: Any | None = None, oauth_client: Any | None = None) -> None:
         if api is None:
             from ytmusicapi import YTMusic  # import différé : dépendance optionnelle
 
-            api = YTMusic(auth_file)
+            # Un jeton OAuth ne peut être rafraîchi qu'avec l'identifiant client
+            # qui l'a produit : ytmusicapi doit le recevoir à l'ouverture.
+            credentials = oauth_client.credentials() if oauth_client is not None else None
+            api = YTMusic(auth_file, oauth_credentials=credentials)
         self._api = api
         self._playlist_cache: dict[str, RemotePlaylist] = {}
 

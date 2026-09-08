@@ -19,6 +19,9 @@ class StoreConfig:
 @dataclass(slots=True)
 class YouTubeConfig:
     auth_file: str = "browser.json"
+    #: Identifiant client OAuth (connexion depuis un appareil sans navigateur).
+    #: Secret local, jamais versionné ; peut aussi venir de l'environnement.
+    oauth_client_file: str = "oauth_client.json"
     sources: list[str] = field(default_factory=lambda: ["library", "liked"])
     playlist_privacy: str = "PRIVATE"
 

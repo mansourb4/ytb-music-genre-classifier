@@ -37,9 +37,13 @@ def _repository(config: Config) -> Repository:
 
 
 def _youtube(config: Config):
+    from ytmgc.sources.oauth import load_client
     from ytmgc.sources.ytmusic import YouTubeMusicClient
 
-    return YouTubeMusicClient(config.youtube.auth_file)
+    return YouTubeMusicClient(
+        config.youtube.auth_file,
+        oauth_client=load_client(config.youtube.oauth_client_file),
+    )
 
 
 def cmd_scan(args: argparse.Namespace, config: Config) -> int:

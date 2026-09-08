@@ -63,7 +63,25 @@ pip install -e ".[dev]"
 
 ### Authentification YouTube Music
 
-`ytmusicapi` s'authentifie avec les en-têtes de ta session navigateur :
+Deux voies, toutes deux proposées par l'interface web.
+
+**Depuis un téléphone seul — OAuth par code d'appareil.** Google affiche un
+lien et un code à valider : aucun outil de développement n'est nécessaire. Il
+faut en revanche créer une fois un identifiant client OAuth, ce qui se fait
+depuis un navigateur mobile :
+
+1. `console.cloud.google.com` → créer un projet ;
+2. activer l'API **YouTube Data API v3** ;
+3. Identifiants → ID client OAuth de type **Téléviseurs et périphériques à
+   saisie limitée** ;
+4. recopier l'ID et le secret dans l'interface, onglet « Depuis un téléphone ».
+
+L'identifiant peut aussi venir de `YTMGC_OAUTH_CLIENT_ID` et
+`YTMGC_OAUTH_CLIENT_SECRET` ; sinon l'interface l'écrit dans
+`oauth_client.json`, non versionné.
+
+**Depuis un ordinateur — en-têtes de navigateur.** Plus rapide si tu as des
+outils de développement sous la main :
 
 ```bash
 ytmusicapi browser   # crée browser.json en suivant les instructions affichées
@@ -108,6 +126,9 @@ Le dépôt contient un `.devcontainer/` prêt à l'emploi :
 3. Ouvre le lien affiché — une adresse `https://<codespace>-8765.app.github.dev`
    qui contient déjà le jeton d'accès. Il fonctionne tel quel depuis un
    téléphone, connecté au même compte GitHub.
+
+La connexion du compte YouTube se fait alors par OAuth, depuis le téléphone —
+voir « Authentification YouTube Music » plus haut.
 
 Deux réglages avant de commencer :
 
@@ -220,7 +241,7 @@ sans aucune écriture ni appel réseau.
 ## Développement
 
 ```bash
-python -m pytest        # 161 tests, aucun appel réseau
+python -m pytest        # 183 tests, aucun appel réseau
 ```
 
 Les API externes sont derrière des adaptateurs (`src/ytmgc/sources/`) ; toute la

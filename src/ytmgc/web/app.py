@@ -47,9 +47,13 @@ class Services:
 
 
 def _default_youtube(config: Config):
+    from ytmgc.sources.oauth import load_client
     from ytmgc.sources.ytmusic import YouTubeMusicClient
 
-    return YouTubeMusicClient(config.youtube.auth_file)
+    return YouTubeMusicClient(
+        config.youtube.auth_file,
+        oauth_client=load_client(config.youtube.oauth_client_file),
+    )
 
 
 def _default_discogs(config: Config):
@@ -62,6 +66,17 @@ class ConnectRequest(BaseModel):
     #: En-têtes de requête copiés depuis les outils de développement du
     #: navigateur, tels que `ytmusicapi` les attend.
     headers: str = Field(min_length=1)
+
+
+class OAuthStartRequest(BaseModel):
+    """Identifiant client OAuth créé par l'utilisateur dans Google Cloud."""
+
+    client_id: str = Field(min_length=10)
+    client_secret: str = Field(min_length=5)
+
+
+class OAuthPollRequest(BaseModel):
+    device_code: str = Field(min_length=1)
 
 
 class PreviewRequest(BaseModel):
@@ -149,6 +164,54 @@ def create_app(services: Services) -> FastAPI:
         except Exception as exc:  # noqa: BLE001
             raise HTTPException(400, f"Connexion refusée par YouTube Music : {exc}") from exc
         return {"connected": True}
+
+    @app.get("/api/connect/methods")
+    def connect_methods() -> dict:
+        """Méthodes de connexion disponibles, et laquelle est déjà configurée."""
+        from ytmgc.sources.oauth import load_client
+
+        client = load_client(config.youtube.oauth_client_file)
+        return {
+            "oauth_client_configured": client is not None,
+            "auth_file": config.youtube.auth_file,
+            "connected": Path(config.youtube.auth_file).exists(),
+        }
+
+    @app.post("/api/connect/oauth/start")
+    def oauth_start(request: OAuthStartRequest) -> dict:
+        """Première étape : obtenir de Google un code à saisir.
+
+        C'est la voie utilisable depuis un téléphone seul : aucun outil de
+        développement, juste une URL et un code.
+        """
+        from ytmgc.sources.oauth import OAuthClient, save_client, start_device_flow
+
+        client = OAuthClient(request.client_id.strip(), request.client_secret.strip())
+        try:
+            flow = start_device_flow(client)
+        except Exception as exc:  # noqa: BLE001 - réponse de Google remontée telle quelle
+            raise HTTPException(400, f"Google a refusé la demande de code : {exc}") from exc
+
+        # L'identifiant n'est conservé qu'une fois Google l'ayant accepté : il
+        # servira aussi à rafraîchir le jeton à chaque démarrage.
+        save_client(config.youtube.oauth_client_file, client)
+        return flow
+
+    @app.post("/api/connect/oauth/poll")
+    def oauth_poll(request: OAuthPollRequest) -> dict:
+        """Deuxième étape : vérifier si l'utilisateur a validé, et si oui, stocker le jeton."""
+        from ytmgc.sources.oauth import complete_device_flow, load_client
+
+        client = load_client(config.youtube.oauth_client_file)
+        if client is None:
+            raise HTTPException(400, "Aucun identifiant client OAuth enregistré.")
+        try:
+            state, message = complete_device_flow(
+                client, request.device_code, config.youtube.auth_file
+            )
+        except Exception as exc:  # noqa: BLE001
+            raise HTTPException(400, f"Échec de la vérification : {exc}") from exc
+        return {"state": state, "message": message}
 
     # ------------------------------------------------------------ analyse
 

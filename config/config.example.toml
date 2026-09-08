@@ -7,6 +7,10 @@ path = "data/ytmgc.db"
 [youtube]
 # Fichier d'auth ytmusicapi (browser.json ou oauth.json).
 auth_file = "browser.json"
+# Identifiant client OAuth, pour la connexion depuis un appareil sans outils de
+# développement (téléphone). Écrit par l'interface ; peut aussi venir de
+# YTMGC_OAUTH_CLIENT_ID / YTMGC_OAUTH_CLIENT_SECRET.
+oauth_client_file = "oauth_client.json"
 # Sources à scanner : "library" (titres ajoutés), "liked", "uploads",
 # ou "playlist:<playlistId>" pour cibler une playlist précise.
 sources = ["library", "liked"]

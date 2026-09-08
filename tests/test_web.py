@@ -257,3 +257,44 @@ def test_the_interface_is_served(client):
     response = client.get("/")
     assert response.status_code == 200
     assert "Organiser sa bibliothèque YouTube Music" in response.text
+
+
+# ------------------------------------------------------ connexion OAuth (web)
+
+
+def test_connect_methods_reports_what_is_configured(client):
+    payload = client.get("/api/connect/methods").json()
+    assert payload["oauth_client_configured"] is False
+    assert payload["connected"] is False
+
+
+def test_oauth_start_returns_a_link_and_remembers_the_client(client, monkeypatch):
+    """Aucun appel réseau : seule la mécanique de l'application est testée."""
+    from ytmgc.sources import oauth
+
+    monkeypatch.setattr(
+        oauth, "start_device_flow",
+        lambda _client, credentials=None: {
+            "url": "https://google/device?user_code=ABC", "user_code": "ABC",
+            "device_code": "dev", "interval": 5, "expires_in": 1800,
+            "verification_url": "https://google/device",
+        },
+    )
+
+    response = client.post(
+        "/api/connect/oauth/start",
+        json={"client_id": "123456789.apps.googleusercontent.com", "client_secret": "secret"},
+    )
+    assert response.status_code == 200
+    assert response.json()["user_code"] == "ABC"
+    assert client.get("/api/connect/methods").json()["oauth_client_configured"] is True
+
+
+def test_oauth_start_rejects_incomplete_credentials(client):
+    assert client.post("/api/connect/oauth/start", json={"client_id": "x", "client_secret": "y"}).status_code == 422
+
+
+def test_oauth_poll_without_a_registered_client_is_refused(client):
+    response = client.post("/api/connect/oauth/poll", json={"device_code": "dev"})
+    assert response.status_code == 400
+    assert "identifiant client" in response.json()["detail"].lower()

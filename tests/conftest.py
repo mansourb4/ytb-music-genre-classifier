@@ -11,11 +11,18 @@ from ytmgc.store import Repository, connect
 
 
 @pytest.fixture
-def config() -> Config:
-    """Configuration avec des seuils bas, adaptés à des jeux de test courts."""
+def config(tmp_path) -> Config:
+    """Configuration de test : seuils bas, et tous les chemins isolés.
+
+    Les chemins par défaut sont relatifs au répertoire courant : sans cette
+    isolation, un test écrirait des fichiers d'authentification dans le dépôt.
+    """
     config = Config()
     config.taxonomy.min_tracks_per_style = 2
     config.taxonomy.min_tracks_per_genre = 2
+    config.store.path = str(tmp_path / "ytmgc.db")
+    config.youtube.auth_file = str(tmp_path / "browser.json")
+    config.youtube.oauth_client_file = str(tmp_path / "oauth_client.json")
     config.validate()
     return config
 

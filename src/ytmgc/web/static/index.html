@@ -106,6 +106,16 @@ textarea {
 .danger-zone { border-color: var(--danger); background: var(--danger-soft); }
 .hidden { display: none !important; }
 ol.steps { margin: .4rem 0 .9rem; padding-left: 1.2rem; color: var(--muted); font-size: .86rem; }
+ol.steps li { margin-bottom: .25rem; }
+.tabs { display: flex; gap: .4rem; margin-bottom: 1rem; flex-wrap: wrap; }
+.tab { font-size: .85rem; padding: .35rem .75rem; }
+.tab.selected { background: var(--accent-soft); border-color: var(--accent); color: var(--accent); }
+input[type=text], input:not([type]), input[type=password] {
+  width: 100%; font: inherit; padding: .5rem .7rem; border-radius: 7px;
+  border: 1px solid var(--border); background: var(--bg); color: var(--text);
+}
+.code { font: 600 1.1rem ui-monospace, Menlo, monospace; letter-spacing: .08em; }
+#oauth-url { color: var(--accent); word-break: break-all; }
 </style>
 </head>
 <body>
@@ -126,17 +136,53 @@ ol.steps { margin: .4rem 0 .9rem; padding-left: 1.2rem; color: var(--muted); fon
     <p class="msg">Compte connecté (<code id="auth-file"></code>). <button id="reconnect">Reconnecter</button></p>
   </div>
   <div id="connect-form">
-    <ol class="steps">
-      <li>Ouvre <b>music.youtube.com</b> connecté, puis les outils de développement (F12), onglet Réseau.</li>
-      <li>Recharge la page et sélectionne une requête vers <code>/youtubei/v1/</code>.</li>
-      <li>Copie l'intégralité des en-têtes de la requête et colle-les ci-dessous.</li>
-    </ol>
-    <textarea id="headers" placeholder="accept: */*&#10;cookie: ...&#10;user-agent: ..."></textarea>
-    <div class="row spacer">
-      <button class="primary" id="connect-btn">Connecter</button>
-      <span class="msg" id="connect-msg"></span>
+    <div class="tabs">
+      <button class="tab selected" data-tab="oauth">Depuis un téléphone (OAuth)</button>
+      <button class="tab" data-tab="headers">Depuis un ordinateur (en-têtes)</button>
     </div>
-    <p class="hint spacer">Ces en-têtes contiennent les identifiants de ta session. Ils ne sont écrits que dans le fichier local d'authentification et ne quittent jamais ta machine.</p>
+
+    <div class="tab-panel" id="tab-oauth">
+      <p class="hint">Aucun outil de développement nécessaire : Google affiche un code à valider. Il faut en revanche créer une fois un identifiant client OAuth, ce qui se fait depuis un téléphone.</p>
+      <ol class="steps">
+        <li>Ouvre <b>console.cloud.google.com</b> et crée un projet.</li>
+        <li>Active l'API <b>YouTube Data API v3</b> pour ce projet.</li>
+        <li>Dans <b>Identifiants</b>, crée un ID client OAuth de type <b>Téléviseurs et périphériques à saisie limitée</b>.</li>
+        <li>Recopie l'identifiant et le secret obtenus ci-dessous.</li>
+      </ol>
+      <div class="row">
+        <input id="client-id" placeholder="ID client (…apps.googleusercontent.com)" autocomplete="off">
+      </div>
+      <div class="row spacer">
+        <input id="client-secret" placeholder="Secret client" type="password" autocomplete="off">
+      </div>
+      <div class="row spacer">
+        <button class="primary" id="oauth-btn">Obtenir un code</button>
+        <span class="msg" id="oauth-msg"></span>
+      </div>
+
+      <div id="oauth-code" class="hidden spacer">
+        <p class="msg">Ouvre ce lien, connecte-toi au compte YouTube voulu, puis reviens ici. La connexion se termine toute seule.</p>
+        <p><a id="oauth-url" target="_blank" rel="noopener"></a></p>
+        <p class="msg">Code à saisir si on te le demande : <b id="oauth-user-code" class="code"></b></p>
+        <div class="progress"><i id="oauth-bar" style="width:100%"></i></div>
+        <p class="msg" id="oauth-poll-msg">En attente de ta validation…</p>
+      </div>
+      <p class="hint spacer">L'identifiant client et le jeton restent sur cette machine, dans des fichiers non versionnés.</p>
+    </div>
+
+    <div class="tab-panel hidden" id="tab-headers">
+      <ol class="steps">
+        <li>Ouvre <b>music.youtube.com</b> connecté, puis les outils de développement (F12), onglet Réseau.</li>
+        <li>Recharge la page et sélectionne une requête vers <code>/youtubei/v1/</code>.</li>
+        <li>Copie l'intégralité des en-têtes de la requête et colle-les ci-dessous.</li>
+      </ol>
+      <textarea id="headers" placeholder="accept: */*&#10;cookie: ...&#10;user-agent: ..."></textarea>
+      <div class="row spacer">
+        <button class="primary" id="connect-btn">Connecter</button>
+        <span class="msg" id="connect-msg"></span>
+      </div>
+      <p class="hint spacer">Ces en-têtes contiennent les identifiants de ta session. Ils ne sont écrits que dans le fichier local d'authentification et ne quittent jamais ta machine.</p>
+    </div>
   </div>
 </section>
 
@@ -321,6 +367,58 @@ function renderPreview(data) {
 
 function escapeHtml(text) {
   return text.replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+}
+
+$("modes") && document.querySelectorAll(".tab").forEach((tab) => {
+  tab.addEventListener("click", () => {
+    document.querySelectorAll(".tab").forEach((t) => t.classList.toggle("selected", t === tab));
+    $("tab-oauth").classList.toggle("hidden", tab.dataset.tab !== "oauth");
+    $("tab-headers").classList.toggle("hidden", tab.dataset.tab !== "headers");
+  });
+});
+
+let oauthTimer = null;
+
+$("oauth-btn").addEventListener("click", async () => {
+  $("oauth-msg").textContent = "Demande en cours…";
+  $("oauth-msg").classList.remove("error");
+  try {
+    const flow = await api("/api/connect/oauth/start", {
+      client_id: $("client-id").value.trim(),
+      client_secret: $("client-secret").value.trim(),
+    });
+    $("oauth-msg").textContent = "";
+    $("client-secret").value = "";
+    $("oauth-code").classList.remove("hidden");
+    $("oauth-url").textContent = flow.url;
+    $("oauth-url").href = flow.url;
+    $("oauth-user-code").textContent = flow.user_code;
+    pollOAuth(flow.device_code, Math.max(flow.interval, 3) * 1000);
+  } catch (error) {
+    $("oauth-msg").textContent = error.message;
+    $("oauth-msg").classList.add("error");
+  }
+});
+
+function pollOAuth(deviceCode, intervalMs) {
+  clearInterval(oauthTimer);
+  const tick = async () => {
+    try {
+      const { state, message } = await api("/api/connect/oauth/poll", { device_code: deviceCode });
+      $("oauth-poll-msg").textContent = message;
+      $("oauth-poll-msg").classList.toggle("error", state === "échec");
+      if (state !== "en attente") {
+        clearInterval(oauthTimer);
+        $("oauth-bar").style.width = state === "connecté" ? "100%" : "0";
+        if (state === "connecté") { $("oauth-code").classList.add("hidden"); await refreshStatus(); }
+      }
+    } catch (error) {
+      clearInterval(oauthTimer);
+      $("oauth-poll-msg").textContent = error.message;
+      $("oauth-poll-msg").classList.add("error");
+    }
+  };
+  oauthTimer = setInterval(tick, intervalMs);
 }
 
 $("connect-btn").addEventListener("click", async () => {
