@@ -62,6 +62,7 @@ def diff(
     plans: Iterable[PlaylistPlan],
     remote: dict[str, RemotePlaylist],
     config: Config,
+    untouched: frozenset[str] = frozenset(),
 ) -> list[SyncAction]:
     """Actions à appliquer pour amener `remote` vers `plans`.
 
@@ -115,7 +116,7 @@ def diff(
 
     if config.sync.prune:
         for key, playlist in remote.items():
-            if key not in planned_keys and playlist.video_ids:
+            if key not in planned_keys and key not in untouched and playlist.video_ids:
                 actions.append(
                     SyncAction(
                         Op.REMOVE, key, playlist.title,

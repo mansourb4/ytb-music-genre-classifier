@@ -106,6 +106,11 @@ ul.tracks { list-style: none; margin: 0; padding: 0; }
 .track-text b { font-weight: 500; }
 .track-artist { color: var(--muted); font-size: .84rem; }
 .track-facts { color: var(--muted); font-size: .78rem; }
+.track-text { cursor: pointer; }
+.pl.excluded > summary { opacity: .45; }
+.pl-desc p { margin: 0 0 .7rem; line-height: 1.5; }
+.pl-desc b { font-size: .82rem; text-transform: uppercase; letter-spacing: .04em; }
+.pl-desc { border-left: 2px solid var(--accent-soft); padding-left: .8rem; margin-bottom: .9rem; }
 .pl pre { white-space: pre-wrap; font: 12px/1.5 ui-monospace, Menlo, monospace;
   background: var(--bg); border: 1px solid var(--border); border-radius: 6px; padding: .7rem; margin: 0 0 .6rem; }
 .pl ul { margin: 0; padding-left: 1.1rem; color: var(--muted); font-size: .86rem; }
@@ -138,6 +143,9 @@ ul.tracks { list-style: none; margin: 0; padding: 0; }
 .source .count { color: var(--muted); font-size: .82rem; font-variant-numeric: tabular-nums; }
 .source-group { border-top: 1px solid var(--border); margin-top: .7rem; padding-top: .5rem; }
 .source-group:first-child { border-top: 0; margin-top: 0; padding-top: 0; }
+.total { margin: 0 0 .9rem; font-size: 1.05rem; }
+.total b { font-size: 1.45rem; font-weight: 600; letter-spacing: -.02em; }
+.total span { color: var(--muted); font-size: .85rem; }
 ol.steps { margin: .4rem 0 .9rem; padding-left: 1.2rem; color: var(--muted); font-size: .86rem; }
 ol.steps li { margin-bottom: .25rem; }
 .tabs { display: flex; gap: .4rem; margin-bottom: 1rem; flex-wrap: wrap; }
@@ -274,6 +282,7 @@ select {
 
 <section>
   <h2><span class="step">2</span>Choisir ce qui sera analysé</h2>
+  <p id="sources-total" class="total">—</p>
   <div id="sources-list" class="msg">Chargement des sources…</div>
   <div class="row spacer">
     <button id="sources-all">Tout cocher</button>
@@ -298,6 +307,7 @@ select {
   <p class="hint spacer">Lit les sources choisies, interroge Discogs pour chaque album, puis affiche aussitôt le rangement obtenu. Compte environ une seconde par album au premier passage ; les analyses suivantes sont servies par le cache.</p>
   <div id="preview-summary" class="stats spacer hidden"></div>
   <div id="preview-msg" class="msg spacer"></div>
+  <p id="preview-selection" class="total spacer"></p>
   <div id="preview-list" class="spacer"></div>
 </section>
 
@@ -446,7 +456,8 @@ async function loadModes() {
   });
 }
 
-function trackRow(track) {
+function trackRow(playlistKey, track) {
+  const id = `trk-${playlistKey.replace(/[^\w-]/g, "_")}-${track.video_id}`;
   const cover = track.thumbnail
     ? `<img class="cover" src="${escapeHtml(track.thumbnail)}" alt="" loading="lazy">`
     : `<span class="cover empty"></span>`;
@@ -457,12 +468,14 @@ function trackRow(track) {
     track.styles.length ? escapeHtml(track.styles.join(" · ")) : null,
   ].filter(Boolean);
   return `<li class="track">
+    <input type="checkbox" class="track-check" id="${id}"
+           data-playlist="${escapeHtml(playlistKey)}" value="${escapeHtml(track.video_id)}" checked>
     ${cover}
-    <span class="track-text">
+    <label class="track-text" for="${id}">
       <b>${escapeHtml(track.title)}</b>
       <span class="track-artist">${escapeHtml(track.artist)}</span>
       <span class="track-facts">${facts.join(" — ")}</span>
-    </span>
+    </label>
   </li>`;
 }
 
@@ -472,8 +485,44 @@ function playlistCover(playlist) {
     : `<span class="pl-cover empty"></span>`;
 }
 
+function playlistDescription(pl) {
+  const blocks = [];
+  if (pl.genre) {
+    blocks.push(`<p><b>Genre — ${escapeHtml(pl.genre)}</b><br>${escapeHtml(pl.genre_text || "")}</p>`);
+  }
+  if (pl.style) {
+    blocks.push(`<p><b>Style — ${escapeHtml(pl.style)}</b><br>${escapeHtml(pl.style_text || "")}</p>`);
+  }
+  if (pl.note) blocks.push(`<p class="msg">${escapeHtml(pl.note)}</p>`);
+  return `<div class="pl-desc">${blocks.join("")}</div>`;
+}
+
+let previewByKey = {};
+
+function updatePreviewTotals() {
+  let playlists = 0;
+  let tracks = 0;
+  const total = document.querySelectorAll("details.pl").length;
+
+  document.querySelectorAll("details.pl").forEach((node) => {
+    if (!node.querySelector(".pl-check").checked) return;
+    playlists += 1;
+    // Une playlist repliée n'a pas de cases de titres dans le DOM : ses titres
+    // sont donc tous retenus. Compter les décochés suffit dans les deux cas.
+    const dropped = node.querySelectorAll(".track-check:not(:checked)").length;
+    tracks += (previewByKey[node.dataset.key]?.count || 0) - dropped;
+  });
+
+  $("preview-selection").innerHTML =
+    `<b>${playlists}</b> playlist(s) sur ${total} et <b>${tracks}</b> titre(s) seront appliqués.`;
+  $("apply-btn").disabled = playlists === 0;
+}
+
 function renderPreview(data) {
   const p = data.preview;
+  // Chaque rendu repart de zéro : rien de l'aperçu précédent ne doit subsister.
+  $("preview-list").innerHTML = "";
+  $("preview-selection").innerHTML = "";
   $("preview-summary").classList.remove("hidden");
   $("preview-summary").innerHTML =
     stat(p.playlists.length, "playlists") +
@@ -484,6 +533,7 @@ function renderPreview(data) {
 
   if (!p.playlists.length) {
     $("preview-list").innerHTML = `<p class="msg">Aucune playlist à proposer : lance d'abord l'analyse.</p>`;
+    $("preview-summary").classList.add("hidden");
     $("apply-btn").disabled = true;
     return;
   }
@@ -503,32 +553,58 @@ function renderPreview(data) {
         : `<span class="badge">inchangée</span>`;
     return `<details class="pl" data-key="${escapeHtml(pl.key)}">
       <summary>
+        <input type="checkbox" class="pl-check" value="${escapeHtml(pl.key)}" checked
+               onclick="event.stopPropagation()">
         ${playlistCover(pl)}
         <span class="name">${escapeHtml(pl.name)}</span>
         ${badge}
         <span class="count">${pl.count} titres</span>
       </summary>
       <div class="body">
-        <pre>${escapeHtml(pl.description)}</pre>
+        ${playlistDescription(pl)}
         <ul class="tracks"></ul>
       </div>
     </details>`;
   }).join("");
 
-  // Les titres ne sont construits qu'à l'ouverture : une bibliothèque
-  // fournie représente des milliers de lignes, inutiles tant qu'elles
-  // restent repliées.
-  const byKey = Object.fromEntries(p.playlists.map((pl) => [pl.key, pl]));
+  // Les titres ne sont construits qu'à l'ouverture : une bibliothèque fournie
+  // en représenterait des milliers, inutiles tant qu'ils restent repliés.
+  previewByKey = Object.fromEntries(p.playlists.map((pl) => [pl.key, pl]));
+  const byKey = previewByKey;
   $("preview-list").querySelectorAll("details.pl").forEach((node) => {
     node.addEventListener("toggle", () => {
       const list = node.querySelector("ul.tracks");
       if (!node.open || list.dataset.filled) return;
-      list.innerHTML = byKey[node.dataset.key].tracks.map(trackRow).join("");
+      const key = node.dataset.key;
+      list.innerHTML = byKey[key].tracks.map((track) => trackRow(key, track)).join("");
       list.dataset.filled = "1";
+      updatePreviewTotals();
     });
   });
 
-  $("apply-btn").disabled = false;
+  $("preview-list").addEventListener("change", (event) => {
+    if (!event.target.matches(".pl-check, .track-check")) return;
+    if (event.target.matches(".pl-check")) {
+      // Décocher une playlist décoche ses titres : la sélection reste lisible.
+      const body = event.target.closest("details.pl");
+      body.querySelectorAll(".track-check").forEach((i) => { i.checked = event.target.checked; });
+      body.classList.toggle("excluded", !event.target.checked);
+    }
+    updatePreviewTotals();
+  });
+
+  updatePreviewTotals();
+}
+
+function currentExclusions() {
+  const excluded_playlists = Array.from(document.querySelectorAll(".pl-check:not(:checked)"))
+    .map((input) => input.value);
+  const excluded_tracks = {};
+  document.querySelectorAll(".track-check:not(:checked)").forEach((input) => {
+    const key = input.dataset.playlist;
+    (excluded_tracks[key] = excluded_tracks[key] || []).push(input.value);
+  });
+  return { excluded_playlists, excluded_tracks };
 }
 
 function escapeHtml(text) {
@@ -687,14 +763,40 @@ function selectedSources() {
   return Array.from(document.querySelectorAll("#sources-list input:checked")).map((i) => i.value);
 }
 
+function updateSourceTotal() {
+  const checked = Array.from(document.querySelectorAll("#sources-list input:checked"));
+  if (!checked.length) {
+    $("sources-total").innerHTML = `<b>0</b> titre sélectionné <span>— coche au moins une source</span>`;
+    return;
+  }
+  const counted = checked.filter((i) => i.dataset.count);
+  const total = counted.reduce((sum, i) => sum + Number(i.dataset.count), 0);
+  // La bibliothèque et les likes n'annoncent pas leur taille : elle n'est
+  // connue qu'après lecture. Mieux vaut le dire que d'afficher un total faux.
+  const unknown = checked.length - counted.length;
+  if (!counted.length) {
+    // Annoncer « 0 titre » serait faux : ces sources en contiennent, on ignore
+    // seulement combien avant de les avoir lues.
+    $("sources-total").innerHTML =
+      `<b>${checked.length}</b> source(s) cochée(s) <span>— leur taille n'est connue qu'après lecture</span>`;
+    return;
+  }
+  const suffix = unknown
+    ? `<span>+ ${unknown} source(s) de taille inconnue avant lecture</span>`
+    : "";
+  $("sources-total").innerHTML =
+    `<b>${total}</b> titre(s) dans ${counted.length} playlist(s) cochée(s) ${suffix}`;
+}
+
 function sourceRow(entry, checked) {
   const id = `src-${entry.key.replace(/[^\w-]/g, "_")}`;
   const count = entry.count ? `<span class="count">${entry.count} titres</span>` : "";
   const cover = entry.thumbnail
     ? `<img class="cover" src="${escapeHtml(entry.thumbnail)}" alt="" loading="lazy">`
     : "";
+  const countAttr = entry.count ? ` data-count="${entry.count}"` : "";
   return `<div class="source">
-    <input type="checkbox" id="${id}" value="${entry.key}" ${checked ? "checked" : ""}>
+    <input type="checkbox" id="${id}" value="${entry.key}"${countAttr} ${checked ? "checked" : ""}>
     ${cover}
     <label for="${id}">${escapeHtml(entry.label)}</label>${count}
   </div>`;
@@ -712,6 +814,8 @@ async function loadSources() {
     $("sources-msg").textContent = data.reachable
       ? ""
       : "Compte non joignable : seules les sources générales sont proposées.";
+    $("sources-list").addEventListener("change", updateSourceTotal);
+    updateSourceTotal();
   } catch (error) {
     $("sources-list").textContent = "Connecte d'abord ton compte pour choisir les sources.";
   }
@@ -719,9 +823,11 @@ async function loadSources() {
 
 $("sources-all").addEventListener("click", () => {
   document.querySelectorAll("#sources-list input").forEach((i) => { i.checked = true; });
+  updateSourceTotal();
 });
 $("sources-none").addEventListener("click", () => {
   document.querySelectorAll("#sources-list input").forEach((i) => { i.checked = false; });
+  updateSourceTotal();
 });
 
 $("analyse-btn").addEventListener("click", async () => {
@@ -733,6 +839,11 @@ $("analyse-btn").addEventListener("click", async () => {
   }
   $("analyse-msg").textContent = "";
   $("analyse-msg").classList.remove("error");
+  // L'aperçu précédent ne décrit plus rien dès que l'analyse repart.
+  $("preview-list").innerHTML = "";
+  $("preview-selection").innerHTML = "";
+  $("preview-summary").classList.add("hidden");
+  $("apply-btn").disabled = true;
   setBusy(true);
   try {
     watchJob((await api("/api/analyse", { sources })).id);
@@ -761,7 +872,8 @@ $("apply-btn").addEventListener("click", async () => {
   if (!confirm("Appliquer ces changements à ton compte YouTube Music ?")) return;
   setBusy(true);
   try {
-    watchJob((await api("/api/apply", { sort_mode: sortMode, confirm: true })).id);
+    watchJob((await api("/api/apply",
+      { sort_mode: sortMode, confirm: true, ...currentExclusions() })).id);
   } catch (error) {
     $("apply-msg").textContent = error.message;
     $("apply-msg").classList.add("error");

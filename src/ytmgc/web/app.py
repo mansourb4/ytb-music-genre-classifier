@@ -97,6 +97,10 @@ class ApplyRequest(BaseModel):
     sort_mode: str = DEFAULT_SORT_MODE
     #: Garde-fou explicite : sans lui, l'application refuse d'écrire.
     confirm: bool = False
+    #: Playlists décochées dans l'aperçu : ni créées, ni modifiées, ni vidées.
+    excluded_playlists: list[str] = Field(default_factory=list)
+    #: Titres décochés, par clé de playlist.
+    excluded_tracks: dict[str, list[str]] = Field(default_factory=dict)
 
 
 class PurgeRequest(BaseModel):
@@ -331,6 +335,10 @@ def create_app(services: Services) -> FastAPI:
             raise HTTPException(400, str(exc)) from exc
 
         def work(job: Job) -> dict:
+            # Chaque analyse repart de zéro : sans cela, l'aperçu cumulerait les
+            # sources des analyses précédentes, alors qu'il doit refléter la
+            # sélection en cours.
+            repository.clear_library()
             job.message = f"Lecture de {len(sources)} source(s) YouTube Music…"
             tracks: list[Track] = services.youtube_factory(config).scan(sources)
             repository.upsert_tracks(tracks)
@@ -380,12 +388,21 @@ def create_app(services: Services) -> FastAPI:
         scoped = _scoped(request.sort_mode)
 
         def work(job: Job) -> dict:
+            from ytmgc.preview import filter_plans
+            from ytmgc.sync import diff, managed_by_key
+
             client = services.youtube_factory(config)
             job.message = "Lecture des playlists existantes…"
-            _, plans, actions = build_preview(
+            _, plans, _ = build_preview(
                 repository, scoped, sort_mode=request.sort_mode,
                 remote=client.list_playlists(),
             )
+
+            # Le diff est refait après filtrage : les playlists écartées sont
+            # laissées intactes, décocher signifiant « n'y touche pas ».
+            plans = filter_plans(plans, request.excluded_playlists, request.excluded_tracks)
+            remote = managed_by_key(client.list_playlists(), config.sync.marker)
+            actions = diff(plans, remote, scoped, untouched=frozenset(request.excluded_playlists))
             job.total = len(actions)
             if not actions:
                 job.message = "Le compte est déjà à jour."

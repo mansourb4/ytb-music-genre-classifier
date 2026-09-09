@@ -74,6 +74,18 @@ class Repository:
         return len(rows)
 
     @_locked
+    def clear_library(self) -> None:
+        """Oublie les titres scannés et leurs classifications.
+
+        Appelé avant chaque analyse : l'aperçu doit refléter exactement les
+        sources cochées, et non se cumuler avec les analyses précédentes. Le
+        cache Discogs n'est pas touché — c'est lui qui rend une réanalyse
+        quasi immédiate.
+        """
+        self._db.execute("DELETE FROM classifications")
+        self._db.execute("DELETE FROM tracks")
+        self._db.commit()
+
     def all_tracks(self) -> list[Track]:
         cursor = self._db.execute("SELECT * FROM tracks ORDER BY video_id")
         return [self._row_to_track(row) for row in cursor]

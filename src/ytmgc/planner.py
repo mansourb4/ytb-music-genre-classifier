@@ -25,6 +25,20 @@ from ytmgc.taxonomy.rules import GenreStyle, Taxonomy, playlist_name
 _FORBIDDEN = str.maketrans({"<": "(", ">": ")"})
 
 
+#: Pourquoi une playlist de regroupement existe. Le même texte sert dans la
+#: description écrite sur YouTube Music et dans l'aperçu.
+NOTES = {
+    "genre": (
+        "Cette playlist rassemble les titres du genre dont le style est trop "
+        "peu représenté dans la bibliothèque pour justifier sa propre playlist."
+    ),
+    "fallback": (
+        "Cette playlist rassemble les titres des genres trop peu représentés "
+        "dans la bibliothèque pour justifier leur propre playlist."
+    ),
+}
+
+
 def build_description(
     marker: str,
     key: str,
@@ -58,17 +72,10 @@ def build_description(
             lines.append(f"STYLE — {item.style}")
             lines.append(style_text or "Style Discogs (définition non encore renseignée).")
 
-    if kind == "genre":
-        lines.append("")
-        lines.append(
-            "Cette playlist rassemble les titres du genre dont le style est trop "
-            "peu représenté dans la bibliothèque pour justifier sa propre playlist."
-        )
-    elif kind == "fallback":
-        lines.append(
-            "Cette playlist rassemble les titres des genres trop peu représentés "
-            "dans la bibliothèque pour justifier leur propre playlist."
-        )
+    if note := NOTES.get(kind):
+        if kind == "genre":
+            lines.append("")
+        lines.append(note)
 
     lines.append("")
     lines.append(
@@ -193,6 +200,8 @@ def plan_playlists(
                 ),
                 video_ids=tuple(video_ids),
                 kind=kind,
+                genre=described.genre,
+                style=described.style,
             )
         )
 

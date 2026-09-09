@@ -91,6 +91,9 @@ class PlaylistPlan:
     video_ids: tuple[str, ...]
     #: "style", "genre" ou "fallback".
     kind: str = "style"
+    #: Couple retenu, pour présenter la playlist autrement qu'en texte brut.
+    genre: str | None = None
+    style: str | None = None
 
 
 @dataclass(frozen=True, slots=True)

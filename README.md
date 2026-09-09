@@ -190,9 +190,17 @@ bandeau fixe indique l'avancement, le titre en cours et une estimation du temps
 restant.
 
 **L'aperçu s'affiche de lui-même à la fin de l'analyse**, dans la même section.
-Chaque playlist proposée y porte sa pochette, sa description complète, et se
-déplie sur la liste de ses titres — pochette, album, année, genre et style pour
-chacun. **Rien n'est écrit sur le
+Chaque playlist proposée y porte sa pochette, la définition de son genre et de
+son style, et se déplie sur la liste de ses titres — pochette, album, année,
+genre et style pour chacun.
+
+**Tout y est décochable** : une playlist entière, ou un titre à l'intérieur.
+Seul ce qui reste coché est appliqué, et une playlist décochée qui existe déjà
+sur le compte est laissée intacte plutôt que vidée.
+
+Chaque analyse repart de zéro : l'aperçu reflète exactement les sources
+cochées, sans se cumuler avec les analyses précédentes. Le cache Discogs, lui,
+est conservé — c'est ce qui rend une réanalyse quasi immédiate. **Rien n'est écrit sur le
 compte tant que la confirmation n'a pas été donnée**, et l'aperçu montre
 exactement ce qui sera créé : nom de chaque playlist, nombre de titres,
 description complète et détail de chaque morceau.
@@ -276,7 +284,7 @@ sans aucune écriture ni appel réseau.
 ## Développement
 
 ```bash
-python -m pytest        # 239 tests, aucun appel réseau
+python -m pytest        # 249 tests, aucun appel réseau
 ```
 
 Les API externes sont derrière des adaptateurs (`src/ytmgc/sources/`) ; toute la

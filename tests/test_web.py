@@ -399,3 +399,91 @@ def test_omitting_the_field_still_uses_the_configured_sources(client):
 def test_a_job_reports_its_elapsed_time(client):
     job = analyse(client)
     assert job["elapsed_s"] >= 0
+
+
+# --------------------------------------------------- sélection dans l'aperçu
+
+
+def previewed(client, sort_mode="detaille"):
+    return client.post("/api/preview", json={"sort_mode": sort_mode}).json()["preview"]["playlists"]
+
+
+def test_each_analysis_starts_from_a_clean_slate(client):
+    """L'aperçu doit refléter les sources cochées, pas cumuler les analyses."""
+    analyse(client)
+    assert client.get("/api/status").json()["tracks"] == 10
+
+    client.youtube.library = [Track("z1", "Seul", ("Nirvana",), "Nevermind")]
+    analyse(client)
+
+    assert client.get("/api/status").json()["tracks"] == 1
+
+
+def test_an_excluded_playlist_is_never_created(client):
+    analyse(client)
+    keys = [p["key"] for p in previewed(client)]
+    excluded = keys[0]
+
+    wait(client, client.post("/api/apply", json={
+        "sort_mode": "detaille", "confirm": True, "excluded_playlists": [excluded],
+    }))
+
+    created = {p.title for p in client.youtube.list_playlists()}
+    assert len(created) == len(keys) - 1
+
+
+def test_an_excluded_playlist_that_exists_is_left_untouched(client):
+    """Décocher signifie « n'y touche pas », pas « efface-la »."""
+    analyse(client)
+    wait(client, client.post("/api/apply", json={"sort_mode": "detaille", "confirm": True}))
+    before = {p.playlist_id: p.video_ids for p in client.youtube.list_playlists()}
+    key = previewed(client)[0]["key"]
+
+    # Une seconde application, cette playlist écartée et la bibliothèque vidée.
+    client.youtube.library = []
+    analyse(client)
+    wait(client, client.post("/api/apply", json={
+        "sort_mode": "detaille", "confirm": True, "excluded_playlists": [key],
+    }))
+
+    after = {p.playlist_id: p.video_ids for p in client.youtube.list_playlists()}
+    untouched = next(p for p in client.youtube.list_playlists() if key.split("/")[-1] in p.description)
+    assert after[untouched.playlist_id] == before[untouched.playlist_id]
+
+
+def test_excluded_tracks_are_left_out_of_the_playlist(client):
+    analyse(client)
+    target = previewed(client)[0]
+    dropped = target["tracks"][0]["video_id"]
+
+    wait(client, client.post("/api/apply", json={
+        "sort_mode": "detaille", "confirm": True,
+        "excluded_tracks": {target["key"]: [dropped]},
+    }))
+
+    created = next(p for p in client.youtube.list_playlists() if p.title == target["name"])
+    assert dropped not in created.video_ids
+    assert len(created.video_ids) == target["count"] - 1
+
+
+def test_excluding_every_track_drops_the_playlist(client):
+    analyse(client)
+    target = previewed(client)[0]
+
+    wait(client, client.post("/api/apply", json={
+        "sort_mode": "detaille", "confirm": True,
+        "excluded_tracks": {target["key"]: [t["video_id"] for t in target["tracks"]]},
+    }))
+
+    assert target["name"] not in {p.title for p in client.youtube.list_playlists()}
+
+
+def test_preview_exposes_the_description_in_parts(client):
+    """L'interface doit pouvoir présenter la description autrement qu'en bloc brut."""
+    analyse(client)
+    grunge = next(p for p in previewed(client) if p["name"] == "Rock — Grunge")
+
+    assert grunge["genre"] == "Rock" and grunge["style"] == "Grunge"
+    assert "rock'n'roll" in grunge["genre_text"]
+    assert "Seattle" in grunge["style_text"]
+    assert grunge["note"] is None

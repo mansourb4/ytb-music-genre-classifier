@@ -8,7 +8,8 @@ l'interface web.
 
 from __future__ import annotations
 
-from dataclasses import asdict, dataclass, field
+from dataclasses import asdict, dataclass, field, replace
+from typing import Iterable, Mapping
 
 from ytmgc.config import Config
 from ytmgc.models import (
@@ -20,7 +21,7 @@ from ytmgc.models import (
     SyncAction,
     Track,
 )
-from ytmgc.planner import plan_playlists
+from ytmgc.planner import NOTES, plan_playlists
 from ytmgc.store import Repository
 from ytmgc.sync import diff, managed_by_key
 from ytmgc.taxonomy import load_taxonomy
@@ -53,6 +54,12 @@ class PlaylistPreview:
     #: Pochette du premier titre : les playlists prévues n'existent pas encore,
     #: elles n'ont donc pas d'image propre.
     image: str | None = None
+    #: Description décomposée, pour un affichage lisible plutôt qu'un bloc brut.
+    genre: str | None = None
+    style: str | None = None
+    genre_text: str | None = None
+    style_text: str | None = None
+    note: str | None = None
     tracks: list[TrackPreview] = field(default_factory=list)
 
 
@@ -75,6 +82,31 @@ class LibraryPreview:
 
     def to_dict(self) -> dict:
         return asdict(self)
+
+
+def filter_plans(
+    plans: list[PlaylistPlan],
+    excluded_playlists: Iterable[str] = (),
+    excluded_tracks: Mapping[str, Iterable[str]] | None = None,
+) -> list[PlaylistPlan]:
+    """Retire du plan ce que l'utilisateur a décoché dans l'aperçu.
+
+    Une playlist vidée de tous ses titres disparaît du plan : la créer vide
+    n'aurait aucun sens.
+    """
+    excluded = set(excluded_playlists)
+    per_playlist = {key: set(values) for key, values in (excluded_tracks or {}).items()}
+
+    kept: list[PlaylistPlan] = []
+    for plan in plans:
+        if plan.key in excluded:
+            continue
+        dropped = per_playlist.get(plan.key, set())
+        video_ids = tuple(v for v in plan.video_ids if v not in dropped)
+        if not video_ids:
+            continue
+        kept.append(plan if video_ids == plan.video_ids else replace(plan, video_ids=video_ids))
+    return kept
 
 
 def _detail(
@@ -128,7 +160,8 @@ def build_preview(
     tracks = {track.video_id: track for track in repository.all_tracks()}
     classifications = repository.classifications()
     by_video = {item.video_id: item for item in classifications}
-    plans = plan_playlists(classifications, load_taxonomy(), config)
+    taxonomy = load_taxonomy()
+    plans = plan_playlists(classifications, taxonomy, config)
 
     existing = managed_by_key(remote or [], config.sync.marker)
     actions = diff(plans, existing, config)
@@ -166,6 +199,11 @@ def build_preview(
                 added=added,
                 removed=removed,
                 image=_image(plan.video_ids, tracks),
+                genre=plan.genre,
+                style=plan.style,
+                genre_text=taxonomy.describe_genre(plan.genre) if plan.genre else None,
+                style_text=taxonomy.describe_style(plan.style) if plan.style else None,
+                note=NOTES.get(plan.kind),
                 tracks=_detail(plan.video_ids, tracks, by_video),
             )
         )

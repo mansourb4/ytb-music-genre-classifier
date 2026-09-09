@@ -247,6 +247,29 @@ l'année de la release appariée. Les bases déjà remplies sont complétées pa
 `ALTER TABLE` au démarrage, sans perdre les heures d'analyse qu'elles
 contiennent.
 
+### 14. L'aperçu est un plan négociable, pas un compte rendu
+
+Ce que montre l'aperçu peut être amendé avant écriture : chaque playlist et
+chaque titre porte une case. La sélection est transmise en **exclusions**
+(`excluded_playlists`, `excluded_tracks`), appliquées au plan par
+`preview.filter_plans` ; une playlist vidée de tous ses titres disparaît du
+plan, la créer vide n'ayant aucun sens.
+
+Une playlist décochée qui existe déjà sur le compte est **laissée intacte**, ni
+mise à jour ni vidée : `diff` reçoit pour cela un ensemble `untouched` qui
+l'exclut aussi du balayage de nettoyage. Décocher signifie « n'y touche pas »,
+pas « efface-la » — l'interprétation inverse détruirait du travail sur un
+simple geste de tri.
+
+L'analyse, elle, repart de zéro (`Repository.clear_library`) : l'aperçu doit
+décrire les sources cochées, non l'union de toutes les analyses passées. Le
+cache Discogs survit à cette remise à zéro, ce qui rend l'opération peu
+coûteuse.
+
+Enfin la description n'est plus affichée telle qu'elle sera écrite, mais
+décomposée — genre, style, définitions, raison d'être d'une playlist de
+regroupement — pour être lue plutôt que déchiffrée.
+
 ## Contraintes des API
 
 | Contrainte | Conséquence |
@@ -261,10 +284,10 @@ contiennent.
 
 ## Tests
 
-239 tests, aucun appel réseau, y compris l'API web complète (aperçu,
+249 tests, aucun appel réseau, y compris l'API web complète (aperçu,
 application, annulation), son contrôle d'accès et les quatre voies de connexion.
 
-Dix-sept d'entre eux chargent l'interface dans un vrai navigateur (`tests/test_ui.py`).
+Vingt et un d'entre eux chargent l'interface dans un vrai navigateur (`tests/test_ui.py`).
 Le câblage du DOM échappe aux tests Python : deux défauts d'onglets sont passés
 au travers de la suite avant d'être vus à l'écran. Ces tests sont ignorés
 lorsque Playwright ou son navigateur sont absents, pour que la suite reste

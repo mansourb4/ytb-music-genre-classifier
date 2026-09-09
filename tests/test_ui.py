@@ -97,7 +97,11 @@ window.__preview = {
     playlists: [{
       key: "rock/grunge", name: "Rock — Grunge", kind: "style", count: 2,
       change: "création", added: 2, removed: 0,
-      description: "[ytmgc] key=rock/grunge\\nGENRE — Rock",
+      description: "[ytmgc] key=rock/grunge",
+      genre: "Rock", style: "Grunge",
+      genre_text: "Issu du rock'n'roll des années 1950.",
+      style_text: "Né à Seattle à la fin des années 1980.",
+      note: null,
       image: "data:image/gif;base64,R0lGODlhAQABAAAAACw=",
       tracks: [
         {video_id: "g1", title: "Come As You Are", artist: "Nirvana",
@@ -255,7 +259,11 @@ def test_preview_rows_expand_to_show_track_details(page):
     facts = page.locator("li.track .track-facts").first.text_content()
     for expected in ["Nevermind", "1991", "Rock", "Grunge"]:
         assert expected in facts
-    assert "GENRE — Rock" in row.locator("pre").text_content()
+    # La description est présentée en texte mis en forme, non plus en bloc brut.
+    description = row.locator(".pl-desc").text_content()
+    assert "Genre — Rock" in description and "rock'n'roll" in description
+    assert "Style — Grunge" in description and "Seattle" in description
+    assert row.locator("pre").count() == 0
 
 
 def test_a_track_without_artwork_keeps_its_row_aligned(page):
@@ -263,3 +271,52 @@ def test_a_track_without_artwork_keeps_its_row_aligned(page):
     page.locator("details.pl").first.click()
     page.wait_for_selector("li.track")
     assert page.locator("li.track .cover.empty").count() == 1
+
+
+def test_playlists_and_tracks_can_be_unchecked(page):
+    """La sélection de l'aperçu commande ce qui sera réellement appliqué."""
+    render_sample_preview(page)
+    row = page.locator("details.pl").first
+    row.click()
+    page.wait_for_selector("li.track")
+
+    assert page.evaluate("currentExclusions()") == {
+        "excluded_playlists": [], "excluded_tracks": {}
+    }
+
+    page.locator("li.track .track-check").first.uncheck()
+    assert page.evaluate("currentExclusions()") == {
+        "excluded_playlists": [], "excluded_tracks": {"rock/grunge": ["g1"]}
+    }
+
+
+def test_unchecking_a_playlist_unchecks_its_tracks(page):
+    render_sample_preview(page)
+    row = page.locator("details.pl").first
+    row.click()
+    page.wait_for_selector("li.track")
+
+    page.locator(".pl-check").first.uncheck()
+
+    exclusions = page.evaluate("currentExclusions()")
+    assert exclusions["excluded_playlists"] == ["rock/grunge"]
+    assert sorted(exclusions["excluded_tracks"]["rock/grunge"]) == ["g1", "g2"]
+    assert page.locator("#apply-btn").is_disabled()
+
+
+def test_the_selection_total_is_shown(page):
+    render_sample_preview(page)
+    page.locator("details.pl").first.click()
+    page.wait_for_selector("li.track")
+    assert "2" in page.locator("#preview-selection").text_content()
+
+    page.locator("li.track .track-check").first.uncheck()
+    assert "1" in page.locator("#preview-selection").text_content()
+
+
+def test_the_selected_source_total_is_shown(page):
+    total = page.locator("#sources-total")
+    assert "source" in total.text_content()
+
+    page.click("#sources-none")
+    assert "0" in total.text_content()
