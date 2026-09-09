@@ -10,6 +10,14 @@ from typing import Any
 
 DEFAULT_CONFIG_PATH = Path("config/config.toml")
 
+#: Marqueur des premières versions, encore inscrit dans les fichiers de
+#: configuration copiés à l'époque. Il reste reconnu à la lecture des playlists,
+#: mais ne doit plus être écrit dans les descriptions.
+LEGACY_MARKER = "[ytmgc]"
+
+#: Marqueur écrit aujourd'hui : un symbole discret en fin de description.
+DEFAULT_MARKER = "✱"
+
 
 @dataclass(slots=True)
 class StoreConfig:
@@ -79,7 +87,7 @@ class WebConfig:
 
 @dataclass(slots=True)
 class SyncConfig:
-    marker: str = "✱"
+    marker: str = DEFAULT_MARKER
     prune: bool = True
     batch_size: int = 50
 
@@ -134,6 +142,12 @@ def load_config(path: Path | None = None, env: dict[str, str] | None = None) -> 
             if section is None or not is_dataclass(section):
                 raise ValueError(f"Section de configuration inconnue : [{name}]")
             _apply_section(section, values, name)
+
+    # Une configuration écrite avant que la description ne devienne lisible
+    # continuerait sinon d'inscrire l'ancien en-tête technique, alors que
+    # l'utilisateur n'a aucune raison de savoir qu'il doit éditer ce fichier.
+    if config.sync.marker == LEGACY_MARKER:
+        config.sync.marker = DEFAULT_MARKER
 
     config.discogs.token = env.get("DISCOGS_TOKEN", "")
     config.web.access_token = env.get("YTMGC_ACCESS_TOKEN", "")

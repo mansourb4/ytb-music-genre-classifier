@@ -47,3 +47,20 @@ def test_validation_rejects_inconsistent_settings(mutate, message):
     mutate(config)
     with pytest.raises(ValueError, match=message):
         config.validate()
+
+
+def test_a_legacy_marker_is_migrated_on_load(tmp_path):
+    """Une configuration d'avant continuerait sinon d'écrire l'ancien en-tête,
+    alors que rien n'indique à l'utilisateur qu'il doit éditer ce fichier."""
+    from ytmgc.config import DEFAULT_MARKER
+
+    path = tmp_path / "config.toml"
+    path.write_text('[sync]\nmarker = "[ytmgc]"\n', encoding="utf-8")
+
+    assert load_config(path, env={}).sync.marker == DEFAULT_MARKER
+
+
+def test_a_chosen_marker_is_left_alone(tmp_path):
+    path = tmp_path / "config.toml"
+    path.write_text('[sync]\nmarker = "@@"\n', encoding="utf-8")
+    assert load_config(path, env={}).sync.marker == "@@"

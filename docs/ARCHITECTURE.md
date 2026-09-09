@@ -292,7 +292,7 @@ regroupement — pour être lue plutôt que déchiffrée.
 
 ## Tests
 
-259 tests, aucun appel réseau, y compris l'API web complète (aperçu,
+261 tests, aucun appel réseau, y compris l'API web complète (aperçu,
 application, annulation), son contrôle d'accès et les quatre voies de connexion.
 
 Vingt et un d'entre eux chargent l'interface dans un vrai navigateur (`tests/test_ui.py`).

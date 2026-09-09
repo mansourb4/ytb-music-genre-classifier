@@ -48,7 +48,8 @@ neuvième empruntés au jazz, nappes profondes et voix feutrées.
 
 Le `✱` final est la seule marque technique : c'est à lui que l'outil reconnaît
 ses propres playlists. Il est configurable (`sync.marker`) — choisis un signe
-que tu n'emploies pas toi-même.
+que tu n'emploies pas toi-même. Un `config.toml` écrit avant ce changement,
+portant encore `[ytmgc]`, est migré au chargement : rien à éditer à la main.
 
 Ces définitions vivent dans `src/ytmgc/taxonomy/descriptions.toml` : 15 genres
 et près de 200 styles. Un style non encore décrit reste parfaitement utilisable,
@@ -285,7 +286,7 @@ sans aucune écriture ni appel réseau.
 ## Développement
 
 ```bash
-python -m pytest        # 259 tests, aucun appel réseau
+python -m pytest        # 261 tests, aucun appel réseau
 ```
 
 Les API externes sont derrière des adaptateurs (`src/ytmgc/sources/`) ; toute la

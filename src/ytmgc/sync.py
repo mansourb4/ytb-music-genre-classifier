@@ -12,14 +12,13 @@ from __future__ import annotations
 import re
 from typing import Iterable, Mapping, Protocol
 
-from ytmgc.config import Config
+from ytmgc.config import LEGACY_MARKER, Config
 from ytmgc.models import Op, PlaylistPlan, RemotePlaylist, SyncAction
 
 _KEY_RE = re.compile(r"key=([\w\-/]+)")
 
 #: Ancien marqueur, encore présent sur les playlists créées avant le passage à
 #: une description lisible. Il reste reconnu pour ne pas les orpheliner.
-LEGACY_MARKER = "[ytmgc]"
 
 
 class PlaylistClient(Protocol):
