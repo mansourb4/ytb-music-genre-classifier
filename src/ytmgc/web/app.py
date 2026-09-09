@@ -294,7 +294,12 @@ def create_app(services: Services) -> FastAPI:
                     "reachable": False}
 
         playlists = [
-            {"key": f"playlist:{item['playlist_id']}", "label": item["title"], "count": item.get("count")}
+            {
+                "key": f"playlist:{item['playlist_id']}",
+                "label": item["title"],
+                "count": item.get("count"),
+                "thumbnail": item.get("thumbnail"),
+            }
             for item in summaries
             if item["playlist_id"] not in managed
         ]

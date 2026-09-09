@@ -31,6 +31,8 @@ class Track:
     duration_s: int | None = None
     #: "library", "liked", "uploads" ou "playlist:<id>".
     source: str = "library"
+    #: Pochette fournie par YouTube Music, affichée telle quelle dans l'aperçu.
+    thumbnail: str | None = None
 
     @property
     def artist(self) -> str:
@@ -74,6 +76,8 @@ class Classification:
     score: float = 0.0
     genres: tuple[str, ...] = ()
     styles: tuple[str, ...] = ()
+    #: Année de la release Discogs appariée.
+    year: int | None = None
 
 
 @dataclass(frozen=True, slots=True)

@@ -108,7 +108,7 @@ def test_a_second_analysis_reuses_the_cache(client):
 # ------------------------------------------------------------------- aperçu
 
 
-def test_preview_lists_playlists_with_descriptions_and_samples(client):
+def test_preview_lists_playlists_with_descriptions_and_tracks(client):
     analyse(client)
     payload = client.post("/api/preview", json={"sort_mode": "detaille"}).json()
     playlists = payload["preview"]["playlists"]
@@ -118,7 +118,11 @@ def test_preview_lists_playlists_with_descriptions_and_samples(client):
     }
     grunge = next(p for p in playlists if p["name"] == "Rock — Grunge")
     assert "GENRE — Rock" in grunge["description"]
-    assert grunge["sample"] and grunge["change"] == "création"
+    assert grunge["change"] == "création"
+    assert len(grunge["tracks"]) == grunge["count"]
+    assert {"title", "artist", "album", "thumbnail", "genres", "styles", "year"} <= set(
+        grunge["tracks"][0]
+    )
     assert payload["actions"]
 
 

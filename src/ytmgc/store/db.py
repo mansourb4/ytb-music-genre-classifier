@@ -11,7 +11,7 @@ from __future__ import annotations
 import sqlite3
 from pathlib import Path
 
-SCHEMA_VERSION = 1
+SCHEMA_VERSION = 2
 
 SCHEMA = """
 CREATE TABLE IF NOT EXISTS tracks (
@@ -21,6 +21,7 @@ CREATE TABLE IF NOT EXISTS tracks (
     album       TEXT,
     duration_s  INTEGER,
     source      TEXT NOT NULL,
+    thumbnail   TEXT,
     scanned_at  TEXT NOT NULL DEFAULT (datetime('now'))
 );
 
@@ -39,6 +40,7 @@ CREATE TABLE IF NOT EXISTS classifications (
     score         REAL NOT NULL DEFAULT 0,
     genres        TEXT NOT NULL DEFAULT '',
     styles        TEXT NOT NULL DEFAULT '',
+    year          INTEGER,
     classified_at TEXT NOT NULL DEFAULT (datetime('now'))
 );
 
@@ -77,8 +79,22 @@ def connect(path: str | Path) -> sqlite3.Connection:
     return connection
 
 
+#: Colonnes ajoutées après la version 1. Les bases existantes portent déjà des
+#: heures d'analyse : elles sont complétées sur place plutôt que recréées.
+ADDED_COLUMNS = (
+    ("tracks", "thumbnail", "TEXT"),
+    ("classifications", "year", "INTEGER"),
+)
+
+
 def migrate(connection: sqlite3.Connection) -> None:
     connection.executescript(SCHEMA)
+
+    for table, column, kind in ADDED_COLUMNS:
+        existing = {row[1] for row in connection.execute(f"PRAGMA table_info({table})")}
+        if column not in existing:
+            connection.execute(f"ALTER TABLE {table} ADD COLUMN {column} {kind}")
+
     connection.execute(
         "INSERT INTO meta(key, value) VALUES('schema_version', ?) "
         "ON CONFLICT(key) DO UPDATE SET value = excluded.value",

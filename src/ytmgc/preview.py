@@ -11,14 +11,32 @@ from __future__ import annotations
 from dataclasses import asdict, dataclass, field
 
 from ytmgc.config import Config
-from ytmgc.models import MatchStatus, Op, PlaylistPlan, RemotePlaylist, SyncAction, Track
+from ytmgc.models import (
+    Classification,
+    MatchStatus,
+    Op,
+    PlaylistPlan,
+    RemotePlaylist,
+    SyncAction,
+    Track,
+)
 from ytmgc.planner import plan_playlists
 from ytmgc.store import Repository
 from ytmgc.sync import diff, managed_by_key
 from ytmgc.taxonomy import load_taxonomy
 
-#: Nombre de titres montrés en exemple par playlist.
-SAMPLE_SIZE = 6
+@dataclass(frozen=True, slots=True)
+class TrackPreview:
+    """Un titre tel qu'affiché dans le détail d'une playlist."""
+
+    video_id: str
+    title: str
+    artist: str
+    album: str | None
+    thumbnail: str | None
+    genres: list[str]
+    styles: list[str]
+    year: int | None
 
 
 @dataclass(frozen=True, slots=True)
@@ -32,7 +50,10 @@ class PlaylistPreview:
     change: str
     added: int
     removed: int
-    sample: list[str] = field(default_factory=list)
+    #: Pochette du premier titre : les playlists prévues n'existent pas encore,
+    #: elles n'ont donc pas d'image propre.
+    image: str | None = None
+    tracks: list[TrackPreview] = field(default_factory=list)
 
 
 @dataclass(frozen=True, slots=True)
@@ -56,13 +77,39 @@ class LibraryPreview:
         return asdict(self)
 
 
-def _sample(video_ids: tuple[str, ...], tracks: dict[str, Track]) -> list[str]:
-    labels = []
-    for video_id in video_ids[:SAMPLE_SIZE]:
+def _detail(
+    video_ids: tuple[str, ...],
+    tracks: dict[str, Track],
+    classifications: dict[str, Classification],
+) -> list[TrackPreview]:
+    """Détail de chaque titre d'une playlist, taxonomie Discogs comprise."""
+    detailed: list[TrackPreview] = []
+    for video_id in video_ids:
         track = tracks.get(video_id)
-        if track is not None:
-            labels.append(track.label())
-    return labels
+        if track is None:
+            continue
+        classification = classifications.get(video_id)
+        detailed.append(
+            TrackPreview(
+                video_id=video_id,
+                title=track.title,
+                artist=", ".join(track.artists),
+                album=track.album,
+                thumbnail=track.thumbnail,
+                genres=list(classification.genres) if classification else [],
+                styles=list(classification.styles) if classification else [],
+                year=classification.year if classification else None,
+            )
+        )
+    return detailed
+
+
+def _image(video_ids: tuple[str, ...], tracks: dict[str, Track]) -> str | None:
+    for video_id in video_ids:
+        track = tracks.get(video_id)
+        if track is not None and track.thumbnail:
+            return track.thumbnail
+    return None
 
 
 def build_preview(
@@ -80,6 +127,7 @@ def build_preview(
     """
     tracks = {track.video_id: track for track in repository.all_tracks()}
     classifications = repository.classifications()
+    by_video = {item.video_id: item for item in classifications}
     plans = plan_playlists(classifications, load_taxonomy(), config)
 
     existing = managed_by_key(remote or [], config.sync.marker)
@@ -117,7 +165,8 @@ def build_preview(
                 change=change,
                 added=added,
                 removed=removed,
-                sample=_sample(plan.video_ids, tracks),
+                image=_image(plan.video_ids, tracks),
+                tracks=_detail(plan.video_ids, tracks, by_video),
             )
         )
 

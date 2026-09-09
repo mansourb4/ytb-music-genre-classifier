@@ -88,6 +88,36 @@ def page(server):
         browser.close()
 
 
+#: Aperçu d'exemple injecté dans la page : les tests d'interface portent sur le
+#: rendu, pas sur le calcul, déjà couvert côté Python.
+SAMPLE_PREVIEW = """
+window.__preview = {
+  remote_known: true,
+  preview: {
+    playlists: [{
+      key: "rock/grunge", name: "Rock — Grunge", kind: "style", count: 2,
+      change: "création", added: 2, removed: 0,
+      description: "[ytmgc] key=rock/grunge\\nGENRE — Rock",
+      image: "data:image/gif;base64,R0lGODlhAQABAAAAACw=",
+      tracks: [
+        {video_id: "g1", title: "Come As You Are", artist: "Nirvana",
+         album: "Nevermind", thumbnail: "data:image/gif;base64,R0lGODlhAQABAAAAACw=",
+         genres: ["Rock"], styles: ["Grunge"], year: 1991},
+        {video_id: "g2", title: "Lithium", artist: "Nirvana", album: "Nevermind",
+         thumbnail: null, genres: ["Rock"], styles: ["Grunge"], year: 1991},
+      ],
+    }],
+    obsolete: [], created: 1, updated: 0, unchanged: 0, assignments: 2,
+  },
+};
+renderPreview(window.__preview);
+"""
+
+
+def render_sample_preview(page):
+    page.evaluate(f"() => {{ {SAMPLE_PREVIEW} }}")
+
+
 PANELS = ["tab-session", "tab-login", "tab-oauth", "tab-headers"]
 
 
@@ -192,3 +222,44 @@ def test_analysis_without_a_selected_source_is_refused_client_side(page):
     }""")
     page.click("#analyse-btn")
     assert "étape 2" in page.locator("#analyse-msg").text_content()
+
+
+def test_the_sort_type_comes_before_the_analysis(page):
+    """Le tri conditionne l'aperçu produit par l'analyse : le choisir après
+    obligeait à revenir en arrière."""
+    headings = page.locator("section h2").all_text_contents()
+    order = [h for h in headings if "TRI" in h.upper() or "ANALYSER" in h.upper()]
+    assert "tri" in order[0].lower()
+    assert "analyser" in order[1].lower()
+
+
+def test_the_preview_lives_in_the_analysis_section(page):
+    """L'aperçu n'a plus de section propre : il conclut l'analyse."""
+    section = page.locator("section", has=page.locator("#analyse-btn"))
+    assert section.locator("#preview-list").count() == 1
+    assert section.locator("#preview-summary").count() == 1
+
+
+def test_preview_rows_expand_to_show_track_details(page):
+    """Le détail n'est construit qu'à l'ouverture : replié, il représenterait
+    des milliers de lignes inutiles."""
+    render_sample_preview(page)
+
+    row = page.locator("details.pl").first
+    assert row.locator("img.pl-cover").count() == 1
+    assert page.locator("li.track").count() == 0, "Les titres ne doivent pas être construits repliés"
+
+    row.click()
+    page.wait_for_selector("li.track")
+    assert page.locator("li.track").count() == 2
+    facts = page.locator("li.track .track-facts").first.text_content()
+    for expected in ["Nevermind", "1991", "Rock", "Grunge"]:
+        assert expected in facts
+    assert "GENRE — Rock" in row.locator("pre").text_content()
+
+
+def test_a_track_without_artwork_keeps_its_row_aligned(page):
+    render_sample_preview(page)
+    page.locator("details.pl").first.click()
+    page.wait_for_selector("li.track")
+    assert page.locator("li.track .cover.empty").count() == 1

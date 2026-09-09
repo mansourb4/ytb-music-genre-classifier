@@ -92,6 +92,20 @@ textarea {
 .badge.creation { color: var(--ok); border-color: var(--ok); }
 .badge.maj { color: var(--warn); border-color: var(--warn); }
 .pl .body { padding: .6rem 0 .4rem 1.4rem; }
+.pl-cover, .cover {
+  border-radius: 5px; object-fit: cover; background: var(--bg);
+  border: 1px solid var(--border); flex: none;
+}
+.pl-cover { width: 40px; height: 40px; }
+.cover { width: 34px; height: 34px; }
+.pl-cover.empty, .cover.empty { display: inline-block; }
+.pl summary { align-items: center; }
+ul.tracks { list-style: none; margin: 0; padding: 0; }
+.track { display: flex; gap: .6rem; align-items: center; padding: .3rem 0; }
+.track-text { display: flex; flex-direction: column; min-width: 0; }
+.track-text b { font-weight: 500; }
+.track-artist { color: var(--muted); font-size: .84rem; }
+.track-facts { color: var(--muted); font-size: .78rem; }
 .pl pre { white-space: pre-wrap; font: 12px/1.5 ui-monospace, Menlo, monospace;
   background: var(--bg); border: 1px solid var(--border); border-radius: 6px; padding: .7rem; margin: 0 0 .6rem; }
 .pl ul { margin: 0; padding-left: 1.1rem; color: var(--muted); font-size: .86rem; }
@@ -270,31 +284,25 @@ select {
 </section>
 
 <section>
-  <h2><span class="step">3</span>Analyser</h2>
-  <div class="row">
-    <button class="primary" id="analyse-btn">Lancer l'analyse</button>
-    <span class="msg" id="analyse-msg"></span>
-  </div>
-  <p class="hint spacer">Lit les sources choisies, puis interroge Discogs pour chaque album. Compte environ une seconde par album au premier passage ; les analyses suivantes sont servies par le cache et sont quasi instantanées.</p>
-</section>
-
-<section>
-  <h2><span class="step">4</span>Choisir le type de tri</h2>
+  <h2><span class="step">3</span>Choisir le type de tri</h2>
   <div class="modes" id="modes"></div>
 </section>
 
 <section>
-  <h2><span class="step">5</span>Aperçu du résultat</h2>
+  <h2><span class="step">4</span>Analyser et prévisualiser</h2>
   <div class="row">
-    <button id="preview-btn">Calculer l'aperçu</button>
-    <span class="msg" id="preview-msg"></span>
+    <button class="primary" id="analyse-btn">Lancer l'analyse</button>
+    <button id="preview-btn">Recalculer l'aperçu</button>
+    <span class="msg" id="analyse-msg"></span>
   </div>
+  <p class="hint spacer">Lit les sources choisies, interroge Discogs pour chaque album, puis affiche aussitôt le rangement obtenu. Compte environ une seconde par album au premier passage ; les analyses suivantes sont servies par le cache.</p>
   <div id="preview-summary" class="stats spacer hidden"></div>
+  <div id="preview-msg" class="msg spacer"></div>
   <div id="preview-list" class="spacer"></div>
 </section>
 
 <section>
-  <h2><span class="step">6</span>Appliquer</h2>
+  <h2><span class="step">5</span>Appliquer</h2>
   <div class="row">
     <button class="primary" id="apply-btn" disabled>Appliquer à mon compte</button>
     <span class="msg" id="apply-msg"></span>
@@ -400,7 +408,12 @@ function watchJob(jobId) {
       clearInterval(pollTimer);
       setBusy(false);
       await refreshStatus();
-      if (job.status === "terminé") setTimeout(() => $("job-box").classList.add("hidden"), 6000);
+      if (job.status === "terminé") {
+        // L'aperçu est la vraie conclusion d'une analyse : l'afficher d'office
+        // évite un second geste sans lequel l'écran resterait muet.
+        if (job.kind === "analyse" || job.kind === "application") await refreshPreview();
+        setTimeout(() => $("job-box").classList.add("hidden"), 6000);
+      }
     }
   };
   tick();
@@ -426,12 +439,37 @@ async function loadModes() {
       sortMode = node.dataset.key;
       $("modes").querySelectorAll(".mode").forEach((n) => n.classList.toggle("selected", n === node));
       node.querySelector("input").checked = true;
-      $("preview-list").innerHTML = "";
-      $("preview-summary").classList.add("hidden");
-      $("apply-btn").disabled = true;
-      $("preview-msg").textContent = "Type de tri modifié : recalcule l'aperçu.";
+      // Le tri se choisit avant l'analyse : tant qu'il n'y a rien de classé,
+      // l'aperçu reste vide et le recalcul est sans effet visible.
+      refreshPreview();
     });
   });
+}
+
+function trackRow(track) {
+  const cover = track.thumbnail
+    ? `<img class="cover" src="${escapeHtml(track.thumbnail)}" alt="" loading="lazy">`
+    : `<span class="cover empty"></span>`;
+  const facts = [
+    track.album ? escapeHtml(track.album) : null,
+    track.year || null,
+    track.genres.length ? escapeHtml(track.genres.join(", ")) : null,
+    track.styles.length ? escapeHtml(track.styles.join(" · ")) : null,
+  ].filter(Boolean);
+  return `<li class="track">
+    ${cover}
+    <span class="track-text">
+      <b>${escapeHtml(track.title)}</b>
+      <span class="track-artist">${escapeHtml(track.artist)}</span>
+      <span class="track-facts">${facts.join(" — ")}</span>
+    </span>
+  </li>`;
+}
+
+function playlistCover(playlist) {
+  return playlist.image
+    ? `<img class="pl-cover" src="${escapeHtml(playlist.image)}" alt="" loading="lazy">`
+    : `<span class="pl-cover empty"></span>`;
 }
 
 function renderPreview(data) {
@@ -463,19 +501,33 @@ function renderPreview(data) {
       : pl.change === "mise à jour"
         ? `<span class="badge maj">+${pl.added} / −${pl.removed}</span>`
         : `<span class="badge">inchangée</span>`;
-    const sample = pl.sample.map((t) => `<li>${escapeHtml(t)}</li>`).join("");
-    return `<details class="pl">
+    return `<details class="pl" data-key="${escapeHtml(pl.key)}">
       <summary>
+        ${playlistCover(pl)}
         <span class="name">${escapeHtml(pl.name)}</span>
         ${badge}
         <span class="count">${pl.count} titres</span>
       </summary>
       <div class="body">
         <pre>${escapeHtml(pl.description)}</pre>
-        <ul>${sample}</ul>
+        <ul class="tracks"></ul>
       </div>
     </details>`;
   }).join("");
+
+  // Les titres ne sont construits qu'à l'ouverture : une bibliothèque
+  // fournie représente des milliers de lignes, inutiles tant qu'elles
+  // restent repliées.
+  const byKey = Object.fromEntries(p.playlists.map((pl) => [pl.key, pl]));
+  $("preview-list").querySelectorAll("details.pl").forEach((node) => {
+    node.addEventListener("toggle", () => {
+      const list = node.querySelector("ul.tracks");
+      if (!node.open || list.dataset.filled) return;
+      list.innerHTML = byKey[node.dataset.key].tracks.map(trackRow).join("");
+      list.dataset.filled = "1";
+    });
+  });
+
   $("apply-btn").disabled = false;
 }
 
@@ -638,8 +690,12 @@ function selectedSources() {
 function sourceRow(entry, checked) {
   const id = `src-${entry.key.replace(/[^\w-]/g, "_")}`;
   const count = entry.count ? `<span class="count">${entry.count} titres</span>` : "";
+  const cover = entry.thumbnail
+    ? `<img class="cover" src="${escapeHtml(entry.thumbnail)}" alt="" loading="lazy">`
+    : "";
   return `<div class="source">
     <input type="checkbox" id="${id}" value="${entry.key}" ${checked ? "checked" : ""}>
+    ${cover}
     <label for="${id}">${escapeHtml(entry.label)}</label>${count}
   </div>`;
 }
@@ -687,8 +743,9 @@ $("analyse-btn").addEventListener("click", async () => {
   }
 });
 
-$("preview-btn").addEventListener("click", async () => {
-  $("preview-msg").textContent = "Calcul…";
+async function refreshPreview() {
+  $("preview-msg").textContent = "Calcul de l'aperçu…";
+  $("preview-msg").classList.remove("error");
   try {
     renderPreview(await api("/api/preview", { sort_mode: sortMode }));
     $("preview-msg").textContent = "";
@@ -696,7 +753,9 @@ $("preview-btn").addEventListener("click", async () => {
     $("preview-msg").textContent = error.message;
     $("preview-msg").classList.add("error");
   }
-});
+}
+
+$("preview-btn").addEventListener("click", refreshPreview);
 
 $("apply-btn").addEventListener("click", async () => {
   if (!confirm("Appliquer ces changements à ton compte YouTube Music ?")) return;
@@ -733,7 +792,15 @@ async function loadConnectMethods() {
   });
 }
 
-loadModes().then(loadConnectMethods).then(refreshStatus).then(loadSources);
+async function boot() {
+  await loadModes();
+  await loadConnectMethods();
+  const status = await refreshStatus();
+  await loadSources();
+  if (status.classified) await refreshPreview();
+}
+
+boot();
 </script>
 </body>
 </html>

@@ -95,4 +95,5 @@ def _classify(track: Track, candidates: list[ReleaseCandidate], config: Config) 
         score=match.score,
         genres=match.candidate.genres,
         styles=match.candidate.styles,
+        year=match.candidate.year,
     )

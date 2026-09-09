@@ -52,19 +52,20 @@ class Repository:
     def upsert_tracks(self, tracks: list[Track]) -> int:
         """Insère ou met à jour des titres. Renvoie le nombre de lignes traitées."""
         rows = [
-            (t.video_id, t.title, _join(t.artists), t.album, t.duration_s, t.source)
+            (t.video_id, t.title, _join(t.artists), t.album, t.duration_s, t.source, t.thumbnail)
             for t in tracks
         ]
         self._db.executemany(
             """
-            INSERT INTO tracks(video_id, title, artists, album, duration_s, source)
-            VALUES(?, ?, ?, ?, ?, ?)
+            INSERT INTO tracks(video_id, title, artists, album, duration_s, source, thumbnail)
+            VALUES(?, ?, ?, ?, ?, ?, ?)
             ON CONFLICT(video_id) DO UPDATE SET
                 title = excluded.title,
                 artists = excluded.artists,
                 album = excluded.album,
                 duration_s = excluded.duration_s,
                 source = excluded.source,
+                thumbnail = COALESCE(excluded.thumbnail, tracks.thumbnail),
                 scanned_at = datetime('now')
             """,
             rows,
@@ -99,6 +100,7 @@ class Repository:
             album=row["album"],
             duration_s=row["duration_s"],
             source=row["source"],
+            thumbnail=row["thumbnail"],
         )
 
     # ------------------------------------------------------- discogs cache
@@ -161,14 +163,15 @@ class Repository:
     def save_classification(self, classification: Classification) -> None:
         self._db.execute(
             """
-            INSERT INTO classifications(video_id, status, discogs_id, score, genres, styles)
-            VALUES(?, ?, ?, ?, ?, ?)
+            INSERT INTO classifications(video_id, status, discogs_id, score, genres, styles, year)
+            VALUES(?, ?, ?, ?, ?, ?, ?)
             ON CONFLICT(video_id) DO UPDATE SET
                 status = excluded.status,
                 discogs_id = excluded.discogs_id,
                 score = excluded.score,
                 genres = excluded.genres,
                 styles = excluded.styles,
+                year = excluded.year,
                 classified_at = datetime('now')
             """,
             (
@@ -178,6 +181,7 @@ class Repository:
                 classification.score,
                 _join(classification.genres),
                 _join(classification.styles),
+                classification.year,
             ),
         )
         self._db.commit()
@@ -199,6 +203,7 @@ class Repository:
                 score=row["score"],
                 genres=_split(row["genres"]),
                 styles=_split(row["styles"]),
+                year=row["year"],
             )
             for row in cursor
         ]

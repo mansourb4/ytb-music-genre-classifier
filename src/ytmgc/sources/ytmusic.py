@@ -48,6 +48,19 @@ def _artists(entry: dict[str, Any]) -> tuple[str, ...]:
     return tuple(a["name"] for a in entry.get("artists") or [] if a.get("name"))
 
 
+def _thumbnail(entry: dict[str, Any]) -> str | None:
+    """URL de la plus grande pochette proposée.
+
+    YouTube Music renvoie plusieurs tailles par ordre croissant ; la plus
+    grande reste petite (quelques centaines de pixels) et convient à l'aperçu.
+    """
+    thumbnails = entry.get("thumbnails") or []
+    if not thumbnails:
+        return None
+    largest = max(thumbnails, key=lambda item: item.get("width") or 0)
+    return largest.get("url")
+
+
 def _album(entry: dict[str, Any]) -> str | None:
     album = entry.get("album")
     if isinstance(album, dict):
@@ -71,6 +84,7 @@ def _to_track(entry: dict[str, Any], source: str) -> Track | None:
         album=_album(entry),
         duration_s=entry.get("duration_seconds"),
         source=source,
+        thumbnail=_thumbnail(entry),
     )
 
 
@@ -134,6 +148,7 @@ class YouTubeMusicClient:
                     "playlist_id": playlist_id,
                     "title": entry.get("title") or "(sans titre)",
                     "count": entry.get("count"),
+                    "thumbnail": _thumbnail(entry),
                 }
             )
         return summaries

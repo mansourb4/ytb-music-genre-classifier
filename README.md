@@ -183,14 +183,19 @@ engendré au démarrage et inclus dans le lien affiché ; définis
 `YTMGC_ACCESS_TOKEN` pour en garder un stable. `--no-token` lève l'exigence,
 à ne faire que si l'accès est déjà protégé par ailleurs.
 
-Le parcours tient en six étapes : connecter le compte, **choisir ce qui sera
-analysé** (bibliothèque, titres likés, et n'importe laquelle de tes playlists),
-lancer l'analyse, choisir un type de tri, examiner l'aperçu, confirmer.
-Pendant l'analyse, un bandeau fixe indique l'avancement, le titre en cours et
-une estimation du temps restant. **Rien n'est écrit sur le
+Le parcours tient en cinq étapes : connecter le compte, choisir ce qui sera
+analysé (bibliothèque, titres likés, et n'importe laquelle de tes playlists),
+choisir un type de tri, lancer l'analyse, confirmer. Pendant l'analyse, un
+bandeau fixe indique l'avancement, le titre en cours et une estimation du temps
+restant.
+
+**L'aperçu s'affiche de lui-même à la fin de l'analyse**, dans la même section.
+Chaque playlist proposée y porte sa pochette, sa description complète, et se
+déplie sur la liste de ses titres — pochette, album, année, genre et style pour
+chacun. **Rien n'est écrit sur le
 compte tant que la confirmation n'a pas été donnée**, et l'aperçu montre
 exactement ce qui sera créé : nom de chaque playlist, nombre de titres,
-description complète et échantillon de morceaux.
+description complète et détail de chaque morceau.
 
 Une section « Annuler » supprime en un clic toutes les playlists générées et
 rend le compte à son état initial.
@@ -271,7 +276,7 @@ sans aucune écriture ni appel réseau.
 ## Développement
 
 ```bash
-python -m pytest        # 233 tests, aucun appel réseau
+python -m pytest        # 239 tests, aucun appel réseau
 ```
 
 Les API externes sont derrière des adaptateurs (`src/ytmgc/sources/`) ; toute la

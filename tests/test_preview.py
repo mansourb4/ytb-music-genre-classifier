@@ -52,11 +52,43 @@ def test_assignments_exceed_tracks_in_multi_style_mode(repository, config):
     assert summary.assignments > summary.classified
 
 
-def test_preview_shows_sample_tracks(repository, config):
+def test_preview_details_every_track(repository, config):
     seeded(repository, config)
     summary, _, _ = build_preview(repository, config, sort_mode="detaille")
     grunge = next(p for p in summary.playlists if p.name.endswith("Grunge"))
-    assert "Nirvana – Come As You Are" in grunge.sample
+
+    assert len(grunge.tracks) == grunge.count
+    first = grunge.tracks[0]
+    assert (first.title, first.artist, first.album) == ("Come As You Are", "Nirvana", "Nevermind")
+    assert first.genres == ["Rock"] and first.styles == ["Grunge"]
+    assert first.year == 1991
+
+
+def test_playlist_image_comes_from_its_first_illustrated_track(repository, config):
+    """Une playlist prévue n'existe pas encore : elle n'a pas d'image propre.
+
+    Le premier titre peut n'en avoir aucune : on prend alors la suivante
+    disponible, plutôt que de laisser la playlist sans illustration.
+    """
+    library = [
+        Track("g1", "Come As You Are", ("Nirvana",), "Nevermind"),
+        Track("g2", "Lithium", ("Nirvana",), "Nevermind", thumbnail="https://img/lithium.jpg"),
+        Track("e1", "Xtal", ("Aphex Twin",), "SAW", thumbnail="https://img/saw.jpg"),
+        Track("e2", "Ageispolis", ("Aphex Twin",), "SAW"),
+    ]
+    repository.upsert_tracks(library)
+    classify_tracks(library, repository, FakeDiscogs(CATALOGUE), config)
+    summary, _, _ = build_preview(repository, config, sort_mode="detaille")
+
+    by_name = {p.name: p for p in summary.playlists}
+    assert by_name["Rock — Grunge"].image == "https://img/lithium.jpg"
+    assert by_name["Electronic — Ambient"].image == "https://img/saw.jpg"
+
+
+def test_a_playlist_without_any_artwork_has_no_image(repository, config):
+    seeded(repository, config)
+    summary, _, _ = build_preview(repository, config, sort_mode="detaille")
+    assert all(playlist.image is None for playlist in summary.playlists)
 
 
 def test_preview_against_an_existing_state_distinguishes_changes(repository, config):

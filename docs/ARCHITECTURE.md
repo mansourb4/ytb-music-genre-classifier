@@ -50,7 +50,7 @@ et relancés sans perte, et `plan`/`apply` se rejouent hors ligne.
 | `planner.py` | Classifications → ensemble de playlists souhaité. Hors ligne. |
 | `sync.py` | Diff état souhaité / état distant, puis application. |
 | `sorting.py` | Types de tri prédéfinis, partagés par le CLI et l'interface web. |
-| `preview.py` | Assemble plan, état distant et titres en un aperçu sérialisable. Ni HTTP ni terminal. |
+| `preview.py` | Assemble plan, état distant et titres en un aperçu sérialisable — pochettes et taxonomie comprises. Ni HTTP ni terminal. |
 | `web/` | Application FastAPI et son interface (page unique, sans build), contrôle d'accès et construction des liens. |
 | `cli.py` | Interface en ligne de commande. |
 
@@ -229,6 +229,24 @@ lui, connaît son total et affiche le décompte et une estimation par règle de
 trois. Le bandeau est en position fixe : placé en fin de page, il se trouvait
 hors écran au moment précis où l'utilisateur attend un signe de vie.
 
+### 13. L'aperçu conclut l'analyse, et montre la matière
+
+Le tri se choisit désormais **avant** l'analyse, puisqu'il détermine ce que
+celle-ci produira, et l'aperçu s'affiche de lui-même à la fin plutôt que
+d'attendre un second geste : une analyse dont le résultat reste invisible ne
+conclut rien.
+
+Chaque playlist proposée porte la pochette de son premier titre illustré — les
+playlists prévues n'existant pas encore, elles n'ont pas d'image propre — et se
+déplie sur le détail de ses morceaux : pochette, album, année, genre et style.
+Ces lignes ne sont construites qu'à l'ouverture : une bibliothèque fournie en
+représenterait des milliers, inutiles tant qu'elles restent repliées.
+
+Deux champs ont été ajoutés au stockage pour cela : la pochette d'un titre et
+l'année de la release appariée. Les bases déjà remplies sont complétées par
+`ALTER TABLE` au démarrage, sans perdre les heures d'analyse qu'elles
+contiennent.
+
 ## Contraintes des API
 
 | Contrainte | Conséquence |
@@ -243,10 +261,10 @@ hors écran au moment précis où l'utilisateur attend un signe de vie.
 
 ## Tests
 
-233 tests, aucun appel réseau, y compris l'API web complète (aperçu,
+239 tests, aucun appel réseau, y compris l'API web complète (aperçu,
 application, annulation), son contrôle d'accès et les quatre voies de connexion.
 
-Treize d'entre eux chargent l'interface dans un vrai navigateur (`tests/test_ui.py`).
+Dix-sept d'entre eux chargent l'interface dans un vrai navigateur (`tests/test_ui.py`).
 Le câblage du DOM échappe aux tests Python : deux défauts d'onglets sont passés
 au travers de la suite avant d'être vus à l'écran. Ces tests sont ignorés
 lorsque Playwright ou son navigateur sont absents, pour que la suite reste
