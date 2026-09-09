@@ -41,7 +41,7 @@ et relancés sans perte, et `plan`/`apply` se rejouent hors ligne.
 | `store/` | Schéma SQLite et accès typés. Aucun SQL ailleurs dans le projet. |
 | `sources/ytmusic.py` | Adaptateur `ytmusicapi` : scan, lecture et écriture de playlists. |
 | `sources/oauth.py` | Connexion OAuth par code d'appareil. |
-| `sources/browser_session.py` | Reprise d'une session ouverte dans un navigateur installé ; construit le fichier d'en-têtes attendu par `ytmusicapi`. |
+| `sources/browser_session.py` | Reprise d'une session de navigateur, analyse des collages (cURL ou en-têtes bruts), et construction du fichier attendu par `ytmusicapi`. |
 | `sources/browser_login.py` | Fenêtre de connexion pilotée, qui capture la session une fois l'utilisateur identifié. |
 | `sources/discogs.py` | Client HTTP Discogs : recherche, limitation de débit, reprises sur erreur. |
 | `matching/` | Normalisation des libellés et scoring des candidats. Pur, sans état. |
@@ -191,6 +191,15 @@ la session est relevée dès que le cookie de signature apparaît. Le profil est
 persistant, ce qui évite de rejouer une connexion que Google pourrait refuser —
 il bloque régulièrement l'authentification dans un navigateur automatisé.
 
+**Collage manuel.** Le geste retenu est « Copier comme cURL » : c'est la seule
+action identique dans Firefox, Chrome, Edge et Safari — une entrée de menu,
+sans bouton à dénicher ni panneau à déplier, contrairement au bouton *Raw* des
+en-têtes qui n'existe pas dans toutes les versions. L'application analyse aussi
+bien une commande cURL (guillemets bash, cmd ou PowerShell) qu'une liste
+d'en-têtes bruts, et n'en retient que le cookie de session : le reste est
+reconstruit. Exiger `x-goog-authuser` obligeait à dénicher une requête d'API
+précise ; s'en passer rend n'importe quelle requête authentifiée exploitable.
+
 **OAuth par code d'appareil.** Le flux « limited input » de Google : une URL,
 un code, une validation sur n'importe quel appareil. Seule voie indépendante
 d'un navigateur local, donc la seule utilisable dans un conteneur distant.
@@ -219,10 +228,10 @@ normal tant que l'utilisateur n'a pas validé.
 
 ## Tests
 
-212 tests, aucun appel réseau, y compris l'API web complète (aperçu,
+223 tests, aucun appel réseau, y compris l'API web complète (aperçu,
 application, annulation), son contrôle d'accès et les quatre voies de connexion.
 
-Huit d'entre eux chargent l'interface dans un vrai navigateur (`tests/test_ui.py`).
+Onze d'entre eux chargent l'interface dans un vrai navigateur (`tests/test_ui.py`).
 Le câblage du DOM échappe aux tests Python : deux défauts d'onglets sont passés
 au travers de la suite avant d'être vus à l'écran. Ces tests sont ignorés
 lorsque Playwright ou son navigateur sont absents, pour que la suite reste

@@ -15,6 +15,7 @@ bibliothèque reconnaît une authentification de type navigateur.
 from __future__ import annotations
 
 import json
+import re
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Callable, Iterable
@@ -167,16 +168,89 @@ def import_session(
     return session.source
 
 
-#: Lignes indispensables dans des en-têtes collés à la main.
-PASTED_REQUIRED = ("cookie", "x-goog-authuser")
+# ---------------------------------------------------------------------------
+# Collage manuel : commande cURL ou en-têtes bruts
+#
+# « Copier comme cURL » est la seule action identique dans Firefox, Chrome,
+# Edge et Safari : une entrée de menu, sans bouton caché ni panneau à déplier.
+# On accepte donc les deux formes, et on n'exige qu'une chose du contenu — le
+# cookie de session. Tout le reste est reconstruit.
+# ---------------------------------------------------------------------------
+
+_HEADER_OPTION_RE = re.compile(
+    r"""(?:-H|--header)\s+(?P<quote>['"])(?P<value>.*?)(?P=quote)""", re.DOTALL
+)
+_COOKIE_OPTION_RE = re.compile(
+    r"""(?:-b|--cookie)\s+(?P<quote>['"])(?P<value>.*?)(?P=quote)""", re.DOTALL
+)
 
 
-def missing_header_lines(raw: str) -> list[str]:
-    """En-têtes obligatoires absents d'un collage manuel.
+class PasteError(BrowserSessionError):
+    """Collage inexploitable, avec le geste correctif à proposer."""
 
-    L'erreur est presque toujours la même — une requête sans session choisie
-    dans l'inspecteur réseau — et le message de `ytmusicapi` est en anglais.
-    Ce contrôle permet de dire précisément ce qui manque et quoi refaire.
+
+def _join_continuations(text: str) -> str:
+    """Recolle les lignes d'une commande multiligne.
+
+    Chaque interpréteur a sa marque de continuation : « \\ » pour bash,
+    « ^ » pour cmd, « ` » pour PowerShell.
     """
-    lines = [line.split(":", 1)[0].strip().lower() for line in raw.splitlines() if ":" in line]
-    return [name for name in PASTED_REQUIRED if name not in lines]
+    text = text.replace("\r\n", "\n").replace("\r", "\n")
+    return re.sub(r"[\\^`]\n\s*", " ", text)
+
+
+def parse_pasted_headers(raw: str) -> dict[str, str]:
+    """En-têtes contenus dans un collage, quelle qu'en soit la forme.
+
+    Accepte une commande cURL (toutes variantes de guillemets) aussi bien
+    qu'une simple liste « nom: valeur ».
+    """
+    text = _join_continuations(raw.strip())
+    headers: dict[str, str] = {}
+
+    if "curl" in text[:200].lower():
+        for match in _HEADER_OPTION_RE.finditer(text):
+            name, separator, value = match.group("value").partition(":")
+            if separator:
+                headers[name.strip().lower()] = value.strip()
+        for match in _COOKIE_OPTION_RE.finditer(text):
+            headers["cookie"] = match.group("value").strip()
+        return headers
+
+    for line in text.splitlines():
+        name, separator, value = line.partition(":")
+        # Une ligne de requête ("GET /youtubei/v1/... HTTP/2") n'est pas un en-tête.
+        if separator and " " not in name.strip():
+            headers[name.strip().lower()] = value.strip()
+    return headers
+
+
+def auth_file_from_paste(raw: str, path: str | Path) -> None:
+    """Écrit le fichier d'authentification à partir d'un collage.
+
+    Seul le cookie de session est réellement nécessaire : le reste des en-têtes
+    est reconstruit. Cela rend n'importe quelle requête du domaine exploitable,
+    là où exiger `x-goog-authuser` obligeait à trouver une requête d'API précise.
+    """
+    if "invoke-webrequest" in raw[:400].lower():
+        raise PasteError(
+            "Ce texte est une commande PowerShell. Dans le menu du navigateur, "
+            "choisis « Copier comme cURL (bash) » plutôt que PowerShell."
+        )
+
+    headers = parse_pasted_headers(raw)
+    cookie = headers.get("cookie")
+    if not cookie:
+        raise PasteError(
+            "Aucun cookie trouvé dans le texte collé. La requête choisie n'était "
+            "pas authentifiée : refais un clic droit sur une autre ligne de la "
+            "liste, en étant connecté à ton compte."
+        )
+    if REQUIRED_COOKIE not in cookie:
+        raise PasteError(
+            f"Le cookie collé ne contient pas {REQUIRED_COOKIE} : cette requête "
+            "n'est pas rattachée à ton compte. Vérifie que tu es bien connecté à "
+            "YouTube Music, puis reprends une autre ligne."
+        )
+
+    write_auth_file(cookie, path, headers.get("x-goog-authuser", "0"))

@@ -94,22 +94,21 @@ ID client OAuth de type **Téléviseurs et périphériques à saisie limitée**)
 Google impose à chaque application de s'enregistrer. L'identifiant peut venir
 de `YTMGC_OAUTH_CLIENT_ID` / `YTMGC_OAUTH_CLIENT_SECRET`.
 
-**4. En-têtes (avancé)** — collage des en-têtes d'une requête réseau, à
-réserver aux cas où les autres échouent. Dans Firefox : ouvrir
-`music.youtube.com` connecté, `F12` → onglet **Réseau**, filtrer sur
-`youtubei`, puis **cliquer sur « Bibliothèque » dans la page** pour provoquer
-une requête ; **clic droit sur une ligne POST vers `/youtubei/v1/…`** →
-*Copier* → **« Copier les en-têtes de requête »**. Dans Chrome ou Edge, mêmes
-étapes, puis onglet **Headers** → **Request Headers** → bouton **Raw**, et
-copier le texte affiché.
+**4. En-têtes (avancé)** — à réserver aux cas où les autres échouent. Le geste
+est le même dans tous les navigateurs :
 
-L'inspecteur ne montre que les requêtes émises **après** son ouverture : une
-liste vide signifie presque toujours qu'il faut naviguer dans la page, ou
-vérifier qu'aucun filtre de type (`XHR`, `JS`…) n'est actif.
+1. ouvrir `music.youtube.com` connecté, puis `F12` → onglet **Réseau** /
+   **Network** ;
+2. panneau ouvert, **cliquer sur « Bibliothèque » dans la page** : la liste des
+   requêtes se remplit (l'inspecteur ne montre que ce qui suit son ouverture) ;
+3. **clic droit sur n'importe quelle ligne** → *Copier* → **« Copier comme
+   cURL »** (*Copy as cURL (bash)* dans Chrome et Edge ; éviter *Copy as
+   PowerShell*) ;
+4. coller dans l'interface.
 
-Le texte collé doit contenir une ligne `cookie:` et une ligne
-`x-goog-authuser:` ; l'interface le vérifie et dit ce qui manque. En ligne de
-commande, l'équivalent est :
+L'application n'extrait que le cookie de session et reconstruit le reste des
+en-têtes ; n'importe quelle requête authentifiée du domaine convient donc. Une
+liste d'en-têtes bruts reste acceptée. En ligne de commande, l'équivalent est :
 
 ```bash
 ytmusicapi browser   # crée browser.json en suivant les instructions affichées
@@ -269,7 +268,7 @@ sans aucune écriture ni appel réseau.
 ## Développement
 
 ```bash
-python -m pytest        # 212 tests, aucun appel réseau
+python -m pytest        # 223 tests, aucun appel réseau
 ```
 
 Les API externes sont derrière des adaptateurs (`src/ytmgc/sources/`) ; toute la

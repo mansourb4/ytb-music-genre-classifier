@@ -131,11 +131,40 @@ def test_incomplete_headers_are_refused_before_any_request(page):
     page.click('.tab[data-tab="headers"]')
     page.fill("#headers", "accept: */*")
     page.click("#connect-btn")
-    message = page.locator("#connect-msg").text_content()
-    assert "cookie" in message and "/youtubei/v1/" in message
+    assert "cookie de session" in page.locator("#connect-msg").text_content()
 
 
 def test_sort_modes_are_selectable(page):
     page.click('.mode[data-key="genre"]')
     assert "selected" in (page.locator('.mode[data-key="genre"]').get_attribute("class") or "")
     assert "selected" not in (page.locator('.mode[data-key="detaille"]').get_attribute("class") or "")
+
+
+def test_the_paste_example_follows_the_selected_browser(page):
+    """Régression : l'exemple restait celui de Firefox après un passage sur Chrome,
+    donc il décrivait un texte que l'utilisateur n'aurait jamais sous les yeux."""
+    page.click('.tab[data-tab="headers"]')
+    firefox_example = page.locator("#headers").get_attribute("placeholder")
+    assert "\\" in firefox_example  # continuation de ligne bash
+
+    page.click('.subtab[data-sub="chrome"]')
+    chrome_example = page.locator("#headers").get_attribute("placeholder")
+    assert chrome_example != firefox_example
+    assert "^" in chrome_example  # continuation de ligne cmd
+
+    page.click('.subtab[data-sub="firefox"]')
+    assert page.locator("#headers").get_attribute("placeholder") == firefox_example
+
+
+def test_a_powershell_paste_is_refused_with_the_right_advice(page):
+    page.click('.tab[data-tab="headers"]')
+    page.fill("#headers", 'Invoke-WebRequest -Uri "https://music.youtube.com/"')
+    page.click("#connect-btn")
+    assert "cURL (bash)" in page.locator("#connect-msg").text_content()
+
+
+def test_a_paste_without_session_cookie_is_refused(page):
+    page.click('.tab[data-tab="headers"]')
+    page.fill("#headers", "curl 'https://music.youtube.com/' -H 'accept: */*'")
+    page.click("#connect-btn")
+    assert "autre ligne" in page.locator("#connect-msg").text_content()

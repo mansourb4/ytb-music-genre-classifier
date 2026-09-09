@@ -210,30 +210,30 @@ select {
       </div>
 
       <ol class="steps" id="sub-firefox">
-        <li>Ouvre <b>music.youtube.com</b>, connecté à ton compte.</li>
-        <li>Appuie sur <b>F12</b>, puis va dans l'onglet <b>Réseau</b>. Laisse-le ouvert.</li>
-        <li>Dans le champ de filtre, tape <code>youtubei</code>, et vérifie que le bouton <b>Tout</b> est sélectionné dans la rangée de types juste à côté.</li>
-        <li><b>Clique sur « Bibliothèque » dans la page YouTube Music.</b> Une ou plusieurs lignes <b>POST</b> vers <code>/youtubei/v1/…</code> apparaissent aussitôt.</li>
-        <li><b>Clic droit sur l'une d'elles</b> → <i>Copier</i> → <b>« Copier les en-têtes de requête »</b>.</li>
-        <li>Colle le résultat ci-dessous.</li>
+        <li>Ouvre <b>music.youtube.com</b> dans Firefox, connecté à ton compte.</li>
+        <li>Appuie sur <b>F12</b>. Un panneau s'ouvre en bas ou sur le côté : clique sur l'onglet <b>Réseau</b>.</li>
+        <li>Laisse ce panneau ouvert et, <b>dans la page YouTube Music</b>, clique sur <b>Bibliothèque</b> (menu de gauche). Des dizaines de lignes apparaissent dans le panneau.</li>
+        <li><b>Clic droit sur n'importe quelle ligne</b> de cette liste → <i>Copier</i> (parfois nommé <i>Copier la valeur</i>) → <b>« Copier comme cURL »</b>.</li>
+        <li>Colle le résultat ci-dessous, puis clique sur <b>Connecter</b>.</li>
       </ol>
 
       <ol class="steps hidden" id="sub-chrome">
-        <li>Ouvre <b>music.youtube.com</b>, connecté à ton compte.</li>
-        <li>Appuie sur <b>F12</b>, puis va dans l'onglet <b>Network</b>. Laisse-le ouvert.</li>
-        <li>Dans le champ <b>Filter</b>, tape <code>youtubei</code>, et vérifie que <b>All</b> est sélectionné dans la rangée de types juste à côté.</li>
-        <li><b>Clique sur « Bibliothèque » dans la page YouTube Music.</b> Une ou plusieurs lignes <b>POST</b> vers <code>/youtubei/v1/…</code> apparaissent aussitôt.</li>
-        <li>Clique sur l'une d'elles → onglet <b>Headers</b> → section <b>Request Headers</b> → bouton <b>Raw</b> à droite du titre.</li>
-        <li>Sélectionne tout le texte affiché et colle-le ci-dessous.</li>
+        <li>Ouvre <b>music.youtube.com</b> dans Chrome ou Edge, connecté à ton compte.</li>
+        <li>Appuie sur <b>F12</b>. Un panneau s'ouvre : clique sur l'onglet <b>Network</b> (ou <b>Réseau</b>).</li>
+        <li>Laisse ce panneau ouvert et, <b>dans la page YouTube Music</b>, clique sur <b>Bibliothèque</b> (menu de gauche). Des dizaines de lignes apparaissent dans le panneau.</li>
+        <li><b>Clic droit sur n'importe quelle ligne</b> de cette liste → <b>Copy</b> → <b>« Copy as cURL (bash) »</b>. Si seul <i>Copy as cURL</i> est proposé, prends-le. Évite <i>Copy as PowerShell</i>.</li>
+        <li>Colle le résultat ci-dessous, puis clique sur <b>Connecter</b>.</li>
       </ol>
 
-      <textarea id="headers" placeholder="accept: */*&#10;cookie: VISITOR_INFO1_LIVE=...; SID=...; __Secure-3PAPISID=...&#10;x-goog-authuser: 0&#10;user-agent: Mozilla/5.0 ..."></textarea>
+      <p class="hint">Le texte collé commence par <code>curl</code> et fait plusieurs milliers de caractères : c'est normal. L'application n'y garde que le cookie de session.</p>
+
+      <textarea id="headers"></textarea>
       <div class="row spacer">
         <button class="primary" id="connect-btn">Connecter</button>
         <span class="msg" id="connect-msg"></span>
       </div>
-      <p class="hint spacer">Le texte collé doit contenir une ligne <code>cookie:</code> (très longue) et une ligne <code>x-goog-authuser:</code>. S'il manque le cookie, la requête choisie n'était pas la bonne : reprends une requête <b>POST</b> vers <code>/youtubei/v1/</code>, pas une image ni un script.</p>
-      <p class="hint">Liste vide malgré le filtre ? L'inspecteur a sans doute été ouvert après le chargement de la page : garde-le ouvert et navigue dans YouTube Music, les requêtes n'apparaissent qu'à partir de son ouverture.</p>
+      <p class="hint spacer"><b>Aucune ligne n'apparaît ?</b> L'inspecteur ne montre que ce qui se passe après son ouverture. Garde-le ouvert et clique dans la page YouTube Music : la liste se remplit. Ne mets aucun filtre.</p>
+      <p class="hint"><b>« Aucun cookie trouvé » ?</b> La ligne choisie n'était pas authentifiée. Recommence sur une autre ligne — celles dont le nom commence par <code>browse</code>, <code>next</code> ou <code>guide</code> conviennent toujours.</p>
       <p class="hint">Ces en-têtes contiennent les identifiants de ta session. Ils ne sont écrits que dans le fichier local d'authentification et ne quittent jamais ta machine.</p>
     </div>
   </div>
@@ -504,26 +504,49 @@ function pollOAuth(deviceCode, intervalMs) {
   oauthTimer = setInterval(tick, intervalMs);
 }
 
+// Chaque navigateur produit une commande de forme différente : l'exemple doit
+// suivre l'onglet choisi, sinon il désigne un texte que l'utilisateur n'aura pas.
+const PASTE_EXAMPLES = {
+  firefox: "curl 'https://music.youtube.com/youtubei/v1/browse' \\\n"
+    + "  -H 'accept: */*' \\\n"
+    + "  -H 'cookie: VISITOR_INFO1_LIVE=...; SID=...; __Secure-3PAPISID=...' \\\n"
+    + "  --data-raw '{\"context\":{...}}'",
+  chrome: 'curl "https://music.youtube.com/youtubei/v1/browse" ^\n'
+    + '  -H "accept: */*" ^\n'
+    + '  -H "cookie: VISITOR_INFO1_LIVE=...; SID=...; __Secure-3PAPISID=..."',
+};
+
+function showPasteExample(browser) {
+  $("headers").placeholder = PASTE_EXAMPLES[browser] || PASTE_EXAMPLES.firefox;
+}
+
 document.querySelectorAll(".subtab[data-sub]").forEach((tab) => {
   tab.addEventListener("click", () => {
     tab.parentElement.querySelectorAll(".subtab").forEach((t) => t.classList.toggle("selected", t === tab));
     $("sub-firefox").classList.toggle("hidden", tab.dataset.sub !== "firefox");
     $("sub-chrome").classList.toggle("hidden", tab.dataset.sub !== "chrome");
+    showPasteExample(tab.dataset.sub);
   });
 });
+showPasteExample("firefox");
 
-function missingHeaderLines(raw) {
-  const required = { "cookie": /^\s*cookie\s*:/im, "x-goog-authuser": /^\s*x-goog-authuser\s*:/im };
-  return Object.keys(required).filter((name) => !required[name].test(raw));
+function pasteProblem(raw) {
+  if (!raw.trim()) return "Colle d'abord la commande copiée depuis le navigateur.";
+  if (/invoke-webrequest/i.test(raw)) {
+    return "Ce texte vient de « Copy as PowerShell ». Reprends avec « Copy as cURL (bash) ».";
+  }
+  if (!/__Secure-3PAPISID/i.test(raw)) {
+    return "Aucun cookie de session dans ce texte : refais un clic droit sur une autre ligne de la liste.";
+  }
+  return null;
 }
 
 $("connect-btn").addEventListener("click", async () => {
   const raw = $("headers").value;
-  const missing = missingHeaderLines(raw);
-  if (missing.length) {
-    // Diagnostic immédiat : l'erreur vient presque toujours d'une requête mal choisie.
-    $("connect-msg").textContent =
-      `Il manque la ligne « ${missing.join(" » et « ")} ». Reprends une requête POST vers /youtubei/v1/.`;
+  // Diagnostic immédiat : l'erreur vient presque toujours d'une ligne mal choisie.
+  const problem = pasteProblem(raw);
+  if (problem) {
+    $("connect-msg").textContent = problem;
     $("connect-msg").classList.add("error");
     return;
   }

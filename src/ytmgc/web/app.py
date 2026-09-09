@@ -156,23 +156,19 @@ def create_app(services: Services) -> FastAPI:
 
     @app.post("/api/connect")
     def connect(request: ConnectRequest) -> dict:
-        """Écrit le fichier d'authentification à partir des en-têtes collés."""
-        from ytmusicapi import setup
+        """Écrit le fichier d'authentification à partir d'un collage.
 
-        from ytmgc.sources.browser_session import missing_header_lines
-
-        if missing := missing_header_lines(request.headers):
-            raise HTTPException(
-                400,
-                "Il manque la ligne « " + " » et « ".join(missing) + " » dans les en-têtes "
-                "collés. Reprends une requête POST vers /youtubei/v1/ (et non une image "
-                "ou un script), en étant connecté à ton compte.",
-            )
+        Accepte une commande « Copier comme cURL » aussi bien qu'une liste
+        d'en-têtes bruts : seul le cookie de session est extrait, le reste des
+        en-têtes étant reconstruit. N'importe quelle requête authentifiée du
+        domaine convient donc, sans avoir à en trouver une précise.
+        """
+        from ytmgc.sources.browser_session import BrowserSessionError, auth_file_from_paste
 
         try:
-            setup(filepath=config.youtube.auth_file, headers_raw=request.headers)
-        except Exception as exc:  # noqa: BLE001 - message d'erreur remonté tel quel
-            raise HTTPException(400, f"En-têtes invalides : {exc}") from exc
+            auth_file_from_paste(request.headers, config.youtube.auth_file)
+        except BrowserSessionError as exc:
+            raise HTTPException(400, str(exc)) from exc
 
         try:
             services.youtube_factory(config)

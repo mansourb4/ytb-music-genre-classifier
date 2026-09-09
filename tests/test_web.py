@@ -303,5 +303,15 @@ def test_oauth_poll_without_a_registered_client_is_refused(client):
 def test_pasted_headers_missing_the_cookie_are_refused_with_guidance(client):
     response = client.post("/api/connect", json={"headers": "accept: */*\nuser-agent: Mozilla"})
     assert response.status_code == 400
-    detail = response.json()["detail"]
-    assert "cookie" in detail and "/youtubei/v1/" in detail
+    assert "cookie" in response.json()["detail"]
+
+
+def test_a_pasted_curl_command_connects_the_account(client):
+    """Le geste identique dans tous les navigateurs : « Copier comme cURL »."""
+    curl = (
+        "curl 'https://music.youtube.com/youtubei/v1/browse' "
+        "-H 'accept: */*' "
+        "-H 'cookie: SID=xyz; __Secure-3PAPISID=signature'"
+    )
+    assert client.post("/api/connect", json={"headers": curl}).status_code == 200
+    assert client.get("/api/status").json()["connected"] is True
