@@ -10,7 +10,7 @@ Deux garde-fous structurent ce module :
 from __future__ import annotations
 
 import re
-from typing import Iterable, Mapping, Protocol
+from typing import Collection, Iterable, Mapping, Protocol
 
 from ytmgc.config import LEGACY_MARKER, Config
 from ytmgc.models import Op, PlaylistPlan, RemotePlaylist, SyncAction
@@ -254,6 +254,7 @@ def purge(
     *,
     dry_run: bool = True,
     on_deleted=None,
+    only: Collection[str] | None = None,
 ) -> list[str]:
     """Supprime toutes les playlists générées par l'outil.
 
@@ -268,11 +269,18 @@ def purge(
     Elle ne s'appuie que sur le marqueur, jamais sur la clé de genre/style :
     une playlist gérée doit rester supprimable même quand plus rien ne permet
     de la rattacher à un couple genre/style.
+
+    `only` restreint la suppression aux identifiants choisis. Le filtre par
+    marqueur s'applique malgré tout : un identifiant désignant une playlist
+    non gérée n'est jamais supprimé, quelle que soit la demande.
     """
     log: list[str] = []
-    for playlist in sorted(
-        managed_playlists(remote, config.sync.marker), key=lambda item: item.title
-    ):
+    candidates = managed_playlists(remote, config.sync.marker)
+    if only is not None:
+        retained = set(only)
+        candidates = [p for p in candidates if p.playlist_id in retained]
+
+    for playlist in sorted(candidates, key=lambda item: item.title):
         log.append(
             ("[à blanc] " if dry_run else "")
             + f"supprimer « {playlist.title} » ({len(playlist.video_ids)} titres)"

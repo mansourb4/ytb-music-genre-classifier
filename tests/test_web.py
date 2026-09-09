@@ -488,3 +488,70 @@ def test_preview_exposes_the_description_in_parts(client):
     assert "rock'n'roll" in grunge["genre_text"]
     assert "Seattle" in grunge["style_text"]
     assert grunge["note"] is None
+
+
+# ---------------------------------------------- suppression choisie playlist
+
+
+def generated(client):
+    analyse(client)
+    wait(client, client.post("/api/apply", json={"sort_mode": "detaille", "confirm": True}))
+    return client.get("/api/purge/candidates").json()["playlists"]
+
+
+def test_purge_candidates_list_what_was_detected(client):
+    """La suppression étant irréversible, elle commence par montrer sa cible."""
+    client.youtube._playlists["PLperso"] = RemotePlaylist("PLperso", "Ma sélection", "à moi", ("g0",))
+    candidates = generated(client)
+
+    assert "Ma sélection" not in {c["title"] for c in candidates}
+    assert {"playlist_id", "title", "count", "thumbnail", "key"} <= set(candidates[0])
+    assert candidates[0]["count"] > 0
+    assert candidates == sorted(candidates, key=lambda c: c["title"])
+
+
+def test_listing_candidates_deletes_nothing(client):
+    before = len(generated(client))
+    assert len(client.get("/api/purge/candidates").json()["playlists"]) == before
+
+
+def test_only_the_chosen_playlists_are_deleted(client):
+    candidates = generated(client)
+    target = candidates[0]
+
+    job = wait(client, client.post("/api/purge", json={
+        "confirm": True, "playlist_ids": [target["playlist_id"]],
+    }))
+
+    assert job["result"]["deleted"] == 1
+    remaining = {p.title for p in client.youtube.list_playlists()}
+    assert target["title"] not in remaining
+    assert len(remaining) == len(candidates) - 1
+
+
+def test_an_unmanaged_playlist_is_never_deleted_even_if_asked(client):
+    """Le marqueur reste le dernier mot, quelle que soit la demande."""
+    perso = RemotePlaylist("PLperso", "Ma sélection", "à moi", ("g0",))
+    client.youtube._playlists["PLperso"] = perso
+    generated(client)
+
+    job = wait(client, client.post("/api/purge", json={
+        "confirm": True, "playlist_ids": ["PLperso"],
+    }))
+
+    assert job["result"]["deleted"] == 0
+    assert perso in client.youtube.list_playlists()
+
+
+def test_omitting_the_selection_still_deletes_everything(client):
+    generated(client)
+    wait(client, client.post("/api/purge", json={"confirm": True}))
+    assert client.youtube.list_playlists() == []
+
+
+def test_candidates_require_a_reachable_account(client, monkeypatch):
+    def failing():
+        raise RuntimeError("session expirée")
+
+    monkeypatch.setattr(client.youtube, "list_playlists", failing)
+    assert client.get("/api/purge/candidates").status_code == 400

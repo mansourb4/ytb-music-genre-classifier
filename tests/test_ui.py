@@ -320,3 +320,52 @@ def test_the_selected_source_total_is_shown(page):
 
     page.click("#sources-none")
     assert "0" in total.text_content()
+
+
+def test_the_purge_shows_what_it_found_before_deleting(page):
+    """La suppression est la seule opération irréversible : elle doit d'abord
+    montrer sa cible, et n'agir que sur ce qui reste coché."""
+    page.route("**/api/purge/candidates", lambda route: route.fulfill(
+        status=200, content_type="application/json",
+        body='{"marker": "\\u2731", "playlists": ['
+             '{"playlist_id": "PL1", "title": "Rock — Grunge", "count": 12,'
+             ' "thumbnail": null, "key": "rock/grunge"},'
+             '{"playlist_id": "PL2", "title": "Jazz — Modal", "count": 5,'
+             ' "thumbnail": null, "key": null}]}',
+    ))
+
+    assert page.locator("#purge-actions").is_hidden()
+    page.click("#purge-scan")
+    page.wait_for_selector(".purge-row")
+
+    assert page.locator(".purge-row").count() == 2
+    assert "2 sur 2" in page.locator("#purge-count").text_content()
+    # Une playlist que la base ne connaît pas est signalée comme telle.
+    assert page.locator(".purge-row .orphan").count() == 1
+
+    page.locator(".purge-row input").first.uncheck()
+    assert "1 sur 2" in page.locator("#purge-count").text_content()
+    assert page.evaluate("purgeSelection()") == ["PL2"]
+
+
+def test_nothing_selected_disables_the_deletion(page):
+    page.route("**/api/purge/candidates", lambda route: route.fulfill(
+        status=200, content_type="application/json",
+        body='{"marker": "\\u2731", "playlists": [{"playlist_id": "PL1", "title": "Rock",'
+             ' "count": 3, "thumbnail": null, "key": "rock"}]}',
+    ))
+    page.click("#purge-scan")
+    page.wait_for_selector(".purge-row")
+
+    page.click("#purge-none")
+    assert page.locator("#purge-btn").is_disabled()
+
+
+def test_an_account_without_generated_playlists_says_so(page):
+    page.route("**/api/purge/candidates", lambda route: route.fulfill(
+        status=200, content_type="application/json",
+        body='{"marker": "\\u2731", "playlists": []}',
+    ))
+    page.click("#purge-scan")
+    page.wait_for_function("document.getElementById('purge-msg').textContent.includes('Aucune')")
+    assert page.locator("#purge-actions").is_hidden()

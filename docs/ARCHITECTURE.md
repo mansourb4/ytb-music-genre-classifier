@@ -151,10 +151,14 @@ du plan, de l'état distant et des titres concernés. Le CLI l'affiche, l'API we
 le sérialise ; l'écriture réutilise le même calcul. Aucun appel d'écriture n'a
 lieu sans confirmation explicite (`--execute`, ou `confirm: true` côté API).
 
-`sync.purge` fournit l'annulation complète : suppression de toutes les
-playlists portant le marqueur, et d'elles seules. C'est la seule opération
-destructrice du projet ; elle est irréversible côté YouTube Music, d'où la même
-exigence de confirmation.
+`sync.purge` fournit l'annulation : suppression des playlists portant le
+marqueur, et d'elles seules. C'est la seule opération destructrice du projet et
+elle est irréversible côté YouTube Music, d'où trois précautions plutôt qu'une :
+la confirmation explicite, la présentation préalable des playlists détectées
+(`GET /api/purge/candidates`, qui ne supprime rien), et une sélection
+transmise en identifiants. Le filtre par marqueur s'applique malgré tout à
+cette sélection : un identifiant désignant une playlist non gérée n'est jamais
+supprimé, quelle que soit la demande.
 
 ### 9. La base est protégée par un verrou
 
@@ -292,10 +296,10 @@ regroupement — pour être lue plutôt que déchiffrée.
 
 ## Tests
 
-261 tests, aucun appel réseau, y compris l'API web complète (aperçu,
+274 tests, aucun appel réseau, y compris l'API web complète (aperçu,
 application, annulation), son contrôle d'accès et les quatre voies de connexion.
 
-Vingt et un d'entre eux chargent l'interface dans un vrai navigateur (`tests/test_ui.py`).
+Vingt-quatre d'entre eux chargent l'interface dans un vrai navigateur (`tests/test_ui.py`).
 Le câblage du DOM échappe aux tests Python : deux défauts d'onglets sont passés
 au travers de la suite avant d'être vus à l'écran. Ces tests sont ignorés
 lorsque Playwright ou son navigateur sont absents, pour que la suite reste

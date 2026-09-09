@@ -207,8 +207,9 @@ compte tant que la confirmation n'a pas été donnée**, et l'aperçu montre
 exactement ce qui sera créé : nom de chaque playlist, nombre de titres,
 description complète et détail de chaque morceau.
 
-Une section « Annuler » supprime en un clic toutes les playlists générées et
-rend le compte à son état initial.
+Une section « Annuler » liste d'abord les playlists que l'outil reconnaît comme
+siennes — avec leur pochette et leur nombre de titres — et ne supprime que
+celles restées cochées. Rien n'est effacé avant cette sélection.
 
 L'interface est **locale par défaut** (`127.0.0.1`) : elle manipule les
 identifiants de session YouTube Music, qui ne doivent jamais transiter par un
@@ -250,8 +251,11 @@ ytmgc purge --execute   # supprime les playlists générées (annulation complè
   les playlists dont la description porte son marqueur — un simple `✱` en
   dernière ligne ; tout le reste lui est invisible.
 - **Idempotent.** Un second run sans changement ne produit aucune écriture.
-- **Annulable.** `ytmgc purge` (ou le bouton « Annuler » de l'interface)
-  supprime toutes les playlists générées, et seulement celles-là.
+- **Annulable, et jamais à l'aveugle.** L'interface montre les playlists
+  détectées avant d'en supprimer aucune, et n'agit que sur la sélection.
+  `ytmgc purge` fait de même en simulant par défaut. Une playlist sans le
+  marqueur n'est jamais supprimée, même si son identifiant est explicitement
+  demandé.
 - **Économe en appels.** Le cache Discogs est indexé par (artiste, album) : une
   bibliothèque de 5 000 titres issus de 800 albums coûte ~800 requêtes, et zéro
   au run suivant. C'est ce qui rend supportable la limite de 60 requêtes/minute.
@@ -286,7 +290,7 @@ sans aucune écriture ni appel réseau.
 ## Développement
 
 ```bash
-python -m pytest        # 261 tests, aucun appel réseau
+python -m pytest        # 274 tests, aucun appel réseau
 ```
 
 Les API externes sont derrière des adaptateurs (`src/ytmgc/sources/`) ; toute la

@@ -143,6 +143,12 @@ ul.tracks { list-style: none; margin: 0; padding: 0; }
 .source .count { color: var(--muted); font-size: .82rem; font-variant-numeric: tabular-nums; }
 .source-group { border-top: 1px solid var(--border); margin-top: .7rem; padding-top: .5rem; }
 .source-group:first-child { border-top: 0; margin-top: 0; padding-top: 0; }
+.purge-row { display: flex; align-items: center; gap: .6rem; padding: .35rem 0;
+  border-top: 1px solid var(--border); }
+.purge-row:first-child { border-top: 0; }
+.purge-row label { flex: 1; cursor: pointer; }
+.purge-row .count { color: var(--muted); font-size: .82rem; font-variant-numeric: tabular-nums; }
+.purge-row .orphan { color: var(--warn); font-size: .75rem; }
 .total { margin: 0 0 .9rem; font-size: 1.05rem; }
 .total b { font-size: 1.45rem; font-weight: 600; letter-spacing: -.02em; }
 .total span { color: var(--muted); font-size: .85rem; }
@@ -322,10 +328,17 @@ select {
 
 <section class="danger-zone">
   <h2>Annuler</h2>
-  <p class="msg">Supprime toutes les playlists générées par l'outil et rend le compte à son état initial. Les playlists personnelles sont conservées. <b>Cette action est irréversible.</b></p>
+  <p class="msg">Supprime des playlists créées par l'outil. Les playlists personnelles ne sont jamais proposées ni supprimées. <b>Cette action est irréversible.</b></p>
   <div class="row spacer">
-    <button class="danger" id="purge-btn">Supprimer les playlists générées</button>
+    <button id="purge-scan">Chercher les playlists générées</button>
     <span class="msg" id="purge-msg"></span>
+  </div>
+  <div id="purge-list" class="spacer"></div>
+  <div id="purge-actions" class="row spacer hidden">
+    <button class="danger" id="purge-btn">Supprimer la sélection</button>
+    <button id="purge-all">Tout cocher</button>
+    <button id="purge-none">Tout décocher</button>
+    <span class="msg" id="purge-count"></span>
   </div>
 </section>
 
@@ -431,8 +444,13 @@ function watchJob(jobId) {
 }
 
 function setBusy(busy) {
-  ["analyse-btn", "apply-btn", "purge-btn", "preview-btn"].forEach((id) => { $(id).disabled = busy; });
-  if (!busy) $("apply-btn").disabled = !sortMode;
+  ["analyse-btn", "apply-btn", "purge-btn", "preview-btn", "purge-scan"].forEach((id) => {
+    $(id).disabled = busy;
+  });
+  if (!busy) {
+    $("apply-btn").disabled = !sortMode;
+    updatePurgeCount();
+  }
 }
 
 async function loadModes() {
@@ -881,11 +899,77 @@ $("apply-btn").addEventListener("click", async () => {
   }
 });
 
+function purgeSelection() {
+  return Array.from(document.querySelectorAll("#purge-list input:checked")).map((i) => i.value);
+}
+
+function updatePurgeCount() {
+  const chosen = purgeSelection().length;
+  const total = document.querySelectorAll("#purge-list input").length;
+  $("purge-count").textContent = `${chosen} sur ${total} sélectionnée(s)`;
+  $("purge-btn").disabled = chosen === 0;
+}
+
+$("purge-scan").addEventListener("click", async () => {
+  $("purge-msg").textContent = "Recherche…";
+  $("purge-msg").classList.remove("error");
+  try {
+    const { playlists, marker } = await api("/api/purge/candidates");
+    if (!playlists.length) {
+      $("purge-list").innerHTML = "";
+      $("purge-actions").classList.add("hidden");
+      $("purge-msg").textContent = "Aucune playlist générée par l'outil sur ce compte.";
+      return;
+    }
+    $("purge-msg").textContent =
+      `${playlists.length} playlist(s) portant le marqueur « ${marker} ». Décoche celles à garder.`;
+    $("purge-list").innerHTML = playlists.map((pl) => {
+      const cover = pl.thumbnail
+        ? `<img class="cover" src="${escapeHtml(pl.thumbnail)}" alt="" loading="lazy">`
+        : `<span class="cover empty"></span>`;
+      // Une playlist inconnue de la base a été créée ailleurs, ou la base a été
+      // perdue : le signaler évite une suppression faite à l'aveugle.
+      const orphan = pl.key ? "" : `<span class="orphan">hors base locale</span>`;
+      const id = `purge-${pl.playlist_id}`;
+      return `<div class="purge-row">
+        <input type="checkbox" id="${id}" value="${escapeHtml(pl.playlist_id)}" checked>
+        ${cover}
+        <label for="${id}">${escapeHtml(pl.title)}</label>
+        ${orphan}
+        <span class="count">${pl.count} titres</span>
+      </div>`;
+    }).join("");
+    $("purge-actions").classList.remove("hidden");
+    updatePurgeCount();
+  } catch (error) {
+    $("purge-msg").textContent = error.message;
+    $("purge-msg").classList.add("error");
+  }
+});
+
+$("purge-list").addEventListener("change", updatePurgeCount);
+$("purge-all").addEventListener("click", () => {
+  document.querySelectorAll("#purge-list input").forEach((i) => { i.checked = true; });
+  updatePurgeCount();
+});
+$("purge-none").addEventListener("click", () => {
+  document.querySelectorAll("#purge-list input").forEach((i) => { i.checked = false; });
+  updatePurgeCount();
+});
+
 $("purge-btn").addEventListener("click", async () => {
-  if (!confirm("Supprimer définitivement toutes les playlists générées par l'outil ?")) return;
+  const playlist_ids = purgeSelection();
+  if (!playlist_ids.length) return;
+  const names = Array.from(document.querySelectorAll("#purge-list input:checked"))
+    .map((i) => i.closest(".purge-row").querySelector("label").textContent);
+  if (!confirm(`Supprimer définitivement ${playlist_ids.length} playlist(s) ?\n\n${names.join("\n")}`)) return;
   setBusy(true);
   try {
-    watchJob((await api("/api/purge", { confirm: true })).id);
+    const job = await api("/api/purge", { confirm: true, playlist_ids });
+    $("purge-list").innerHTML = "";
+    $("purge-actions").classList.add("hidden");
+    $("purge-msg").textContent = "";
+    watchJob(job.id);
   } catch (error) {
     $("purge-msg").textContent = error.message;
     $("purge-msg").classList.add("error");

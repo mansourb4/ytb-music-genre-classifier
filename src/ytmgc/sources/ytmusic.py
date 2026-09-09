@@ -184,6 +184,7 @@ class YouTubeMusicClient:
             set_video_ids={
                 t["videoId"]: t["setVideoId"] for t in tracks if t.get("setVideoId")
             },
+            thumbnail=_thumbnail(data),
         )
         self._playlist_cache[playlist_id] = playlist
         return playlist

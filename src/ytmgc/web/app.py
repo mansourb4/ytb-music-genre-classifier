@@ -105,6 +105,8 @@ class ApplyRequest(BaseModel):
 
 class PurgeRequest(BaseModel):
     confirm: bool = False
+    #: Playlists à supprimer. Absent = toutes celles portant le marqueur.
+    playlist_ids: list[str] | None = None
 
 
 def create_app(services: Services) -> FastAPI:
@@ -428,6 +430,39 @@ def create_app(services: Services) -> FastAPI:
 
     # ----------------------------------------------------------- annulation
 
+    @app.get("/api/purge/candidates")
+    def purge_candidates() -> dict:
+        """Playlists que l'outil reconnaît comme siennes.
+
+        Rien n'est supprimé ici : cette liste est là pour être examinée, la
+        suppression étant la seule opération irréversible du projet.
+        """
+        from ytmgc.sync import managed_playlists
+
+        try:
+            remote = services.youtube_factory(config).list_playlists()
+        except Exception as exc:  # noqa: BLE001 - compte non joignable
+            raise HTTPException(400, f"Compte non joignable : {exc}") from exc
+
+        known = {
+            playlist_id: key for key, (playlist_id, _) in repository.managed_playlists().items()
+        }
+        return {
+            "playlists": [
+                {
+                    "playlist_id": playlist.playlist_id,
+                    "title": playlist.title,
+                    "count": len(playlist.video_ids),
+                    "thumbnail": playlist.thumbnail,
+                    "key": known.get(playlist.playlist_id),
+                }
+                for playlist in sorted(
+                    managed_playlists(remote, config.sync.marker), key=lambda item: item.title
+                )
+            ],
+            "marker": config.sync.marker,
+        }
+
     @app.post("/api/purge")
     def purge_playlists(request: PurgeRequest) -> dict:
         """Supprime les playlists générées. Irréversible, d'où la confirmation."""
@@ -442,6 +477,7 @@ def create_app(services: Services) -> FastAPI:
             log = purge(
                 client.list_playlists(), client, config,
                 dry_run=False, on_deleted=repository.forget_playlist,
+                only=request.playlist_ids,
             )
             job.total = job.progress = len(log)
             job.message = f"{len(log)} playlist(s) supprimée(s)."

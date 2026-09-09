@@ -106,6 +106,7 @@ class RemotePlaylist:
     video_ids: tuple[str, ...] = ()
     #: Identifiants d'items nécessaires à la suppression (video_id -> setVideoId).
     set_video_ids: dict[str, str] = field(default_factory=dict)
+    thumbnail: str | None = None
 
 
 class Op(str, Enum):
