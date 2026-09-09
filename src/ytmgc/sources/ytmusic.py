@@ -132,6 +132,26 @@ class YouTubeMusicClient:
         tracks = [_to_track(entry, source) for entry in raw]
         return [track for track in tracks if track is not None]
 
+    def count_source(self, source: str) -> int | None:
+        """Nombre de titres d'une source, sans la lire entièrement quand c'est possible.
+
+        Les playlists — les titres likés en sont une, « LM » — annoncent leur
+        `trackCount` dans leur en-tête : un appel suffit. La bibliothèque et les
+        mises en ligne, elles, ne l'annoncent nulle part et doivent être
+        parcourues.
+
+        Le champ `count` de la liste des playlists, lui, n'est pas exploitable :
+        `ytmusicapi` le construit en prenant le premier mot d'un sous-titre, ce
+        qui donne « 2 » pour « 2 188 titres », et un mot quelconque selon la
+        langue de l'interface.
+        """
+        if source == "liked":
+            return self._api.get_playlist("LM", limit=1).get("trackCount")
+        if source.startswith("playlist:"):
+            playlist_id = source.split(":", 1)[1]
+            return self._api.get_playlist(playlist_id, limit=1).get("trackCount")
+        return len(self._scan_source(source))
+
     def list_playlist_summaries(self) -> list[dict[str, Any]]:
         """Playlists de l'utilisateur, sans lire leur contenu.
 
@@ -147,7 +167,6 @@ class YouTubeMusicClient:
                 {
                     "playlist_id": playlist_id,
                     "title": entry.get("title") or "(sans titre)",
-                    "count": entry.get("count"),
                     "thumbnail": _thumbnail(entry),
                 }
             )

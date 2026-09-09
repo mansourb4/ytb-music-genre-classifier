@@ -291,15 +291,16 @@ regroupement — pour être lue plutôt que déchiffrée.
 | YouTube Music : pas de dossier | Hiérarchie encodée dans le nom. |
 | YouTube Music : 5 000 titres/playlist | Les seuils de repli maintiennent les playlists loin du plafond. |
 | YouTube Music : suppression par `setVideoId` | `sync` relit la playlist avant tout retrait. |
+| YouTube Music : pas de décompte dans la liste des playlists | Le champ `count` de `ytmusicapi` est le premier mot d'un sous-titre — « 2 » pour « 2 188 titres », un mot quelconque selon la langue. Il est ignoré : chaque source est mesurée par `count_source`, qui lit le `trackCount` d'une playlist en un appel et ne parcourt réellement que la bibliothèque et les mises en ligne, faute d'un total annoncé. |
 | YouTube Music : API interne, non officielle | Toute la dépendance est isolée dans un seul adaptateur, importé paresseusement. |
 | YouTube Music : session par cookies de navigateur | Le fichier d'authentification expire au bout de quelques semaines et se renouvelle depuis l'interface. Une session utilisée depuis une IP de centre de données déclenche plus facilement un contrôle Google : le Codespace convient à un usage ponctuel, moins à un service permanent. |
 
 ## Tests
 
-270 tests, aucun appel réseau, y compris l'API web complète (aperçu,
+276 tests, aucun appel réseau, y compris l'API web complète (aperçu,
 application, annulation), son contrôle d'accès et les quatre voies de connexion.
 
-Vingt-quatre d'entre eux chargent l'interface dans un vrai navigateur (`tests/test_ui.py`).
+Vingt-cinq d'entre eux chargent l'interface dans un vrai navigateur (`tests/test_ui.py`).
 Le câblage du DOM échappe aux tests Python : deux défauts d'onglets sont passés
 au travers de la suite avant d'être vus à l'écran. Ces tests sont ignorés
 lorsque Playwright ou son navigateur sont absents, pour que la suite reste

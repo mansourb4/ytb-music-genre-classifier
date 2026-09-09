@@ -26,6 +26,7 @@ class ScanningClient(FakePlaylistClient):
         self.library = library
         self.summaries = []
         self.scanned = []
+        self.counted = []
 
     def scan(self, sources):
         self.scanned.append(list(sources))
@@ -33,6 +34,12 @@ class ScanningClient(FakePlaylistClient):
 
     def list_playlist_summaries(self):
         return list(self.summaries)
+
+    def count_source(self, source):
+        self.counted.append(source)
+        if source == "library":
+            return len(self.library)
+        return {"liked": 3, "uploads": 0}.get(source, 42)
 
 
 @pytest.fixture
@@ -332,8 +339,8 @@ def test_a_pasted_curl_command_connects_the_account(client):
 
 def test_sources_list_offers_library_and_user_playlists(client):
     client.youtube.summaries = [
-        {"playlist_id": "PL1", "title": "Road trip", "count": 42},
-        {"playlist_id": "PL2", "title": "Chill", "count": 7},
+        {"playlist_id": "PL1", "title": "Road trip"},
+        {"playlist_id": "PL2", "title": "Chill"},
     ]
     payload = client.get("/api/sources").json()
 
@@ -349,8 +356,8 @@ def test_generated_playlists_are_not_offered_as_sources(client):
     wait(client, client.post("/api/apply", json={"sort_mode": "detaille", "confirm": True}))
     created = client.youtube.list_playlists()
     client.youtube.summaries = [
-        {"playlist_id": created[0].playlist_id, "title": created[0].title, "count": 5},
-        {"playlist_id": "PLperso", "title": "Ma sélection", "count": 3},
+        {"playlist_id": created[0].playlist_id, "title": created[0].title},
+        {"playlist_id": "PLperso", "title": "Ma sélection"},
     ]
 
     payload = client.get("/api/sources").json()
@@ -555,3 +562,46 @@ def test_candidates_require_a_reachable_account(client, monkeypatch):
 
     monkeypatch.setattr(client.youtube, "list_playlists", failing)
     assert client.get("/api/purge/candidates").status_code == 400
+
+
+# ------------------------------------------------------ décompte des sources
+
+
+def test_each_source_can_be_counted(client):
+    assert client.get("/api/sources/count?source=library").json() == {
+        "source": "library", "count": 10
+    }
+    assert client.get("/api/sources/count?source=liked").json()["count"] == 3
+    assert client.get("/api/sources/count?source=playlist:PL1").json()["count"] == 42
+
+
+def test_a_count_is_measured_once_then_remembered(client):
+    """Compter la bibliothèque suppose de la parcourir : à ne pas refaire à
+    chaque affichage."""
+    client.get("/api/sources/count?source=library")
+    client.get("/api/sources/count?source=library")
+    assert client.youtube.counted == ["library"]
+
+
+def test_counting_an_unknown_source_is_refused(client):
+    response = client.get("/api/sources/count?source=dossier")
+    assert response.status_code == 400
+    assert "Source inconnue" in response.json()["detail"]
+
+
+def test_a_failing_count_is_reported_rather_than_guessed(client, monkeypatch):
+    def failing(_source):
+        raise RuntimeError("playlist supprimée")
+
+    monkeypatch.setattr(client.youtube, "count_source", failing)
+    response = client.get("/api/sources/count?source=liked")
+    assert response.status_code == 400
+    assert "playlist supprimée" in response.json()["detail"]
+
+
+def test_the_unreliable_playlist_count_is_no_longer_exposed(client):
+    """ytmusicapi construit `count` avec le premier mot d'un sous-titre : il
+    vaut « 2 » pour « 2 188 titres », et un mot quelconque selon la langue."""
+    client.youtube.summaries = [{"playlist_id": "PL1", "title": "Favorite Songs", "count": "2"}]
+    playlists = client.get("/api/sources").json()["playlists"]
+    assert "count" not in playlists[0]

@@ -787,37 +787,58 @@ function updateSourceTotal() {
     $("sources-total").innerHTML = `<b>0</b> titre sélectionné <span>— coche au moins une source</span>`;
     return;
   }
-  const counted = checked.filter((i) => i.dataset.count);
-  const total = counted.reduce((sum, i) => sum + Number(i.dataset.count), 0);
-  // La bibliothèque et les likes n'annoncent pas leur taille : elle n'est
-  // connue qu'après lecture. Mieux vaut le dire que d'afficher un total faux.
-  const unknown = checked.length - counted.length;
-  if (!counted.length) {
-    // Annoncer « 0 titre » serait faux : ces sources en contiennent, on ignore
-    // seulement combien avant de les avoir lues.
-    $("sources-total").innerHTML =
-      `<b>${checked.length}</b> source(s) cochée(s) <span>— leur taille n'est connue qu'après lecture</span>`;
-    return;
+
+  let total = 0;
+  let pending = 0;
+  for (const input of checked) {
+    const count = sourceCounts.get(input.value);
+    // Un décompte encore en cours ou indisponible ne doit pas fausser le total
+    // en s'y ajoutant comme un zéro.
+    if (Number.isFinite(count)) total += count;
+    else pending += 1;
   }
-  const suffix = unknown
-    ? `<span>+ ${unknown} source(s) de taille inconnue avant lecture</span>`
+
+  const suffix = pending
+    ? `<span>+ ${pending} source(s) en cours de décompte</span>`
     : "";
   $("sources-total").innerHTML =
-    `<b>${total}</b> titre(s) dans ${counted.length} playlist(s) cochée(s) ${suffix}`;
+    `<b>${total}</b> titre(s) dans ${checked.length} source(s) cochée(s) ${suffix}`;
 }
+
+const sourceCounts = new Map();
 
 function sourceRow(entry, checked) {
   const id = `src-${entry.key.replace(/[^\w-]/g, "_")}`;
-  const count = entry.count ? `<span class="count">${entry.count} titres</span>` : "";
   const cover = entry.thumbnail
     ? `<img class="cover" src="${escapeHtml(entry.thumbnail)}" alt="" loading="lazy">`
     : "";
-  const countAttr = entry.count ? ` data-count="${entry.count}"` : "";
-  return `<div class="source">
-    <input type="checkbox" id="${id}" value="${entry.key}"${countAttr} ${checked ? "checked" : ""}>
+  return `<div class="source" data-key="${escapeHtml(entry.key)}">
+    <input type="checkbox" id="${id}" value="${entry.key}" ${checked ? "checked" : ""}>
     ${cover}
-    <label for="${id}">${escapeHtml(entry.label)}</label>${count}
+    <label for="${id}">${escapeHtml(entry.label)}</label>
+    <span class="count" data-count-for="${escapeHtml(entry.key)}">…</span>
   </div>`;
+}
+
+async function measureSources() {
+  // Les sources cochées d'abord : ce sont elles qui alimentent le total.
+  const rows = Array.from(document.querySelectorAll("#sources-list input"));
+  const ordered = [...rows.filter((i) => i.checked), ...rows.filter((i) => !i.checked)];
+
+  for (const input of ordered) {
+    const key = input.value;
+    if (sourceCounts.has(key)) continue;
+    const cell = document.querySelector(`[data-count-for="${CSS.escape(key)}"]`);
+    try {
+      const { count } = await api(`/api/sources/count?source=${encodeURIComponent(key)}`);
+      sourceCounts.set(key, count);
+      if (cell) cell.textContent = count === null ? "—" : `${count} titres`;
+    } catch (error) {
+      sourceCounts.set(key, null);
+      if (cell) cell.textContent = "—";
+    }
+    updateSourceTotal();
+  }
 }
 
 async function loadSources() {
@@ -834,6 +855,7 @@ async function loadSources() {
       : "Compte non joignable : seules les sources générales sont proposées.";
     $("sources-list").addEventListener("change", updateSourceTotal);
     updateSourceTotal();
+    measureSources();
   } catch (error) {
     $("sources-list").textContent = "Connecte d'abord ton compte pour choisir les sources.";
   }

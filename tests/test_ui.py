@@ -369,3 +369,37 @@ def test_an_account_without_generated_playlists_says_so(page):
     page.click("#purge-scan")
     page.wait_for_function("document.getElementById('purge-msg').textContent.includes('Aucune')")
     assert page.locator("#purge-actions").is_hidden()
+
+
+def test_source_counts_are_measured_and_summed(page):
+    """Régression : le décompte annoncé par ytmusicapi valait « 2 » pour une
+    playlist de 2 188 titres, et un mot pour les playlists automatiques —
+    donnant NaN une fois converti."""
+    counts = {"library": 25, "liked": 312, "uploads": 0, "playlist:PL1": 2188}
+    page.route("**/api/sources", lambda route: route.fulfill(
+        status=200, content_type="application/json",
+        body='{"reachable": true, "defaults": ["library", "liked"],'
+             ' "special": [{"key": "library", "label": "Bibliothèque"},'
+             '             {"key": "liked", "label": "Titres likés"},'
+             '             {"key": "uploads", "label": "Mises en ligne"}],'
+             ' "playlists": [{"key": "playlist:PL1", "label": "Favorite Songs", "thumbnail": null}]}',
+    ))
+    page.route("**/api/sources/count**", lambda route: route.fulfill(
+        status=200, content_type="application/json",
+        body='{"source": "x", "count": %d}' % counts[
+            route.request.url.split("source=")[1].replace("%3A", ":")
+        ],
+    ))
+    page.evaluate("() => { sourceCounts.clear(); }")
+    page.evaluate("loadSources()")
+
+    page.wait_for_function(
+        "!document.getElementById('sources-total').textContent.includes('en cours')", timeout=15000
+    )
+    total = page.locator("#sources-total").text_content()
+    assert "337" in total  # 25 + 312, les deux sources cochées par défaut
+    assert "NaN" not in total
+
+    page.check('#sources-list input[value="playlist:PL1"]')
+    assert "2525" in page.locator("#sources-total").text_content()
+    assert "2188 titres" in page.locator("#sources-list").text_content()

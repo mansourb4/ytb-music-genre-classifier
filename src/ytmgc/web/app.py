@@ -12,7 +12,7 @@ n'expose aucune authentification propre.
 
 from __future__ import annotations
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any, Callable
 
@@ -44,6 +44,9 @@ class Services:
     youtube_factory: Callable[[Config], Any]
     discogs_factory: Callable[[Config], Any]
     jobs: JobRunner
+    #: Décomptes déjà mesurés, par source. Ils ne varient guère au fil d'une
+    #: session, et les remesurer coûterait un appel par affichage.
+    counts: dict[str, int | None] = field(default_factory=dict)
 
 
 def _default_youtube(config: Config):
@@ -303,7 +306,6 @@ def create_app(services: Services) -> FastAPI:
             {
                 "key": f"playlist:{item['playlist_id']}",
                 "label": item["title"],
-                "count": item.get("count"),
                 "thumbnail": item.get("thumbnail"),
             }
             for item in summaries
@@ -311,6 +313,28 @@ def create_app(services: Services) -> FastAPI:
         ]
         return {"special": special, "playlists": playlists,
                 "defaults": config.youtube.sources, "reachable": True}
+
+    @app.get("/api/sources/count")
+    def count_source(source: str) -> dict:
+        """Nombre de titres d'une source, mesuré puis mémorisé.
+
+        Interrogé source par source depuis l'interface : les playlists
+        répondent en un appel, la bibliothèque demande d'être parcourue, et
+        rien ne doit bloquer l'affichage pendant ce temps.
+        """
+        from ytmgc.sources.ytmusic import validate_sources
+
+        try:
+            validate_sources([source])
+        except ValueError as exc:
+            raise HTTPException(400, str(exc)) from exc
+
+        if source not in services.counts:
+            try:
+                services.counts[source] = services.youtube_factory(config).count_source(source)
+            except Exception as exc:  # noqa: BLE001 - compte non joignable, source disparue
+                raise HTTPException(400, f"Décompte impossible : {exc}") from exc
+        return {"source": source, "count": services.counts[source]}
 
     # ------------------------------------------------------------ analyse
 
