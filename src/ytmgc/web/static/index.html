@@ -105,6 +105,25 @@ textarea {
 .spacer { margin-top: .9rem; }
 .danger-zone { border-color: var(--danger); background: var(--danger-soft); }
 .hidden { display: none !important; }
+#job-box {
+  position: fixed; left: 0; right: 0; bottom: 0; z-index: 10;
+  background: var(--surface); border-top: 1px solid var(--border);
+  box-shadow: 0 -4px 16px rgba(0,0,0,.08);
+}
+.job-inner { max-width: 60rem; margin: 0 auto; padding: .8rem 1rem 1rem; }
+.job-head { display: flex; justify-content: space-between; align-items: baseline; gap: 1rem; }
+.job-head b { font-size: .95rem; }
+#job-counts { font-variant-numeric: tabular-nums; white-space: nowrap; }
+#job-msg { margin: .2rem 0 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.progress i.indeterminate {
+  width: 35% !important; animation: slide 1.4s ease-in-out infinite;
+}
+@keyframes slide { 0% { margin-left: -35%; } 100% { margin-left: 100%; } }
+.source { display: flex; align-items: center; gap: .5rem; padding: .3rem 0; }
+.source label { flex: 1; cursor: pointer; }
+.source .count { color: var(--muted); font-size: .82rem; font-variant-numeric: tabular-nums; }
+.source-group { border-top: 1px solid var(--border); margin-top: .7rem; padding-top: .5rem; }
+.source-group:first-child { border-top: 0; margin-top: 0; padding-top: 0; }
 ol.steps { margin: .4rem 0 .9rem; padding-left: 1.2rem; color: var(--muted); font-size: .86rem; }
 ol.steps li { margin-bottom: .25rem; }
 .tabs { display: flex; gap: .4rem; margin-bottom: 1rem; flex-wrap: wrap; }
@@ -240,21 +259,32 @@ select {
 </section>
 
 <section>
-  <h2><span class="step">2</span>Analyser la bibliothèque</h2>
+  <h2><span class="step">2</span>Choisir ce qui sera analysé</h2>
+  <div id="sources-list" class="msg">Chargement des sources…</div>
+  <div class="row spacer">
+    <button id="sources-all">Tout cocher</button>
+    <button id="sources-none">Tout décocher</button>
+    <span class="msg" id="sources-msg"></span>
+  </div>
+  <p class="hint spacer">Seules les sources cochées seront lues. Les playlists créées par l'outil ne sont pas proposées : les analyser reviendrait à reclasser sa propre sortie.</p>
+</section>
+
+<section>
+  <h2><span class="step">3</span>Analyser</h2>
   <div class="row">
     <button class="primary" id="analyse-btn">Lancer l'analyse</button>
     <span class="msg" id="analyse-msg"></span>
   </div>
-  <p class="hint spacer">Lit la bibliothèque, puis interroge Discogs pour chaque album. La première analyse peut prendre plusieurs minutes ; les suivantes sont servies par le cache.</p>
+  <p class="hint spacer">Lit les sources choisies, puis interroge Discogs pour chaque album. Compte environ une seconde par album au premier passage ; les analyses suivantes sont servies par le cache et sont quasi instantanées.</p>
 </section>
 
 <section>
-  <h2><span class="step">3</span>Choisir le type de tri</h2>
+  <h2><span class="step">4</span>Choisir le type de tri</h2>
   <div class="modes" id="modes"></div>
 </section>
 
 <section>
-  <h2><span class="step">4</span>Aperçu du résultat</h2>
+  <h2><span class="step">5</span>Aperçu du résultat</h2>
   <div class="row">
     <button id="preview-btn">Calculer l'aperçu</button>
     <span class="msg" id="preview-msg"></span>
@@ -264,7 +294,7 @@ select {
 </section>
 
 <section>
-  <h2><span class="step">5</span>Appliquer</h2>
+  <h2><span class="step">6</span>Appliquer</h2>
   <div class="row">
     <button class="primary" id="apply-btn" disabled>Appliquer à mon compte</button>
     <span class="msg" id="apply-msg"></span>
@@ -281,12 +311,17 @@ select {
   </div>
 </section>
 
+<!-- Bandeau fixe : le panneau se trouvait en bas de page, hors écran, donc
+     invisible au moment précis où l'utilisateur attend un signe de vie. -->
 <div id="job-box" class="hidden">
-  <section>
-    <h2 id="job-kind">Traitement</h2>
+  <div class="job-inner">
+    <div class="job-head">
+      <b id="job-kind">Traitement</b>
+      <span class="msg" id="job-counts"></span>
+    </div>
     <div class="progress"><i id="job-bar"></i></div>
     <p class="msg" id="job-msg"></p>
-  </section>
+  </div>
 </div>
 </div>
 
@@ -325,21 +360,47 @@ async function refreshStatus() {
   return s;
 }
 
+function humanDuration(seconds) {
+  if (!isFinite(seconds) || seconds < 0) return "";
+  if (seconds < 60) return `${Math.round(seconds)} s`;
+  const minutes = Math.round(seconds / 60);
+  return minutes < 60 ? `${minutes} min` : `${Math.floor(minutes / 60)} h ${minutes % 60} min`;
+}
+
+function jobCounts(job) {
+  if (!job.total) return job.elapsed_s ? `écoulé : ${humanDuration(job.elapsed_s)}` : "";
+  const done = `${job.progress} / ${job.total}`;
+  if (!job.progress || job.status !== "en cours") return done;
+  // Estimation par simple règle de trois : suffisant pour situer l'attente.
+  const remaining = (job.elapsed_s / job.progress) * (job.total - job.progress);
+  return `${done} · encore ~${humanDuration(remaining)}`;
+}
+
 function watchJob(jobId) {
   clearInterval(pollTimer);
   $("job-box").classList.remove("hidden");
   const tick = async () => {
     const job = await api(`/api/jobs/${jobId}`);
-    $("job-kind").textContent = job.kind;
+    $("job-kind").textContent = job.kind.charAt(0).toUpperCase() + job.kind.slice(1);
+    $("job-counts").textContent = jobCounts(job);
     $("job-msg").textContent = job.error ? `Échec : ${job.error}` : job.message || "…";
     $("job-msg").classList.toggle("error", job.status === "échoué");
-    const ratio = job.total ? Math.round((job.progress / job.total) * 100) : (job.status === "terminé" ? 100 : 8);
-    $("job-bar").style.width = `${ratio}%`;
-    if (job.status !== "en cours") {
+
+    // Sans total connu (phase de lecture), une barre qui défile vaut mieux
+    // qu'une barre figée : elle dit que le travail avance.
+    const running = job.status === "en cours";
+    const indeterminate = running && !job.total;
+    $("job-bar").classList.toggle("indeterminate", indeterminate);
+    if (!indeterminate) {
+      const ratio = job.total ? Math.round((job.progress / job.total) * 100) : (running ? 5 : 100);
+      $("job-bar").style.width = `${ratio}%`;
+    }
+
+    if (!running) {
       clearInterval(pollTimer);
       setBusy(false);
       await refreshStatus();
-      if (job.status === "terminé") setTimeout(() => $("job-box").classList.add("hidden"), 2500);
+      if (job.status === "terminé") setTimeout(() => $("job-box").classList.add("hidden"), 6000);
     }
   };
   tick();
@@ -442,6 +503,7 @@ $("session-btn").addEventListener("click", async () => {
     const { source } = await api("/api/connect/browser-session", { browser: $("browser-choice").value || null });
     $("session-msg").textContent = `Session reprise depuis ${source}.`;
     await refreshStatus();
+    await loadSources();
   } catch (error) {
     $("session-msg").textContent = error.message;
     $("session-msg").classList.add("error");
@@ -557,6 +619,7 @@ $("connect-btn").addEventListener("click", async () => {
     $("headers").value = "";
     $("connect-msg").textContent = "Compte connecté.";
     await refreshStatus();
+    await loadSources();
   } catch (error) {
     $("connect-msg").textContent = error.message;
     $("connect-msg").classList.add("error");
@@ -568,10 +631,55 @@ $("reconnect").addEventListener("click", () => {
   $("connect-form").classList.remove("hidden");
 });
 
+function selectedSources() {
+  return Array.from(document.querySelectorAll("#sources-list input:checked")).map((i) => i.value);
+}
+
+function sourceRow(entry, checked) {
+  const id = `src-${entry.key.replace(/[^\w-]/g, "_")}`;
+  const count = entry.count ? `<span class="count">${entry.count} titres</span>` : "";
+  return `<div class="source">
+    <input type="checkbox" id="${id}" value="${entry.key}" ${checked ? "checked" : ""}>
+    <label for="${id}">${escapeHtml(entry.label)}</label>${count}
+  </div>`;
+}
+
+async function loadSources() {
+  try {
+    const data = await api("/api/sources");
+    const defaults = new Set(data.defaults || []);
+    const special = data.special.map((entry) => sourceRow(entry, defaults.has(entry.key))).join("");
+    const playlists = data.playlists.length
+      ? `<div class="source-group">${data.playlists.map((entry) => sourceRow(entry, false)).join("")}</div>`
+      : "";
+    $("sources-list").innerHTML = `<div class="source-group">${special}</div>${playlists}`;
+    $("sources-msg").textContent = data.reachable
+      ? ""
+      : "Compte non joignable : seules les sources générales sont proposées.";
+  } catch (error) {
+    $("sources-list").textContent = "Connecte d'abord ton compte pour choisir les sources.";
+  }
+}
+
+$("sources-all").addEventListener("click", () => {
+  document.querySelectorAll("#sources-list input").forEach((i) => { i.checked = true; });
+});
+$("sources-none").addEventListener("click", () => {
+  document.querySelectorAll("#sources-list input").forEach((i) => { i.checked = false; });
+});
+
 $("analyse-btn").addEventListener("click", async () => {
+  const sources = selectedSources();
+  if (!sources.length) {
+    $("analyse-msg").textContent = "Coche au moins une source à l'étape 2.";
+    $("analyse-msg").classList.add("error");
+    return;
+  }
+  $("analyse-msg").textContent = "";
+  $("analyse-msg").classList.remove("error");
   setBusy(true);
   try {
-    watchJob((await api("/api/analyse", {})).id);
+    watchJob((await api("/api/analyse", { sources })).id);
   } catch (error) {
     $("analyse-msg").textContent = error.message;
     $("analyse-msg").classList.add("error");
@@ -625,7 +733,7 @@ async function loadConnectMethods() {
   });
 }
 
-loadModes().then(loadConnectMethods).then(refreshStatus);
+loadModes().then(loadConnectMethods).then(refreshStatus).then(loadSources);
 </script>
 </body>
 </html>

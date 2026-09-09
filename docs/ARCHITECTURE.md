@@ -214,6 +214,21 @@ est **à usage unique** (l'échanger deux fois échoue), et les réponses
 « authorization_pending » et « slow_down » ne sont pas des erreurs mais l'état
 normal tant que l'utilisateur n'a pas validé.
 
+### 12. L'analyse est bornée par l'utilisateur, et son avancement visible
+
+Les sources ne sont plus figées dans la configuration : l'interface liste la
+bibliothèque, les titres likés, les mises en ligne et chaque playlist du
+compte, et n'analyse que la sélection. Les playlists engendrées par l'outil
+sont écartées de cette liste — les analyser reviendrait à reclasser sa propre
+sortie. Une sélection vide est refusée plutôt que remplacée par les valeurs de
+la configuration : tout décocher produirait sinon l'inverse du geste exprimé.
+
+Le suivi distingue deux phases. La lecture des sources n'a pas de total
+connu — une barre défilante dit que le travail avance ; l'appariement Discogs,
+lui, connaît son total et affiche le décompte et une estimation par règle de
+trois. Le bandeau est en position fixe : placé en fin de page, il se trouvait
+hors écran au moment précis où l'utilisateur attend un signe de vie.
+
 ## Contraintes des API
 
 | Contrainte | Conséquence |
@@ -228,10 +243,10 @@ normal tant que l'utilisateur n'a pas validé.
 
 ## Tests
 
-223 tests, aucun appel réseau, y compris l'API web complète (aperçu,
+233 tests, aucun appel réseau, y compris l'API web complète (aperçu,
 application, annulation), son contrôle d'accès et les quatre voies de connexion.
 
-Onze d'entre eux chargent l'interface dans un vrai navigateur (`tests/test_ui.py`).
+Treize d'entre eux chargent l'interface dans un vrai navigateur (`tests/test_ui.py`).
 Le câblage du DOM échappe aux tests Python : deux défauts d'onglets sont passés
 au travers de la suite avant d'être vus à l'écran. Ces tests sont ignorés
 lorsque Playwright ou son navigateur sont absents, pour que la suite reste

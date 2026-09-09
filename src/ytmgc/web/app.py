@@ -84,6 +84,11 @@ class OAuthPollRequest(BaseModel):
     device_code: str = Field(min_length=1)
 
 
+class AnalyseRequest(BaseModel):
+    #: Sources à scanner. Vide = celles de la configuration.
+    sources: list[str] | None = None
+
+
 class PreviewRequest(BaseModel):
     sort_mode: str = DEFAULT_SORT_MODE
 
@@ -268,32 +273,78 @@ def create_app(services: Services) -> FastAPI:
             raise HTTPException(400, f"Échec de la vérification : {exc}") from exc
         return {"state": state, "message": message}
 
+    # ------------------------------------------------------------- sources
+
+    @app.get("/api/sources")
+    def list_sources() -> dict:
+        """Sources analysables : bibliothèque, likes, et playlists de l'utilisateur.
+
+        Les playlists engendrées par l'outil sont écartées : les analyser
+        reviendrait à reclasser sa propre sortie.
+        """
+        from ytmgc.sources.ytmusic import SPECIAL_SOURCES
+
+        special = [{"key": key, "label": label} for key, label in SPECIAL_SOURCES.items()]
+        managed = {playlist_id for playlist_id, _ in repository.managed_playlists().values()}
+
+        try:
+            summaries = services.youtube_factory(config).list_playlist_summaries()
+        except Exception:  # noqa: BLE001 - compte non joignable : sources spéciales seules
+            return {"special": special, "playlists": [], "defaults": config.youtube.sources,
+                    "reachable": False}
+
+        playlists = [
+            {"key": f"playlist:{item['playlist_id']}", "label": item["title"], "count": item.get("count")}
+            for item in summaries
+            if item["playlist_id"] not in managed
+        ]
+        return {"special": special, "playlists": playlists,
+                "defaults": config.youtube.sources, "reachable": True}
+
     # ------------------------------------------------------------ analyse
 
     @app.post("/api/analyse")
-    def analyse() -> dict:
-        """Scanne la bibliothèque puis l'apparie à Discogs, en une seule passe."""
+    def analyse(request: AnalyseRequest | None = None) -> dict:
+        """Scanne les sources demandées puis les apparie à Discogs.
+
+        Sans corps de requête, les sources de la configuration s'appliquent :
+        l'appel reste utilisable tel quel hors de l'interface.
+        """
+        from ytmgc.sources.ytmusic import validate_sources
+
         if jobs.busy():
             raise HTTPException(409, "Un traitement est déjà en cours")
+        # Une liste vide est un choix explicite, pas une absence de choix :
+        # y substituer la configuration reviendrait à tout analyser alors que
+        # l'utilisateur vient de tout décocher.
+        requested = request.sources if request is not None else None
+        try:
+            sources = validate_sources(
+                config.youtube.sources if requested is None else requested
+            )
+        except ValueError as exc:
+            raise HTTPException(400, str(exc)) from exc
 
         def work(job: Job) -> dict:
-            job.message = "Lecture de la bibliothèque YouTube Music…"
-            tracks: list[Track] = services.youtube_factory(config).scan(config.youtube.sources)
+            job.message = f"Lecture de {len(sources)} source(s) YouTube Music…"
+            tracks: list[Track] = services.youtube_factory(config).scan(sources)
             repository.upsert_tracks(tracks)
 
             pending = repository.unclassified_tracks()
             job.total = len(pending)
-            job.message = f"{len(tracks)} titres lus. Interrogation de Discogs…"
+            job.message = (
+                f"{len(tracks)} titres lus, {len(pending)} à identifier. Interrogation de Discogs…"
+            )
 
             def progress(track, _classification) -> None:
                 job.progress += 1
-                job.message = f"Discogs : {job.progress}/{job.total} — {track.label()}"
+                job.message = f"{track.label()}"
 
             stats = classify_tracks(
                 pending, repository, services.discogs_factory(config), config, progress=progress
             )
             job.message = stats.line()
-            return {"scanned": len(tracks), "summary": stats.line()}
+            return {"scanned": len(tracks), "sources": sources, "summary": stats.line()}
 
         return jobs.start("analyse", work).to_dict()
 

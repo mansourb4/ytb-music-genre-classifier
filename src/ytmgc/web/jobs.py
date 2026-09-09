@@ -8,6 +8,7 @@ est donc lancé dans un fil d'exécution et interrogé par l'interface.
 from __future__ import annotations
 
 import threading
+import time
 import traceback
 import uuid
 from dataclasses import dataclass, field
@@ -18,6 +19,8 @@ from typing import Callable
 class Job:
     id: str
     kind: str
+    #: Horodatage de départ, pour estimer le temps restant côté interface.
+    started_at: float = field(default_factory=time.monotonic)
     #: "en cours", "terminé" ou "échoué".
     status: str = "en cours"
     progress: int = 0
@@ -30,6 +33,7 @@ class Job:
         return {
             "id": self.id,
             "kind": self.kind,
+            "elapsed_s": round(time.monotonic() - self.started_at, 1),
             "status": self.status,
             "progress": self.progress,
             "total": self.total,

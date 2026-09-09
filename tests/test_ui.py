@@ -168,3 +168,27 @@ def test_a_paste_without_session_cookie_is_refused(page):
     page.fill("#headers", "curl 'https://music.youtube.com/' -H 'accept: */*'")
     page.click("#connect-btn")
     assert "autre ligne" in page.locator("#connect-msg").text_content()
+
+
+def test_the_progress_bar_is_visible_without_scrolling(page):
+    """Régression : le panneau de progression était en bas de page, hors écran,
+    donc invisible au moment précis où l'utilisateur attend un signe de vie."""
+    page.evaluate("""() => {
+        document.getElementById('job-box').classList.remove('hidden');
+        document.getElementById('job-msg').textContent = 'Analyse en cours…';
+    }""")
+    box = page.locator("#job-box")
+    assert box.is_visible()
+
+    viewport = page.viewport_size["height"]
+    top = box.bounding_box()["y"]
+    assert top < viewport, "Le bandeau doit être dans la fenêtre, sans défilement"
+    assert page.evaluate("getComputedStyle(document.getElementById('job-box')).position") == "fixed"
+
+
+def test_analysis_without_a_selected_source_is_refused_client_side(page):
+    page.evaluate("""() => {
+        document.querySelectorAll('#sources-list input').forEach((i) => { i.checked = false; });
+    }""")
+    page.click("#analyse-btn")
+    assert "étape 2" in page.locator("#analyse-msg").text_content()

@@ -24,9 +24,15 @@ class ScanningClient(FakePlaylistClient):
     def __init__(self, playlists=None, library=LIBRARY):
         super().__init__(playlists)
         self.library = library
+        self.summaries = []
+        self.scanned = []
 
     def scan(self, sources):
+        self.scanned.append(list(sources))
         return list(self.library)
+
+    def list_playlist_summaries(self):
+        return list(self.summaries)
 
 
 @pytest.fixture
@@ -315,3 +321,77 @@ def test_a_pasted_curl_command_connects_the_account(client):
     )
     assert client.post("/api/connect", json={"headers": curl}).status_code == 200
     assert client.get("/api/status").json()["connected"] is True
+
+
+# ------------------------------------------------------- choix des sources
+
+
+def test_sources_list_offers_library_and_user_playlists(client):
+    client.youtube.summaries = [
+        {"playlist_id": "PL1", "title": "Road trip", "count": 42},
+        {"playlist_id": "PL2", "title": "Chill", "count": 7},
+    ]
+    payload = client.get("/api/sources").json()
+
+    assert [entry["key"] for entry in payload["special"]] == ["library", "liked", "uploads"]
+    assert [entry["label"] for entry in payload["playlists"]] == ["Road trip", "Chill"]
+    assert payload["defaults"] == ["library", "liked"]
+    assert payload["reachable"] is True
+
+
+def test_generated_playlists_are_not_offered_as_sources(client):
+    """Les analyser reviendrait à reclasser sa propre sortie."""
+    analyse(client)
+    wait(client, client.post("/api/apply", json={"sort_mode": "detaille", "confirm": True}))
+    created = client.youtube.list_playlists()
+    client.youtube.summaries = [
+        {"playlist_id": created[0].playlist_id, "title": created[0].title, "count": 5},
+        {"playlist_id": "PLperso", "title": "Ma sélection", "count": 3},
+    ]
+
+    payload = client.get("/api/sources").json()
+    assert [entry["label"] for entry in payload["playlists"]] == ["Ma sélection"]
+
+
+def test_sources_degrade_gracefully_when_the_account_is_unreachable(client, monkeypatch):
+    def failing():
+        raise RuntimeError("session expirée")
+
+    monkeypatch.setattr(client.youtube, "list_playlist_summaries", failing)
+    payload = client.get("/api/sources").json()
+    assert payload["reachable"] is False
+    assert payload["playlists"] == []
+    assert payload["special"]
+
+
+def test_analysis_reads_only_the_selected_sources(client):
+    job = wait(client, client.post("/api/analyse", json={"sources": ["playlist:PL9"]}))
+    assert job["status"] == "terminé", job["error"]
+    assert job["result"]["sources"] == ["playlist:PL9"]
+    assert client.youtube.scanned == [["playlist:PL9"]]
+
+
+def test_an_unknown_source_is_refused_before_starting(client):
+    response = client.post("/api/analyse", json={"sources": ["dossier"]})
+    assert response.status_code == 400
+    assert "Source inconnue" in response.json()["detail"]
+    assert client.youtube.scanned == []
+
+
+def test_an_empty_selection_is_refused(client):
+    """Tout décocher ne doit pas retomber sur la configuration, sans quoi le
+    geste produirait exactement l'inverse de ce qu'il exprime."""
+    response = client.post("/api/analyse", json={"sources": []})
+    assert response.status_code == 400
+    assert "Aucune source" in response.json()["detail"]
+    assert client.youtube.scanned == []
+
+
+def test_omitting_the_field_still_uses_the_configured_sources(client):
+    job = wait(client, client.post("/api/analyse"))
+    assert job["result"]["sources"] == ["library", "liked"]
+
+
+def test_a_job_reports_its_elapsed_time(client):
+    job = analyse(client)
+    assert job["elapsed_s"] >= 0

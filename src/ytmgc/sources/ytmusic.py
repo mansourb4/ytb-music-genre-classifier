@@ -16,6 +16,34 @@ from typing import Any, Iterable
 from ytmgc.models import RemotePlaylist, Track
 
 
+#: Sources hors playlists, telles qu'attendues dans la configuration.
+SPECIAL_SOURCES = {
+    "library": "Bibliothèque (titres ajoutés)",
+    "liked": "Titres likés",
+    "uploads": "Titres mis en ligne",
+}
+
+#: Playlists système, non éditables et sans intérêt comme source.
+SYSTEM_PLAYLISTS = {"LM", "SE"}
+
+
+def validate_sources(sources: list[str]) -> list[str]:
+    """Vérifie une sélection de sources avant de lancer quoi que ce soit.
+
+    Sans ce contrôle, une source mal formée n'échouerait qu'au milieu du scan,
+    après plusieurs minutes de travail.
+    """
+    if not sources:
+        raise ValueError("Aucune source sélectionnée.")
+    for source in sources:
+        if source in SPECIAL_SOURCES:
+            continue
+        if source.startswith("playlist:") and source.split(":", 1)[1]:
+            continue
+        raise ValueError(f"Source inconnue : {source!r}")
+    return list(dict.fromkeys(sources))
+
+
 def _artists(entry: dict[str, Any]) -> tuple[str, ...]:
     return tuple(a["name"] for a in entry.get("artists") or [] if a.get("name"))
 
@@ -89,6 +117,26 @@ class YouTubeMusicClient:
 
         tracks = [_to_track(entry, source) for entry in raw]
         return [track for track in tracks if track is not None]
+
+    def list_playlist_summaries(self) -> list[dict[str, Any]]:
+        """Playlists de l'utilisateur, sans lire leur contenu.
+
+        Sert à proposer les sources d'analyse : un appel unique, là où
+        `list_playlists` en fait un par playlist pour obtenir les descriptions.
+        """
+        summaries = []
+        for entry in self._api.get_library_playlists(limit=None):
+            playlist_id = entry.get("playlistId")
+            if not playlist_id or playlist_id in SYSTEM_PLAYLISTS:
+                continue
+            summaries.append(
+                {
+                    "playlist_id": playlist_id,
+                    "title": entry.get("title") or "(sans titre)",
+                    "count": entry.get("count"),
+                }
+            )
+        return summaries
 
     def list_playlists(self) -> list[RemotePlaylist]:
         """Playlists de l'utilisateur, description et contenu inclus.
