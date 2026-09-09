@@ -49,17 +49,17 @@ def build_description(
     item: GenreStyle | None,
     taxonomy: Taxonomy,
 ) -> str:
-    """Description d'une playlist gérée.
+    """Description écrite sur YouTube Music.
 
-    Elle remplit deux rôles distincts :
+    Elle est faite pour être lue : le nom, puis les définitions du genre et du
+    style. La seule marque technique est le symbole final, qui signale une
+    playlist gérée par l'outil — sans lui, impossible de distinguer ce qu'on
+    peut modifier ou supprimer des playlists faites à la main.
 
-    * technique — le marqueur autorise l'outil à modifier la playlist, et la
-      clé la relie à son couple genre/style même après un renommage manuel ;
-    * éditorial — elle définit le genre et le style, pour que la bibliothèque
-      se lise comme une cartographie de ce qu'on écoute et pas seulement comme
-      un rangement.
+    La clé, elle, n'y figure plus : elle est tenue en base, avec un repli par
+    nom quand celle-ci ne connaît pas encore la playlist.
     """
-    lines = [f"{marker} key={key}", "", f"{name} · {count} titre(s)", ""]
+    lines = [name, ""]
 
     if item is not None:
         genre_text = taxonomy.describe_genre(item.genre)
@@ -73,15 +73,11 @@ def build_description(
             lines.append(style_text or "Style Discogs (définition non encore renseignée).")
 
     if note := NOTES.get(kind):
-        if kind == "genre":
-            lines.append("")
+        lines.append("")
         lines.append(note)
 
     lines.append("")
-    lines.append(
-        "Playlist générée automatiquement à partir de la taxonomie Discogs. "
-        "Les modifications manuelles seront écrasées au prochain run."
-    )
+    lines.append(marker)
     return "\n".join(lines).translate(_FORBIDDEN)
 
 

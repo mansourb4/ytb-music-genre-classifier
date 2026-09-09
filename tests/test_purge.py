@@ -25,7 +25,9 @@ def test_purge_removes_every_generated_playlist(config):
     forgotten = []
     purge(client.list_playlists(), client, config, dry_run=False, on_deleted=forgotten.append)
     assert client.list_playlists() == []
-    assert sorted(forgotten) == ["electronic/techno", "rock/grunge"]
+    # La suppression ne dépend que du marqueur : elle rend l'identifiant, pas
+    # une clé de genre/style dont elle peut fort bien ne rien savoir.
+    assert sorted(forgotten) == ["PL1", "PL2"]
 
 
 def test_purge_never_touches_user_playlists(config):
@@ -41,3 +43,22 @@ def test_purge_on_a_clean_account_is_a_no_op(config):
     assert purge(client.list_playlists(), client, config, dry_run=False) == []
     # purge reçoit l'état distant : elle n'interroge pas l'API d'elle-même.
     assert client.calls == ["list"]
+
+
+
+def test_a_managed_playlist_without_any_key_is_still_removable(config):
+    """La description n'a plus de clé : seul le marqueur autorise la suppression."""
+    client = FakePlaylistClient([
+        RemotePlaylist("PL1", "Rock — Grunge", "Rock — Grunge\n\nGENRE — Rock\n\n✱", ("a",)),
+    ])
+    purge(client.list_playlists(), client, config, dry_run=False)
+    assert client.list_playlists() == []
+
+
+def test_playlists_of_the_former_format_are_still_recognised(config):
+    """Celles créées avant le changement portent l'ancien marqueur."""
+    client = FakePlaylistClient([
+        RemotePlaylist("PL1", "Rock — Grunge", "[ytmgc] key=rock/grunge\nRock — Grunge", ("a",)),
+    ])
+    purge(client.list_playlists(), client, config, dry_run=False)
+    assert client.list_playlists() == []

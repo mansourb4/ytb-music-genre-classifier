@@ -32,9 +32,7 @@ Chaque playlist porte en description la définition de son genre et de son
 style :
 
 ```
-[ytmgc] key=electronic/deep-house
-
-Electronic — Deep House · 34 titre(s)
+Electronic — Deep House
 
 GENRE — Electronic
 Musiques dont le son est produit ou transformé par des moyens électroniques —
@@ -45,9 +43,12 @@ STYLE — Deep House
 Branche la plus soul de la house : tempo modéré, accords de septième et de
 neuvième empruntés au jazz, nappes profondes et voix feutrées.
 
-Playlist générée automatiquement à partir de la taxonomie Discogs.
-Les modifications manuelles seront écrasées au prochain run.
+✱
 ```
+
+Le `✱` final est la seule marque technique : c'est à lui que l'outil reconnaît
+ses propres playlists. Il est configurable (`sync.marker`) — choisis un signe
+que tu n'emploies pas toi-même.
 
 Ces définitions vivent dans `src/ytmgc/taxonomy/descriptions.toml` : 15 genres
 et près de 200 styles. Un style non encore décrit reste parfaitement utilisable,
@@ -245,8 +246,8 @@ ytmgc purge --execute   # supprime les playlists générées (annulation complè
 ## Garanties
 
 - **Tes playlists manuelles ne sont jamais touchées.** L'outil ne modifie que
-  les playlists dont la description porte son marqueur (`[ytmgc]`) ; tout le
-  reste lui est invisible.
+  les playlists dont la description porte son marqueur — un simple `✱` en
+  dernière ligne ; tout le reste lui est invisible.
 - **Idempotent.** Un second run sans changement ne produit aucune écriture.
 - **Annulable.** `ytmgc purge` (ou le bouton « Annuler » de l'interface)
   supprime toutes les playlists générées, et seulement celles-là.
@@ -284,7 +285,7 @@ sans aucune écriture ni appel réseau.
 ## Développement
 
 ```bash
-python -m pytest        # 249 tests, aucun appel réseau
+python -m pytest        # 259 tests, aucun appel réseau
 ```
 
 Les API externes sont derrière des adaptateurs (`src/ytmgc/sources/`) ; toute la

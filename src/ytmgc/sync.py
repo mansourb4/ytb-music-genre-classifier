@@ -10,12 +10,16 @@ Deux garde-fous structurent ce module :
 from __future__ import annotations
 
 import re
-from typing import Iterable, Protocol
+from typing import Iterable, Mapping, Protocol
 
 from ytmgc.config import Config
 from ytmgc.models import Op, PlaylistPlan, RemotePlaylist, SyncAction
 
 _KEY_RE = re.compile(r"key=([\w\-/]+)")
+
+#: Ancien marqueur, encore présent sur les playlists créées avant le passage à
+#: une description lisible. Il reste reconnu pour ne pas les orpheliner.
+LEGACY_MARKER = "[ytmgc]"
 
 
 class PlaylistClient(Protocol):
@@ -40,19 +44,62 @@ class PlaylistClient(Protocol):
     def delete_playlist(self, playlist_id: str) -> None: ...
 
 
+def is_managed(description: str, marker: str) -> bool:
+    """La playlist porte-t-elle la marque de l'outil ?
+
+    C'est le seul critère qui autorise une modification ou une suppression :
+    tout ce qui ne la porte pas appartient à l'utilisateur.
+    """
+    return marker in description or LEGACY_MARKER in description
+
+
 def extract_key(description: str, marker: str) -> str | None:
-    """Clé de playlist lue dans la description, si la playlist est gérée par l'outil."""
-    if marker not in description:
+    """Clé inscrite dans la description, pour les playlists de l'ancien format."""
+    if not is_managed(description, marker):
         return None
     match = _KEY_RE.search(description)
     return match.group(1) if match else None
 
 
-def managed_by_key(playlists: Iterable[RemotePlaylist], marker: str) -> dict[str, RemotePlaylist]:
-    """Index des playlists gérées, par clé. Les autres sont ignorées."""
+def managed_playlists(
+    playlists: Iterable[RemotePlaylist], marker: str
+) -> list[RemotePlaylist]:
+    """Toutes les playlists gérées, qu'on sache ou non les rattacher à une clé."""
+    return [playlist for playlist in playlists if is_managed(playlist.description, marker)]
+
+
+def managed_by_key(
+    playlists: Iterable[RemotePlaylist],
+    marker: str,
+    *,
+    known: Mapping[str, str] | None = None,
+    names: Mapping[str, str] | None = None,
+) -> dict[str, RemotePlaylist]:
+    """Index des playlists gérées, par clé de genre/style.
+
+    La clé ne figure plus dans la description, devenue purement lisible. Elle
+    est retrouvée dans cet ordre :
+
+    1. `known`, l'association identifiant -> clé tenue en base à la création ;
+    2. `names`, le nom attendu de chaque playlist prévue — repli utile quand la
+       base a été perdue ou que la playlist vient d'une autre machine ;
+    3. la description elle-même, pour les playlists de l'ancien format.
+
+    Une playlist gérée mais non rattachable reste hors de l'index : elle ne
+    sera donc ni mise à jour ni vidée, seulement laissée telle quelle.
+    """
+    known = known or {}
+    names = names or {}
+
     index: dict[str, RemotePlaylist] = {}
     for playlist in playlists:
-        key = extract_key(playlist.description, marker)
+        if not is_managed(playlist.description, marker):
+            continue
+        key = (
+            known.get(playlist.playlist_id)
+            or names.get(playlist.title)
+            or extract_key(playlist.description, marker)
+        )
         if key is not None:
             index[key] = playlist
     return index
@@ -82,7 +129,10 @@ def diff(
             )
             continue
 
-        if existing.title != plan.name:
+        # Le renommage porte aussi la description : c'est ce qui fait migrer les
+        # playlists créées avec l'ancien format, sans quoi elles garderaient
+        # indéfiniment leur en-tête technique.
+        if existing.title != plan.name or existing.description != plan.description:
             actions.append(
                 SyncAction(
                     Op.RENAME,
@@ -215,9 +265,15 @@ def purge(
 
     L'opération est irréversible : YouTube Music ne restaure pas une playlist
     supprimée. Le mode simulation est donc le défaut ici aussi.
+
+    Elle ne s'appuie que sur le marqueur, jamais sur la clé de genre/style :
+    une playlist gérée doit rester supprimable même quand plus rien ne permet
+    de la rattacher à un couple genre/style.
     """
     log: list[str] = []
-    for key, playlist in sorted(managed_by_key(remote, config.sync.marker).items()):
+    for playlist in sorted(
+        managed_playlists(remote, config.sync.marker), key=lambda item: item.title
+    ):
         log.append(
             ("[à blanc] " if dry_run else "")
             + f"supprimer « {playlist.title} » ({len(playlist.video_ids)} titres)"
@@ -226,5 +282,5 @@ def purge(
             continue
         client.delete_playlist(playlist.playlist_id)
         if on_deleted is not None:
-            on_deleted(key)
+            on_deleted(playlist.playlist_id)
     return log

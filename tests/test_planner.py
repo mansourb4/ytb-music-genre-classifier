@@ -84,11 +84,16 @@ def test_all_mode_respects_max_styles_per_track(taxonomy, config):
     assert set(plans) == {"electronic/deep-house"}
 
 
-def test_description_carries_marker_and_key(taxonomy, config):
+def test_description_carries_only_the_marker_as_technical_trace(taxonomy, config):
+    """La description est faite pour être lue : plus d'en-tête ni de clé."""
     plans = plan([matched(f"v{i}", ("Electronic",), ("Techno",)) for i in range(2)], taxonomy, config)
     description = plans["electronic/techno"].description
-    assert config.sync.marker in description
-    assert "key=electronic/techno" in description
+
+    assert description.startswith("Electronic — Techno\n")
+    assert description.endswith(config.sync.marker)
+    assert "key=" not in description
+    assert "titre(s)" not in description
+    assert "générée automatiquement" not in description
 
 
 def test_plans_are_sorted_by_name_so_genres_group_together(taxonomy, config):
@@ -125,7 +130,6 @@ def test_description_defines_the_genre_and_the_style(taxonomy, config):
     assert "STYLE — Deep House" in description
     assert taxonomy.describe_genre("Electronic") in description
     assert taxonomy.describe_style("Deep House") in description
-    assert "2 titre(s)" in description
 
 
 def test_genre_playlist_description_explains_why_it_exists(taxonomy, config):

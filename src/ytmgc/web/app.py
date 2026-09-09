@@ -401,7 +401,14 @@ def create_app(services: Services) -> FastAPI:
             # Le diff est refait après filtrage : les playlists écartées sont
             # laissées intactes, décocher signifiant « n'y touche pas ».
             plans = filter_plans(plans, request.excluded_playlists, request.excluded_tracks)
-            remote = managed_by_key(client.list_playlists(), config.sync.marker)
+            known = {
+                playlist_id: key
+                for key, (playlist_id, _) in repository.managed_playlists().items()
+            }
+            remote = managed_by_key(
+                client.list_playlists(), config.sync.marker,
+                known=known, names={plan.name: plan.key for plan in plans},
+            )
             actions = diff(plans, remote, scoped, untouched=frozenset(request.excluded_playlists))
             job.total = len(actions)
             if not actions:

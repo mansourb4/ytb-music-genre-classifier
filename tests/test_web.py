@@ -437,7 +437,8 @@ def test_an_excluded_playlist_that_exists_is_left_untouched(client):
     analyse(client)
     wait(client, client.post("/api/apply", json={"sort_mode": "detaille", "confirm": True}))
     before = {p.playlist_id: p.video_ids for p in client.youtube.list_playlists()}
-    key = previewed(client)[0]["key"]
+    target = previewed(client)[0]
+    key, name = target["key"], target["name"]
 
     # Une seconde application, cette playlist écartée et la bibliothèque vidée.
     client.youtube.library = []
@@ -447,7 +448,7 @@ def test_an_excluded_playlist_that_exists_is_left_untouched(client):
     }))
 
     after = {p.playlist_id: p.video_ids for p in client.youtube.list_playlists()}
-    untouched = next(p for p in client.youtube.list_playlists() if key.split("/")[-1] in p.description)
+    untouched = next(p for p in client.youtube.list_playlists() if p.title == name)
     assert after[untouched.playlist_id] == before[untouched.playlist_id]
 
 

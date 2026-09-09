@@ -34,7 +34,10 @@ def run_pipeline(repository, config, client):
     repository.upsert_tracks(LIBRARY)
     classify_tracks(LIBRARY, repository, FakeDiscogs(CATALOGUE), config)
     plans = plan_playlists(repository.classifications(), load_taxonomy(), config)
-    remote = managed_by_key(client.list_playlists(), config.sync.marker)
+    remote = managed_by_key(
+        client.list_playlists(), config.sync.marker,
+        names={plan.name: plan.key for plan in plans},
+    )
     actions = diff(plans, remote, config)
     apply(actions, plans, client, config, dry_run=False, on_created=repository.remember_playlist)
     return plans
@@ -75,7 +78,10 @@ def test_second_run_is_idempotent(repository, config):
     before = {p.playlist_id: p.video_ids for p in client.list_playlists()}
 
     plans = plan_playlists(repository.classifications(), load_taxonomy(), config)
-    remote = managed_by_key(client.list_playlists(), config.sync.marker)
+    remote = managed_by_key(
+        client.list_playlists(), config.sync.marker,
+        names={plan.name: plan.key for plan in plans},
+    )
     assert diff(plans, remote, config) == []
     assert {p.playlist_id: p.video_ids for p in client.list_playlists()} == before
 
@@ -89,7 +95,10 @@ def test_a_new_track_is_added_without_recreating_the_playlist(repository, config
     repository.upsert_tracks([extra])
     classify_tracks([extra], repository, FakeDiscogs(CATALOGUE), config)
     plans = plan_playlists(repository.classifications(), load_taxonomy(), config)
-    remote = managed_by_key(client.list_playlists(), config.sync.marker)
+    remote = managed_by_key(
+        client.list_playlists(), config.sync.marker,
+        names={plan.name: plan.key for plan in plans},
+    )
     apply(diff(plans, remote, config), plans, client, config, dry_run=False)
 
     assert client.get_playlist(playlist_id).video_ids == ("g1", "g2", "g3")

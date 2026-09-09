@@ -79,7 +79,7 @@ class WebConfig:
 
 @dataclass(slots=True)
 class SyncConfig:
-    marker: str = "[ytmgc]"
+    marker: str = "✱"
     prune: bool = True
     batch_size: int = 50
 

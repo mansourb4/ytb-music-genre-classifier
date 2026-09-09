@@ -163,7 +163,17 @@ def build_preview(
     taxonomy = load_taxonomy()
     plans = plan_playlists(classifications, taxonomy, config)
 
-    existing = managed_by_key(remote or [], config.sync.marker)
+    # La clé n'étant plus dans la description, elle vient de la base — et à
+    # défaut du nom attendu, calculé depuis le plan qu'on vient d'établir.
+    known = {
+        playlist_id: key for key, (playlist_id, _) in repository.managed_playlists().items()
+    }
+    existing = managed_by_key(
+        remote or [],
+        config.sync.marker,
+        known=known,
+        names={plan.name: plan.key for plan in plans},
+    )
     actions = diff(plans, existing, config)
 
     added_by_key: dict[str, int] = {}

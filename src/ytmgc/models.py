@@ -134,4 +134,6 @@ class SyncAction:
             return f"ajouter {len(self.video_ids)} titre(s) à « {self.playlist_name} »"
         if self.op is Op.REMOVE:
             return f"retirer {len(self.video_ids)} titre(s) de « {self.playlist_name} »"
-        return f"renommer « {self.playlist_name} » en « {self.new_name} »"
+        if self.new_name and self.new_name != self.playlist_name:
+            return f"renommer « {self.playlist_name} » en « {self.new_name} »"
+        return f"mettre à jour la description de « {self.playlist_name} »"

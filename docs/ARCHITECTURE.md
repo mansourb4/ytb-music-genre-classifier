@@ -60,9 +60,15 @@ et relancés sans perte, et `plan`/`apply` se rejouent hors ligne.
 
 YouTube Music n'a **pas de dossiers**. Le couple `(genre, style)` de Discogs est
 rendu par le gabarit `{genre} — {style}` : le tri alphabétique de la
-bibliothèque regroupe alors les styles d'un même genre. Une **clé stable**
-(`electronic/deep-house`) est inscrite dans la description ; elle survit à un
-renommage manuel et relie la playlist à son couple genre/style.
+bibliothèque regroupe alors les styles d'un même genre. Une **clé stable** (`electronic/deep-house`) relie chaque playlist à son couple
+genre/style. Elle ne figure plus dans la description, devenue purement
+lisible : elle est tenue en base à la création, avec deux replis — le nom
+attendu de la playlist, calculé depuis le plan, puis la description elle-même
+pour les playlists de l'ancien format. Une playlist gérée qu'aucun de ces
+moyens ne rattache est laissée telle quelle plutôt que modifiée au jugé.
+
+La suppression, elle, ne dépend que du marqueur : une playlist gérée doit
+rester supprimable même quand plus rien ne permet de la rattacher à un genre.
 
 ### 2. La description explique ce que la playlist contient
 
@@ -82,8 +88,10 @@ chevrons y sont remplacés, YouTube Music les refusant.
 
 ### 3. Le marqueur en description délimite ce que l'outil peut toucher
 
-Seules les playlists dont la description contient `[ytmgc]` sont lues comme
-gérées ; les autres sont ignorées par le diff. C'est la garantie que les
+Seules les playlists dont la description porte le marqueur — un `✱` en dernière
+ligne — sont lues comme gérées ; les autres sont ignorées par le diff. L'ancien
+marqueur `[ytmgc]` reste reconnu, pour ne pas orpheliner les playlists créées
+avant que la description ne devienne lisible. C'est la garantie que les
 playlists faites à la main ne sont jamais modifiées. Une playlist gérée devenue
 obsolète est **vidée, jamais supprimée** : l'API ne sait pas restaurer une
 playlist, et un scan partiel ne doit pas détruire du travail.
@@ -284,7 +292,7 @@ regroupement — pour être lue plutôt que déchiffrée.
 
 ## Tests
 
-249 tests, aucun appel réseau, y compris l'API web complète (aperçu,
+259 tests, aucun appel réseau, y compris l'API web complète (aperçu,
 application, annulation), son contrôle d'accès et les quatre voies de connexion.
 
 Vingt et un d'entre eux chargent l'interface dans un vrai navigateur (`tests/test_ui.py`).

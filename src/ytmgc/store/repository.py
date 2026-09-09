@@ -244,8 +244,14 @@ class Repository:
         self._db.commit()
 
     @_locked
-    def forget_playlist(self, key: str) -> None:
-        self._db.execute("DELETE FROM managed_playlists WHERE key = ?", (key,))
+    def forget_playlist(self, playlist_id: str) -> None:
+        """Oublie une playlist supprimée du compte.
+
+        Indexée par identifiant plutôt que par clé : la suppression ne
+        s'appuie que sur le marqueur, et n'a donc pas toujours de clé sous la
+        main.
+        """
+        self._db.execute("DELETE FROM managed_playlists WHERE playlist_id = ?", (playlist_id,))
         self._db.commit()
 
     @_locked

@@ -104,7 +104,13 @@ def cmd_apply(args: argparse.Namespace, config: Config) -> int:
         return 0
 
     client = _youtube(config)
-    remote = managed_by_key(client.list_playlists(), config.sync.marker)
+    known = {
+        playlist_id: key for key, (playlist_id, _) in repository.managed_playlists().items()
+    }
+    remote = managed_by_key(
+        client.list_playlists(), config.sync.marker,
+        known=known, names={plan.name: plan.key for plan in plans},
+    )
     actions = diff(plans, remote, config)
     if not actions:
         print("YouTube Music est déjà à jour.")

@@ -107,3 +107,83 @@ def test_apply_removes_using_set_video_ids(config):
     plans = [plan("rock/grunge", "Rock — Grunge", ["a"])]
     apply(diff(plans, remote, config), plans, client, config, dry_run=False)
     assert client.get_playlist("PL1").video_ids == ("a",)
+
+
+# ------------------------------------ reconnaissance sans clé en description
+
+def legacy(playlist_id, title, key, video_ids=()):
+    """Playlist créée avant le passage à une description lisible."""
+    return RemotePlaylist(
+        playlist_id=playlist_id,
+        title=title,
+        description=f"[ytmgc] key={key}\n{title} · 3 titre(s)",
+        video_ids=tuple(video_ids),
+        set_video_ids={v: f"set-{v}" for v in video_ids},
+    )
+
+
+def current(playlist_id, title, video_ids=()):
+    """Playlist au format actuel : lisible, marquée d'un seul symbole."""
+    return RemotePlaylist(
+        playlist_id=playlist_id,
+        title=title,
+        description=f"{title}\n\nGENRE — Rock\nUne définition.\n\n✱",
+        video_ids=tuple(video_ids),
+        set_video_ids={v: f"set-{v}" for v in video_ids},
+    )
+
+
+def test_a_managed_playlist_is_recognised_by_the_new_marker():
+    from ytmgc.sync import is_managed
+
+    assert is_managed(current("PL1", "Rock — Grunge").description, "✱")
+    assert not is_managed("ma sélection à moi", "✱")
+
+
+def test_the_former_marker_is_still_recognised():
+    from ytmgc.sync import is_managed
+
+    assert is_managed(legacy("PL1", "Rock — Grunge", "rock/grunge").description, "✱")
+
+
+def test_the_key_comes_from_the_database_when_known():
+    playlist = current("PL1", "Un nom que l'utilisateur a changé", ["a"])
+    index = managed_by_key([playlist], "✱", known={"PL1": "rock/grunge"})
+    assert index == {"rock/grunge": playlist}
+
+
+def test_the_key_falls_back_on_the_expected_name():
+    """Base perdue ou playlist créée ailleurs : le nom suffit à la rattacher."""
+    playlist = current("PL1", "Rock — Grunge", ["a"])
+    index = managed_by_key([playlist], "✱", names={"Rock — Grunge": "rock/grunge"})
+    assert index == {"rock/grunge": playlist}
+
+
+def test_the_key_of_a_former_playlist_is_read_from_its_description():
+    playlist = legacy("PL1", "Rock — Grunge", "rock/grunge", ["a"])
+    assert managed_by_key([playlist], "✱") == {"rock/grunge": playlist}
+
+
+def test_an_unrecognisable_managed_playlist_is_left_alone(config):
+    """Sans rattachement possible, mieux vaut ne rien faire que se tromper."""
+    playlist = current("PL1", "Nom inconnu au bataillon", ["a"])
+    assert managed_by_key([playlist], "✱") == {}
+    assert diff([], {}, config) == []
+
+
+def test_a_former_playlist_gets_its_description_rewritten(config):
+    """Sans quoi elle garderait indéfiniment son en-tête technique."""
+    existing = legacy("PL1", "Rock — Grunge", "rock/grunge", ["a"])
+    plan = PlaylistPlan("rock/grunge", "Rock — Grunge", "Rock — Grunge\n\nGENRE — Rock\n\n✱", ("a",))
+
+    actions = diff([plan], {"rock/grunge": existing}, config)
+
+    assert [a.op for a in actions] == [Op.RENAME]
+    assert "description" in actions[0].summary()
+
+
+def test_an_up_to_date_playlist_is_not_rewritten(config):
+    plan_description = "Rock — Grunge\n\nGENRE — Rock\nUne définition.\n\n✱"
+    existing = current("PL1", "Rock — Grunge", ["a"])
+    plan = PlaylistPlan("rock/grunge", "Rock — Grunge", plan_description, ("a",))
+    assert diff([plan], {"rock/grunge": existing}, config) == []

@@ -54,10 +54,11 @@ style_name_template = "{genre} — {style}"
 genre_name_template = "{genre} — Autres styles"
 
 [sync]
-# Préfixe inscrit dans la description des playlists gérées par l'outil.
-# Toute playlist sans ce marqueur est ignorée : les playlists manuelles
-# de l'utilisateur ne sont jamais modifiées.
-marker = "[ytmgc]"
+# Symbole inscrit en fin de description des playlists gérées par l'outil.
+# Toute playlist sans ce marqueur est ignorée : les playlists manuelles de
+# l'utilisateur ne sont jamais modifiées. Choisis un signe que tu n'emploies
+# pas toi-même dans tes descriptions.
+marker = "✱"
 # Retirer des playlists gérées les titres qui n'y appartiennent plus.
 prune = true
 # Nombre max de titres envoyés par appel d'API.
