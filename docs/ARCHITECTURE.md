@@ -235,7 +235,13 @@ sont écartées de cette liste — les analyser reviendrait à reclasser sa prop
 sortie. Une sélection vide est refusée plutôt que remplacée par les valeurs de
 la configuration : tout décocher produirait sinon l'inverse du geste exprimé.
 
-Le suivi distingue deux phases. La lecture des sources n'a pas de total
+Le bandeau sert aussi aux opérations sans progression mesurable — le calcul de
+l'aperçu, la recherche des playlists générées — sous forme de barre défilante :
+ce sont des requêtes uniques, dont on ne connaît que le début et la fin. Un
+traitement de fond en cours garde la priorité sur le bandeau, son avancement
+étant, lui, réellement chiffré.
+
+Le suivi d'un traitement distingue deux phases. La lecture des sources n'a pas de total
 connu — une barre défilante dit que le travail avance ; l'appariement Discogs,
 lui, connaît son total et affiche le décompte et une estimation par règle de
 trois. Le bandeau est en position fixe : placé en fin de page, il se trouvait
@@ -297,10 +303,10 @@ regroupement — pour être lue plutôt que déchiffrée.
 
 ## Tests
 
-276 tests, aucun appel réseau, y compris l'API web complète (aperçu,
+280 tests, aucun appel réseau, y compris l'API web complète (aperçu,
 application, annulation), son contrôle d'accès et les quatre voies de connexion.
 
-Vingt-cinq d'entre eux chargent l'interface dans un vrai navigateur (`tests/test_ui.py`).
+Vingt-neuf d'entre eux chargent l'interface dans un vrai navigateur (`tests/test_ui.py`).
 Le câblage du DOM échappe aux tests Python : deux défauts d'onglets sont passés
 au travers de la suite avant d'être vus à l'écran. Ces tests sont ignorés
 lorsque Playwright ou son navigateur sont absents, pour que la suite reste

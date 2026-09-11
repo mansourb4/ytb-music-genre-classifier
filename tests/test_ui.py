@@ -403,3 +403,67 @@ def test_source_counts_are_measured_and_summed(page):
     page.check('#sources-list input[value="playlist:PL1"]')
     assert "2525" in page.locator("#sources-total").text_content()
     assert "2188 titres" in page.locator("#sources-list").text_content()
+
+
+PREVIEW_BODY = (
+    '{"remote_known": true, "actions": [], "preview": {"playlists": [], "obsolete": [],'
+    ' "created": 0, "updated": 0, "unchanged": 0, "assignments": 0}}'
+)
+
+#: Espionne les appels à l'indicateur sans en changer le comportement. Retarder
+#: une réponse depuis un gestionnaire de route bloquerait le fil de Playwright
+#: lui-même, et tout se résoudrait d'un bloc.
+SPY_ACTIVITY = """
+window.__activity = [];
+const __begin = beginActivity;
+beginActivity = (title, message) => {
+  window.__activity.push(title);
+  return __begin(title, message);
+};
+"""
+
+
+def test_the_activity_bar_shows_then_hides(page):
+    taken = page.evaluate("() => beginActivity('Aperçu', 'Calcul en cours…')")
+    assert taken is True
+    assert page.locator("#job-box").is_visible()
+    assert "Aperçu" in page.locator("#job-kind").text_content()
+    # Sans total connu, une barre défilante plutôt qu'une jauge figée.
+    assert "indeterminate" in (page.locator("#job-bar").get_attribute("class") or "")
+
+    page.evaluate("() => endActivity(true)")
+    assert page.locator("#job-box").is_hidden()
+
+
+def test_the_preview_announces_itself_while_it_computes(page):
+    page.route("**/api/preview", lambda route: route.fulfill(
+        status=200, content_type="application/json", body=PREVIEW_BODY))
+    page.evaluate(f"() => {{ {SPY_ACTIVITY} }}")
+
+    page.evaluate("() => refreshPreview()")
+
+    assert page.evaluate("window.__activity") == ["Aperçu"]
+    assert page.locator("#job-box").is_hidden(), "Le bandeau doit disparaître une fois calculé"
+
+
+def test_the_purge_search_announces_itself(page):
+    page.route("**/api/purge/candidates", lambda route: route.fulfill(
+        status=200, content_type="application/json",
+        body='{"marker": "\u2731", "playlists": []}'))
+    page.evaluate(f"() => {{ {SPY_ACTIVITY} }}")
+
+    page.click("#purge-scan")
+    page.wait_for_function("window.__activity.length > 0", timeout=10000)
+
+    assert page.evaluate("window.__activity") == ["Recherche"]
+    page.wait_for_selector("#job-box", state="hidden", timeout=10000)
+
+
+def test_a_running_job_keeps_the_bar_for_itself(page):
+    """L'avancement chiffré d'un traitement prime sur un simple indicateur."""
+    page.evaluate("() => { pollTimer = setInterval(() => {}, 10000); }")
+    try:
+        assert page.evaluate("beginActivity('Aperçu', 'test')") is False
+        assert page.locator("#job-box").is_hidden()
+    finally:
+        page.evaluate("() => { clearInterval(pollTimer); pollTimer = null; }")

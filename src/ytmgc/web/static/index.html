@@ -407,6 +407,34 @@ function jobCounts(job) {
   return `${done} · encore ~${humanDuration(remaining)}`;
 }
 
+function jobIsRunning() {
+  return pollTimer !== null;
+}
+
+/**
+ * Occupe le bandeau pour une opération sans progression mesurable : l'aperçu
+ * et la recherche de playlists sont des requêtes uniques, dont on ne connaît
+ * que le début et la fin. Un traitement de fond en cours garde la priorité :
+ * son avancement, lui, est réellement chiffré.
+ */
+function beginActivity(title, message) {
+  if (jobIsRunning()) return false;
+  $("job-box").classList.remove("hidden");
+  $("job-kind").textContent = title;
+  $("job-counts").textContent = "";
+  $("job-msg").textContent = message;
+  $("job-msg").classList.remove("error");
+  $("job-bar").style.width = "";
+  $("job-bar").classList.add("indeterminate");
+  return true;
+}
+
+function endActivity(taken) {
+  if (!taken || jobIsRunning()) return;
+  $("job-bar").classList.remove("indeterminate");
+  $("job-box").classList.add("hidden");
+}
+
 function watchJob(jobId) {
   clearInterval(pollTimer);
   $("job-box").classList.remove("hidden");
@@ -429,6 +457,7 @@ function watchJob(jobId) {
 
     if (!running) {
       clearInterval(pollTimer);
+      pollTimer = null;
       setBusy(false);
       await refreshStatus();
       if (job.status === "terminé") {
@@ -897,12 +926,15 @@ $("analyse-btn").addEventListener("click", async () => {
 async function refreshPreview() {
   $("preview-msg").textContent = "Calcul de l'aperçu…";
   $("preview-msg").classList.remove("error");
+  const taken = beginActivity("Aperçu", "Calcul du rangement et lecture des playlists existantes…");
   try {
     renderPreview(await api("/api/preview", { sort_mode: sortMode }));
     $("preview-msg").textContent = "";
   } catch (error) {
     $("preview-msg").textContent = error.message;
     $("preview-msg").classList.add("error");
+  } finally {
+    endActivity(taken);
   }
 }
 
@@ -935,6 +967,7 @@ function updatePurgeCount() {
 $("purge-scan").addEventListener("click", async () => {
   $("purge-msg").textContent = "Recherche…";
   $("purge-msg").classList.remove("error");
+  const taken = beginActivity("Recherche", "Lecture des playlists du compte…");
   try {
     const { playlists, marker } = await api("/api/purge/candidates");
     if (!playlists.length) {
@@ -966,6 +999,8 @@ $("purge-scan").addEventListener("click", async () => {
   } catch (error) {
     $("purge-msg").textContent = error.message;
     $("purge-msg").classList.add("error");
+  } finally {
+    endActivity(taken);
   }
 });
 
