@@ -26,9 +26,19 @@ class SortMode:
     max_styles_per_track: int
     min_tracks_per_style: int
     min_tracks_per_genre: int
+    #: "style" (genre et style Discogs) ou "mood" (ambiance déduite des styles).
+    axis: str = "style"
+    #: Gabarits propres au mode, quand son vocabulaire diffère.
+    style_name_template: str | None = None
+    genre_name_template: str | None = None
+    fallback_playlist: str | None = None
 
     def describe(self) -> str:
-        if self.min_tracks_per_style >= NO_STYLE_PLAYLISTS:
+        if self.axis == "mood":
+            granularity = (
+                f"une ambiance obtient sa playlist à partir de {self.min_tracks_per_style} titres"
+            )
+        elif self.min_tracks_per_style >= NO_STYLE_PLAYLISTS:
             granularity = "playlists par genre uniquement"
         else:
             granularity = f"un style obtient sa playlist à partir de {self.min_tracks_per_style} titres"
@@ -69,6 +79,18 @@ SORT_MODES: tuple[SortMode, ...] = (
         min_tracks_per_genre=3,
     ),
     SortMode(
+        key="ambiance",
+        label="Par ambiance",
+        summary="Range par humeur — calme, énergique, festif — déduite des styles.",
+        multi_style="all",
+        max_styles_per_track=2,
+        min_tracks_per_style=3,
+        min_tracks_per_genre=2,
+        axis="mood",
+        genre_name_template="{genre} — Autres",
+        fallback_playlist="Ambiance — Non déterminée",
+    ),
+    SortMode(
         key="genre",
         label="Par genre",
         summary="Une poignée de grandes playlists, sans détail de style.",
@@ -101,9 +123,16 @@ def apply_sort_mode(config: Config, key: str) -> Config:
     """
     mode = get_sort_mode(key)
     updated = copy.deepcopy(config)
+    updated.taxonomy.axis = mode.axis
     updated.taxonomy.multi_style = mode.multi_style
     updated.taxonomy.max_styles_per_track = mode.max_styles_per_track
     updated.taxonomy.min_tracks_per_style = mode.min_tracks_per_style
     updated.taxonomy.min_tracks_per_genre = mode.min_tracks_per_genre
+    if mode.style_name_template:
+        updated.taxonomy.style_name_template = mode.style_name_template
+    if mode.genre_name_template:
+        updated.taxonomy.genre_name_template = mode.genre_name_template
+    if mode.fallback_playlist:
+        updated.taxonomy.fallback_playlist = mode.fallback_playlist
     updated.validate()
     return updated

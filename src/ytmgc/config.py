@@ -52,6 +52,8 @@ class MatchingConfig:
 
 @dataclass(slots=True)
 class TaxonomyConfig:
+    #: "style" range par genre et style Discogs, "mood" par ambiance déduite.
+    axis: str = "style"
     multi_style: str = "all"
     max_styles_per_track: int = 2
     min_tracks_per_style: int = 4
@@ -103,6 +105,8 @@ class Config:
     web: WebConfig = field(default_factory=WebConfig)
 
     def validate(self) -> None:
+        if self.taxonomy.axis not in {"style", "mood"}:
+            raise ValueError("taxonomy.axis doit valoir 'style' ou 'mood'")
         if self.taxonomy.multi_style not in {"primary", "all"}:
             raise ValueError("taxonomy.multi_style doit valoir 'primary' ou 'all'")
         if not 0 < self.matching.min_score <= 1:

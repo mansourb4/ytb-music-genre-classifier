@@ -49,7 +49,7 @@ et relancés sans perte, et `plan`/`apply` se rejouent hors ligne.
 | `classifier.py` | Orchestration titre → candidats → classification. |
 | `planner.py` | Classifications → ensemble de playlists souhaité. Hors ligne. |
 | `sync.py` | Diff état souhaité / état distant, puis application. |
-| `sorting.py` | Types de tri prédéfinis, partagés par le CLI et l'interface web. |
+| `sorting.py` | Types de tri prédéfinis — dont l'axe de rangement — partagés par le CLI et l'interface web. |
 | `preview.py` | Assemble plan, état distant et titres en un aperçu sérialisable — pochettes et taxonomie comprises. Ni HTTP ni terminal. |
 | `web/` | Application FastAPI et son interface (page unique, sans build), contrôle d'accès et construction des liens. |
 | `cli.py` | Interface en ligne de commande. |
@@ -288,6 +288,28 @@ Enfin la description n'est plus affichée telle qu'elle sera écrite, mais
 décomposée — genre, style, définitions, raison d'être d'une playlist de
 regroupement — pour être lue plutôt que déchiffrée.
 
+### 15. Un second axe de rangement : l'ambiance
+
+Discogs ne décrit aucune humeur, et l'API de YouTube Music n'expose les siennes
+que sous forme de playlists éditoriales, sans attribut par titre. L'ambiance
+est donc **déduite des styles**, par une table (`taxonomy/moods.toml`) qui
+rattache chacun des styles décrits à l'une de huit humeurs.
+
+C'est un jugement éditorial, et il est présenté comme tel : chaque playlist
+d'ambiance énumère en description les styles qu'elle réunit, de sorte que le
+classement puisse être contesté par qui le lit. La table se corrige et se
+rejoue hors ligne, comme les alias.
+
+L'intégration tient en un choix de résolveur : `Taxonomy.resolve_moods` produit
+les mêmes `GenreStyle` que `resolve`, avec « Ambiance » pour groupe et l'axe
+marqué. Seuils, repli, nommage, diff et application opèrent ensuite
+indifféremment sur l'un ou l'autre axe — seule la présentation distingue
+« GENRE / STYLE » de « AMBIANCE ».
+
+Une release sans style exploitable ne relève d'aucune ambiance et n'est rangée
+nulle part en ce mode : un genre seul ne dit rien de l'humeur, « Rock »
+recouvrant aussi bien Shoegaze que Grindcore.
+
 ## Contraintes des API
 
 | Contrainte | Conséquence |
@@ -303,7 +325,7 @@ regroupement — pour être lue plutôt que déchiffrée.
 
 ## Tests
 
-280 tests, aucun appel réseau, y compris l'API web complète (aperçu,
+286 tests, aucun appel réseau, y compris l'API web complète (aperçu,
 application, annulation), son contrôle d'accès et les quatre voies de connexion.
 
 Vingt-neuf d'entre eux chargent l'interface dans un vrai navigateur (`tests/test_ui.py`).

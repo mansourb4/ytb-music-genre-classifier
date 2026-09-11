@@ -52,7 +52,15 @@ que tu n'emploies pas toi-même. Un `config.toml` écrit avant ce changement,
 portant encore `[ytmgc]`, est migré au chargement : rien à éditer à la main.
 
 Ces définitions vivent dans `src/ytmgc/taxonomy/descriptions.toml` : 15 genres
-et près de 200 styles. Un style non encore décrit reste parfaitement utilisable,
+et près de 200 styles.
+
+Le tri par **ambiance** repose sur `src/ytmgc/taxonomy/moods.toml`, qui
+rattache chacun de ces styles à l'une de huit humeurs — calme, mélancolique,
+énergique, festif, planant, sombre, groovy, cérébral. Discogs ne décrivant
+aucune humeur, cette table est un **jugement éditorial** : elle est faite pour
+être corrigée, et modifier une ligne se rejoue avec `plan` sans un seul appel
+réseau. Chaque playlist d'ambiance énumère en description les styles qu'elle
+réunit, pour que le classement reste vérifiable. Un style non encore décrit reste parfaitement utilisable,
 sa playlist est simplement créée sans définition — Discogs en ajoute
 régulièrement.
 
@@ -222,6 +230,7 @@ serveur tiers.
 | `detaille` (défaut) | Une playlist par style, un titre pouvant relever de deux styles. |
 | `exhaustif` | Le plus fin possible : chaque style représenté obtient sa playlist. |
 | `sans-doublon` | Chaque titre n'apparaît que dans une playlist : une cartographie exacte. |
+| `ambiance` | Range par humeur — calme, énergique, festif, groovy… — déduite des styles. |
 | `genre` | Une poignée de grandes playlists, sans détail de style. |
 
 ## Utilisation — ligne de commande
@@ -290,7 +299,7 @@ sans aucune écriture ni appel réseau.
 ## Développement
 
 ```bash
-python -m pytest        # 280 tests, aucun appel réseau
+python -m pytest        # 286 tests, aucun appel réseau
 ```
 
 Les API externes sont derrière des adaptateurs (`src/ytmgc/sources/`) ; toute la

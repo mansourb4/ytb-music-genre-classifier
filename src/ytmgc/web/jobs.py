@@ -74,15 +74,22 @@ class JobRunner:
             self._current = job.id
 
         def run() -> None:
+            # L'interrogation est concurrente de l'exécution : le statut final
+            # se publie donc en dernier, une fois le résultat ou le message
+            # d'erreur posés. Sinon un sondage tombant entre les deux affiche
+            # un échec sans cause, ou une réussite sans résultat.
             try:
-                job.result = work(job)
-                job.status = "terminé"
-                job.progress = job.total or job.progress
+                result = work(job)
             except Exception as exc:  # noqa: BLE001 - toute erreur remonte à l'interface
-                job.status = "échoué"
                 # La trace reste côté serveur ; l'interface n'affiche que le message.
                 traceback.print_exc()
                 job.error = str(exc) or exc.__class__.__name__
+                job.status = "échoué"
+                return
+
+            job.result = result
+            job.progress = job.total or job.progress
+            job.status = "terminé"
 
         threading.Thread(target=run, daemon=True, name=f"ytmgc-{kind}").start()
         return job

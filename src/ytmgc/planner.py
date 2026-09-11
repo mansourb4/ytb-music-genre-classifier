@@ -21,6 +21,10 @@ from ytmgc.models import Classification, MatchStatus, PlaylistPlan
 from ytmgc.taxonomy.rules import GenreStyle, Taxonomy, playlist_name
 
 
+#: Une ambiance large réunit des dizaines de styles : les énumérer tous
+#: noierait la description qu'ils sont censés éclairer.
+MAX_GATHERED_STYLES = 12
+
 #: YouTube Music refuse les chevrons dans une description de playlist.
 _FORBIDDEN = str.maketrans({"<": "(", ">": ")"})
 
@@ -61,7 +65,17 @@ def build_description(
     """
     lines = [name, ""]
 
-    if item is not None:
+    if item is not None and item.axis == "mood" and item.style:
+        # Une ambiance est déduite des styles : les énumérer rend le classement
+        # vérifiable, et discutable, par qui lit la description.
+        lines.append(f"AMBIANCE — {item.style}")
+        lines.append(taxonomy.describe_mood(item.style) or "")
+        if styles := taxonomy.styles_of_mood(item.style):
+            shown = styles[:MAX_GATHERED_STYLES]
+            suffix = f" et {len(styles) - len(shown)} autres" if len(styles) > len(shown) else ""
+            lines.append("")
+            lines.append(f"Styles réunis : {', '.join(shown)}{suffix}.")
+    elif item is not None:
         genre_text = taxonomy.describe_genre(item.genre)
         lines.append(f"GENRE — {item.genre}")
         lines.append(genre_text or "Genre Discogs (définition non encore renseignée).")
@@ -139,7 +153,11 @@ def plan_playlists(
     for classification in classifications:
         if classification.status is not MatchStatus.MATCHED:
             continue
-        items = taxonomy.resolve(classification.genres, classification.styles)
+        items = (
+            taxonomy.resolve_moods(classification.styles)
+            if config.taxonomy.axis == "mood"
+            else taxonomy.resolve(classification.genres, classification.styles)
+        )
         if items:
             resolved[classification.video_id] = items
             order.append(classification.video_id)
@@ -174,7 +192,7 @@ def plan_playlists(
                 kind = "genre"
             if video_id not in members[key]:
                 members[key].append(video_id)
-            labels[key] = (name, kind, surviving or GenreStyle(item.genre, None))
+            labels[key] = (name, kind, surviving or GenreStyle(item.genre, None, item.axis))
 
     # Passe 3 : repli des genres sous le seuil vers la playlist fourre-tout.
     fallback_key = slugify(settings.fallback_playlist)

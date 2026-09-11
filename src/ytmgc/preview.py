@@ -21,7 +21,7 @@ from ytmgc.models import (
     SyncAction,
     Track,
 )
-from ytmgc.planner import NOTES, plan_playlists
+from ytmgc.planner import MAX_GATHERED_STYLES, NOTES, plan_playlists
 from ytmgc.store import Repository
 from ytmgc.sync import diff, managed_by_key
 from ytmgc.taxonomy import load_taxonomy
@@ -55,10 +55,14 @@ class PlaylistPreview:
     #: elles n'ont donc pas d'image propre.
     image: str | None = None
     #: Description décomposée, pour un affichage lisible plutôt qu'un bloc brut.
+    #: "style" (genre et style Discogs) ou "mood" (ambiance déduite).
+    axis: str = "style"
     genre: str | None = None
     style: str | None = None
     genre_text: str | None = None
     style_text: str | None = None
+    #: Styles réunis sous une ambiance : ce qui rend la déduction vérifiable.
+    gathered: list[str] = field(default_factory=list)
     note: str | None = None
     tracks: list[TrackPreview] = field(default_factory=list)
 
@@ -209,10 +213,24 @@ def build_preview(
                 added=added,
                 removed=removed,
                 image=_image(plan.video_ids, tracks),
+                axis=config.taxonomy.axis,
                 genre=plan.genre,
                 style=plan.style,
-                genre_text=taxonomy.describe_genre(plan.genre) if plan.genre else None,
-                style_text=taxonomy.describe_style(plan.style) if plan.style else None,
+                genre_text=(
+                    None
+                    if config.taxonomy.axis == "mood"
+                    else taxonomy.describe_genre(plan.genre) if plan.genre else None
+                ),
+                style_text=(
+                    (taxonomy.describe_mood(plan.style) if config.taxonomy.axis == "mood"
+                     else taxonomy.describe_style(plan.style))
+                    if plan.style else None
+                ),
+                gathered=(
+                    taxonomy.styles_of_mood(plan.style)[:MAX_GATHERED_STYLES]
+                    if config.taxonomy.axis == "mood" and plan.style
+                    else []
+                ),
                 note=NOTES.get(plan.kind),
                 tracks=_detail(plan.video_ids, tracks, by_video),
             )

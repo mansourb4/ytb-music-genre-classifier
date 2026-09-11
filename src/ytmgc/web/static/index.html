@@ -534,11 +534,21 @@ function playlistCover(playlist) {
 
 function playlistDescription(pl) {
   const blocks = [];
-  if (pl.genre) {
-    blocks.push(`<p><b>Genre — ${escapeHtml(pl.genre)}</b><br>${escapeHtml(pl.genre_text || "")}</p>`);
-  }
-  if (pl.style) {
-    blocks.push(`<p><b>Style — ${escapeHtml(pl.style)}</b><br>${escapeHtml(pl.style_text || "")}</p>`);
+  if (pl.axis === "mood") {
+    if (pl.style) {
+      blocks.push(`<p><b>Ambiance — ${escapeHtml(pl.style)}</b><br>${escapeHtml(pl.style_text || "")}</p>`);
+    }
+    if (pl.gathered && pl.gathered.length) {
+      // Une ambiance est déduite : énumérer les styles la rend vérifiable.
+      blocks.push(`<p class="msg">Styles réunis : ${escapeHtml(pl.gathered.join(", "))}.</p>`);
+    }
+  } else {
+    if (pl.genre) {
+      blocks.push(`<p><b>Genre — ${escapeHtml(pl.genre)}</b><br>${escapeHtml(pl.genre_text || "")}</p>`);
+    }
+    if (pl.style) {
+      blocks.push(`<p><b>Style — ${escapeHtml(pl.style)}</b><br>${escapeHtml(pl.style_text || "")}</p>`);
+    }
   }
   if (pl.note) blocks.push(`<p class="msg">${escapeHtml(pl.note)}</p>`);
   return `<div class="pl-desc">${blocks.join("")}</div>`;

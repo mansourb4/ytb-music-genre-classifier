@@ -15,14 +15,26 @@ from ytmgc.matching.normalize import fold, slugify
 
 DEFAULT_ALIASES = Path(__file__).with_name("aliases.toml")
 DEFAULT_DESCRIPTIONS = Path(__file__).with_name("descriptions.toml")
+DEFAULT_MOODS = Path(__file__).with_name("moods.toml")
+
+#: Genre porté par les playlists d'ambiance, pour qu'elles se regroupent dans
+#: la bibliothèque comme les couples genre/style.
+MOOD_GROUP = "Ambiance"
 
 
 @dataclass(frozen=True, slots=True)
 class GenreStyle:
-    """Couple (genre, style) normalisé, prêt à devenir une playlist."""
+    """Couple normalisé, prêt à devenir une playlist.
+
+    Sert aux deux axes de rangement : (genre, style) pour la taxonomie Discogs,
+    (Ambiance, humeur) pour le tri par ambiance. Tout ce qui suit — seuils,
+    repli, nommage, description — opère indifféremment sur l'un ou l'autre.
+    """
 
     genre: str
     style: str | None
+    #: "style" ou "mood". Ne change que la façon de présenter le couple.
+    axis: str = "style"
 
     @property
     def key(self) -> str:
@@ -40,6 +52,8 @@ class Taxonomy:
         style_blocklist: list[str],
         genre_descriptions: dict[str, str] | None = None,
         style_descriptions: dict[str, str] | None = None,
+        mood_descriptions: dict[str, str] | None = None,
+        style_moods: dict[str, str] | None = None,
     ) -> None:
         self._genre_display = genre_display
         self._priority = {fold(name): rank for rank, name in enumerate(genre_priority)}
@@ -56,6 +70,13 @@ class Taxonomy:
         self._style_descriptions = {
             fold(name): text for name, text in (style_descriptions or {}).items()
         }
+        self._mood_descriptions = {
+            fold(name): text for name, text in (mood_descriptions or {}).items()
+        }
+        self._style_moods = {fold(name): mood for name, mood in (style_moods or {}).items()}
+        self._mood_styles: dict[str, list[str]] = {}
+        for name, mood in (style_moods or {}).items():
+            self._mood_styles.setdefault(mood, []).append(name)
 
     def describe_genre(self, genre: str) -> str | None:
         """Définition du genre, ou None s'il n'en existe pas encore."""
@@ -68,6 +89,35 @@ class Taxonomy:
         régulièrement : une absence est normale et ne doit rien casser.
         """
         return self._style_descriptions.get(fold(style))
+
+    def describe_mood(self, mood: str) -> str | None:
+        return self._mood_descriptions.get(fold(mood))
+
+    def styles_of_mood(self, mood: str) -> list[str]:
+        """Styles rattachés à une ambiance, pour rendre le classement vérifiable."""
+        return sorted(self._mood_styles.get(mood, []))
+
+    def mood_of(self, style: str) -> str | None:
+        """Ambiance d'un style, après application des alias. None si non rattaché."""
+        canonical = self.canonical_style(style)
+        return self._style_moods.get(fold(canonical)) if canonical else None
+
+    def resolve_moods(self, styles: tuple[str, ...]) -> tuple[GenreStyle, ...]:
+        """Ambiances d'une release, déduites de ses styles.
+
+        Un genre seul ne dit rien de l'humeur — « Rock » recouvre aussi bien
+        Shoegaze que Grindcore. Une release sans style exploitable ne relève
+        donc d'aucune ambiance, et n'est rangée nulle part en mode ambiance.
+        """
+        resolved: list[GenreStyle] = []
+        seen: set[str] = set()
+        for style in styles:
+            mood = self.mood_of(style)
+            if mood is None or mood in seen:
+                continue
+            seen.add(mood)
+            resolved.append(GenreStyle(MOOD_GROUP, mood, axis="mood"))
+        return tuple(resolved)
 
     def display_genre(self, genre: str) -> str:
         return self._genre_display.get(genre, genre)
@@ -122,12 +172,15 @@ class Taxonomy:
 
 
 def load_taxonomy(
-    path: Path | None = None, descriptions_path: Path | None = None
+    path: Path | None = None,
+    descriptions_path: Path | None = None,
+    moods_path: Path | None = None,
 ) -> Taxonomy:
     data = tomllib.loads((path or DEFAULT_ALIASES).read_text(encoding="utf-8"))
     described = tomllib.loads(
         (descriptions_path or DEFAULT_DESCRIPTIONS).read_text(encoding="utf-8")
     )
+    moods = tomllib.loads((moods_path or DEFAULT_MOODS).read_text(encoding="utf-8"))
     return Taxonomy(
         genre_display=data.get("genre_display", {}),
         genre_priority=data.get("genre_priority", {}).get("order", []),
@@ -135,6 +188,8 @@ def load_taxonomy(
         style_blocklist=data.get("style_blocklist", {}).get("styles", []),
         genre_descriptions=described.get("genres", {}),
         style_descriptions=described.get("styles", {}),
+        mood_descriptions=moods.get("moods", {}),
+        style_moods=moods.get("styles", {}),
     )
 
 

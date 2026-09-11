@@ -160,3 +160,61 @@ def test_an_undescribed_style_still_produces_a_usable_description(taxonomy, conf
     description = plans["electronic/style-invente"].description
     assert "STYLE — Style Inventé" in description
     assert "non encore renseignée" in description
+
+
+# --------------------------------------------------------- tri par ambiance
+
+
+def mood_config(config):
+    from ytmgc.sorting import apply_sort_mode
+
+    scoped = apply_sort_mode(config, "ambiance")
+    scoped.taxonomy.min_tracks_per_style = 2
+    scoped.taxonomy.min_tracks_per_genre = 2
+    return scoped
+
+
+def test_moods_are_deduced_from_styles(taxonomy, config):
+    classifications = [matched(f"a{i}", ("Electronic",), ("Ambient",)) for i in range(2)]
+    classifications += [matched(f"d{i}", ("Funk / Soul",), ("Disco",)) for i in range(2)]
+
+    plans = plan(classifications, taxonomy, mood_config(config))
+
+    assert {p.name for p in plans.values()} == {"Ambiance — Calme", "Ambiance — Festif"}
+    assert all(p.key.startswith("ambiance/") for p in plans.values())
+
+
+def test_a_track_can_belong_to_two_moods(taxonomy, config):
+    """« Ambient, IDM » relève du calme et du cérébral : les deux sont vraies."""
+    classifications = [matched(f"v{i}", ("Electronic",), ("Ambient", "IDM")) for i in range(2)]
+    plans = plan(classifications, taxonomy, mood_config(config))
+    assert {p.name for p in plans.values()} == {"Ambiance — Calme", "Ambiance — Cérébral"}
+
+
+def test_a_style_without_mood_is_not_placed(taxonomy, config):
+    """Un genre seul ne dit rien de l'humeur : Rock recouvre Shoegaze et Grindcore."""
+    classifications = [matched(f"v{i}", ("Rock",), ("Style Inventé",)) for i in range(2)]
+    assert plan(classifications, taxonomy, mood_config(config)) == {}
+
+
+def test_the_mood_description_lists_the_styles_it_gathers(taxonomy, config):
+    """La déduction est un jugement : elle doit pouvoir être contestée."""
+    classifications = [matched(f"v{i}", ("Electronic",), ("Ambient",)) for i in range(2)]
+    description = plan(classifications, taxonomy, mood_config(config))["ambiance/calme"].description
+
+    assert "AMBIANCE — Calme" in description
+    assert "Styles réunis :" in description
+    assert "Ambient" in description
+    assert "GENRE —" not in description
+
+
+def test_a_broad_mood_does_not_flood_its_description(taxonomy, config):
+    from ytmgc.planner import MAX_GATHERED_STYLES
+
+    classifications = [matched(f"v{i}", ("Electronic",), ("Ambient",)) for i in range(2)]
+    line = next(
+        line for line in plan(classifications, taxonomy, mood_config(config))["ambiance/calme"]
+        .description.splitlines() if line.startswith("Styles réunis")
+    )
+    assert line.count(",") < MAX_GATHERED_STYLES + 2
+    assert "autres." in line

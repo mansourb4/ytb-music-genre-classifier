@@ -605,3 +605,16 @@ def test_the_unreliable_playlist_count_is_no_longer_exposed(client):
     client.youtube.summaries = [{"playlist_id": "PL1", "title": "Favorite Songs", "count": "2"}]
     playlists = client.get("/api/sources").json()["playlists"]
     assert "count" not in playlists[0]
+
+
+def test_a_finished_job_never_reports_without_its_cause(client, monkeypatch):
+    """Le statut final se publie après le résultat : un sondage tombant entre
+    les deux montrerait sinon un échec sans cause."""
+    def failing(_sources):
+        raise RuntimeError("session expirée")
+
+    monkeypatch.setattr(client.youtube, "scan", failing)
+    for _ in range(20):
+        job = wait(client, client.post("/api/analyse"))
+        assert job["status"] == "échoué"
+        assert job["error"], "un échec doit toujours porter son message"
