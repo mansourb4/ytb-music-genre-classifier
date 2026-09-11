@@ -325,7 +325,7 @@ recouvrant aussi bien Shoegaze que Grindcore.
 
 ## Tests
 
-286 tests, aucun appel réseau, y compris l'API web complète (aperçu,
+292 tests, aucun appel réseau, y compris l'API web complète (aperçu,
 application, annulation), son contrôle d'accès et les quatre voies de connexion.
 
 Vingt-neuf d'entre eux chargent l'interface dans un vrai navigateur (`tests/test_ui.py`).
