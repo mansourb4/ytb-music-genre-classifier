@@ -70,6 +70,19 @@ class PlaylistPreview:
     tracks: list[TrackPreview] = field(default_factory=list)
 
 
+#: Pourquoi un titre n'entre dans aucune playlist. Chaque cause appelle un
+#: geste différent, et les confondre laisse l'utilisateur devant un total
+#: inexpliqué.
+REASONS = {
+    "unscanned": "jamais analysé",
+    "unmatched": "aucune correspondance Discogs",
+    "review": "appariement trop incertain",
+    "no_genre": "release sans genre exploitable",
+    "no_tags": "ni tag Last.fm ni style Discogs",
+    "no_mood": "aucune ambiance déterminable",
+}
+
+
 @dataclass(frozen=True, slots=True)
 class LibraryPreview:
     sort_mode: str
@@ -86,6 +99,11 @@ class LibraryPreview:
     created: int = 0
     updated: int = 0
     unchanged: int = 0
+    #: Titres qui n'entreront dans aucune playlist, avec leur cause.
+    unsorted: list[dict] = field(default_factory=list)
+    unsorted_by_reason: dict[str, int] = field(default_factory=dict)
+    #: Libellés des causes, pour que l'interface n'ait pas à les redire.
+    reason_labels: dict[str, str] = field(default_factory=lambda: dict(REASONS))
 
     def to_dict(self) -> dict:
         return asdict(self)
@@ -142,6 +160,48 @@ def _detail(
             )
         )
     return detailed
+
+
+def _reason(classification: Classification | None, by_mood: bool) -> str:
+    """Cause du non-rangement d'un titre.
+
+    Plusieurs filtres successifs écartent des titres, et aucun n'est visible
+    dans la bibliothèque finale : il faut donc les nommer ici.
+    """
+    if classification is None:
+        return "unscanned"
+    if by_mood:
+        # En mode ambiance, Discogs n'est plus qu'un appoint : ce qui manque
+        # est soit toute matière, soit une ambiance tirée de cette matière.
+        if not classification.tags and not classification.styles:
+            return "no_tags"
+        return "no_mood"
+    if classification.status is MatchStatus.UNMATCHED:
+        return "unmatched"
+    if classification.status is MatchStatus.REVIEW:
+        return "review"
+    return "no_genre"
+
+
+def _unsorted(
+    tracks: dict[str, Track],
+    classifications: dict[str, Classification],
+    placed: set[str],
+    config: Config,
+) -> list[tuple[Track, str]]:
+    by_mood = config.taxonomy.axis == "mood"
+    return [
+        (track, _reason(classifications.get(video_id), by_mood))
+        for video_id, track in tracks.items()
+        if video_id not in placed
+    ]
+
+
+def _count_reasons(unsorted: list[tuple[Track, str]]) -> dict[str, int]:
+    counts: dict[str, int] = {}
+    for _track, reason in unsorted:
+        counts[reason] = counts.get(reason, 0) + 1
+    return counts
 
 
 def _image(video_ids: tuple[str, ...], tracks: dict[str, Track]) -> str | None:
@@ -240,6 +300,9 @@ def build_preview(
             )
         )
 
+    placed = {video_id for plan in plans for video_id in plan.video_ids}
+    unsorted = _unsorted(tracks, by_video, placed, config)
+
     planned_keys = {plan.key for plan in plans}
     obsolete = sorted(
         playlist.title for key, playlist in existing.items() if key not in planned_keys
@@ -256,6 +319,12 @@ def build_preview(
         unmatched=counts.get(MatchStatus.UNMATCHED.value, 0),
         unclassified=len(repository.unclassified_tracks()),
         assignments=sum(len(plan.video_ids) for plan in plans),
+        unsorted=[
+            {"video_id": track.video_id, "label": track.label(),
+             "thumbnail": track.thumbnail, "reason": reason}
+            for track, reason in unsorted
+        ],
+        unsorted_by_reason=_count_reasons(unsorted),
         created=sum(1 for p in previews if p.change == "création"),
         updated=sum(1 for p in previews if p.change == "mise à jour"),
         unchanged=sum(1 for p in previews if p.change == "inchangée"),

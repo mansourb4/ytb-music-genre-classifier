@@ -266,6 +266,27 @@ l'année de la release appariée. Les bases déjà remplies sont complétées pa
 `ALTER TABLE` au démarrage, sans perdre les heures d'analyse qu'elles
 contiennent.
 
+### 13 bis. Ce qui n'est pas rangé se dit, avec sa cause
+
+Quatre filtres successifs écartent des titres du plan — jamais analysé, aucune
+correspondance Discogs, appariement jugé trop incertain, matière sans genre ni
+ambiance exploitables — et aucun ne laissait de trace : la bibliothèque finale
+contenait moins de titres que le compte, sans que rien n'explique l'écart. Un
+outil dont l'objet est de comprendre ce qu'on écoute ne peut pas perdre des
+morceaux en silence.
+
+`preview.build_preview` compare donc l'ensemble des titres au plan et remonte
+les absents dans `unsorted`, chacun avec sa cause, plus un décompte par cause
+(`unsorted_by_reason`) et les libellés correspondants (`reason_labels`, pour
+que l'interface n'ait pas à les redire). La page les présente en un bloc
+repliable, groupés par cause : c'est la cause, non le titre, qui dicte le geste
+à faire — relancer l'analyse, corriger un appariement, ou constater que Discogs
+et Last.fm ne connaissent tout simplement pas ce morceau.
+
+En mode ambiance les causes diffèrent, Discogs n'y étant plus qu'un appoint :
+soit le titre n'a ni tag Last.fm ni style (`no_tags`, rien à exploiter), soit
+cette matière existe mais n'a donné aucune ambiance (`no_mood`).
+
 ### 14. L'aperçu est un plan négociable, pas un compte rendu
 
 Ce que montre l'aperçu peut être amendé avant écriture : chaque playlist et
@@ -368,10 +389,10 @@ pas une panne, et il ne sert à rien de le redemander.
 
 ## Tests
 
-318 tests, aucun appel réseau, y compris l'API web complète (aperçu,
+328 tests, aucun appel réseau, y compris l'API web complète (aperçu,
 application, annulation), son contrôle d'accès et les quatre voies de connexion.
 
-Vingt-neuf d'entre eux chargent l'interface dans un vrai navigateur (`tests/test_ui.py`).
+Trente-trois d’entre eux chargent l’interface dans un vrai navigateur (`tests/test_ui.py`).
 Le câblage du DOM échappe aux tests Python : deux défauts d'onglets sont passés
 au travers de la suite avant d'être vus à l'écran. Ces tests sont ignorés
 lorsque Playwright ou son navigateur sont absents, pour que la suite reste

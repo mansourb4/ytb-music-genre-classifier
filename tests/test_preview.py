@@ -156,3 +156,80 @@ def test_preview_of_an_unclassified_library_is_empty_but_valid(repository, confi
     summary, plans, actions = build_preview(repository, config, sort_mode="detaille")
     assert summary.playlists == [] and plans == [] and actions == []
     assert summary.unclassified == 4
+
+
+def test_unscanned_tracks_are_listed_as_unsorted(repository, config):
+    """Un titre jamais analysé disparaissait de l'aperçu sans un mot : le total
+    de la bibliothèque ne correspondait alors à rien de visible."""
+    seeded(repository, config)
+    repository.upsert_tracks([Track("x1", "Inconnu", ("Personne",))])
+    summary, _, _ = build_preview(repository, config, sort_mode="detaille")
+
+    assert [t["video_id"] for t in summary.unsorted] == ["x1"]
+    assert summary.unsorted[0]["label"] == "Personne – Inconnu"
+    assert summary.unsorted_by_reason == {"unscanned": 1}
+    assert summary.reason_labels["unscanned"] == "jamais analysé"
+
+
+def test_unmatched_tracks_state_their_cause(repository, config):
+    seeded(repository, config)
+    repository.upsert_tracks([Track("x1", "Inconnu", ("Personne",))])
+    repository.save_classification(Classification("x1", MatchStatus.UNMATCHED))
+    summary, _, _ = build_preview(repository, config, sort_mode="detaille")
+
+    assert summary.unsorted_by_reason == {"unmatched": 1}
+
+
+def test_uncertain_matches_are_distinguished_from_absent_ones(repository, config):
+    seeded(repository, config)
+    repository.upsert_tracks([Track("x1", "Inconnu", ("Personne",))])
+    repository.save_classification(
+        Classification("x1", MatchStatus.REVIEW, discogs_id=9, genres=("Rock",))
+    )
+    summary, _, _ = build_preview(repository, config, sort_mode="detaille")
+
+    assert summary.unsorted_by_reason == {"review": 1}
+
+
+def test_a_matched_track_without_usable_genre_is_reported(repository, config):
+    """Discogs apparie parfois une release dont le genre n'existe pas dans la
+    taxonomie : le titre est écarté sans que rien ne le signale."""
+    seeded(repository, config)
+    repository.upsert_tracks([Track("x1", "Inconnu", ("Personne",))])
+    repository.save_classification(
+        Classification("x1", MatchStatus.MATCHED, discogs_id=9, score=1.0, genres=())
+    )
+    summary, _, _ = build_preview(repository, config, sort_mode="detaille")
+
+    assert summary.unsorted_by_reason == {"no_genre": 1}
+
+
+def test_sorted_library_reports_nothing_unsorted(repository, config):
+    seeded(repository, config)
+    summary, _, _ = build_preview(repository, config, sort_mode="detaille")
+
+    assert summary.unsorted == []
+    assert summary.unsorted_by_reason == {}
+
+
+def test_mood_mode_names_the_missing_material(repository, config):
+    """En mode ambiance, Discogs n'est plus la cause : ce qui manque est la
+    matière propre au titre."""
+    config = apply_sort_mode(config, "ambiance")
+    repository.upsert_tracks([Track("x1", "Inconnu", ("Personne",))])
+    repository.save_classification(Classification("x1", MatchStatus.UNMATCHED))
+    summary, _, _ = build_preview(repository, config, sort_mode="ambiance")
+
+    assert summary.unsorted_by_reason == {"no_tags": 1}
+
+
+def test_mood_mode_reports_material_that_yields_no_mood(repository, config):
+    config = apply_sort_mode(config, "ambiance")
+    repository.upsert_tracks([Track("x1", "Inconnu", ("Personne",))])
+    repository.save_classification(
+        Classification("x1", MatchStatus.MATCHED, discogs_id=9, score=1.0,
+                      genres=("Rock",), styles=("Style Inconnu",))
+    )
+    summary, _, _ = build_preview(repository, config, sort_mode="ambiance")
+
+    assert summary.unsorted_by_reason == {"no_mood": 1}

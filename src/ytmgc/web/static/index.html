@@ -109,6 +109,15 @@ ul.tracks { list-style: none; margin: 0; padding: 0; }
 .track-tags { color: var(--accent); font-size: .74rem; opacity: .8; }
 .track-text { cursor: pointer; }
 .pl.excluded > summary { opacity: .45; }
+.pl.unsorted > summary .name { color: var(--muted); }
+.reasons { list-style: none; margin: 0 0 .9rem; padding: 0; display: flex;
+  flex-wrap: wrap; gap: .4rem .6rem; font-size: .82rem; }
+.reasons li { background: var(--bg); border: 1px solid var(--border);
+  border-radius: 999px; padding: .15rem .6rem; color: var(--muted); }
+.reasons b { color: var(--text); font-weight: 600; }
+.reason-group { margin: 0 0 .9rem; }
+.reason-group > h4 { margin: 0 0 .3rem; font-size: .84rem; font-weight: 600; }
+.reason-group > h4 span { color: var(--muted); font-weight: 400; }
 .pl-desc p { margin: 0 0 .7rem; line-height: 1.5; }
 .pl-desc b { font-size: .82rem; text-transform: uppercase; letter-spacing: .04em; }
 .pl-desc { border-left: 2px solid var(--accent-soft); padding-left: .8rem; margin-bottom: .9rem; }
@@ -317,6 +326,7 @@ select {
   <div id="preview-msg" class="msg spacer"></div>
   <p id="preview-selection" class="total spacer"></p>
   <div id="preview-list" class="spacer"></div>
+  <div id="unsorted" class="spacer"></div>
 </section>
 
 <section>
@@ -537,6 +547,56 @@ function trackRow(playlistKey, track) {
   </li>`;
 }
 
+//: Un titre non rangé : pas de case à cocher, rien à appliquer le concernant.
+const UNSORTED_SHOWN = 100;
+
+function renderUnsorted(p) {
+  const box = $("unsorted");
+  const total = (p.unsorted || []).length;
+  if (!total) {
+    box.innerHTML = "";
+    return;
+  }
+  const labels = p.reason_labels || {};
+  const counts = p.unsorted_by_reason || {};
+  const chips = Object.keys(counts)
+    .sort((a, b) => counts[b] - counts[a])
+    .map((r) => `<li><b>${counts[r]}</b> ${escapeHtml(labels[r] || r)}</li>`)
+    .join("");
+
+  // Groupés par cause : c'est la cause qui dicte le geste à faire, pas le titre.
+  const groups = Object.keys(counts)
+    .sort((a, b) => counts[b] - counts[a])
+    .map((reason) => {
+      const rows = p.unsorted.filter((t) => t.reason === reason);
+      const shown = rows.slice(0, UNSORTED_SHOWN);
+      const rest = rows.length - shown.length;
+      const items = shown.map((t) => `<li class="track">
+        ${t.thumbnail
+          ? `<img class="cover" src="${escapeHtml(t.thumbnail)}" alt="" loading="lazy">`
+          : `<span class="cover empty"></span>`}
+        <span class="track-text"><b>${escapeHtml(t.label)}</b></span>
+      </li>`).join("");
+      return `<div class="reason-group">
+        <h4>${escapeHtml(labels[reason] || reason)} <span>— ${rows.length} titre(s)</span></h4>
+        <ul class="tracks">${items}</ul>
+        ${rest > 0 ? `<p class="hint">et ${rest} autre(s) pour la même raison.</p>` : ""}
+      </div>`;
+    }).join("");
+
+  box.innerHTML = `<details class="pl unsorted">
+    <summary>
+      <span class="cover empty"></span>
+      <span class="name">${total} titre(s) non rangé(s)</span>
+      <span class="count">sur ${p.total_tracks}</span>
+    </summary>
+    <div class="body">
+      <ul class="reasons">${chips}</ul>
+      ${groups}
+    </div>
+  </details>`;
+}
+
 function playlistCover(playlist) {
   return playlist.image
     ? `<img class="pl-cover" src="${escapeHtml(playlist.image)}" alt="" loading="lazy">`
@@ -598,6 +658,8 @@ function renderPreview(data) {
     stat(p.created, "à créer") +
     stat(p.updated, "à mettre à jour") +
     stat(p.unchanged, "inchangées");
+
+  renderUnsorted(p);
 
   if (!p.playlists.length) {
     $("preview-list").innerHTML = `<p class="msg">Aucune playlist à proposer : lance d'abord l'analyse.</p>`;
@@ -931,6 +993,7 @@ $("analyse-btn").addEventListener("click", async () => {
   $("analyse-msg").classList.remove("error");
   // L'aperçu précédent ne décrit plus rien dès que l'analyse repart.
   $("preview-list").innerHTML = "";
+  $("unsorted").innerHTML = "";
   $("preview-selection").innerHTML = "";
   $("preview-summary").classList.add("hidden");
   $("apply-btn").disabled = true;

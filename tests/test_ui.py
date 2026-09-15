@@ -494,3 +494,53 @@ def test_track_tags_are_shown_to_explain_the_placement(page):
     tags = page.locator(".track-tags").text_content()
     assert "ballad" in tags and "acoustic" in tags
     assert "Ballad" in page.locator(".track-facts").text_content()
+
+
+#: Aperçu comportant des titres écartés, avec deux causes distinctes.
+UNSORTED_PREVIEW = """() => {
+  renderPreview({
+    remote_known: true,
+    preview: {
+      playlists: [],
+      obsolete: [], created: 0, updated: 0, unchanged: 0, assignments: 0,
+      total_tracks: 5,
+      unsorted: [
+        {video_id: "x1", label: "Personne – Inconnu", thumbnail: null, reason: "unmatched"},
+        {video_id: "x2", label: "Quelqu'un – Autre", thumbnail: null, reason: "unmatched"},
+        {video_id: "x3", label: "Nirvana – Something", thumbnail: null, reason: "review"},
+      ],
+      unsorted_by_reason: {unmatched: 2, review: 1},
+      reason_labels: {unmatched: "aucune correspondance Discogs",
+                      review: "appariement trop incertain"},
+    },
+  });
+}"""
+
+
+def test_unsorted_tracks_are_shown_with_their_cause(page):
+    """Régression : les titres écartés disparaissaient sans un mot, laissant
+    croire que l'analyse en avait oublié."""
+    page.evaluate(UNSORTED_PREVIEW)
+
+    summary = page.locator("#unsorted details.pl summary").text_content()
+    assert "3 titre(s) non rangé(s)" in summary
+    assert "sur 5" in summary
+
+    page.locator("#unsorted details.pl").click()
+    chips = page.locator("#unsorted .reasons").text_content()
+    assert "2 aucune correspondance Discogs" in chips
+    assert "1 appariement trop incertain" in chips
+    assert page.locator("#unsorted .reason-group").count() == 2
+    assert "Personne – Inconnu" in page.locator("#unsorted").text_content()
+
+
+def test_a_fully_sorted_library_shows_no_unsorted_section(page):
+    render_sample_preview(page)
+    assert page.locator("#unsorted details").count() == 0
+
+
+def test_a_new_preview_clears_the_previous_unsorted_list(page):
+    page.evaluate(UNSORTED_PREVIEW)
+    assert page.locator("#unsorted details").count() == 1
+    render_sample_preview(page)
+    assert page.locator("#unsorted details").count() == 0
