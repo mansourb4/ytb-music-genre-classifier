@@ -106,6 +106,7 @@ ul.tracks { list-style: none; margin: 0; padding: 0; }
 .track-text b { font-weight: 500; }
 .track-artist { color: var(--muted); font-size: .84rem; }
 .track-facts { color: var(--muted); font-size: .78rem; }
+.track-tags { color: var(--accent); font-size: .74rem; opacity: .8; }
 .track-text { cursor: pointer; }
 .pl.excluded > summary { opacity: .45; }
 .pl-desc p { margin: 0 0 .7rem; line-height: 1.5; }
@@ -181,6 +182,7 @@ select {
 <section>
   <h2>État</h2>
   <div class="stats" id="stats"></div>
+  <p class="hint spacer" id="lastfm-state"></p>
 </section>
 
 <section id="connect-section">
@@ -384,6 +386,10 @@ async function refreshStatus() {
     stat(s.unmatched, "sans correspondance") +
     stat(s.unclassified, "non traités") +
     stat(s.managed_playlists, "playlists gérées");
+  $("lastfm-state").textContent = s.lastfm_key
+    ? "Tags Last.fm actifs : chaque titre est affiné par ses propres tags."
+    : "Sans clé Last.fm : le classement suit les styles de l'album, identiques pour toutes ses pistes.";
+  $("lastfm-state").classList.toggle("error", !s.lastfm_key);
   $("connected-box").classList.toggle("hidden", !s.connected);
   $("connect-form").classList.toggle("hidden", s.connected);
   $("auth-file").textContent = s.auth_file;
@@ -514,6 +520,10 @@ function trackRow(playlistKey, track) {
     track.genres.length ? escapeHtml(track.genres.join(", ")) : null,
     track.styles.length ? escapeHtml(track.styles.join(" · ")) : null,
   ].filter(Boolean);
+  // Les tags expliquent pourquoi un titre s'écarte du classement de son album.
+  const tags = (track.tags || []).length
+    ? `<span class="track-tags">${track.tags.slice(0, 6).map(escapeHtml).join(" · ")}</span>`
+    : "";
   return `<li class="track">
     <input type="checkbox" class="track-check" id="${id}"
            data-playlist="${escapeHtml(playlistKey)}" value="${escapeHtml(track.video_id)}" checked>
@@ -522,6 +532,7 @@ function trackRow(playlistKey, track) {
       <b>${escapeHtml(track.title)}</b>
       <span class="track-artist">${escapeHtml(track.artist)}</span>
       <span class="track-facts">${facts.join(" — ")}</span>
+      ${tags}
     </label>
   </li>`;
 }

@@ -467,3 +467,30 @@ def test_a_running_job_keeps_the_bar_for_itself(page):
         assert page.locator("#job-box").is_hidden()
     finally:
         page.evaluate("() => { clearInterval(pollTimer); pollTimer = null; }")
+
+
+def test_track_tags_are_shown_to_explain_the_placement(page):
+    """Un titre classé autrement que son album doit pouvoir s'expliquer."""
+    page.evaluate("""() => {
+      renderPreview({
+        remote_known: true,
+        preview: {
+          playlists: [{
+            key: "ambiance/calme", name: "Ambiance — Calme", kind: "style", count: 1,
+            change: "création", added: 1, removed: 0, description: "", axis: "mood",
+            genre: "Ambiance", style: "Calme", style_text: "Musiques posées.",
+            gathered: ["Ambient"], note: null, image: null,
+            tracks: [{video_id: "v2", title: "La ballade", artist: "Sex Pistols",
+                      album: "Bollocks", thumbnail: null, genres: ["Rock"],
+                      styles: ["Ballad"], year: 1977, tags: ["ballad", "acoustic", "mellow"]}],
+          }],
+          obsolete: [], created: 1, updated: 0, unchanged: 0, assignments: 1,
+        },
+      });
+    }""")
+    page.locator("details.pl").first.click()
+    page.wait_for_selector("li.track")
+
+    tags = page.locator(".track-tags").text_content()
+    assert "ballad" in tags and "acoustic" in tags
+    assert "Ballad" in page.locator(".track-facts").text_content()

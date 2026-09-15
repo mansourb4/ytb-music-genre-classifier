@@ -40,6 +40,7 @@ et relancés sans perte, et `plan`/`apply` se rejouent hors ligne.
 | `config.py` | Défauts < `config.toml` < environnement. Les secrets viennent uniquement de l'environnement. |
 | `store/` | Schéma SQLite et accès typés. Aucun SQL ailleurs dans le projet. |
 | `sources/ytmusic.py` | Adaptateur `ytmusicapi` : scan, lecture et écriture de playlists. |
+| `sources/lastfm.py` | Tags posés par les auditeurs sur un titre précis : la seule source décrivant le morceau et non le disque. |
 | `sources/oauth.py` | Connexion OAuth par code d'appareil. |
 | `sources/browser_session.py` | Reprise d'une session de navigateur, analyse des collages (cURL ou en-têtes bruts), et construction du fichier attendu par `ytmusicapi`. |
 | `sources/browser_login.py` | Fenêtre de connexion pilotée, qui capture la session une fois l'utilisateur identifié. |
@@ -310,6 +311,34 @@ Une release sans style exploitable ne relève d'aucune ambiance et n'est rangée
 nulle part en ce mode : un genre seul ne dit rien de l'humeur, « Rock »
 recouvrant aussi bien Shoegaze que Grindcore.
 
+### 16. Le titre, et non le disque
+
+Discogs étiquette des *releases*. `query_key` regroupant par (artiste, album),
+les douze titres d'un disque reçoivent exactement les mêmes styles — une
+ballade sur un album punk est donc classée « Punk », puis « Énergique » en mode
+ambiance. C'est la cause unique des deux défauts observés à l'usage : des
+titres mal placés, et des playlists trop nombreuses, un album à deux styles
+plaçant *toutes* ses pistes dans les deux.
+
+Les tags Last.fm corrigent la cause, étant posés sur le morceau. Ils
+interviennent à deux endroits :
+
+* **le style** — un tag nommant un style connu remplace ceux de la release.
+  Seuls ces tags-là sont retenus, ce qui écarte le bruit (« 00s »,
+  « seen live ») sans liste noire à tenir, et un poids minimal évite qu'un tag
+  posé par trois auditeurs ne fasse loi ;
+* **l'ambiance** — une table `tag_moods` traduit les tags d'humeur explicites,
+  et prime sur la déduction par style, qui n'est plus qu'un repli.
+
+En mode ambiance, un titre que Discogs n'a pas su apparier reste classable dès
+lors que ses auditeurs l'ont décrit : la couverture s'en trouve élargie, non
+réduite.
+
+Le cache suit la même logique que celui de Discogs, mais indexé par (artiste,
+titre) — deux morceaux d'un même disque n'ont aucune raison de partager leurs
+tags. L'absence de tags est mise en cache comme le reste : c'est un résultat,
+pas une panne, et il ne sert à rien de le redemander.
+
 ## Contraintes des API
 
 | Contrainte | Conséquence |
@@ -319,13 +348,14 @@ recouvrant aussi bien Shoegaze que Grindcore.
 | YouTube Music : pas de dossier | Hiérarchie encodée dans le nom. |
 | YouTube Music : 5 000 titres/playlist | Les seuils de repli maintiennent les playlists loin du plafond. |
 | YouTube Music : suppression par `setVideoId` | `sync` relit la playlist avant tout retrait. |
+| Last.fm : une requête par titre, débit limité | Cache en base par (artiste, titre), TTL de 180 jours. La passe ne se paie qu'une fois ; une clé absente désactive proprement la fonctionnalité. |
 | YouTube Music : pas de décompte dans la liste des playlists | Le champ `count` de `ytmusicapi` est le premier mot d'un sous-titre — « 2 » pour « 2 188 titres », un mot quelconque selon la langue. Il est ignoré : chaque source est mesurée par `count_source`, qui lit le `trackCount` d'une playlist en un appel et ne parcourt réellement que la bibliothèque et les mises en ligne, faute d'un total annoncé. |
 | YouTube Music : API interne, non officielle | Toute la dépendance est isolée dans un seul adaptateur, importé paresseusement. |
 | YouTube Music : session par cookies de navigateur | Le fichier d'authentification expire au bout de quelques semaines et se renouvelle depuis l'interface. Une session utilisée depuis une IP de centre de données déclenche plus facilement un contrôle Google : le Codespace convient à un usage ponctuel, moins à un service permanent. |
 
 ## Tests
 
-292 tests, aucun appel réseau, y compris l'API web complète (aperçu,
+313 tests, aucun appel réseau, y compris l'API web complète (aperçu,
 application, annulation), son contrôle d'accès et les quatre voies de connexion.
 
 Vingt-neuf d'entre eux chargent l'interface dans un vrai navigateur (`tests/test_ui.py`).

@@ -43,7 +43,10 @@ class Services:
     repository: Repository
     youtube_factory: Callable[[Config], Any]
     discogs_factory: Callable[[Config], Any]
-    jobs: JobRunner
+    #: Source de tags par titre. Peut renvoyer None : la fonctionnalité est
+    #: facultative, et son absence ne doit rien empêcher.
+    lastfm_factory: Callable[[Config], Any] = lambda _config: None
+    jobs: JobRunner = field(default_factory=JobRunner)
     #: Décomptes déjà mesurés, par source. Ils ne varient guère au fil d'une
     #: session, et les remesurer coûterait un appel par affichage.
     counts: dict[str, int | None] = field(default_factory=dict)
@@ -63,6 +66,15 @@ def _default_discogs(config: Config):
     from ytmgc.sources.discogs import DiscogsClient
 
     return DiscogsClient(config.discogs)
+
+
+def _default_lastfm(config: Config):
+    """Client de tags, ou None : sans clé, l'analyse s'en passe."""
+    if not (config.lastfm.enabled and config.lastfm.api_key):
+        return None
+    from ytmgc.sources.lastfm import LastfmClient
+
+    return LastfmClient(config.lastfm)
 
 
 class ConnectRequest(BaseModel):
@@ -150,6 +162,7 @@ def create_app(services: Services) -> FastAPI:
             "connected": Path(config.youtube.auth_file).exists(),
             "auth_file": config.youtube.auth_file,
             "discogs_token": bool(config.discogs.token),
+            "lastfm_key": bool(config.lastfm.enabled and config.lastfm.api_key),
             "tracks": len(repository.all_tracks()),
             "classified": counts.get("matched", 0),
             "review": counts.get("review", 0),
@@ -380,7 +393,8 @@ def create_app(services: Services) -> FastAPI:
                 job.message = f"{track.label()}"
 
             stats = classify_tracks(
-                pending, repository, services.discogs_factory(config), config, progress=progress
+                pending, repository, services.discogs_factory(config), config,
+                progress=progress, tag_source=services.lastfm_factory(config),
             )
             job.message = stats.line()
             return {"scanned": len(tracks), "sources": sources, "summary": stats.line()}
@@ -548,6 +562,7 @@ def build_default_app(config_path: Path | None = None, config: Config | None = N
             repository=Repository(connect(config.store.path)),
             youtube_factory=_default_youtube,
             discogs_factory=_default_discogs,
+            lastfm_factory=_default_lastfm,
             jobs=JobRunner(),
         )
     )

@@ -124,6 +124,25 @@ liste d'en-têtes bruts reste acceptée. En ligne de commande, l'équivalent est
 ytmusicapi browser   # crée browser.json en suivant les instructions affichées
 ```
 
+### Clé Last.fm (facultative, mais décisive pour la précision)
+
+Discogs étiquette des **albums** : les douze titres d'un disque héritent
+identiquement de ses styles, si bien qu'une ballade sur un album punk se
+retrouve classée « Punk », donc « Énergique ». Last.fm est la seule source
+encore ouverte qui décrive le **titre** lui-même.
+
+Crée une clé sur <https://www.last.fm/api/account/create>, puis :
+
+```bash
+export LASTFM_API_KEY=...
+```
+
+Les tags servent à deux choses : remplacer les styles de l'album par ceux que
+porte le morceau quand ils nomment un style connu, et déterminer son ambiance.
+Seuls les tags nommant un style connu sont retenus — les tags libres
+(« 00s », « seen live ») sont écartés par construction. Sans clé, l'outil
+fonctionne comme avant, sur les seuls styles de la release.
+
 ### Jeton Discogs
 
 Crée un jeton personnel sur <https://www.discogs.com/settings/developers>, puis :
@@ -299,7 +318,7 @@ sans aucune écriture ni appel réseau.
 ## Développement
 
 ```bash
-python -m pytest        # 292 tests, aucun appel réseau
+python -m pytest        # 313 tests, aucun appel réseau
 ```
 
 Les API externes sont derrière des adaptateurs (`src/ytmgc/sources/`) ; toute la

@@ -172,11 +172,37 @@ class Repository:
     # ------------------------------------------------------ classifications
 
     @_locked
+    def cached_tags(self, query: str, ttl_days: int) -> list[tuple[str, int]] | None:
+        """Tags en cache, ou None s'ils sont absents ou périmés."""
+        row = self._db.execute(
+            "SELECT payload, fetched_at FROM lastfm_cache WHERE query = ?", (query,)
+        ).fetchone()
+        if row is None:
+            return None
+        fetched = datetime.fromisoformat(row["fetched_at"]).replace(tzinfo=timezone.utc)
+        if datetime.now(timezone.utc) - fetched > timedelta(days=ttl_days):
+            return None
+        return [(name, weight) for name, weight in json.loads(row["payload"])]
+
+    def store_tags(self, query: str, tags: list[tuple[str, int]]) -> None:
+        self._db.execute(
+            """
+            INSERT INTO lastfm_cache(query, payload) VALUES(?, ?)
+            ON CONFLICT(query) DO UPDATE SET
+                payload = excluded.payload,
+                fetched_at = datetime('now')
+            """,
+            (query, json.dumps(tags, ensure_ascii=False)),
+        )
+        self._db.commit()
+
     def save_classification(self, classification: Classification) -> None:
         self._db.execute(
             """
-            INSERT INTO classifications(video_id, status, discogs_id, score, genres, styles, year)
-            VALUES(?, ?, ?, ?, ?, ?, ?)
+            INSERT INTO classifications(
+                video_id, status, discogs_id, score, genres, styles, year, tags
+            )
+            VALUES(?, ?, ?, ?, ?, ?, ?, ?)
             ON CONFLICT(video_id) DO UPDATE SET
                 status = excluded.status,
                 discogs_id = excluded.discogs_id,
@@ -184,6 +210,7 @@ class Repository:
                 genres = excluded.genres,
                 styles = excluded.styles,
                 year = excluded.year,
+                tags = excluded.tags,
                 classified_at = datetime('now')
             """,
             (
@@ -194,6 +221,7 @@ class Repository:
                 _join(classification.genres),
                 _join(classification.styles),
                 classification.year,
+                _join(classification.tags),
             ),
         )
         self._db.commit()
@@ -216,6 +244,7 @@ class Repository:
                 genres=_split(row["genres"]),
                 styles=_split(row["styles"]),
                 year=row["year"],
+                tags=_split(row["tags"]),
             )
             for row in cursor
         ]

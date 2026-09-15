@@ -11,7 +11,7 @@ from __future__ import annotations
 import sqlite3
 from pathlib import Path
 
-SCHEMA_VERSION = 2
+SCHEMA_VERSION = 3
 
 SCHEMA = """
 CREATE TABLE IF NOT EXISTS tracks (
@@ -33,6 +33,14 @@ CREATE TABLE IF NOT EXISTS discogs_cache (
     fetched_at  TEXT NOT NULL DEFAULT (datetime('now'))
 );
 
+-- Cache des tags Last.fm, indexé par (artiste, titre) : contrairement à
+-- Discogs, deux titres d'un même album n'y partagent rien.
+CREATE TABLE IF NOT EXISTS lastfm_cache (
+    query       TEXT PRIMARY KEY,
+    payload     TEXT NOT NULL,          -- JSON : liste de [tag, poids]
+    fetched_at  TEXT NOT NULL DEFAULT (datetime('now'))
+);
+
 CREATE TABLE IF NOT EXISTS classifications (
     video_id      TEXT PRIMARY KEY REFERENCES tracks(video_id) ON DELETE CASCADE,
     status        TEXT NOT NULL,        -- matched | review | unmatched
@@ -41,6 +49,7 @@ CREATE TABLE IF NOT EXISTS classifications (
     genres        TEXT NOT NULL DEFAULT '',
     styles        TEXT NOT NULL DEFAULT '',
     year          INTEGER,
+    tags          TEXT NOT NULL DEFAULT '',
     classified_at TEXT NOT NULL DEFAULT (datetime('now'))
 );
 
@@ -84,6 +93,7 @@ def connect(path: str | Path) -> sqlite3.Connection:
 ADDED_COLUMNS = (
     ("tracks", "thumbnail", "TEXT"),
     ("classifications", "year", "INTEGER"),
+    ("classifications", "tags", "TEXT NOT NULL DEFAULT ''"),
 )
 
 

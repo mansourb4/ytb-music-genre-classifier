@@ -44,6 +44,28 @@ class DiscogsConfig:
 
 
 @dataclass(slots=True)
+class LastfmConfig:
+    """Tags par titre. Facultatif : sans clé, l'analyse s'en passe.
+
+    C'est la seule source décrivant le morceau plutôt que le disque, donc la
+    seule capable de distinguer deux titres d'un même album.
+    """
+
+    enabled: bool = True
+    user_agent: str = "ytb-music-genre-classifier/0.1"
+    #: Last.fm tolère quelques requêtes par seconde ; on reste large.
+    rate_limit_per_minute: int = 180
+    cache_ttl_days: int = 180
+    #: Poids minimal d'un tag (0-100) pour être pris au sérieux. En deçà, ce
+    #: sont des tags posés par une poignée d'auditeurs.
+    min_tag_weight: int = 20
+    #: Nombre de tags de style retenus pour affiner le classement d'un titre.
+    max_styles_per_track: int = 2
+    #: Jamais lue depuis le fichier : uniquement depuis l'environnement.
+    api_key: str = ""
+
+
+@dataclass(slots=True)
 class MatchingConfig:
     min_score: float = 0.72
     review_score: float = 0.55
@@ -99,6 +121,7 @@ class Config:
     store: StoreConfig = field(default_factory=StoreConfig)
     youtube: YouTubeConfig = field(default_factory=YouTubeConfig)
     discogs: DiscogsConfig = field(default_factory=DiscogsConfig)
+    lastfm: LastfmConfig = field(default_factory=LastfmConfig)
     matching: MatchingConfig = field(default_factory=MatchingConfig)
     taxonomy: TaxonomyConfig = field(default_factory=TaxonomyConfig)
     sync: SyncConfig = field(default_factory=SyncConfig)
@@ -154,6 +177,7 @@ def load_config(path: Path | None = None, env: dict[str, str] | None = None) -> 
         config.sync.marker = DEFAULT_MARKER
 
     config.discogs.token = env.get("DISCOGS_TOKEN", "")
+    config.lastfm.api_key = env.get("LASTFM_API_KEY", "")
     config.web.access_token = env.get("YTMGC_ACCESS_TOKEN", "")
     if user_agent := env.get("DISCOGS_USER_AGENT"):
         config.discogs.user_agent = user_agent

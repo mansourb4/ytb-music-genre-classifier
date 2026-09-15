@@ -38,6 +38,9 @@ class TrackPreview:
     genres: list[str]
     styles: list[str]
     year: int | None
+    #: Tags Last.fm du titre : ce sont eux qui expliquent un classement
+    #: différent de celui de son album.
+    tags: list[str] = field(default_factory=list)
 
 
 @dataclass(frozen=True, slots=True)
@@ -135,6 +138,7 @@ def _detail(
                 genres=list(classification.genres) if classification else [],
                 styles=list(classification.styles) if classification else [],
                 year=classification.year if classification else None,
+                tags=list(classification.tags) if classification else [],
             )
         )
     return detailed

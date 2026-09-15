@@ -150,12 +150,18 @@ def plan_playlists(
 
     resolved: dict[str, tuple[GenreStyle, ...]] = {}
     order: list[str] = []
+    by_mood = config.taxonomy.axis == "mood"
     for classification in classifications:
-        if classification.status is not MatchStatus.MATCHED:
+        # En mode ambiance, les tags du titre suffisent : un morceau que Discogs
+        # n'a pas su apparier reste classable si ses auditeurs l'ont décrit.
+        usable = classification.status is MatchStatus.MATCHED or (
+            by_mood and bool(classification.tags)
+        )
+        if not usable:
             continue
         items = (
-            taxonomy.resolve_moods(classification.styles)
-            if config.taxonomy.axis == "mood"
+            taxonomy.resolve_moods(classification.styles, classification.tags)
+            if by_mood
             else taxonomy.resolve(classification.genres, classification.styles)
         )
         if items:

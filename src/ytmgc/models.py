@@ -78,6 +78,8 @@ class Classification:
     styles: tuple[str, ...] = ()
     #: Année de la release Discogs appariée.
     year: int | None = None
+    #: Tags Last.fm du titre lui-même, retenus au-dessus du poids minimal.
+    tags: tuple[str, ...] = ()
 
 
 @dataclass(frozen=True, slots=True)

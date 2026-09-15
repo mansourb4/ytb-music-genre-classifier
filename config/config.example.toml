@@ -24,6 +24,19 @@ rate_limit_per_minute = 50
 # Durée de validité du cache de recherche, en jours.
 cache_ttl_days = 90
 
+[lastfm]
+# Tags posés par les auditeurs sur chaque titre. Seule source décrivant le
+# morceau et non le disque : c'est elle qui distingue une ballade d'un brûlot
+# sur un même album. Sans clé (LASTFM_API_KEY), l'analyse s'en passe et
+# retombe sur les seuls styles de la release.
+enabled = true
+rate_limit_per_minute = 180
+cache_ttl_days = 180
+# Poids minimal d'un tag (0-100) pour être pris en compte.
+min_tag_weight = 20
+# Nombre de tags de style retenus pour affiner un titre.
+max_styles_per_track = 2
+
 [matching]
 # Score minimal (0-1) pour accepter un appariement Discogs automatiquement.
 min_score = 0.72

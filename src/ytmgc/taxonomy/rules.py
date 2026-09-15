@@ -11,6 +11,8 @@ import tomllib
 from dataclasses import dataclass
 from pathlib import Path
 
+from typing import Iterable
+
 from ytmgc.matching.normalize import fold, slugify
 
 DEFAULT_ALIASES = Path(__file__).with_name("aliases.toml")
@@ -54,6 +56,7 @@ class Taxonomy:
         style_descriptions: dict[str, str] | None = None,
         mood_descriptions: dict[str, str] | None = None,
         style_moods: dict[str, str] | None = None,
+        tag_moods: dict[str, str] | None = None,
     ) -> None:
         self._genre_display = genre_display
         self._priority = {fold(name): rank for rank, name in enumerate(genre_priority)}
@@ -74,6 +77,7 @@ class Taxonomy:
             fold(name): text for name, text in (mood_descriptions or {}).items()
         }
         self._style_moods = {fold(name): mood for name, mood in (style_moods or {}).items()}
+        self._tag_moods = {fold(name): mood for name, mood in (tag_moods or {}).items()}
         self._mood_styles: dict[str, list[str]] = {}
         for name, mood in (style_moods or {}).items():
             self._mood_styles.setdefault(mood, []).append(name)
@@ -97,18 +101,58 @@ class Taxonomy:
         """Styles rattachés à une ambiance, pour rendre le classement vérifiable."""
         return sorted(self._mood_styles.get(mood, []))
 
+    def style_from_tag(self, tag: str) -> str | None:
+        """Style Discogs désigné par un tag Last.fm, s'il en désigne un.
+
+        Les tags sont libres : l'écrasante majorité ne nomme aucun style
+        (« 00s », « seen live », « favourites »). Seuls ceux qui correspondent
+        à un style connu sont retenus — le bruit est ainsi écarté par
+        construction, sans liste noire à tenir.
+        """
+        folded = fold(tag)
+        if folded in self._style_aliases:
+            return self.canonical_style(self._style_aliases[folded])
+        if folded in self._style_descriptions:
+            # Retrouve la casse d'origine du style, pour l'afficher correctement.
+            for name in self._mood_styles_names():
+                if fold(name) == folded:
+                    return self.canonical_style(name)
+        return None
+
+    def _mood_styles_names(self) -> list[str]:
+        return [name for names in self._mood_styles.values() for name in names]
+
+    def mood_from_tags(self, tags: Iterable[str]) -> str | None:
+        """Ambiance portée par les tags d'un titre.
+
+        Les tags décrivent le morceau, non le disque : ils priment donc sur la
+        déduction par style. Le premier tag reconnu l'emporte, l'API les
+        renvoyant du plus posé au moins posé.
+        """
+        for tag in tags:
+            mood = self._tag_moods.get(fold(tag))
+            if mood is not None:
+                return mood
+        return None
+
     def mood_of(self, style: str) -> str | None:
         """Ambiance d'un style, après application des alias. None si non rattaché."""
         canonical = self.canonical_style(style)
         return self._style_moods.get(fold(canonical)) if canonical else None
 
-    def resolve_moods(self, styles: tuple[str, ...]) -> tuple[GenreStyle, ...]:
-        """Ambiances d'une release, déduites de ses styles.
+    def resolve_moods(
+        self, styles: tuple[str, ...], tags: Iterable[str] = ()
+    ) -> tuple[GenreStyle, ...]:
+        """Ambiances d'un titre.
 
-        Un genre seul ne dit rien de l'humeur — « Rock » recouvre aussi bien
-        Shoegaze que Grindcore. Une release sans style exploitable ne relève
-        donc d'aucune ambiance, et n'est rangée nulle part en mode ambiance.
+        Les tags du morceau priment quand ils en portent une : eux seuls
+        distinguent une ballade d'un brûlot sur un même disque. À défaut, les
+        styles de la release servent d'approximation — un genre seul, lui, ne
+        dit rien de l'humeur, « Rock » recouvrant Shoegaze comme Grindcore.
         """
+        if mood := self.mood_from_tags(tags):
+            return (GenreStyle(MOOD_GROUP, mood, axis="mood"),)
+
         resolved: list[GenreStyle] = []
         seen: set[str] = set()
         for style in styles:
@@ -190,6 +234,7 @@ def load_taxonomy(
         style_descriptions=described.get("styles", {}),
         mood_descriptions=moods.get("moods", {}),
         style_moods=moods.get("styles", {}),
+        tag_moods=moods.get("tag_moods", {}),
     )
 
 

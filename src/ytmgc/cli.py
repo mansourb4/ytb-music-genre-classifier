@@ -76,7 +76,15 @@ def cmd_classify(args: argparse.Namespace, config: Config) -> int:
             print(f"  [{processed}/{len(tracks)}] {track.label()} -> "
                   f"{classification.status.value} ({classification.score:.2f}) {detail}")
 
-    stats = classify_tracks(tracks, repository, client, config, progress=progress)
+    tag_source = None
+    if config.lastfm.enabled and config.lastfm.api_key:
+        from ytmgc.sources.lastfm import LastfmClient
+
+        tag_source = LastfmClient(config.lastfm)
+
+    stats = classify_tracks(
+        tracks, repository, client, config, progress=progress, tag_source=tag_source
+    )
     print(stats.line())
     return 0
 
