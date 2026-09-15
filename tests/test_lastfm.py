@@ -148,13 +148,16 @@ def test_the_command_explains_what_the_tags_produce(monkeypatch, capsys, tmp_pat
     assert "ballad" in out and "90" in out
     assert "Ballad" in out                      # le style qu'il désigne
     assert "Mélancolique" in out                # l'ambiance qui en découle
+    assert "Ambiances pesées" in out            # le cumul qui a départagé
     assert "seen live" in out                   # listé, mais sans effet
 
 
 def test_a_weakly_posed_tag_is_shown_as_discarded(monkeypatch, capsys, tmp_path):
+    """Un tag trop faible ne désigne pas de style, mais pèse encore sur l'ambiance."""
     _, out = run_tags_command(monkeypatch, capsys, [("ballad", 2)], tmp_path)
     assert "écarté" in out
     assert "les styles de l'album feront foi" in out
+    assert "Mélancolique 2" in out
 
 
 def test_an_unknown_track_says_so_plainly(monkeypatch, capsys, tmp_path):
@@ -162,3 +165,22 @@ def test_an_unknown_track_says_so_plainly(monkeypatch, capsys, tmp_path):
     assert code == 0
     assert "Aucun tag" in out
     assert "inconnu de Last.fm" in out
+
+
+def test_the_dominant_mood_wins_on_cumulated_weight(monkeypatch, capsys, tmp_path):
+    """Sur données réelles, tous les tags d'humeur pèsent moins de dix : se
+    fier à leur ordre laissait un tag pondéré à 1 décider."""
+    reel = [
+        ("Grunge", 100), ("rock", 56), ("alternative", 29), ("90s", 28),
+        ("acoustic", 5), ("sad", 1), ("melancholy", 1), ("melancholic", 1),
+    ]
+    _, out = run_tags_command(monkeypatch, capsys, reel, tmp_path)
+
+    assert "Calme 5" in out and "Mélancolique 3" in out
+    assert out.strip().endswith("Calme")
+
+
+def test_a_mood_below_the_threshold_is_not_retained(monkeypatch, capsys, tmp_path):
+    _, out = run_tags_command(monkeypatch, capsys, [("Grunge", 100), ("sad", 1)], tmp_path)
+    assert "Mélancolique 1" in out
+    assert "repli sur le style de l'album" in out

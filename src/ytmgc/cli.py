@@ -175,10 +175,21 @@ def cmd_tags(args: argparse.Namespace, config: Config) -> int:
         for name, weight in tags
         if weight >= config.lastfm.min_tag_weight and (style := taxonomy.style_from_tag(name))
     ][: config.lastfm.max_styles_per_track]
-    mood = taxonomy.mood_from_tags(name for name, _ in tags)
+
+    scores = taxonomy.mood_scores(tags)
+    mood = taxonomy.mood_from_tags(tags, minimum=config.lastfm.min_mood_weight)
 
     print()
-    print("Style retenu   :", " · ".join(dict.fromkeys(styles)) or "aucun (les styles de l'album feront foi)")
+    print(
+        "Style retenu   :",
+        " · ".join(dict.fromkeys(styles)) or "aucun (les styles de l'album feront foi)",
+    )
+    if scores:
+        # Le détail du cumul : c'est lui qui départage, et il n'a rien d'évident
+        # quand tous les tags d'humeur pèsent moins de dix.
+        detail = ", ".join(f"{name} {total}" for name, total in
+                           sorted(scores.items(), key=lambda item: -item[1]))
+        print(f"Ambiances pesées : {detail}  (seuil {config.lastfm.min_mood_weight})")
     print("Ambiance       :", mood or "aucune (repli sur le style de l'album)")
     return 0
 

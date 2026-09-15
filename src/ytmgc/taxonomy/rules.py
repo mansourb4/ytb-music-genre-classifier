@@ -122,18 +122,35 @@ class Taxonomy:
     def _mood_styles_names(self) -> list[str]:
         return [name for names in self._mood_styles.values() for name in names]
 
-    def mood_from_tags(self, tags: Iterable[str]) -> str | None:
-        """Ambiance portée par les tags d'un titre.
+    def mood_scores(self, weighted: Iterable[tuple[str, int]]) -> dict[str, int]:
+        """Poids cumulé de chaque ambiance dans les tags d'un titre.
 
-        Les tags décrivent le morceau, non le disque : ils priment donc sur la
-        déduction par style. Le premier tag reconnu l'emporte, l'API les
-        renvoyant du plus posé au moins posé.
+        Le cumul importe : « sad », « melancholy » et « melancholic » disent la
+        même chose et doivent s'additionner plutôt que de se concurrencer.
         """
-        for tag in tags:
+        scores: dict[str, int] = {}
+        for tag, weight in weighted:
             mood = self._tag_moods.get(fold(tag))
             if mood is not None:
-                return mood
-        return None
+                scores[mood] = scores.get(mood, 0) + max(weight, 0)
+        return scores
+
+    def mood_from_tags(
+        self, weighted: Iterable[tuple[str, int]], minimum: int = 1
+    ) -> str | None:
+        """Ambiance dominante d'un titre, ou None si le signal est trop faible.
+
+        Les tags d'humeur sont structurellement peu pondérés : Last.fm
+        normalise à 100 le tag le plus posé, or on étiquette bien plus
+        volontiers un genre qu'une humeur. Le seuil applicable ici n'a donc
+        rien à voir avec celui des styles, et c'est le cumul qui départage —
+        se fier à l'ordre d'apparition laissait un tag pondéré à 1 décider.
+        """
+        scores = self.mood_scores(weighted)
+        if not scores:
+            return None
+        mood, total = max(scores.items(), key=lambda item: (item[1], item[0]))
+        return mood if total >= minimum else None
 
     def mood_of(self, style: str) -> str | None:
         """Ambiance d'un style, après application des alias. None si non rattaché."""
@@ -141,16 +158,16 @@ class Taxonomy:
         return self._style_moods.get(fold(canonical)) if canonical else None
 
     def resolve_moods(
-        self, styles: tuple[str, ...], tags: Iterable[str] = ()
+        self, styles: tuple[str, ...], mood: str | None = None
     ) -> tuple[GenreStyle, ...]:
         """Ambiances d'un titre.
 
-        Les tags du morceau priment quand ils en portent une : eux seuls
-        distinguent une ballade d'un brûlot sur un même disque. À défaut, les
-        styles de la release servent d'approximation — un genre seul, lui, ne
-        dit rien de l'humeur, « Rock » recouvrant Shoegaze comme Grindcore.
+        L'ambiance déduite des tags du morceau prime quand elle existe : elle
+        seule distingue une ballade d'un brûlot sur un même disque. À défaut,
+        les styles de la release servent d'approximation — un genre seul, lui,
+        ne dit rien de l'humeur, « Rock » recouvrant Shoegaze comme Grindcore.
         """
-        if mood := self.mood_from_tags(tags):
+        if mood:
             return (GenreStyle(MOOD_GROUP, mood, axis="mood"),)
 
         resolved: list[GenreStyle] = []

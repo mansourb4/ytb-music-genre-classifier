@@ -143,8 +143,8 @@ Vérifie la clé avant de lancer une analyse complète :
 ytmgc tags "Nirvana" "Something In The Way"
 ```
 
-La commande affiche les tags du titre, ceux qui désignent un style, et
-l'ambiance qui en découle. Elle sert aussi après coup, pour comprendre pourquoi
+La commande affiche les tags du titre, ceux qui désignent un style, le poids
+cumulé de chaque ambiance et celle qui l'emporte. Elle sert aussi après coup, pour comprendre pourquoi
 un titre a atterri dans telle playlist.
 
 Les tags servent à deux choses : remplacer les styles de l'album par ceux que
@@ -329,7 +329,7 @@ sans aucune écriture ni appel réseau.
 ## Développement
 
 ```bash
-python -m pytest        # 316 tests, aucun appel réseau
+python -m pytest        # 318 tests, aucun appel réseau
 ```
 
 Les API externes sont derrière des adaptateurs (`src/ytmgc/sources/`) ; toute la

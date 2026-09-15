@@ -328,7 +328,20 @@ interviennent à deux endroits :
   « seen live ») sans liste noire à tenir, et un poids minimal évite qu'un tag
   posé par trois auditeurs ne fasse loi ;
 * **l'ambiance** — une table `tag_moods` traduit les tags d'humeur explicites,
-  et prime sur la déduction par style, qui n'est plus qu'un repli.
+  et prime sur la déduction par style, qui n'est plus qu'un repli. Les poids
+  **se cumulent** par ambiance : « sad », « melancholy » et « melancholic »
+  disent la même chose et doivent s'additionner plutôt que se concurrencer.
+
+Les deux seuils n'ont rien à voir l'un avec l'autre, et c'est l'observation de
+données réelles qui l'a montré. Last.fm normalise à 100 le tag le plus posé, or
+on étiquette bien plus volontiers un genre qu'une humeur : sur *Something In
+The Way*, « Grunge » pèse 100 quand « acoustic » pèse 5 et « sad » pèse 1.
+Appliquer aux humeurs le seuil des styles les éliminerait donc toutes. D'où un
+`min_mood_weight` bas et distinct — et un cumul, car se fier à l'ordre
+d'apparition laissait un tag pondéré à 1 décider de l'ambiance d'un morceau.
+
+L'ambiance est arrêtée au classement, seul endroit où les poids sont connus, et
+rangée avec la classification ; le planner n'a plus qu'à la lire.
 
 En mode ambiance, un titre que Discogs n'a pas su apparier reste classable dès
 lors que ses auditeurs l'ont décrit : la couverture s'en trouve élargie, non
@@ -355,7 +368,7 @@ pas une panne, et il ne sert à rien de le redemander.
 
 ## Tests
 
-316 tests, aucun appel réseau, y compris l'API web complète (aperçu,
+318 tests, aucun appel réseau, y compris l'API web complète (aperçu,
 application, annulation), son contrôle d'accès et les quatre voies de connexion.
 
 Vingt-neuf d'entre eux chargent l'interface dans un vrai navigateur (`tests/test_ui.py`).

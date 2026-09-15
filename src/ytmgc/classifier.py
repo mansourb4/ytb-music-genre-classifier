@@ -145,6 +145,9 @@ def _refine(
     tenir. À défaut de style reconnu, les styles de la release demeurent.
     """
     kept = tuple(name for name, _ in weighted[:KEPT_TAGS])
+    # L'ambiance se décide ici : le planner ne verra plus les poids, et ce sont
+    # eux qui départagent des tags d'humeur presque tous faiblement pondérés.
+    mood = taxonomy.mood_from_tags(weighted, minimum=config.lastfm.min_mood_weight)
 
     refined: list[str] = []
     for name, weight in weighted:
@@ -157,10 +160,10 @@ def _refine(
             break
 
     if not refined:
-        return replace(classification, tags=kept)
+        return replace(classification, tags=kept, mood=mood)
 
     stats.refined += 1
-    return replace(classification, styles=tuple(refined), tags=kept)
+    return replace(classification, styles=tuple(refined), tags=kept, mood=mood)
 
 
 def _classify(track: Track, candidates: list[ReleaseCandidate], config: Config) -> Classification:

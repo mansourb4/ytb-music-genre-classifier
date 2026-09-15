@@ -56,9 +56,14 @@ class LastfmConfig:
     #: Last.fm tolère quelques requêtes par seconde ; on reste large.
     rate_limit_per_minute: int = 180
     cache_ttl_days: int = 180
-    #: Poids minimal d'un tag (0-100) pour être pris au sérieux. En deçà, ce
+    #: Poids minimal d'un tag (0-100) pour qu'il désigne un style. En deçà, ce
     #: sont des tags posés par une poignée d'auditeurs.
     min_tag_weight: int = 20
+    #: Poids cumulé minimal pour retenir une ambiance. Volontairement bas :
+    #: Last.fm normalise à 100 le tag le plus posé, or on étiquette bien plus
+    #: volontiers un genre qu'une humeur — les tags d'humeur plafonnent donc
+    #: très bas, et leur appliquer le seuil des styles les éliminerait tous.
+    min_mood_weight: int = 3
     #: Nombre de tags de style retenus pour affiner le classement d'un titre.
     max_styles_per_track: int = 2
     #: Jamais lue depuis le fichier : uniquement depuis l'environnement.

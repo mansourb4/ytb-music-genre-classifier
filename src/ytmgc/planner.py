@@ -155,12 +155,12 @@ def plan_playlists(
         # En mode ambiance, les tags du titre suffisent : un morceau que Discogs
         # n'a pas su apparier reste classable si ses auditeurs l'ont décrit.
         usable = classification.status is MatchStatus.MATCHED or (
-            by_mood and bool(classification.tags)
+            by_mood and classification.mood is not None
         )
         if not usable:
             continue
         items = (
-            taxonomy.resolve_moods(classification.styles, classification.tags)
+            taxonomy.resolve_moods(classification.styles, classification.mood)
             if by_mood
             else taxonomy.resolve(classification.genres, classification.styles)
         )

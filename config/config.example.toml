@@ -32,8 +32,11 @@ cache_ttl_days = 90
 enabled = true
 rate_limit_per_minute = 180
 cache_ttl_days = 180
-# Poids minimal d'un tag (0-100) pour être pris en compte.
+# Poids minimal d'un tag (0-100) pour qu'il désigne un style.
 min_tag_weight = 20
+# Poids cumulé minimal pour retenir une ambiance. Bas à dessein : les tags
+# d'humeur sont toujours faiblement pondérés face aux tags de genre.
+min_mood_weight = 3
 # Nombre de tags de style retenus pour affiner un titre.
 max_styles_per_track = 2
 

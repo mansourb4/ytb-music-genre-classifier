@@ -80,6 +80,8 @@ class Classification:
     year: int | None = None
     #: Tags Last.fm du titre lui-même, retenus au-dessus du poids minimal.
     tags: tuple[str, ...] = ()
+    #: Ambiance décidée au classement, où les poids des tags sont connus.
+    mood: str | None = None
 
 
 @dataclass(frozen=True, slots=True)

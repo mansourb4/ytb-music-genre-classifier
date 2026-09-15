@@ -11,7 +11,7 @@ from __future__ import annotations
 import sqlite3
 from pathlib import Path
 
-SCHEMA_VERSION = 3
+SCHEMA_VERSION = 4
 
 SCHEMA = """
 CREATE TABLE IF NOT EXISTS tracks (
@@ -50,6 +50,7 @@ CREATE TABLE IF NOT EXISTS classifications (
     styles        TEXT NOT NULL DEFAULT '',
     year          INTEGER,
     tags          TEXT NOT NULL DEFAULT '',
+    mood          TEXT,
     classified_at TEXT NOT NULL DEFAULT (datetime('now'))
 );
 
@@ -94,6 +95,7 @@ ADDED_COLUMNS = (
     ("tracks", "thumbnail", "TEXT"),
     ("classifications", "year", "INTEGER"),
     ("classifications", "tags", "TEXT NOT NULL DEFAULT ''"),
+    ("classifications", "mood", "TEXT"),
 )
 
 
