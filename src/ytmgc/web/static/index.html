@@ -114,6 +114,16 @@ ul.tracks { list-style: none; margin: 0; padding: 0; }
   text-transform: uppercase; letter-spacing: .06em; margin-left: .5rem; }
 label.inline { display: inline-flex; align-items: center; gap: .35rem; font-size: .86rem;
   color: var(--muted); }
+.scopes { display: grid; gap: .5rem; }
+.scope { display: flex; gap: .6rem; align-items: flex-start; padding: .6rem .8rem;
+  border: 1px solid var(--border); border-radius: 8px; background: var(--surface);
+  cursor: pointer; }
+.scope.selected { border-color: var(--accent); background: var(--accent-soft); }
+.scope.empty { opacity: .5; cursor: default; }
+.scope input { margin-top: .2rem; flex: none; }
+.scope b { font-weight: 500; }
+.scope .price { margin-left: auto; padding-left: .8rem; white-space: nowrap; font-weight: 500; }
+.scope .hint { display: block; margin: .15rem 0 0; }
 .confirm { border: 1px solid var(--warn); background: #fff8ec; border-radius: 8px;
   padding: .8rem 1rem; margin-top: .8rem; }
 .confirm p { margin: 0 0 .7rem; font-size: .9rem; }
@@ -354,10 +364,10 @@ select {
   <p class="hint">Discogs décrit le <i>disque</i> et Last.fm compile des tags : ni l'un ni l'autre ne sait qu'un morceau donné est une ballade au milieu d'un album de rage. Un modèle, lui, connaît la musique. Chaque titre n'est jugé qu'une fois, et son verdict est écrit dans un fichier texte que tu peux relire, corriger et garder.</p>
 
   <div id="judge-state" class="stats spacer hidden"></div>
+  <div id="judge-scopes" class="scopes spacer"></div>
   <p id="judge-cost" class="msg spacer"></p>
   <div class="row spacer">
     <button class="primary" id="judge-btn" disabled>Faire juger ma bibliothèque</button>
-    <label class="inline"><input type="checkbox" id="judge-partial"> Seulement les titres non rangés</label>
     <span class="msg" id="judge-msg"></span>
   </div>
   <div id="judge-confirm" class="confirm hidden">
@@ -1087,15 +1097,30 @@ $("preview-btn").addEventListener("click", refreshPreview);
  * le libellé porte ce montant : « oui » doit vouloir dire « oui, ce prix-là ».
  */
 let judgeState = null;
+//: Étendue choisie. L'essai est le défaut délibéré : la qualité d'un
+//: classement se constate sur quelques dizaines de titres, elle ne se promet
+//: pas, et se tromper sur toute une bibliothèque coûte cent fois plus.
+let judgeScope = "pilot";
 
-function judgeEstimate() {
+function currentScope() {
   if (!judgeState) return null;
-  return $("judge-partial").checked ? judgeState.estimate_unsorted : judgeState.estimate;
+  return judgeState.scopes.find((s) => s.key === judgeScope)
+    || judgeState.scopes.find((s) => s.tracks > 0)
+    || judgeState.scopes[0];
 }
 
-function judgePending() {
-  if (!judgeState) return 0;
-  return $("judge-partial").checked ? judgeState.unsorted_tracks : judgeState.pending_tracks;
+function renderScopes(state) {
+  const chosen = currentScope();
+  $("judge-scopes").innerHTML = state.scopes.map((scope) => `
+    <label class="scope ${scope.key === chosen.key ? "selected" : ""} ${scope.tracks ? "" : "empty"}">
+      <input type="radio" name="judge-scope" value="${scope.key}"
+             ${scope.key === chosen.key ? "checked" : ""} ${scope.tracks ? "" : "disabled"}>
+      <span>
+        <b>${escapeHtml(scope.label)}</b>
+        <span class="hint">${escapeHtml(scope.hint)}</span>
+      </span>
+      <span class="price">${scope.tracks ? `~${scope.dollars.toFixed(2)} $` : "—"}</span>
+    </label>`).join("");
 }
 
 function renderJudgeState(state) {
@@ -1107,15 +1132,15 @@ function renderJudgeState(state) {
     stat(state.pending_tracks, "restants") +
     stat(state.model, "modèle");
 
-  const pending = judgePending();
-  const cost = judgeEstimate();
   if (!state.available) {
+    $("judge-scopes").innerHTML = "";
     $("judge-cost").textContent =
       "Aucune clé d'API : définis ANTHROPIC_API_KEY puis relance l'interface.";
     $("judge-btn").disabled = true;
     return;
   }
   if (state.batch) {
+    $("judge-scopes").innerHTML = "";
     $("judge-cost").textContent =
       `Un lot est déjà déposé (${state.batch.tracks} titre(s)) : il sera repris, `
       + "sans être payé une seconde fois.";
@@ -1123,10 +1148,15 @@ function renderJudgeState(state) {
     $("judge-btn").textContent = "Reprendre le lot en cours";
     return;
   }
-  $("judge-btn").textContent = "Faire juger ma bibliothèque";
-  $("judge-btn").disabled = pending === 0;
-  $("judge-cost").textContent = pending
-    ? `${cost.line} Traitement par lots : moitié prix, et quelques minutes d'attente.`
+
+  renderScopes(state);
+  const scope = currentScope();
+  judgeScope = scope.key;
+  $("judge-btn").textContent = scope.key === "pilot"
+    ? "Lancer l'essai" : "Faire juger ma bibliothèque";
+  $("judge-btn").disabled = scope.tracks === 0;
+  $("judge-cost").textContent = state.pending_tracks
+    ? `${scope.line} Traitement par lots : moitié prix, et quelques minutes d'attente.`
     : `Tous les titres connus ont déjà un verdict, relu depuis ${state.verdicts_file}.`;
 }
 
@@ -1138,17 +1168,18 @@ async function refreshJudgeState() {
   }
 }
 
-$("judge-partial").addEventListener("change", () => {
-  if (judgeState) renderJudgeState(judgeState);
+$("judge-scopes").addEventListener("change", (event) => {
+  if (!event.target.matches('input[name="judge-scope"]')) return;
+  judgeScope = event.target.value;
+  renderJudgeState(judgeState);
 });
 
 $("judge-btn").addEventListener("click", () => {
-  const cost = judgeEstimate();
-  const pending = judgePending();
+  const scope = currentScope();
   $("judge-confirm-text").textContent = judgeState && judgeState.batch
     ? `Reprendre le lot ${judgeState.batch.id} ? Il est déjà payé : rien de plus ne sera facturé.`
-    : `${pending} titre(s) vont être envoyés au modèle, pour environ `
-      + `${cost.dollars.toFixed(2)} $. Chaque titre n'est jugé qu'une fois.`;
+    : `${scope.tracks} titre(s) vont être envoyés au modèle, pour environ `
+      + `${scope.dollars.toFixed(2)} $. Chaque titre n'est jugé qu'une fois.`;
   $("judge-confirm").classList.remove("hidden");
 });
 
@@ -1162,9 +1193,10 @@ $("judge-go").addEventListener("click", async () => {
   $("judge-msg").classList.remove("error");
   setBusy(true);
   try {
+    const scope = currentScope();
     const job = await api("/api/enrich", {
       confirm: true,
-      only_unsorted: $("judge-partial").checked,
+      ...(judgeState && judgeState.batch ? {} : scope.request),
     });
     watchJob(job.id);
   } catch (error) {

@@ -407,11 +407,20 @@ quel titre il se rapporte, et un lot payé serait perdu. Le lot vit ensuite chez
 Anthropic — l'ordinateur peut s'éteindre, `--resume` va le chercher, et
 l'interface propose de le reprendre au lieu d'en déposer un second.
 
+**Constater avant d'engager.** La qualité d'un classement ne se promet pas.
+`--essai` juge quelques dizaines de titres pour une poignée de centimes, et
+l'interface propose trois étendues — essai, titres non rangés, bibliothèque
+entière — chacune portant *son* montant, l'essai coché par défaut. Un essai
+n'est pas une dépense perdue : ses verdicts entrent dans le fichier comme les
+autres et ne sont pas redemandés par la passe suivante.
+
 **Laisser le dernier mot à l'utilisateur.** Une ligne dont la colonne source
 porte `manuel` n'est jamais écrasée par le modèle, et le fichier est conçu pour
 être ouvert : en-tête explicatif, colonnes séparées par des tabulations,
 lecture tolérante aux lignes bancales, écriture par fichier temporaire puis
-renommage atomique. Corriger un classement, c'est éditer une ligne.
+renommage atomique. Corriger un classement, c'est éditer une ligne. Ce fichier est d'ailleurs le
+seul contenu de `data/` que le dépôt versionne : le reste se reconstruit
+gratuitement, lui non.
 
 Deux choix de forme découlent du reste. Le vocabulaire — 15 genres, 199 styles,
 8 ambiances — est transmis en préambule et mis en cache, puisqu'il est
@@ -455,10 +464,10 @@ pas une panne, et il ne sert à rien de le redemander.
 
 ## Tests
 
-409 tests, aucun appel réseau, y compris l'API web complète (aperçu,
+419 tests, aucun appel réseau, y compris l'API web complète (aperçu,
 application, annulation), son contrôle d'accès et les quatre voies de connexion.
 
-Quarante-deux d’entre eux chargent l’interface dans un vrai navigateur (`tests/test_ui.py`).
+Quarante-cinq d’entre eux chargent l’interface dans un vrai navigateur (`tests/test_ui.py`).
 Le câblage du DOM échappe aux tests Python : deux défauts d'onglets sont passés
 au travers de la suite avant d'être vus à l'écran. Ces tests sont ignorés
 lorsque Playwright ou son navigateur sont absents, pour que la suite reste

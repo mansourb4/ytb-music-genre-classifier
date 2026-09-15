@@ -181,8 +181,16 @@ pip install -e ".[claude]"
 export ANTHROPIC_API_KEY=...          # jamais lu depuis config.toml
 
 ytmgc enrich --dry-run                # annonce le coût, n'envoie rien
-ytmgc enrich                          # juge par lots, après confirmation
+ytmgc enrich --essai                  # juge 50 titres (~0,12 $), pour voir
+ytmgc enrich                          # la passe complète, après confirmation
 ```
+
+**Commence par l'essai.** La qualité d'un classement se constate, elle ne se
+promet pas : `--essai` juge 50 titres pour une poignée de centimes, tu relis
+`data/verdicts.txt`, et tu engages la suite en connaissance de cause. Ces 50
+verdicts ne sont pas redemandés ensuite. L'interface propose la même chose :
+trois étendues — essai, titres non rangés, bibliothèque entière — chacune avec
+son prix, l'essai coché par défaut.
 
 **Ce que ça coûte.** Le traitement par lots est à moitié prix et aboutit en
 général en quelques minutes (24 h au maximum garanti). Pour ~2 500 titres :
@@ -201,8 +209,12 @@ Ce fichier **fait autorité** : un titre qui y figure n'est plus jamais envoyé 
 l'API, et sa ligne l'emporte sur Discogs comme sur Last.fm. Il survit à la base
 de données, se copie d'une machine à l'autre, se relit et **se corrige à la
 main** — mets alors `manuel` en colonne source, et le modèle ne l'écrasera plus.
-Il n'est pas versionné par défaut (`data/` est dans `.gitignore`) ; libre à toi
-de le sauvegarder où tu veux.
+
+C'est le seul contenu de `data/` qui soit **versionné** : tout le reste (base
+SQLite, caches, lot en cours) se reconstruit gratuitement, lui non. Il suit donc
+le dépôt, et un `git clone` sur une autre machine retrouve des verdicts déjà
+payés. Étant du texte, une ligne par titre, un `git diff` montre exactement ce
+qu'une passe a changé.
 
 **Pour les titres ajoutés après coup**, pas besoin de relancer une passe :
 
@@ -343,7 +355,8 @@ ytmgc lookup "Artiste" "Titre"  # genre, style et ambiance d'un titre, tout de s
 ytmgc purge --execute   # supprime les playlists générées (annulation complète)
 ```
 
-`enrich` annonce son coût et demande confirmation. `--dry-run` s'arrête à
+`enrich` annonce son coût et demande confirmation. `--essai` se limite à une
+poignée de titres (`claude.pilot_size`, 50 par défaut), `--dry-run` s'arrête à
 l'annonce, `--only-unsorted` se limite aux titres que Discogs n'a pas su
 classer, `--no-wait` rend la main après le dépôt et `--resume` va chercher un
 lot déjà déposé — il vit chez Anthropic, l'ordinateur peut s'éteindre entre les
@@ -404,7 +417,7 @@ sans aucune écriture ni appel réseau.
 ## Développement
 
 ```bash
-python -m pytest        # 409 tests, aucun appel réseau
+python -m pytest        # 419 tests, aucun appel réseau
 ```
 
 Les API externes sont derrière des adaptateurs (`src/ytmgc/sources/`) ; toute la

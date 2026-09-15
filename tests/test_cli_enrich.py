@@ -105,3 +105,36 @@ def test_lookup_of_a_known_track_costs_nothing(judged, config, capsys):
 def test_lookup_reports_a_track_the_model_does_not_know(judged, capsys):
     assert run("lookup", "Personne", "Rien") == 1
     assert "rien rendu d'exploitable" in capsys.readouterr().out
+
+
+def test_the_trial_run_judges_only_a_handful(judged, config, capsys):
+    """Payer la bibliothèque entière sans avoir lu un seul verdict, c'est payer
+    avant de savoir si ça vaut le coup."""
+    config.claude.pilot_size = 1
+    assert run("enrich", "--essai", "--yes") == 0
+
+    out = capsys.readouterr().out
+    assert "1 titre(s) à juger" in out
+    assert "relis ensuite" in out
+    assert len(verdicts.load(config.claude.verdicts_file)) == 1
+
+
+def test_a_first_full_pass_suggests_the_trial_run_first(judged, capsys):
+    assert run("enrich", "--dry-run") == 0
+    assert "--essai" in capsys.readouterr().out
+
+
+def test_the_advice_stops_once_verdicts_exist(judged, config, capsys):
+    verdicts.save(VerdictBook([ANSWERS["Lithium"]]), config.claude.verdicts_file)
+    assert run("enrich", "--dry-run") == 0
+    assert "--essai" not in capsys.readouterr().out
+
+
+def test_the_rest_is_still_offered_after_a_trial_run(judged, config, capsys):
+    config.claude.pilot_size = 1
+    run("enrich", "--essai", "--yes")
+    capsys.readouterr()
+    assert run("enrich", "--dry-run") == 0
+
+    # Le titre déjà jugé ne repart pas : l'essai n'est pas payé deux fois.
+    assert "1 titre(s) à juger" in capsys.readouterr().out

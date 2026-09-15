@@ -65,6 +65,10 @@ pending_file = "data/verdicts.batch.json"
 # expédier la fin de la liste.
 batch_size = 25
 max_tokens = 8000
+# Taille de l'essai (`ytmgc enrich --essai`). Juger quelques dizaines de titres
+# coûte quelques centimes : de quoi lire le résultat avant d'engager la passe
+# complète.
+pilot_size = 50
 # Confiance en deçà de laquelle le verdict n'écrase pas les métadonnées : le
 # modèle a dit qu'il ne connaissait pas le morceau, on le croit.
 min_confidence = 0.35

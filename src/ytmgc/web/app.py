@@ -461,25 +461,44 @@ def create_app(services: Services) -> FastAPI:
         subjects = pending_subjects(repository, book)
         unsorted_only = pending_subjects(repository, book, only_unsorted=True)
         pending = load_pending(config.claude.pending_file)
-        approximate = estimate(len(subjects), config.claude)
-        partial = estimate(len(unsorted_only), config.claude)
+
+        def scope(key: str, label: str, hint: str, count: int, **request) -> dict:
+            """Une étendue proposée, avec son compte et son prix.
+
+            Les trois sont décrites au même endroit pour que le montant affiché
+            soit toujours celui de ce qui partira réellement.
+            """
+            approximate = estimate(count, config.claude)
+            return {
+                "key": key, "label": label, "hint": hint, "tracks": count,
+                "dollars": approximate.dollars, "line": approximate.line(),
+                "request": {"limit": 0, "only_unsorted": False, **request},
+            }
+
+        pilot = min(config.claude.pilot_size, len(subjects))
         return {
             "available": services.judge_factory(config) is not None,
             "model": config.claude.model,
             "verdicts": len(book),
             "verdicts_file": config.claude.verdicts_file,
             "pending_tracks": len(subjects),
-            "unsorted_tracks": len(unsorted_only),
-            "estimate": {
-                "requests": approximate.requests,
-                "dollars": approximate.dollars,
-                "line": approximate.line(),
-            },
-            "estimate_unsorted": {
-                "requests": partial.requests,
-                "dollars": partial.dollars,
-                "line": partial.line(),
-            },
+            "scopes": [
+                scope(
+                    "pilot", f"Essai — {pilot} titres",
+                    "À faire en premier : quelques centimes, et le résultat se lit "
+                    "avant d'engager la suite.",
+                    pilot, limit=config.claude.pilot_size,
+                ),
+                scope(
+                    "unsorted", f"Titres non rangés — {len(unsorted_only)}",
+                    "Seulement ceux que Discogs n'a pas su classer.",
+                    len(unsorted_only), only_unsorted=True,
+                ),
+                scope(
+                    "all", f"Toute la bibliothèque — {len(subjects)}",
+                    "Tous les titres sans verdict.", len(subjects),
+                ),
+            ],
             "batch": (
                 {"id": pending.batch_id, "tracks": pending.subjects,
                  "created_at": pending.created_at}

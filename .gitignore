@@ -6,7 +6,13 @@ venv/
 .pytest_cache/
 .env
 config/config.toml
-data/
+# Tout ce qui est reconstructible : base SQLite, caches, lot en cours.
+data/*
+# Sauf les verdicts du modèle. Ce sont les seules données du projet qui se
+# paient : elles doivent survivre à un `rm -rf data/`, à un changement de
+# machine et à une réinstallation. Le fichier est fait pour ça — texte, une
+# ligne par titre, lisible dans un diff.
+!data/verdicts.txt
 *.db
 *.db-journal
 headers_auth.json

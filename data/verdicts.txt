@@ -1,0 +1,13 @@
+# Verdicts ytmgc — ce que le modèle (ou toi) dit de chaque titre.
+#
+# Une ligne par titre, colonnes séparées par des tabulations :
+#   artiste  |  titre  |  genre  |  style  |  ambiance  |  confiance  |  source  |  note
+#
+# Ce fichier fait autorité : un titre qui y figure n'est plus jamais envoyé à
+# l'API, et sa ligne l'emporte sur Discogs comme sur Last.fm. Corrige une
+# ligne à la main et la correction tient — mets alors "manuel" en source pour
+# t'en souvenir. Supprime une ligne pour que le titre soit redemandé.
+#
+# confiance : de 0 à 1, l'assurance du modèle sur ce couple genre/style.
+# source    : "claude" (jugé par le modèle) ou "manuel" (jugé par toi).
+

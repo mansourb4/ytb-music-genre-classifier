@@ -9,6 +9,7 @@ Le pipeline est découpé en étapes reprenables, chacune persistée en base :
     ytmgc status     # état d'avancement
     ytmgc review     # titres appariés avec un score incertain
     ytmgc tags       # tags Last.fm d'un titre, et ce qu'ils produisent
+    ytmgc enrich --essai   # fait juger quelques titres, pour voir
     ytmgc enrich     # fait juger la bibliothèque par le modèle (par lots)
     ytmgc lookup     # genre, style et ambiance d'un titre, tout de suite
     ytmgc purge      # supprime les playlists générées (annulation complète)
@@ -244,8 +245,11 @@ def cmd_enrich(args: argparse.Namespace, config: Config) -> int:
         return 0
 
     if pending is None:
+        # L'essai prime sur --limit : demander les deux est une hésitation, et
+        # la réponse la moins chère est la bonne.
+        limit = config.claude.pilot_size if args.essai else args.limit
         subjects = pending_subjects(
-            repository, book, limit=args.limit, only_unsorted=args.only_unsorted
+            repository, book, limit=limit, only_unsorted=args.only_unsorted
         )
         if not subjects:
             if not repository.all_tracks():
@@ -259,6 +263,16 @@ def cmd_enrich(args: argparse.Namespace, config: Config) -> int:
 
         approximate = estimate(len(subjects), config.claude)
         print(approximate.line())
+        if args.essai:
+            print(
+                f"Essai : relis ensuite {config.claude.verdicts_file} avant d'engager la "
+                "suite. Ces verdicts-là ne seront pas redemandés."
+            )
+        elif not args.limit and not args.only_unsorted and not len(book):
+            # Premier passage : engager la bibliothèque entière sans avoir vu
+            # un seul verdict, c'est payer avant de savoir si ça vaut le coup.
+            print("Conseil : commence par `ytmgc enrich --essai` pour juger "
+                  f"{config.claude.pilot_size} titres et lire le résultat.")
         if args.dry_run:
             print("\nRien n'a été envoyé (--dry-run).")
             return 0
@@ -480,6 +494,11 @@ def build_parser() -> argparse.ArgumentParser:
 
     enrich_cmd = subparsers.add_parser(
         "enrich", help="Faire juger la bibliothèque par le modèle (par lots, moitié prix)"
+    )
+    enrich_cmd.add_argument(
+        "--essai", action="store_true",
+        help="Ne juger qu'une poignée de titres (claude.pilot_size), pour lire le résultat "
+             "avant d'engager la passe complète",
     )
     enrich_cmd.add_argument("--limit", type=int, default=0, help="Limiter le nombre de titres jugés")
     enrich_cmd.add_argument(

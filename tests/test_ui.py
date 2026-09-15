@@ -551,9 +551,18 @@ JUDGE_STATE = """() => {
   renderJudgeState({
     available: true, model: "claude-opus-5",
     verdicts: 12, verdicts_file: "data/verdicts.txt",
-    pending_tracks: 2500, unsorted_tracks: 300,
-    estimate: {requests: 100, dollars: 5.95, line: "2500 titre(s) à juger… ~5.95 $."},
-    estimate_unsorted: {requests: 12, dollars: 0.71, line: "300 titre(s) à juger… ~0.71 $."},
+    pending_tracks: 2500,
+    scopes: [
+      {key: "pilot", label: "Essai — 50 titres", hint: "À faire en premier.",
+       tracks: 50, dollars: 0.12, line: "50 titre(s) à juger… ~0.12 $.",
+       request: {limit: 50, only_unsorted: false}},
+      {key: "unsorted", label: "Titres non rangés — 300", hint: "Ceux que Discogs ignore.",
+       tracks: 300, dollars: 0.71, line: "300 titre(s) à juger… ~0.71 $.",
+       request: {limit: 0, only_unsorted: true}},
+      {key: "all", label: "Toute la bibliothèque — 2500", hint: "Tous les titres sans verdict.",
+       tracks: 2500, dollars: 5.95, line: "2500 titre(s) à juger… ~5.95 $.",
+       request: {limit: 0, only_unsorted: false}},
+    ],
     batch: null,
   });
 }"""
@@ -562,17 +571,57 @@ JUDGE_STATE = """() => {
 def test_the_cost_is_shown_before_anything_is_spent(page):
     page.evaluate(JUDGE_STATE)
 
-    assert "~5.95 $" in page.locator("#judge-cost").text_content()
     assert "12" in page.locator("#judge-state").text_content()
     assert page.locator("#judge-btn").is_enabled()
+    assert page.locator(".scope").count() == 3
 
 
-def test_restricting_to_unsorted_tracks_restates_the_price(page):
+def test_the_trial_run_is_the_default_choice(page):
+    """Se tromper sur toute une bibliothèque coûte cent fois plus que sur
+    cinquante titres : c'est l'essai qui doit être proposé d'emblée."""
+    page.evaluate(JUDGE_STATE)
+
+    assert "selected" in page.locator(".scope").first.get_attribute("class")
+    assert "~0.12 $" in page.locator("#judge-cost").text_content()
+    assert "Lancer l'essai" in page.locator("#judge-btn").text_content()
+
+
+def test_choosing_another_scope_restates_the_price(page):
     """Le montant affiché doit correspondre à ce qui sera réellement envoyé."""
     page.evaluate(JUDGE_STATE)
-    page.check("#judge-partial")
+    page.check('.scope input[value="all"]')
 
-    assert "~0.71 $" in page.locator("#judge-cost").text_content()
+    assert "~5.95 $" in page.locator("#judge-cost").text_content()
+    assert "Faire juger" in page.locator("#judge-btn").text_content()
+
+
+def test_every_scope_shows_its_own_price(page):
+    page.evaluate(JUDGE_STATE)
+    prices = page.locator(".scope .price").all_text_contents()
+
+    assert prices == ["~0.12 $", "~0.71 $", "~5.95 $"]
+
+
+def test_an_empty_scope_cannot_be_chosen(page):
+    page.evaluate("""() => {
+      renderJudgeState({
+        available: true, model: "claude-opus-5", verdicts: 0,
+        verdicts_file: "data/verdicts.txt", pending_tracks: 0,
+        scopes: [
+          {key: "pilot", label: "Essai — 0 titres", hint: "…", tracks: 0, dollars: 0,
+           line: "…", request: {limit: 50, only_unsorted: false}},
+          {key: "unsorted", label: "Non rangés — 0", hint: "…", tracks: 0, dollars: 0,
+           line: "…", request: {limit: 0, only_unsorted: true}},
+          {key: "all", label: "Tout — 0", hint: "…", tracks: 0, dollars: 0,
+           line: "…", request: {limit: 0, only_unsorted: false}},
+        ],
+        batch: null,
+      });
+    }""")
+
+    assert page.locator(".scope input").first.is_disabled()
+    assert page.locator("#judge-btn").is_disabled()
+    assert "déjà un verdict" in page.locator("#judge-cost").text_content()
 
 
 def test_nothing_is_sent_before_an_explicit_confirmation(page):
@@ -583,6 +632,7 @@ def test_nothing_is_sent_before_an_explicit_confirmation(page):
       window.fetch = (url, options) => { window.__posts.push(url); return real(url, options); };
     }""")
     page.evaluate(JUDGE_STATE)
+    page.check('.scope input[value="all"]')
     page.click("#judge-btn")
 
     assert page.locator("#judge-confirm").is_visible()
@@ -602,9 +652,7 @@ def test_a_batch_already_paid_for_is_offered_as_a_resume(page):
     page.evaluate("""() => {
       renderJudgeState({
         available: true, model: "claude-opus-5", verdicts: 0,
-        verdicts_file: "data/verdicts.txt", pending_tracks: 100, unsorted_tracks: 0,
-        estimate: {requests: 4, dollars: 0.3, line: "…"},
-        estimate_unsorted: {requests: 0, dollars: 0, line: "…"},
+        verdicts_file: "data/verdicts.txt", pending_tracks: 100, scopes: [],
         batch: {id: "msgbatch_1", tracks: 100, created_at: "2026-09-15T10:00:00Z"},
       });
     }""")
@@ -617,9 +665,7 @@ def test_without_a_key_the_section_says_what_to_do(page):
     page.evaluate("""() => {
       renderJudgeState({
         available: false, model: "claude-opus-5", verdicts: 0,
-        verdicts_file: "data/verdicts.txt", pending_tracks: 10, unsorted_tracks: 0,
-        estimate: {requests: 1, dollars: 0.1, line: "…"},
-        estimate_unsorted: {requests: 0, dollars: 0, line: "…"},
+        verdicts_file: "data/verdicts.txt", pending_tracks: 10, scopes: [],
         batch: null,
       });
     }""")

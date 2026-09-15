@@ -93,6 +93,10 @@ class ClaudeConfig:
     #: trop laisse le modèle expédier la fin de la liste.
     batch_size: int = 25
     max_tokens: int = 8000
+    #: Taille de l'essai. Juger quelques dizaines de titres coûte quelques
+    #: centimes et permet de lire le résultat avant d'engager la passe
+    #: complète : la qualité du classement se constate, elle ne se promet pas.
+    pilot_size: int = 50
     #: Confiance en deçà de laquelle le verdict n'écrase pas les métadonnées.
     min_confidence: float = 0.35
     #: Jamais lue depuis le fichier : uniquement depuis l'environnement.
@@ -179,6 +183,8 @@ class Config:
             raise ValueError("claude.batch_size doit être dans [1, 100]")
         if self.claude.max_tokens < 1000:
             raise ValueError("claude.max_tokens doit laisser la place aux verdicts")
+        if self.claude.pilot_size < 1:
+            raise ValueError("claude.pilot_size doit valoir au moins 1")
         if not 0 <= self.claude.min_confidence <= 1:
             raise ValueError("claude.min_confidence doit être dans [0, 1]")
         if not self.sync.marker:

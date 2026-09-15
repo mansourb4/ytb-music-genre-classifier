@@ -73,14 +73,46 @@ def wait(client, response):
 # ---------------------------------------------------------------- annonce
 
 
+def scopes(state) -> dict:
+    return {scope["key"]: scope for scope in state["scopes"]}
+
+
 def test_the_cost_is_announced_without_spending_anything(client, judge):
     state = client.get("/api/enrich/state").json()
 
     assert state["available"] is True
     assert state["pending_tracks"] == 2
-    assert state["estimate"]["dollars"] > 0
-    assert "$" in state["estimate"]["line"]
+    assert scopes(state)["all"]["dollars"] > 0
+    assert "$" in scopes(state)["all"]["line"]
     assert judge.submitted == []
+
+
+def test_each_scope_prices_exactly_what_it_would_send(client, config):
+    """Le montant affiché doit être celui de ce qui partira : c'est sur lui que
+    l'utilisateur dit oui."""
+    config.claude.pilot_size = 1
+    by_key = scopes(client.get("/api/enrich/state").json())
+
+    assert by_key["pilot"]["tracks"] == 1
+    assert by_key["pilot"]["request"] == {"limit": 1, "only_unsorted": False}
+    assert by_key["all"]["tracks"] == 2
+    assert by_key["pilot"]["dollars"] < by_key["all"]["dollars"]
+
+
+def test_the_pilot_never_offers_more_than_there_is_to_judge(client, config):
+    config.claude.pilot_size = 500
+    assert scopes(client.get("/api/enrich/state").json())["pilot"]["tracks"] == 2
+
+
+def test_a_pilot_judges_only_what_was_asked(client, config, judge):
+    config.claude.pilot_size = 1
+    job = wait(client, client.post("/api/enrich", json={"confirm": True, "limit": 1}))
+
+    assert job["result"]["collected"] == 1
+    assert len(verdicts.load(config.claude.verdicts_file)) == 1
+    # Le reste attend : un second passage le proposera, sans redemander le
+    # titre déjà payé.
+    assert client.get("/api/enrich/state").json()["pending_tracks"] == 1
 
 
 def test_already_judged_tracks_drop_out_of_the_estimate(client, config):
