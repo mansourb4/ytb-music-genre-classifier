@@ -110,6 +110,26 @@ ul.tracks { list-style: none; margin: 0; padding: 0; }
 .track-text { cursor: pointer; }
 .pl.excluded > summary { opacity: .45; }
 .pl.unsorted > summary .name { color: var(--muted); }
+.tagline { font-size: .74rem; font-weight: 400; color: var(--muted);
+  text-transform: uppercase; letter-spacing: .06em; margin-left: .5rem; }
+label.inline { display: inline-flex; align-items: center; gap: .35rem; font-size: .86rem;
+  color: var(--muted); }
+.confirm { border: 1px solid var(--warn); background: #fff8ec; border-radius: 8px;
+  padding: .8rem 1rem; margin-top: .8rem; }
+.confirm p { margin: 0 0 .7rem; font-size: .9rem; }
+#judge-section input[type="text"], #judge-section input:not([type]) {
+  flex: 1 1 10rem; min-width: 0; padding: .45rem .6rem; border: 1px solid var(--border);
+  border-radius: 6px; background: var(--surface); color: var(--text); font: inherit;
+}
+.verdict { border: 1px solid var(--border); border-radius: 8px; background: var(--surface);
+  padding: .9rem 1rem; }
+.verdict h4 { margin: 0 0 .6rem; font-size: 1rem; }
+.verdict dl { display: grid; grid-template-columns: max-content 1fr; gap: .3rem .9rem;
+  margin: 0; font-size: .88rem; }
+.verdict dt { color: var(--muted); }
+.verdict dd { margin: 0; }
+.verdict .why { margin: .8rem 0 0; font-size: .86rem; line-height: 1.5; }
+.verdict .defs { margin: .6rem 0 0; font-size: .8rem; color: var(--muted); line-height: 1.5; }
 .reasons { list-style: none; margin: 0 0 .9rem; padding: 0; display: flex;
   flex-wrap: wrap; gap: .4rem .6rem; font-size: .82rem; }
 .reasons li { background: var(--bg); border: 1px solid var(--border);
@@ -329,8 +349,39 @@ select {
   <div id="unsorted" class="spacer"></div>
 </section>
 
+<section id="judge-section">
+  <h2><span class="step">5</span>Affiner par le modèle <span class="tagline">facultatif · payant</span></h2>
+  <p class="hint">Discogs décrit le <i>disque</i> et Last.fm compile des tags : ni l'un ni l'autre ne sait qu'un morceau donné est une ballade au milieu d'un album de rage. Un modèle, lui, connaît la musique. Chaque titre n'est jugé qu'une fois, et son verdict est écrit dans un fichier texte que tu peux relire, corriger et garder.</p>
+
+  <div id="judge-state" class="stats spacer hidden"></div>
+  <p id="judge-cost" class="msg spacer"></p>
+  <div class="row spacer">
+    <button class="primary" id="judge-btn" disabled>Faire juger ma bibliothèque</button>
+    <label class="inline"><input type="checkbox" id="judge-partial"> Seulement les titres non rangés</label>
+    <span class="msg" id="judge-msg"></span>
+  </div>
+  <div id="judge-confirm" class="confirm hidden">
+    <p id="judge-confirm-text"></p>
+    <div class="row">
+      <button class="primary" id="judge-go">Oui, lancer et payer</button>
+      <button id="judge-cancel">Annuler</button>
+    </div>
+  </div>
+
+  <h3 class="spacer">Chercher un titre</h3>
+  <p class="hint">Pour un morceau ajouté après coup : sa réponse est écrite dans le même fichier, et la prochaine analyse la reprendra sans rien redemander.</p>
+  <div class="row spacer">
+    <input id="lookup-artist" placeholder="Artiste" autocomplete="off">
+    <input id="lookup-title" placeholder="Titre" autocomplete="off">
+    <input id="lookup-album" placeholder="Album (facultatif)" autocomplete="off">
+    <button id="lookup-btn">Chercher</button>
+    <span class="msg" id="lookup-msg"></span>
+  </div>
+  <div id="lookup-result" class="spacer"></div>
+</section>
+
 <section>
-  <h2><span class="step">5</span>Appliquer</h2>
+  <h2><span class="step">6</span>Appliquer</h2>
   <div class="row">
     <button class="primary" id="apply-btn" disabled>Appliquer à mon compte</button>
     <span class="msg" id="apply-msg"></span>
@@ -489,12 +540,16 @@ function watchJob(jobId) {
 }
 
 function setBusy(busy) {
-  ["analyse-btn", "apply-btn", "purge-btn", "preview-btn", "purge-scan"].forEach((id) => {
+  ["analyse-btn", "apply-btn", "purge-btn", "preview-btn", "purge-scan",
+   "judge-btn", "lookup-btn"].forEach((id) => {
     $(id).disabled = busy;
   });
   if (!busy) {
     $("apply-btn").disabled = !sortMode;
     updatePurgeCount();
+    // L'état de la passe modèle a pu changer : un lot récupéré, des titres
+    // jugés. Le bouton se réactive selon ce qui reste réellement à faire.
+    refreshJudgeState();
   }
 }
 
@@ -1024,6 +1079,160 @@ async function refreshPreview() {
 
 $("preview-btn").addEventListener("click", refreshPreview);
 
+// --------------------------------------------------------- passe modèle
+
+/**
+ * La seule partie de l'outil qui dépense de l'argent. Elle annonce donc un
+ * montant avant d'engager quoi que ce soit, et demande une confirmation dont
+ * le libellé porte ce montant : « oui » doit vouloir dire « oui, ce prix-là ».
+ */
+let judgeState = null;
+
+function judgeEstimate() {
+  if (!judgeState) return null;
+  return $("judge-partial").checked ? judgeState.estimate_unsorted : judgeState.estimate;
+}
+
+function judgePending() {
+  if (!judgeState) return 0;
+  return $("judge-partial").checked ? judgeState.unsorted_tracks : judgeState.pending_tracks;
+}
+
+function renderJudgeState(state) {
+  judgeState = state;
+  const box = $("judge-state");
+  box.classList.remove("hidden");
+  box.innerHTML =
+    stat(state.verdicts, "titres déjà jugés") +
+    stat(state.pending_tracks, "restants") +
+    stat(state.model, "modèle");
+
+  const pending = judgePending();
+  const cost = judgeEstimate();
+  if (!state.available) {
+    $("judge-cost").textContent =
+      "Aucune clé d'API : définis ANTHROPIC_API_KEY puis relance l'interface.";
+    $("judge-btn").disabled = true;
+    return;
+  }
+  if (state.batch) {
+    $("judge-cost").textContent =
+      `Un lot est déjà déposé (${state.batch.tracks} titre(s)) : il sera repris, `
+      + "sans être payé une seconde fois.";
+    $("judge-btn").disabled = false;
+    $("judge-btn").textContent = "Reprendre le lot en cours";
+    return;
+  }
+  $("judge-btn").textContent = "Faire juger ma bibliothèque";
+  $("judge-btn").disabled = pending === 0;
+  $("judge-cost").textContent = pending
+    ? `${cost.line} Traitement par lots : moitié prix, et quelques minutes d'attente.`
+    : `Tous les titres connus ont déjà un verdict, relu depuis ${state.verdicts_file}.`;
+}
+
+async function refreshJudgeState() {
+  try {
+    renderJudgeState(await api("/api/enrich/state"));
+  } catch (error) {
+    $("judge-cost").textContent = error.message;
+  }
+}
+
+$("judge-partial").addEventListener("change", () => {
+  if (judgeState) renderJudgeState(judgeState);
+});
+
+$("judge-btn").addEventListener("click", () => {
+  const cost = judgeEstimate();
+  const pending = judgePending();
+  $("judge-confirm-text").textContent = judgeState && judgeState.batch
+    ? `Reprendre le lot ${judgeState.batch.id} ? Il est déjà payé : rien de plus ne sera facturé.`
+    : `${pending} titre(s) vont être envoyés au modèle, pour environ `
+      + `${cost.dollars.toFixed(2)} $. Chaque titre n'est jugé qu'une fois.`;
+  $("judge-confirm").classList.remove("hidden");
+});
+
+$("judge-cancel").addEventListener("click", () => {
+  $("judge-confirm").classList.add("hidden");
+});
+
+$("judge-go").addEventListener("click", async () => {
+  $("judge-confirm").classList.add("hidden");
+  $("judge-msg").textContent = "";
+  $("judge-msg").classList.remove("error");
+  setBusy(true);
+  try {
+    const job = await api("/api/enrich", {
+      confirm: true,
+      only_unsorted: $("judge-partial").checked,
+    });
+    watchJob(job.id);
+  } catch (error) {
+    setBusy(false);
+    $("judge-msg").textContent = error.message;
+    $("judge-msg").classList.add("error");
+  }
+});
+
+// ------------------------------------------------------ recherche d'un titre
+
+function renderVerdict(payload) {
+  const v = payload.verdict;
+  const definitions = [
+    v.genre_text ? `<b>${escapeHtml(v.genre)}</b> — ${escapeHtml(v.genre_text)}` : null,
+    v.style_text ? `<b>${escapeHtml(v.style)}</b> — ${escapeHtml(v.style_text)}` : null,
+    v.mood_text ? `<b>${escapeHtml(v.mood)}</b> — ${escapeHtml(v.mood_text)}` : null,
+  ].filter(Boolean);
+  $("lookup-result").innerHTML = `<div class="verdict">
+    <h4>${escapeHtml(v.artist)} – ${escapeHtml(v.title)}</h4>
+    <dl>
+      <dt>Genre</dt><dd>${escapeHtml(v.genre)}</dd>
+      <dt>Style</dt><dd>${escapeHtml(v.style)}</dd>
+      <dt>Ambiance</dt><dd>${escapeHtml(v.mood)}</dd>
+      <dt>Confiance</dt><dd>${(v.confidence * 100).toFixed(0)} % — ${escapeHtml(v.source)}</dd>
+    </dl>
+    ${v.note ? `<p class="why">${escapeHtml(v.note)}</p>` : ""}
+    ${definitions.length ? `<p class="defs">${definitions.join("<br>")}</p>` : ""}
+  </div>`;
+  $("lookup-msg").textContent = payload.cached
+    ? "Verdict déjà connu, relu depuis le fichier : rien n'a été facturé."
+    : "Écrit dans le fichier de verdicts : la prochaine analyse le reprendra.";
+}
+
+$("lookup-btn").addEventListener("click", async () => {
+  const artist = $("lookup-artist").value.trim();
+  const title = $("lookup-title").value.trim();
+  $("lookup-msg").classList.remove("error");
+  if (!artist || !title) {
+    $("lookup-msg").textContent = "Il faut l'artiste et le titre.";
+    $("lookup-msg").classList.add("error");
+    return;
+  }
+  $("lookup-msg").textContent = "Recherche…";
+  $("lookup-btn").disabled = true;
+  try {
+    renderVerdict(await api("/api/lookup", {
+      artist, title, album: $("lookup-album").value.trim() || null,
+    }));
+    await refreshJudgeState();
+  } catch (error) {
+    $("lookup-result").innerHTML = "";
+    $("lookup-msg").textContent = error.message;
+    $("lookup-msg").classList.add("error");
+  } finally {
+    $("lookup-btn").disabled = false;
+  }
+});
+
+["lookup-artist", "lookup-title", "lookup-album"].forEach((id) => {
+  $(id).addEventListener("keydown", (event) => {
+    if (event.key === "Enter") $("lookup-btn").click();
+  });
+});
+
+// --------------------------------------------------------- passe modèle (fin)
+
+
 $("apply-btn").addEventListener("click", async () => {
   if (!confirm("Appliquer ces changements à ton compte YouTube Music ?")) return;
   setBusy(true);
@@ -1134,6 +1343,7 @@ async function boot() {
   await loadConnectMethods();
   const status = await refreshStatus();
   await loadSources();
+  await refreshJudgeState();
   if (status.classified) await refreshPreview();
 }
 

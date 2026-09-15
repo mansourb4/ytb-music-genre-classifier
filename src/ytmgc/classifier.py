@@ -11,12 +11,14 @@ from dataclasses import dataclass, replace
 from typing import Callable, Protocol
 
 from ytmgc.config import Config
+from ytmgc.enrich import merge
 from ytmgc.matching import best_match
 from ytmgc.models import Classification, MatchStatus, ReleaseCandidate, Track
 from ytmgc.sources.discogs import query_key
 from ytmgc.sources.lastfm import query_key as lastfm_key
 from ytmgc.taxonomy import Taxonomy, load_taxonomy
 from ytmgc.store import Repository
+from ytmgc.verdicts import VerdictBook, track_key
 
 
 class CandidateSource(Protocol):
@@ -42,6 +44,7 @@ class ClassifyStats:
     api_calls: int = 0
     tagged: int = 0
     refined: int = 0
+    judged: int = 0
 
     def line(self) -> str:
         line = (
@@ -51,6 +54,8 @@ class ClassifyStats:
         )
         if self.tagged:
             line += f" — {self.tagged} titre(s) documentés par Last.fm, {self.refined} affinés"
+        if self.judged:
+            line += f" — {self.judged} titre(s) tranchés par un verdict déjà rendu"
         return line
 
 
@@ -63,12 +68,18 @@ def classify_tracks(
     progress: Callable[[Track, Classification], None] | None = None,
     tag_source: TagSource | None = None,
     taxonomy: Taxonomy | None = None,
+    verdicts: VerdictBook | None = None,
 ) -> ClassifyStats:
     """Apparie chaque titre, et l'affine par ses propres tags quand on en a.
 
     Discogs décrit une release : tous les titres d'un album en héritent
     identiquement. Les tags Last.fm, eux, portent sur le morceau — ce sont eux
     qui rattrapent la ballade perdue au milieu d'un disque punk.
+
+    Un verdict déjà rendu, enfin, l'emporte sur les deux : c'est le seul
+    jugement porté sur la musique plutôt que sur ses étiquettes. Il est lu
+    depuis le fichier de verdicts, jamais redemandé — l'analyse reste donc
+    gratuite une fois la passe modèle passée.
     """
     stats = ClassifyStats(total=len(tracks))
     taxonomy = taxonomy if taxonomy is not None else load_taxonomy()
@@ -88,6 +99,11 @@ def classify_tracks(
         if weighted:
             stats.tagged += 1
             classification = _refine(classification, weighted, config, taxonomy, stats)
+        if verdicts is not None:
+            judged = _judge(track, classification, verdicts, config, taxonomy)
+            if judged is not classification:
+                stats.judged += 1
+                classification = judged
         repository.save_classification(classification)
 
         if classification.status is MatchStatus.MATCHED:
@@ -164,6 +180,28 @@ def _refine(
 
     stats.refined += 1
     return replace(classification, styles=tuple(refined), tags=kept, mood=mood)
+
+
+def _judge(
+    track: Track,
+    classification: Classification,
+    verdicts: VerdictBook,
+    config: Config,
+    taxonomy: Taxonomy,
+) -> Classification:
+    """Applique le verdict déjà rendu sur ce titre, s'il en existe un.
+
+    Un verdict peu assuré est ignoré : le modèle a dit qu'il ne connaissait pas
+    le morceau, et il n'y a pas de raison de lui faire écraser ce que Discogs
+    avait trouvé.
+    """
+    verdict = verdicts.get(track_key(track))
+    if verdict is None or verdict.confidence < config.claude.min_confidence:
+        return classification
+
+    from ytmgc.enrich import _merge
+
+    return _merge(track, classification, verdict, taxonomy)
 
 
 def _classify(track: Track, candidates: list[ReleaseCandidate], config: Config) -> Classification:

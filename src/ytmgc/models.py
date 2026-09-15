@@ -82,6 +82,10 @@ class Classification:
     tags: tuple[str, ...] = ()
     #: Ambiance décidée au classement, où les poids des tags sont connus.
     mood: str | None = None
+    #: Le couple genre/style vient du modèle, qui a jugé le morceau lui-même,
+    #: et non de l'appariement Discogs. Un titre jugé est rangeable même si
+    #: Discogs n'a rien su en dire : `status` ne parle que de Discogs.
+    judged: bool = False
 
 
 @dataclass(frozen=True, slots=True)

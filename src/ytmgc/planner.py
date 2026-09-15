@@ -152,10 +152,14 @@ def plan_playlists(
     order: list[str] = []
     by_mood = config.taxonomy.axis == "mood"
     for classification in classifications:
-        # En mode ambiance, les tags du titre suffisent : un morceau que Discogs
-        # n'a pas su apparier reste classable si ses auditeurs l'ont décrit.
-        usable = classification.status is MatchStatus.MATCHED or (
-            by_mood and classification.mood is not None
+        # Un titre jugé par le modèle est rangeable quoi qu'en dise Discogs :
+        # le verdict porte sur le morceau, l'appariement sur un disque.
+        # En mode ambiance, les tags du titre suffisent aussi : un morceau que
+        # Discogs n'a pas su apparier reste classable si on l'a décrit.
+        usable = (
+            classification.status is MatchStatus.MATCHED
+            or classification.judged
+            or (by_mood and classification.mood is not None)
         )
         if not usable:
             continue

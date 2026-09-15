@@ -71,6 +71,35 @@ class LastfmConfig:
 
 
 @dataclass(slots=True)
+class ClaudeConfig:
+    """Jugement du morceau par un modèle. Facultatif : sans clé, rien ne change.
+
+    C'est la seule source qui connaisse la *musique* et non ses étiquettes.
+    Discogs décrit le disque, Last.fm compile ce que des auditeurs ont bien
+    voulu taper ; ni l'un ni l'autre ne sait qu'un morceau donné est une
+    berceuse au milieu d'un album de rage. C'est aussi la seule qui se paie :
+    tout est donc fait pour ne juger un titre qu'une fois, et pour conserver
+    ce jugement ailleurs que dans une base effaçable.
+    """
+
+    enabled: bool = True
+    model: str = "claude-opus-5"
+    #: Verdicts déjà rendus. Fait autorité, et n'est jamais redemandé.
+    verdicts_file: str = "data/verdicts.txt"
+    #: Lot en cours, le temps qu'il aboutisse : un traitement par lots peut
+    #: durer une heure, et l'ordinateur n'a pas à rester allumé pour autant.
+    pending_file: str = "data/verdicts.batch.json"
+    #: Titres par requête. Trop peu multiplie les requêtes et le préambule ;
+    #: trop laisse le modèle expédier la fin de la liste.
+    batch_size: int = 25
+    max_tokens: int = 8000
+    #: Confiance en deçà de laquelle le verdict n'écrase pas les métadonnées.
+    min_confidence: float = 0.35
+    #: Jamais lue depuis le fichier : uniquement depuis l'environnement.
+    api_key: str = ""
+
+
+@dataclass(slots=True)
 class MatchingConfig:
     min_score: float = 0.72
     review_score: float = 0.55
@@ -127,6 +156,7 @@ class Config:
     youtube: YouTubeConfig = field(default_factory=YouTubeConfig)
     discogs: DiscogsConfig = field(default_factory=DiscogsConfig)
     lastfm: LastfmConfig = field(default_factory=LastfmConfig)
+    claude: ClaudeConfig = field(default_factory=ClaudeConfig)
     matching: MatchingConfig = field(default_factory=MatchingConfig)
     taxonomy: TaxonomyConfig = field(default_factory=TaxonomyConfig)
     sync: SyncConfig = field(default_factory=SyncConfig)
@@ -145,6 +175,12 @@ class Config:
             raise ValueError("youtube.playlist_privacy doit valoir PRIVATE, UNLISTED ou PUBLIC")
         if not 1 <= self.web.port <= 65535:
             raise ValueError("web.port doit être un port valide")
+        if not 1 <= self.claude.batch_size <= 100:
+            raise ValueError("claude.batch_size doit être dans [1, 100]")
+        if self.claude.max_tokens < 1000:
+            raise ValueError("claude.max_tokens doit laisser la place aux verdicts")
+        if not 0 <= self.claude.min_confidence <= 1:
+            raise ValueError("claude.min_confidence doit être dans [0, 1]")
         if not self.sync.marker:
             raise ValueError("sync.marker ne peut pas être vide : il protège les playlists manuelles")
 
@@ -183,6 +219,7 @@ def load_config(path: Path | None = None, env: dict[str, str] | None = None) -> 
 
     config.discogs.token = env.get("DISCOGS_TOKEN", "")
     config.lastfm.api_key = env.get("LASTFM_API_KEY", "")
+    config.claude.api_key = env.get("ANTHROPIC_API_KEY", "")
     config.web.access_token = env.get("YTMGC_ACCESS_TOKEN", "")
     if user_agent := env.get("DISCOGS_USER_AGENT"):
         config.discogs.user_agent = user_agent

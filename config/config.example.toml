@@ -40,6 +40,35 @@ min_mood_weight = 3
 # Nombre de tags de style retenus pour affiner un titre.
 max_styles_per_track = 2
 
+[claude]
+# Jugement du morceau par un modèle. C'est la seule source qui connaisse la
+# *musique* et non ses étiquettes : Discogs décrit le disque, Last.fm compile
+# des tags posés par des auditeurs, et ni l'un ni l'autre ne sait qu'un morceau
+# donné est une berceuse au milieu d'un album de rage.
+#
+# C'est aussi la seule qui se paie. Sans clé (ANTHROPIC_API_KEY), tout le reste
+# fonctionne à l'identique. Chaque titre n'est jugé qu'une fois, et son verdict
+# est écrit dans un fichier texte qui survit à la base :
+#   ytmgc enrich --dry-run   annonce le coût sans rien envoyer
+#   ytmgc enrich             juge par lots (moitié prix)
+#   ytmgc lookup "Artiste" "Titre"   juge un seul titre, tout de suite
+enabled = true
+model = "claude-opus-5"
+# Verdicts déjà rendus. Fait autorité : un titre qui y figure n'est jamais
+# redemandé, et sa ligne l'emporte sur Discogs comme sur Last.fm. Le fichier
+# est fait pour être relu et corrigé à la main.
+verdicts_file = "data/verdicts.txt"
+# Lot en cours, le temps qu'il aboutisse. Permet d'éteindre l'ordinateur sans
+# perdre un traitement déjà payé (`ytmgc enrich --resume`).
+pending_file = "data/verdicts.batch.json"
+# Titres par requête. Trop peu multiplie le préambule, trop laisse le modèle
+# expédier la fin de la liste.
+batch_size = 25
+max_tokens = 8000
+# Confiance en deçà de laquelle le verdict n'écrase pas les métadonnées : le
+# modèle a dit qu'il ne connaissait pas le morceau, on le croit.
+min_confidence = 0.35
+
 [matching]
 # Score minimal (0-1) pour accepter un appariement Discogs automatiquement.
 min_score = 0.72

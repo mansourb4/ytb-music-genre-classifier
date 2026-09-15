@@ -51,6 +51,9 @@ et relancés sans perte, et `plan`/`apply` se rejouent hors ligne.
 | `planner.py` | Classifications → ensemble de playlists souhaité. Hors ligne. |
 | `sync.py` | Diff état souhaité / état distant, puis application. |
 | `sorting.py` | Types de tri prédéfinis — dont l'axe de rangement — partagés par le CLI et l'interface web. |
+| `sources/claude.py` | Jugement d'un titre par un modèle : préambule, schéma de sortie, dépôt et relecture d'un lot, estimation du coût. |
+| `verdicts.py` | Le fichier texte des verdicts : format, lecture tolérante, écriture atomique, préséance de la décision humaine. |
+| `enrich.py` | La passe modèle de bout en bout : ce qui reste à juger, dépôt, attente, récupération, report en base. |
 | `preview.py` | Assemble plan, état distant et titres en un aperçu sérialisable — pochettes et taxonomie comprises. Ni HTTP ni terminal. |
 | `web/` | Application FastAPI et son interface (page unique, sans build), contrôle d'accès et construction des liens. |
 | `cli.py` | Interface en ligne de commande. |
@@ -364,6 +367,67 @@ d'apparition laissait un tag pondéré à 1 décider de l'ambiance d'un morceau.
 L'ambiance est arrêtée au classement, seul endroit où les poids sont connus, et
 rangée avec la classification ; le planner n'a plus qu'à la lire.
 
+### 17. Le plafond des métadonnées, et ce qui le dépasse
+
+Les tags Last.fm ont déplacé le problème sans le résoudre. Ils décrivent bien le
+titre, mais ce sont des étiquettes posées par des gens qui nomment volontiers un
+genre et rarement une humeur. Sur *Something In The Way*, une fois les poids
+relevés : `grunge 100`, `acoustic 5`, `sad 1`. Le style retenu reste « Grunge »
+pour une berceuse. Aucun réglage de seuil ne fait dire à ces données ce
+qu'elles ne contiennent pas — deux tentatives de resserrage l'ont établi.
+
+La seule source qui connaisse la *musique* plutôt que ses étiquettes est un
+modèle. `enrich` lui soumet chaque titre avec ce que les bases en disent — à
+titre d'indice, explicitement, puisque c'est leur imprécision qui motive la
+passe — et en obtient un genre, un style, une ambiance et une justification,
+pour le morceau lui-même.
+
+Quatre contraintes ont façonné cette partie, toutes tenant à ce qu'elle est la
+seule du projet à coûter de l'argent.
+
+**Ne jamais juger deux fois.** Le résultat est écrit en clair dans
+`data/verdicts.txt`, une ligne par titre, indexée par (artiste, titre)
+normalisés — jamais par `video_id`, pour que le fichier survive à un
+changement de compte, et jamais par album, pour que deux éditions d'un morceau
+partagent leur verdict. Ce fichier fait autorité : il est consulté avant tout
+appel, et sa ligne l'emporte sur Discogs comme sur Last.fm au moment de
+classer. Une base effacée ne coûte donc rien à reconstituer.
+
+**Annoncer avant de dépenser.** `estimate` chiffre la passe — requêtes, jetons,
+dollars — à partir du format réel du prompt, volontairement pessimiste du côté
+sortie puisque la réflexion du modèle s'y facture. Le montant est affiché dans
+le terminal comme dans l'interface, et la confirmation demandée le porte :
+« oui » doit vouloir dire « oui, ce prix-là ». `--dry-run` s'arrête à
+l'annonce, sans même exiger de clé.
+
+**Survivre à une coupure.** Le dépôt et la récupération sont deux temps
+distincts. L'identifiant du lot et sa découpe en requêtes sont écrits sur le
+disque *aussitôt* le dépôt fait : sans la découpe, un verdict ne saurait plus à
+quel titre il se rapporte, et un lot payé serait perdu. Le lot vit ensuite chez
+Anthropic — l'ordinateur peut s'éteindre, `--resume` va le chercher, et
+l'interface propose de le reprendre au lieu d'en déposer un second.
+
+**Laisser le dernier mot à l'utilisateur.** Une ligne dont la colonne source
+porte `manuel` n'est jamais écrasée par le modèle, et le fichier est conçu pour
+être ouvert : en-tête explicatif, colonnes séparées par des tabulations,
+lecture tolérante aux lignes bancales, écriture par fichier temporaire puis
+renommage atomique. Corriger un classement, c'est éditer une ligne.
+
+Deux choix de forme découlent du reste. Le vocabulaire — 15 genres, 199 styles,
+8 ambiances — est transmis en préambule et mis en cache, puisqu'il est
+identique d'une requête à l'autre et représenterait sinon l'essentiel de la
+facture. Genre et ambiance sont **contraints** par le schéma de sortie : une
+ambiance libre rendrait ce tri inutilisable, qui est un ensemble fermé de huit
+playlists. Le style, lui, reste ouvert et seulement *orienté* vers la liste
+connue : forcer un morceau dans un terme qui ne lui va pas serait revenir
+exactement au défaut qu'on corrige.
+
+Enfin `Classification.judged` marque un titre tranché par le modèle. `status`
+ne parle que de Discogs et continue de ne parler que de lui ; un titre jugé
+devient rangeable même quand Discogs n'a rien su en dire, ce que le planner lit
+directement. Un verdict peu assuré, lui, ne détruit rien : le modèle a dit
+qu'il ne connaissait pas le morceau, et on le croit.
+
 En mode ambiance, un titre que Discogs n'a pas su apparier reste classable dès
 lors que ses auditeurs l'ont décrit : la couverture s'en trouve élargie, non
 réduite.
@@ -382,6 +446,8 @@ pas une panne, et il ne sert à rien de le redemander.
 | YouTube Music : pas de dossier | Hiérarchie encodée dans le nom. |
 | YouTube Music : 5 000 titres/playlist | Les seuils de repli maintiennent les playlists loin du plafond. |
 | YouTube Music : suppression par `setVideoId` | `sync` relit la playlist avant tout retrait. |
+| API Claude : chaque appel se facture | Fichier de verdicts consulté avant tout appel, montant annoncé avant toute dépense, confirmation explicite, lot déposé jamais redéposé. Une clé absente désactive proprement la fonctionnalité. |
+| API Claude : un lot peut prendre 24 h | Dépôt et récupération séparés ; l'identifiant et la découpe sont écrits sur le disque, le lot vit chez Anthropic et ses résultats y restent 29 jours. |
 | Last.fm : une requête par titre, débit limité | Cache en base par (artiste, titre), TTL de 180 jours. La passe ne se paie qu'une fois ; une clé absente désactive proprement la fonctionnalité. |
 | YouTube Music : pas de décompte dans la liste des playlists | Le champ `count` de `ytmusicapi` est le premier mot d'un sous-titre — « 2 » pour « 2 188 titres », un mot quelconque selon la langue. Il est ignoré : chaque source est mesurée par `count_source`, qui lit le `trackCount` d'une playlist en un appel et ne parcourt réellement que la bibliothèque et les mises en ligne, faute d'un total annoncé. |
 | YouTube Music : API interne, non officielle | Toute la dépendance est isolée dans un seul adaptateur, importé paresseusement. |
@@ -389,10 +455,10 @@ pas une panne, et il ne sert à rien de le redemander.
 
 ## Tests
 
-328 tests, aucun appel réseau, y compris l'API web complète (aperçu,
+409 tests, aucun appel réseau, y compris l'API web complète (aperçu,
 application, annulation), son contrôle d'accès et les quatre voies de connexion.
 
-Trente-trois d’entre eux chargent l’interface dans un vrai navigateur (`tests/test_ui.py`).
+Quarante-deux d’entre eux chargent l’interface dans un vrai navigateur (`tests/test_ui.py`).
 Le câblage du DOM échappe aux tests Python : deux défauts d'onglets sont passés
 au travers de la suite avant d'être vus à l'écran. Ces tests sont ignorés
 lorsque Playwright ou son navigateur sont absents, pour que la suite reste

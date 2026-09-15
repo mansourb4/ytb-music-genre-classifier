@@ -21,6 +21,7 @@ from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field
 
+from ytmgc import verdicts as verdict_file
 from ytmgc.classifier import classify_tracks
 from ytmgc.config import Config, load_config
 from ytmgc.models import Track
@@ -46,6 +47,9 @@ class Services:
     #: Source de tags par titre. Peut renvoyer None : la fonctionnalité est
     #: facultative, et son absence ne doit rien empêcher.
     lastfm_factory: Callable[[Config], Any] = lambda _config: None
+    #: Client du modèle. Peut renvoyer None : la passe est facultative et
+    #: payante, et son absence ne doit rien empêcher du reste.
+    judge_factory: Callable[[Config], Any] = lambda _config: None
     jobs: JobRunner = field(default_factory=JobRunner)
     #: Décomptes déjà mesurés, par source. Ils ne varient guère au fil d'une
     #: session, et les remesurer coûterait un appel par affichage.
@@ -75,6 +79,16 @@ def _default_lastfm(config: Config):
     from ytmgc.sources.lastfm import LastfmClient
 
     return LastfmClient(config.lastfm)
+
+
+def _default_judge(config: Config):
+    """Client du modèle, ou None : sans clé, l'outil fonctionne comme avant."""
+    if not (config.claude.enabled and config.claude.api_key):
+        return None
+    from ytmgc.sources.claude import ClaudeClient
+    from ytmgc.taxonomy import load_taxonomy
+
+    return ClaudeClient(config.claude, load_taxonomy())
 
 
 class ConnectRequest(BaseModel):
@@ -116,6 +130,22 @@ class ApplyRequest(BaseModel):
     excluded_playlists: list[str] = Field(default_factory=list)
     #: Titres décochés, par clé de playlist.
     excluded_tracks: dict[str, list[str]] = Field(default_factory=dict)
+
+
+class EnrichRequest(BaseModel):
+    #: Ne juger que les titres que Discogs n'a pas su classer.
+    only_unsorted: bool = False
+    limit: int = 0
+    #: Garde-fou explicite : cette passe est la seule à coûter de l'argent.
+    confirm: bool = False
+
+
+class LookupRequest(BaseModel):
+    artist: str = Field(min_length=1)
+    title: str = Field(min_length=1)
+    album: str | None = None
+    #: Redemander un titre déjà jugé (et le repayer).
+    force: bool = False
 
 
 class PurgeRequest(BaseModel):
@@ -395,11 +425,152 @@ def create_app(services: Services) -> FastAPI:
             stats = classify_tracks(
                 pending, repository, services.discogs_factory(config), config,
                 progress=progress, tag_source=services.lastfm_factory(config),
+                # Les verdicts déjà rendus sont relus depuis le fichier : ils
+                # priment sur Discogs et ne coûtent rien.
+                verdicts=verdict_file.load(config.claude.verdicts_file),
             )
             job.message = stats.line()
             return {"scanned": len(tracks), "sources": sources, "summary": stats.line()}
 
         return jobs.start("analyse", work).to_dict()
+
+    # -------------------------------------------------------- passe modèle
+
+    def _judge():
+        """Client du modèle, ou une erreur qui dit quoi faire."""
+        judge = services.judge_factory(config)
+        if judge is None:
+            raise HTTPException(
+                400,
+                "Aucune clé d'API Claude. Définis ANTHROPIC_API_KEY puis relance "
+                "l'interface pour activer le jugement par le modèle.",
+            )
+        return judge
+
+    @app.get("/api/enrich/state")
+    def enrich_state() -> dict:
+        """Ce que coûterait la passe, et ce qui est déjà acquis.
+
+        Appelé avant toute dépense : l'interface doit pouvoir annoncer un
+        montant sans rien engager.
+        """
+        from ytmgc.enrich import load_pending, pending_subjects
+        from ytmgc.sources.claude import estimate
+
+        book = verdict_file.load(config.claude.verdicts_file)
+        subjects = pending_subjects(repository, book)
+        unsorted_only = pending_subjects(repository, book, only_unsorted=True)
+        pending = load_pending(config.claude.pending_file)
+        approximate = estimate(len(subjects), config.claude)
+        partial = estimate(len(unsorted_only), config.claude)
+        return {
+            "available": services.judge_factory(config) is not None,
+            "model": config.claude.model,
+            "verdicts": len(book),
+            "verdicts_file": config.claude.verdicts_file,
+            "pending_tracks": len(subjects),
+            "unsorted_tracks": len(unsorted_only),
+            "estimate": {
+                "requests": approximate.requests,
+                "dollars": approximate.dollars,
+                "line": approximate.line(),
+            },
+            "estimate_unsorted": {
+                "requests": partial.requests,
+                "dollars": partial.dollars,
+                "line": partial.line(),
+            },
+            "batch": (
+                {"id": pending.batch_id, "tracks": pending.subjects,
+                 "created_at": pending.created_at}
+                if pending is not None else None
+            ),
+        }
+
+    @app.post("/api/enrich")
+    def enrich(request: EnrichRequest) -> dict:
+        """Dépose un lot, attend son aboutissement, puis range la bibliothèque.
+
+        Un lot déjà déposé est repris au lieu d'un nouveau : c'est du travail
+        payé, et le redéposer le ferait payer deux fois.
+        """
+        from ytmgc.enrich import (
+            apply_verdicts, collect, load_pending, pending_subjects, submit, wait,
+        )
+        from ytmgc.taxonomy import load_taxonomy
+
+        if not request.confirm:
+            raise HTTPException(400, "Confirmation requise : cette passe est facturée")
+        if jobs.busy():
+            raise HTTPException(409, "Un traitement est déjà en cours")
+        judge = _judge()
+
+        def work(job: Job) -> dict:
+            pending = load_pending(config.claude.pending_file)
+            if pending is None:
+                book = verdict_file.load(config.claude.verdicts_file)
+                subjects = pending_subjects(
+                    repository, book, limit=request.limit,
+                    only_unsorted=request.only_unsorted,
+                )
+                if not subjects:
+                    job.message = "Tous les titres ont déjà un verdict."
+                    return {"collected": 0, "applied": 0, "verdicts": len(book)}
+                job.message = f"Dépôt de {len(subjects)} titre(s)…"
+                pending = submit(judge, subjects, config)
+            else:
+                job.message = f"Reprise du lot {pending.batch_id}…"
+
+            job.total = len(pending.chunks)
+            job.message = f"Lot {pending.batch_id} en cours de traitement…"
+
+            def on_status(state: str, counts: dict) -> None:
+                job.progress = counts.get("succeeded", 0) + counts.get("errored", 0)
+                job.message = (
+                    f"Lot {pending.batch_id} : {job.progress}/{job.total} requête(s), {state}"
+                )
+
+            state = wait(judge, pending, on_status=on_status)
+            if state != "ended":
+                job.message = "Lot toujours en cours ; il sera repris au prochain lancement."
+                return {"collected": 0, "applied": 0, "batch": pending.batch_id}
+
+            book, stats = collect(judge, pending, config)
+            stats.applied = apply_verdicts(repository, book, load_taxonomy(), config)
+            job.message = stats.line()
+            return {
+                "collected": stats.collected,
+                "applied": stats.applied,
+                "problems": stats.problems,
+                "verdicts": len(book),
+            }
+
+        return jobs.start("enrich", work).to_dict()
+
+    @app.post("/api/lookup")
+    def lookup(request: LookupRequest) -> dict:
+        """Genre, style et ambiance d'un titre, tout de suite.
+
+        Sert les titres ajoutés après la passe complète. Un titre déjà jugé est
+        relu depuis le fichier, sans rien facturer.
+        """
+        from ytmgc.sources.claude import Subject
+        from ytmgc.taxonomy import load_taxonomy
+
+        book = verdict_file.load(config.claude.verdicts_file)
+        key = verdict_file.entry_key(request.artist, request.title)
+        known = book.get(key)
+        if known is not None and not request.force:
+            return {"verdict": _verdict_dict(known, load_taxonomy()), "cached": True}
+
+        found = _judge().lookup(
+            [Subject(artist=request.artist, title=request.title, album=request.album)]
+        )
+        if not found:
+            raise HTTPException(502, "Le modèle n'a rien rendu d'exploitable pour ce titre.")
+        book.add(found[0])
+        verdict_file.save(book, config.claude.verdicts_file)
+        return {"verdict": _verdict_dict(found[0], load_taxonomy()), "cached": False}
 
     # ------------------------------------------------------------- aperçu
 
@@ -554,6 +725,23 @@ def create_app(services: Services) -> FastAPI:
     return app
 
 
+def _verdict_dict(verdict, taxonomy) -> dict:
+    """Le verdict tel que l'interface l'affiche, style normalisé compris."""
+    return {
+        "artist": verdict.artist,
+        "title": verdict.title,
+        "genre": verdict.genre,
+        "style": taxonomy.canonical_style(verdict.style) or verdict.style,
+        "mood": verdict.mood,
+        "confidence": verdict.confidence,
+        "source": verdict.source,
+        "note": verdict.note,
+        "genre_text": taxonomy.describe_genre(verdict.genre),
+        "style_text": taxonomy.describe_style(verdict.style),
+        "mood_text": taxonomy.describe_mood(verdict.mood),
+    }
+
+
 def build_default_app(config_path: Path | None = None, config: Config | None = None) -> FastAPI:
     config = config if config is not None else load_config(config_path)
     return create_app(
@@ -563,6 +751,7 @@ def build_default_app(config_path: Path | None = None, config: Config | None = N
             youtube_factory=_default_youtube,
             discogs_factory=_default_discogs,
             lastfm_factory=_default_lastfm,
+            judge_factory=_default_judge,
             jobs=JobRunner(),
         )
     )

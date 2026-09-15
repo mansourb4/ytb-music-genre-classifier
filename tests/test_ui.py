@@ -544,3 +544,124 @@ def test_a_new_preview_clears_the_previous_unsorted_list(page):
     assert page.locator("#unsorted details").count() == 1
     render_sample_preview(page)
     assert page.locator("#unsorted details").count() == 0
+
+
+#: État de la passe modèle, tel que /api/enrich/state le renvoie.
+JUDGE_STATE = """() => {
+  renderJudgeState({
+    available: true, model: "claude-opus-5",
+    verdicts: 12, verdicts_file: "data/verdicts.txt",
+    pending_tracks: 2500, unsorted_tracks: 300,
+    estimate: {requests: 100, dollars: 5.95, line: "2500 titre(s) à juger… ~5.95 $."},
+    estimate_unsorted: {requests: 12, dollars: 0.71, line: "300 titre(s) à juger… ~0.71 $."},
+    batch: null,
+  });
+}"""
+
+
+def test_the_cost_is_shown_before_anything_is_spent(page):
+    page.evaluate(JUDGE_STATE)
+
+    assert "~5.95 $" in page.locator("#judge-cost").text_content()
+    assert "12" in page.locator("#judge-state").text_content()
+    assert page.locator("#judge-btn").is_enabled()
+
+
+def test_restricting_to_unsorted_tracks_restates_the_price(page):
+    """Le montant affiché doit correspondre à ce qui sera réellement envoyé."""
+    page.evaluate(JUDGE_STATE)
+    page.check("#judge-partial")
+
+    assert "~0.71 $" in page.locator("#judge-cost").text_content()
+
+
+def test_nothing_is_sent_before_an_explicit_confirmation(page):
+    """Régression de principe : un clic ne doit jamais suffire à dépenser."""
+    page.evaluate("""() => {
+      window.__posts = [];
+      const real = window.fetch;
+      window.fetch = (url, options) => { window.__posts.push(url); return real(url, options); };
+    }""")
+    page.evaluate(JUDGE_STATE)
+    page.click("#judge-btn")
+
+    assert page.locator("#judge-confirm").is_visible()
+    assert "5.95" in page.locator("#judge-confirm-text").text_content()
+    assert page.evaluate("() => window.__posts.filter((u) => u.includes('/api/enrich'))") == []
+
+
+def test_cancelling_the_confirmation_sends_nothing(page):
+    page.evaluate(JUDGE_STATE)
+    page.click("#judge-btn")
+    page.click("#judge-cancel")
+
+    assert not page.locator("#judge-confirm").is_visible()
+
+
+def test_a_batch_already_paid_for_is_offered_as_a_resume(page):
+    page.evaluate("""() => {
+      renderJudgeState({
+        available: true, model: "claude-opus-5", verdicts: 0,
+        verdicts_file: "data/verdicts.txt", pending_tracks: 100, unsorted_tracks: 0,
+        estimate: {requests: 4, dollars: 0.3, line: "…"},
+        estimate_unsorted: {requests: 0, dollars: 0, line: "…"},
+        batch: {id: "msgbatch_1", tracks: 100, created_at: "2026-09-15T10:00:00Z"},
+      });
+    }""")
+
+    assert "Reprendre le lot" in page.locator("#judge-btn").text_content()
+    assert "sans être payé une seconde fois" in page.locator("#judge-cost").text_content()
+
+
+def test_without_a_key_the_section_says_what_to_do(page):
+    page.evaluate("""() => {
+      renderJudgeState({
+        available: false, model: "claude-opus-5", verdicts: 0,
+        verdicts_file: "data/verdicts.txt", pending_tracks: 10, unsorted_tracks: 0,
+        estimate: {requests: 1, dollars: 0.1, line: "…"},
+        estimate_unsorted: {requests: 0, dollars: 0, line: "…"},
+        batch: null,
+      });
+    }""")
+
+    assert "ANTHROPIC_API_KEY" in page.locator("#judge-cost").text_content()
+    assert page.locator("#judge-btn").is_disabled()
+
+
+def test_a_looked_up_track_shows_its_genre_style_and_mood(page):
+    page.evaluate("""() => {
+      renderVerdict({cached: false, verdict: {
+        artist: "Nirvana", title: "Something In The Way",
+        genre: "Rock", style: "Acoustic", mood: "Mélancolique",
+        confidence: 0.92, source: "claude",
+        note: "Berceuse sépulcrale, voix au bord du souffle.",
+        genre_text: "Issu du rock'n'roll des années 1950.",
+        style_text: "Guitare acoustique en avant.",
+        mood_text: "Le registre de la peine et du souvenir.",
+      }});
+    }""")
+    text = page.locator("#lookup-result").text_content()
+
+    assert "Rock" in text and "Acoustic" in text and "Mélancolique" in text
+    assert "92 %" in text
+    assert "Berceuse sépulcrale" in text
+    assert "Écrit dans le fichier" in page.locator("#lookup-msg").text_content()
+
+
+def test_a_known_track_says_that_nothing_was_charged(page):
+    page.evaluate("""() => {
+      renderVerdict({cached: true, verdict: {
+        artist: "Nirvana", title: "Lithium", genre: "Rock", style: "Grunge",
+        mood: "Énergique", confidence: 0.8, source: "manuel", note: "",
+        genre_text: null, style_text: null, mood_text: null,
+      }});
+    }""")
+
+    assert "rien n'a été facturé" in page.locator("#lookup-msg").text_content()
+
+
+def test_a_lookup_without_artist_is_refused_before_any_request(page):
+    page.fill("#lookup-title", "Lithium")
+    page.click("#lookup-btn")
+
+    assert "l'artiste et le titre" in page.locator("#lookup-msg").text_content()

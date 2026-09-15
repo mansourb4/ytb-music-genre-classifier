@@ -77,10 +77,34 @@ class Taxonomy:
             fold(name): text for name, text in (mood_descriptions or {}).items()
         }
         self._style_moods = {fold(name): mood for name, mood in (style_moods or {}).items()}
+
+        # Les tables ci-dessus sont indexées sur des libellés repliés, ce qui
+        # perd la casse. Or ces vocabulaires sont aussi transmis tels quels à
+        # un modèle, à qui l'on demande de répondre « à l'identique » : on
+        # conserve donc les libellés d'origine, dans leur ordre d'origine.
+        self._genre_order = list(genre_priority)
+        self._mood_names = list(mood_descriptions or {})
+        self._style_names = sorted(
+            {*(style_moods or {}), *(style_descriptions or {})},
+            key=str.casefold,
+        )
         self._tag_moods = {fold(name): mood for name, mood in (tag_moods or {}).items()}
         self._mood_styles: dict[str, list[str]] = {}
         for name, mood in (style_moods or {}).items():
             self._mood_styles.setdefault(mood, []).append(name)
+
+    def genres(self) -> list[str]:
+        """Genres proposés, sous leur libellé affiché, par ordre de priorité."""
+        return [self.display_genre(genre) for genre in self._genre_order]
+
+    def moods(self) -> list[str]:
+        """Les ambiances, dans l'ordre où elles sont définies."""
+        return list(self._mood_names)
+
+    def known_styles(self) -> list[str]:
+        """Styles déjà connus du projet : ceux qui portent une ambiance ou une
+        définition. Sert de vocabulaire à privilégier, non de liste fermée."""
+        return list(self._style_names)
 
     def describe_genre(self, genre: str) -> str | None:
         """Définition du genre, ou None s'il n'en existe pas encore."""

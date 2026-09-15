@@ -9,6 +9,8 @@ Le pipeline est découpé en étapes reprenables, chacune persistée en base :
     ytmgc status     # état d'avancement
     ytmgc review     # titres appariés avec un score incertain
     ytmgc tags       # tags Last.fm d'un titre, et ce qu'ils produisent
+    ytmgc enrich     # fait juger la bibliothèque par le modèle (par lots)
+    ytmgc lookup     # genre, style et ambiance d'un titre, tout de suite
     ytmgc purge      # supprime les playlists générées (annulation complète)
     ytmgc web        # interface locale : connexion, aperçu, application
 
@@ -31,6 +33,7 @@ from ytmgc.sorting import DEFAULT_SORT_MODE, SORT_MODES, apply_sort_mode
 from ytmgc.sync import apply as apply_actions
 from ytmgc.sync import diff, managed_by_key, purge
 from ytmgc.taxonomy import load_taxonomy
+from ytmgc import verdicts
 
 
 def _repository(config: Config) -> Repository:
@@ -84,7 +87,8 @@ def cmd_classify(args: argparse.Namespace, config: Config) -> int:
         tag_source = LastfmClient(config.lastfm)
 
     stats = classify_tracks(
-        tracks, repository, client, config, progress=progress, tag_source=tag_source
+        tracks, repository, client, config, progress=progress, tag_source=tag_source,
+        verdicts=verdicts.load(config.claude.verdicts_file) if config.claude.enabled else None,
     )
     print(stats.line())
     return 0
@@ -192,6 +196,153 @@ def cmd_tags(args: argparse.Namespace, config: Config) -> int:
         print(f"Ambiances pesées : {detail}  (seuil {config.lastfm.min_mood_weight})")
     print("Ambiance       :", mood or "aucune (repli sur le style de l'album)")
     return 0
+
+
+def _judge(config: Config):
+    """Client du modèle. Import tardif : la dépendance est facultative."""
+    from ytmgc.sources.claude import ClaudeClient
+
+    return ClaudeClient(config.claude, load_taxonomy())
+
+
+def _confirm(question: str) -> bool:
+    """Demande confirmation avant de dépenser. Un non par défaut."""
+    try:
+        answer = input(f"{question} [o/N] ").strip().lower()
+    except EOFError:
+        return False
+    return answer in {"o", "oui", "y", "yes"}
+
+
+def cmd_enrich(args: argparse.Namespace, config: Config) -> int:
+    """Fait juger les titres par le modèle, par lots, et garde les verdicts.
+
+    C'est la seule commande de l'outil qui coûte de l'argent : elle annonce le
+    montant avant de l'engager, ne redemande jamais un titre déjà jugé, et
+    écrit son résultat dans un fichier texte qui lui survit.
+    """
+    from ytmgc.enrich import (
+        apply_verdicts, collect, load_pending, pending_subjects, submit, wait,
+    )
+    from ytmgc.sources.claude import estimate
+
+    repository = _repository(config)
+    book = verdicts.load(config.claude.verdicts_file)
+
+    # Le client n'est construit qu'au moment d'appeler : `--dry-run` doit
+    # pouvoir annoncer un coût sans même exiger de clé d'API.
+    client: list = []
+
+    def judge():
+        if not client:
+            client.append(_judge(config))
+        return client[0]
+
+    pending = load_pending(config.claude.pending_file)
+    if pending is None and args.resume:
+        print("Aucun lot en attente : lance `ytmgc enrich` sans --resume.")
+        return 0
+
+    if pending is None:
+        subjects = pending_subjects(
+            repository, book, limit=args.limit, only_unsorted=args.only_unsorted
+        )
+        if not subjects:
+            if not repository.all_tracks():
+                print("Bibliothèque vide : lance d'abord `ytmgc scan`.")
+            else:
+                print(
+                    f"Rien à juger : les {len(book)} titre(s) connus ont déjà un verdict.\n"
+                    f"Supprime une ligne de {config.claude.verdicts_file} pour en redemander un."
+                )
+            return 0
+
+        approximate = estimate(len(subjects), config.claude)
+        print(approximate.line())
+        if args.dry_run:
+            print("\nRien n'a été envoyé (--dry-run).")
+            return 0
+        if not args.yes and not _confirm("Lancer la passe ?"):
+            print("Abandon : rien n'a été envoyé.")
+            return 0
+
+        pending = submit(judge(), subjects, config)
+        print(f"Lot {pending.batch_id} déposé ({pending.subjects} titre(s)).")
+        print(f"Son identifiant est noté dans {config.claude.pending_file} :")
+        print("tu peux interrompre et reprendre plus tard avec `ytmgc enrich --resume`.")
+    else:
+        print(f"Lot {pending.batch_id} en attente ({pending.subjects} titre(s)), déposé le "
+              f"{pending.created_at or 'récemment'}.")
+
+    if args.no_wait:
+        print("Lot laissé en cours (--no-wait). Reprends avec `ytmgc enrich --resume`.")
+        return 0
+
+    def show(state: str, counts: dict[str, int]) -> None:
+        done = counts.get("succeeded", 0) + counts.get("errored", 0)
+        print(f"  {state} — {done}/{len(pending.chunks)} requête(s) traitée(s)")
+
+    state = wait(judge(), pending, on_status=show)
+    if state != "ended":
+        print("Le lot n'est pas terminé. Reprends avec `ytmgc enrich --resume`.")
+        return 0
+
+    book, stats = collect(judge(), pending, config)
+    stats.applied = apply_verdicts(repository, book, load_taxonomy(), config)
+    print(stats.line())
+    for problem in stats.problems:
+        print(f"  échec : {problem}")
+    print(f"{len(book)} verdict(s) au total dans {config.claude.verdicts_file}.")
+    return 0
+
+
+def cmd_lookup(args: argparse.Namespace, config: Config) -> int:
+    """Genre, style et ambiance d'un titre, tout de suite.
+
+    Pour les titres ajoutés après la passe complète : une réponse immédiate à
+    quelques centimes, écrite dans le fichier de verdicts comme les autres, de
+    sorte que la prochaine analyse la reprenne sans rien redemander.
+    """
+    from ytmgc.sources.claude import Subject
+
+    book = verdicts.load(config.claude.verdicts_file)
+    key = verdicts.entry_key(args.artiste, args.titre)
+
+    known = book.get(key)
+    if known is not None and not args.force:
+        _show_verdict(known, config, already=True)
+        return 0
+
+    subject = Subject(artist=args.artiste, title=args.titre, album=args.album)
+    found = _judge(config).lookup([subject])
+    if not found:
+        print("Le modèle n'a rien rendu d'exploitable pour ce titre.")
+        return 1
+
+    verdict = found[0]
+    book.add(verdict)
+    verdicts.save(book, config.claude.verdicts_file)
+    _show_verdict(verdict, config, already=False)
+    return 0
+
+
+def _show_verdict(verdict, config: Config, *, already: bool) -> None:
+    taxonomy = load_taxonomy()
+    style = taxonomy.canonical_style(verdict.style) or verdict.style
+    print(f"{verdict.artist} – {verdict.title}")
+    print()
+    print(f"  Genre     : {verdict.genre}")
+    print(f"  Style     : {style}")
+    print(f"  Ambiance  : {verdict.mood}")
+    print(f"  Confiance : {verdict.confidence:.2f}  ({verdict.source})")
+    if verdict.note:
+        print(f"  Note      : {verdict.note}")
+    print()
+    if already:
+        print(f"Verdict déjà connu, relu depuis {config.claude.verdicts_file} — rien n'a été "
+              "facturé. Ajoute --force pour le redemander.")
+    else:
+        print(f"Écrit dans {config.claude.verdicts_file} : la prochaine analyse le reprendra.")
 
 
 def cmd_purge(args: argparse.Namespace, config: Config) -> int:
@@ -326,6 +477,37 @@ def build_parser() -> argparse.ArgumentParser:
     tags_cmd.add_argument("artiste")
     tags_cmd.add_argument("titre")
     tags_cmd.set_defaults(func=cmd_tags)
+
+    enrich_cmd = subparsers.add_parser(
+        "enrich", help="Faire juger la bibliothèque par le modèle (par lots, moitié prix)"
+    )
+    enrich_cmd.add_argument("--limit", type=int, default=0, help="Limiter le nombre de titres jugés")
+    enrich_cmd.add_argument(
+        "--only-unsorted", action="store_true",
+        help="Ne juger que les titres que Discogs n'a pas su classer",
+    )
+    enrich_cmd.add_argument(
+        "--dry-run", action="store_true", help="Annoncer le coût sans rien envoyer"
+    )
+    enrich_cmd.add_argument("--yes", action="store_true", help="Ne pas demander confirmation")
+    enrich_cmd.add_argument(
+        "--no-wait", action="store_true", help="Déposer le lot et rendre la main"
+    )
+    enrich_cmd.add_argument(
+        "--resume", action="store_true", help="Reprendre un lot déjà déposé"
+    )
+    enrich_cmd.set_defaults(func=cmd_enrich)
+
+    lookup_cmd = subparsers.add_parser(
+        "lookup", help="Genre, style et ambiance d'un titre, tout de suite"
+    )
+    lookup_cmd.add_argument("artiste")
+    lookup_cmd.add_argument("titre")
+    lookup_cmd.add_argument("--album", default=None, help="Lève les homonymies")
+    lookup_cmd.add_argument(
+        "--force", action="store_true", help="Redemander même si un verdict existe"
+    )
+    lookup_cmd.set_defaults(func=cmd_lookup)
 
     purge_cmd = subparsers.add_parser("purge", help="Supprimer les playlists générées par l'outil")
     purge_cmd.add_argument("--execute", action="store_true", help="Supprimer réellement (sinon : à blanc)")

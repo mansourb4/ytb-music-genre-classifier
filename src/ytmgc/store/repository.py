@@ -200,9 +200,10 @@ class Repository:
         self._db.execute(
             """
             INSERT INTO classifications(
-                video_id, status, discogs_id, score, genres, styles, year, tags, mood
+                video_id, status, discogs_id, score, genres, styles, year, tags, mood,
+                judged
             )
-            VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)
+            VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             ON CONFLICT(video_id) DO UPDATE SET
                 status = excluded.status,
                 discogs_id = excluded.discogs_id,
@@ -212,6 +213,7 @@ class Repository:
                 year = excluded.year,
                 tags = excluded.tags,
                 mood = excluded.mood,
+                judged = excluded.judged,
                 classified_at = datetime('now')
             """,
             (
@@ -224,6 +226,7 @@ class Repository:
                 classification.year,
                 _join(classification.tags),
                 classification.mood,
+                int(classification.judged),
             ),
         )
         self._db.commit()
@@ -248,6 +251,7 @@ class Repository:
                 year=row["year"],
                 tags=_split(row["tags"]),
                 mood=row["mood"],
+                judged=bool(row["judged"]),
             )
             for row in cursor
         ]

@@ -5,6 +5,7 @@ from __future__ import annotations
 from typing import Iterable
 
 from ytmgc.models import ReleaseCandidate, RemotePlaylist, Track
+from ytmgc.verdicts import Verdict
 
 
 class FakePlaylistClient:
@@ -90,3 +91,45 @@ class FakeDiscogs:
     def search(self, track: Track, *, limit: int = 10) -> list[ReleaseCandidate]:
         self.searches.append(track.label())
         return self._by_artist.get(track.artist.lower(), [])[:limit]
+
+
+class FakeJudge:
+    """Double du client Claude : rend un verdict décidé à l'avance.
+
+    `answers` est indexé par titre ; un titre absent n'obtient rien, ce qui
+    reproduit le cas réel d'une requête partiellement exploitable.
+    """
+
+    def __init__(
+        self,
+        answers: dict[str, Verdict] | None = None,
+        *,
+        states: list[str] | None = None,
+        problems: list[str] | None = None,
+    ) -> None:
+        self.answers = answers or {}
+        self.states = states or ["ended"]
+        self.problems = problems or []
+        self.submitted: list[list[list]] = []
+        self.polls = 0
+
+    def submit(self, chunks) -> str:
+        self.submitted.append([list(part) for part in chunks])
+        return f"batch-{len(self.submitted)}"
+
+    def status(self, batch_id: str):
+        self.polls += 1
+        state = self.states[min(self.polls - 1, len(self.states) - 1)]
+        return state, {"succeeded": self.polls, "errored": 0, "processing": 0}
+
+    def collect(self, batch_id: str, chunks):
+        verdicts = [
+            self.answers[subject.title]
+            for part in chunks
+            for subject in part
+            if subject.title in self.answers
+        ]
+        return verdicts, list(self.problems)
+
+    def lookup(self, subjects):
+        return [self.answers[s.title] for s in subjects if s.title in self.answers]

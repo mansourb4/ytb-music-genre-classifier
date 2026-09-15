@@ -64,6 +64,17 @@ réunit, pour que le classement reste vérifiable. Un style non encore décrit r
 sa playlist est simplement créée sans définition — Discogs en ajoute
 régulièrement.
 
+Trois sources alimentent ce classement, de la moins à la plus précise :
+
+| Source | Ce qu'elle décrit | Coût |
+|---|---|---|
+| **Discogs** | La *release*. Tous les titres d'un album en héritent identiquement. | Gratuit |
+| **Last.fm** | Le *titre*, par les tags de ses auditeurs — où le genre écrase l'humeur. | Gratuit |
+| **Modèle** | La *musique* elle-même, morceau par morceau, avec une justification. | ~6 $ une fois |
+
+Chacune l'emporte sur la précédente quand elle a quelque chose à dire, et la
+dernière est facultative : voir [la section dédiée](#clé-anthropic-facultative-payante--la-précision-réelle).
+
 ## Installation
 
 ```bash
@@ -152,6 +163,57 @@ porte le morceau quand ils nomment un style connu, et déterminer son ambiance.
 Seuls les tags nommant un style connu sont retenus — les tags libres
 (« 00s », « seen live ») sont écartés par construction. Sans clé, l'outil
 fonctionne comme avant, sur les seuls styles de la release.
+
+### Clé Anthropic (facultative, payante — la précision réelle)
+
+Discogs décrit le disque. Last.fm compile des tags posés par des auditeurs, où
+le genre écrase l'humeur : *Something In The Way* y pèse `grunge 100` et
+`sad 1`, alors que c'est une berceuse. Aucune des deux ne connaît la musique ;
+elles en connaissent les étiquettes.
+
+Un modèle, lui, connaît le morceau. La passe `enrich` lui soumet chaque titre
+avec ce que les bases en disent — à titre d'indice, pas de consigne — et en
+obtient un genre, un style et une ambiance **pour le titre lui-même**, avec une
+phrase de justification.
+
+```bash
+pip install -e ".[claude]"
+export ANTHROPIC_API_KEY=...          # jamais lu depuis config.toml
+
+ytmgc enrich --dry-run                # annonce le coût, n'envoie rien
+ytmgc enrich                          # juge par lots, après confirmation
+```
+
+**Ce que ça coûte.** Le traitement par lots est à moitié prix et aboutit en
+général en quelques minutes (24 h au maximum garanti). Pour ~2 500 titres :
+environ **6 $ en une seule fois**. Le montant exact est annoncé avant toute
+dépense, dans le terminal comme dans l'interface, et rien n'est envoyé sans une
+confirmation qui porte ce montant.
+
+**Ce n'est payé qu'une fois.** Chaque verdict est écrit en clair dans
+`data/verdicts.txt`, une ligne par titre :
+
+```
+Nirvana	Something In The Way	Rock	Acoustic	Mélancolique	0.92	claude	Berceuse sépulcrale, voix au bord du souffle.
+```
+
+Ce fichier **fait autorité** : un titre qui y figure n'est plus jamais envoyé à
+l'API, et sa ligne l'emporte sur Discogs comme sur Last.fm. Il survit à la base
+de données, se copie d'une machine à l'autre, se relit et **se corrige à la
+main** — mets alors `manuel` en colonne source, et le modèle ne l'écrasera plus.
+Il n'est pas versionné par défaut (`data/` est dans `.gitignore`) ; libre à toi
+de le sauvegarder où tu veux.
+
+**Pour les titres ajoutés après coup**, pas besoin de relancer une passe :
+
+```bash
+ytmgc lookup "Nirvana" "Something In The Way"
+```
+
+Une réponse immédiate à quelques centimes, écrite dans le même fichier. La
+même recherche existe dans l'interface web, à l'étape 5.
+
+Sans clé, tout le reste fonctionne exactement comme avant.
 
 ### Jeton Discogs
 
@@ -276,8 +338,16 @@ ytmgc apply --execute   # écriture réelle sur YouTube Music
 ytmgc status     # avancement
 ytmgc review     # appariements incertains, à vérifier à la main
 ytmgc tags "Artiste" "Titre"   # tags d'un titre et classement qui en découle
+ytmgc enrich     # fait juger les titres par le modèle (par lots, payant)
+ytmgc lookup "Artiste" "Titre"  # genre, style et ambiance d'un titre, tout de suite
 ytmgc purge --execute   # supprime les playlists générées (annulation complète)
 ```
+
+`enrich` annonce son coût et demande confirmation. `--dry-run` s'arrête à
+l'annonce, `--only-unsorted` se limite aux titres que Discogs n'a pas su
+classer, `--no-wait` rend la main après le dépôt et `--resume` va chercher un
+lot déjà déposé — il vit chez Anthropic, l'ordinateur peut s'éteindre entre les
+deux.
 
 `plan` et `apply` acceptent `--tri` pour choisir un type de tri :
 `ytmgc plan --tri sans-doublon`.
@@ -298,6 +368,10 @@ ytmgc purge --execute   # supprime les playlists générées (annulation complè
 - **Économe en appels.** Le cache Discogs est indexé par (artiste, album) : une
   bibliothèque de 5 000 titres issus de 800 albums coûte ~800 requêtes, et zéro
   au run suivant. C'est ce qui rend supportable la limite de 60 requêtes/minute.
+- **Jamais de dépense implicite.** La seule partie payante de l'outil
+  (`enrich`, `lookup`) annonce son montant avant d'agir, exige une confirmation
+  explicite, n'interroge jamais deux fois le même titre, et ne redépose jamais
+  un lot déjà payé.
 - **Retravaillable hors ligne.** La taxonomie Discogs est stockée brute :
   changer les seuils, les alias de styles ou le gabarit de nommage se rejoue
   avec `plan` et `apply`, sans un seul appel réseau supplémentaire.
@@ -309,6 +383,7 @@ ytmgc purge --execute   # supprime les playlists générées (annulation complè
 - Une playlist est plafonnée à **5 000 titres**.
 - Discogs décrit des **releases**, pas des pistes : un morceau hérite du style de
   son album. Les compilations multi-styles sont donc classées approximativement.
+  C'est la limite que `ytmgc enrich` lève, au prix d'une passe payante.
 - Les titres mis en ligne par l'utilisateur (*uploads*) sont rarement présents
   dans Discogs et finissent le plus souvent en `unmatched`.
 
@@ -329,7 +404,7 @@ sans aucune écriture ni appel réseau.
 ## Développement
 
 ```bash
-python -m pytest        # 328 tests, aucun appel réseau
+python -m pytest        # 409 tests, aucun appel réseau
 ```
 
 Les API externes sont derrière des adaptateurs (`src/ytmgc/sources/`) ; toute la
