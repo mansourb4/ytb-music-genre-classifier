@@ -115,3 +115,50 @@ def test_rate_limiting_is_retried():
 def test_server_errors_are_retried_then_reported():
     with pytest.raises(LastfmError, match="3 tentatives"):
         client(Session([Response(500)] * 3)).top_tags(make_track("v1", "T", "A"))
+
+
+# ------------------------------------------------- commande de diagnostic
+
+
+def run_tags_command(monkeypatch, capsys, tags, tmp_path):
+    from ytmgc import cli
+    from ytmgc.sources import lastfm
+
+    class Fake:
+        def __init__(self, *_args, **_kwargs):
+            pass
+
+        def top_tags(self, _track):
+            return tags
+
+    monkeypatch.setattr(lastfm, "LastfmClient", Fake)
+    config = tmp_path / "config.toml"
+    config.write_text("", encoding="utf-8")
+    monkeypatch.setenv("LASTFM_API_KEY", "k")
+    code = cli.main(["-c", str(config), "tags", "Sex Pistols", "La ballade"])
+    return code, capsys.readouterr().out
+
+
+def test_the_command_explains_what_the_tags_produce(monkeypatch, capsys, tmp_path):
+    code, out = run_tags_command(
+        monkeypatch, capsys, [("ballad", 90), ("acoustic", 70), ("seen live", 100)], tmp_path
+    )
+
+    assert code == 0
+    assert "ballad" in out and "90" in out
+    assert "Ballad" in out                      # le style qu'il désigne
+    assert "Mélancolique" in out                # l'ambiance qui en découle
+    assert "seen live" in out                   # listé, mais sans effet
+
+
+def test_a_weakly_posed_tag_is_shown_as_discarded(monkeypatch, capsys, tmp_path):
+    _, out = run_tags_command(monkeypatch, capsys, [("ballad", 2)], tmp_path)
+    assert "écarté" in out
+    assert "les styles de l'album feront foi" in out
+
+
+def test_an_unknown_track_says_so_plainly(monkeypatch, capsys, tmp_path):
+    code, out = run_tags_command(monkeypatch, capsys, [], tmp_path)
+    assert code == 0
+    assert "Aucun tag" in out
+    assert "inconnu de Last.fm" in out

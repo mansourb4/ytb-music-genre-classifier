@@ -8,6 +8,7 @@ Le pipeline est découpé en étapes reprenables, chacune persistée en base :
     ytmgc apply      # diff et écriture sur YouTube Music
     ytmgc status     # état d'avancement
     ytmgc review     # titres appariés avec un score incertain
+    ytmgc tags       # tags Last.fm d'un titre, et ce qu'ils produisent
     ytmgc purge      # supprime les playlists générées (annulation complète)
     ytmgc web        # interface locale : connexion, aperçu, application
 
@@ -23,7 +24,7 @@ from pathlib import Path
 from ytmgc import __version__
 from ytmgc.classifier import classify_tracks
 from ytmgc.config import DEFAULT_CONFIG_PATH, Config, load_config
-from ytmgc.models import MatchStatus
+from ytmgc.models import MatchStatus, Track
 from ytmgc.planner import plan_playlists
 from ytmgc.store import Repository, connect
 from ytmgc.sorting import DEFAULT_SORT_MODE, SORT_MODES, apply_sort_mode
@@ -135,6 +136,50 @@ def cmd_apply(args: argparse.Namespace, config: Config) -> int:
         print(f"\n{len(actions)} action(s) simulée(s). Relance avec --execute pour écrire.")
     else:
         print(f"\n{len(actions)} action(s) appliquée(s).")
+    return 0
+
+
+def cmd_tags(args: argparse.Namespace, config: Config) -> int:
+    """Montre les tags d'un titre et le classement qu'ils produisent.
+
+    Sert à deux choses : vérifier qu'une clé Last.fm fonctionne avant de lancer
+    une analyse complète, et comprendre après coup pourquoi un titre a atterri
+    dans telle playlist plutôt que telle autre.
+    """
+    from ytmgc.sources.lastfm import LastfmClient
+    from ytmgc.taxonomy import load_taxonomy
+
+    track = Track(video_id="", title=args.titre, artists=(args.artiste,))
+    tags = LastfmClient(config.lastfm).top_tags(track)
+
+    if not tags:
+        print(f"Aucun tag pour « {track.label()} ».")
+        print("Le titre est inconnu de Last.fm, ou son libellé diffère trop.")
+        print("Son classement s'appuiera sur les seuls styles de son album.")
+        return 0
+
+    taxonomy = load_taxonomy()
+    print(f"Tags de « {track.label()} » :\n")
+    for name, weight in tags:
+        style = taxonomy.style_from_tag(name)
+        retained = weight >= config.lastfm.min_tag_weight
+        note = ""
+        if style and retained:
+            note = f"  -> style « {style} »"
+        elif style:
+            note = f"  -> style « {style} », écarté (poids < {config.lastfm.min_tag_weight})"
+        print(f"  {weight:>3}  {name}{note}")
+
+    styles = [
+        style
+        for name, weight in tags
+        if weight >= config.lastfm.min_tag_weight and (style := taxonomy.style_from_tag(name))
+    ][: config.lastfm.max_styles_per_track]
+    mood = taxonomy.mood_from_tags(name for name, _ in tags)
+
+    print()
+    print("Style retenu   :", " · ".join(dict.fromkeys(styles)) or "aucun (les styles de l'album feront foi)")
+    print("Ambiance       :", mood or "aucune (repli sur le style de l'album)")
     return 0
 
 
@@ -263,6 +308,13 @@ def build_parser() -> argparse.ArgumentParser:
     apply_cmd.add_argument("--tri", default=DEFAULT_SORT_MODE, choices=[m.key for m in SORT_MODES], help=tri_help)
     apply_cmd.add_argument("--execute", action="store_true", help="Écrire réellement (sinon : à blanc)")
     apply_cmd.set_defaults(func=cmd_apply)
+
+    tags_cmd = subparsers.add_parser(
+        "tags", help="Afficher les tags Last.fm d'un titre et leur effet"
+    )
+    tags_cmd.add_argument("artiste")
+    tags_cmd.add_argument("titre")
+    tags_cmd.set_defaults(func=cmd_tags)
 
     purge_cmd = subparsers.add_parser("purge", help="Supprimer les playlists générées par l'outil")
     purge_cmd.add_argument("--execute", action="store_true", help="Supprimer réellement (sinon : à blanc)")

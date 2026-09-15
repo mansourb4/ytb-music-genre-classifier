@@ -355,7 +355,7 @@ pas une panne, et il ne sert à rien de le redemander.
 
 ## Tests
 
-313 tests, aucun appel réseau, y compris l'API web complète (aperçu,
+316 tests, aucun appel réseau, y compris l'API web complète (aperçu,
 application, annulation), son contrôle d'accès et les quatre voies de connexion.
 
 Vingt-neuf d'entre eux chargent l'interface dans un vrai navigateur (`tests/test_ui.py`).

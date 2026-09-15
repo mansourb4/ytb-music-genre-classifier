@@ -137,6 +137,16 @@ Crée une clé sur <https://www.last.fm/api/account/create>, puis :
 export LASTFM_API_KEY=...
 ```
 
+Vérifie la clé avant de lancer une analyse complète :
+
+```bash
+ytmgc tags "Nirvana" "Something In The Way"
+```
+
+La commande affiche les tags du titre, ceux qui désignent un style, et
+l'ambiance qui en découle. Elle sert aussi après coup, pour comprendre pourquoi
+un titre a atterri dans telle playlist.
+
 Les tags servent à deux choses : remplacer les styles de l'album par ceux que
 porte le morceau quand ils nomment un style connu, et déterminer son ambiance.
 Seuls les tags nommant un style connu sont retenus — les tags libres
@@ -265,6 +275,7 @@ ytmgc apply      # simulation du diff
 ytmgc apply --execute   # écriture réelle sur YouTube Music
 ytmgc status     # avancement
 ytmgc review     # appariements incertains, à vérifier à la main
+ytmgc tags "Artiste" "Titre"   # tags d'un titre et classement qui en découle
 ytmgc purge --execute   # supprime les playlists générées (annulation complète)
 ```
 
@@ -318,7 +329,7 @@ sans aucune écriture ni appel réseau.
 ## Développement
 
 ```bash
-python -m pytest        # 313 tests, aucun appel réseau
+python -m pytest        # 316 tests, aucun appel réseau
 ```
 
 Les API externes sont derrière des adaptateurs (`src/ytmgc/sources/`) ; toute la
