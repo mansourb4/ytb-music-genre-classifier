@@ -185,6 +185,15 @@ ytmgc enrich --essai                  # juge 50 titres (~0,12 $), pour voir
 ytmgc enrich                          # la passe complète, après confirmation
 ```
 
+**Un morceau n'est payé qu'une fois, même publié sous plusieurs formes.**
+YouTube Music présente souvent une même chanson comme titre d'album, comme clip
+(« Nirvana - Smells Like Teen Spirit (Official Music Video) »), depuis la chaîne
+« Nirvana - Topic » ou « NirvanaVEVO ». Toutes ces formes sont reconnues comme un
+seul morceau, jugé une fois ; seul l'artiste principal compte, les invités
+variant d'une publication à l'autre. Les versions qui sonnent autrement — live,
+remix, acoustique — restent distinctes. `ytmgc doublons` montre ce regroupement
+sur ta bibliothèque, sans aucun appel réseau.
+
 **Commence par l'essai.** La qualité d'un classement se constate, elle ne se
 promet pas : `--essai` juge 50 titres pour une poignée de centimes, tu relis
 `data/verdicts.txt`, et tu engages la suite en connaissance de cause. Ces 50
@@ -352,6 +361,7 @@ ytmgc review     # appariements incertains, à vérifier à la main
 ytmgc tags "Artiste" "Titre"   # tags d'un titre et classement qui en découle
 ytmgc enrich     # fait juger les titres par le modèle (par lots, payant)
 ytmgc lookup "Artiste" "Titre"  # genre, style et ambiance d'un titre, tout de suite
+ytmgc doublons   # morceaux présents sous plusieurs formes (gratuit, hors ligne)
 ytmgc purge --execute   # supprime les playlists générées (annulation complète)
 ```
 
@@ -417,7 +427,7 @@ sans aucune écriture ni appel réseau.
 ## Développement
 
 ```bash
-python -m pytest        # 419 tests, aucun appel réseau
+python -m pytest        # 437 tests, aucun appel réseau
 ```
 
 Les API externes sont derrière des adaptateurs (`src/ytmgc/sources/`) ; toute la

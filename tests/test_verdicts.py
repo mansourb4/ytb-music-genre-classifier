@@ -135,3 +135,61 @@ def test_the_file_is_sorted_so_two_versions_compare(tmp_path):
     body = [line for line in path.read_text(encoding="utf-8").splitlines() if line[:1] != "#"]
 
     assert body[0].startswith("Aphex Twin")
+
+
+def test_a_track_with_guests_finds_its_verdict_again():
+    """Régression : le verdict était rangé sous « Daft Punk, Pharrell Williams »
+    et cherché sous « Daft Punk ». Il n'était jamais appliqué, et le titre
+    repartait — et se repayait — à chaque passe."""
+    from ytmgc.sources.claude import Subject
+
+    track = Track("v1", "Get Lucky", ("Daft Punk", "Pharrell Williams"), "RAM")
+    subject = Subject.of(track)
+    verdict = Verdict(subject.artist, subject.title, "Electronic", "Disco", "Festif", 0.9)
+    book = VerdictBook([verdict])
+
+    assert book.for_track(track) is verdict
+    assert book.missing([track]) == []
+
+
+def test_guests_are_still_shown_to_the_model():
+    from ytmgc.sources.claude import Subject
+
+    subject = Subject.of(Track("v1", "Get Lucky", ("Daft Punk", "Pharrell Williams")))
+    assert subject.artist == "Daft Punk"
+    assert "avec Pharrell Williams" in subject.line(1)
+
+
+def test_a_track_without_artist_finds_its_verdict_again():
+    """L'artiste de repli doit être le même à l'écriture et à la relecture."""
+    from ytmgc.sources.claude import Subject
+
+    track = Track("v1", "Mon enregistrement", ())
+    subject = Subject.of(track)
+    verdict = Verdict(subject.artist, subject.title, "Rock", "Punk", "Énergique", 0.6)
+
+    assert VerdictBook([verdict]).for_track(track) is verdict
+
+
+def test_a_verdict_written_to_disk_still_matches_a_track_with_guests(tmp_path):
+    """Le fichier relu doit donner la même clé que le verdict tout juste reçu."""
+    from ytmgc.sources.claude import Subject
+
+    track = Track("v1", "Get Lucky", ("Daft Punk", "Pharrell Williams"))
+    subject = Subject.of(track)
+    path = tmp_path / "verdicts.txt"
+    verdicts.save(VerdictBook([Verdict(subject.artist, subject.title, "Electronic",
+                                       "Disco", "Festif", 0.9)]), path)
+
+    assert verdicts.load(path).for_track(track) is not None
+
+
+def test_a_music_video_finds_the_verdict_of_its_album_track():
+    album = Track("v1", "Smells Like Teen Spirit", ("Nirvana",), "Nevermind")
+    clip = Track("v2", "Nirvana - Smells Like Teen Spirit (Official Music Video)", ("NirvanaVEVO",))
+    book = VerdictBook([Verdict("Nirvana", "Smells Like Teen Spirit", "Rock", "Grunge",
+                                "Énergique", 0.9)])
+
+    assert book.for_track(album) is not None
+    assert book.for_track(clip) is not None
+    assert book.missing([album, clip]) == []

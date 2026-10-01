@@ -138,3 +138,30 @@ def test_the_rest_is_still_offered_after_a_trial_run(judged, config, capsys):
 
     # Le titre déjà jugé ne repart pas : l'essai n'est pas payé deux fois.
     assert "1 titre(s) à juger" in capsys.readouterr().out
+
+
+def test_doublons_shows_what_is_merged_without_any_request(judged, config, capsys):
+    from ytmgc.store import Repository, connect
+
+    Repository(connect(config.store.path)).upsert_tracks([
+        Track("g3", "Nirvana - Lithium (Official Music Video)", ("NirvanaVEVO",)),
+    ])
+    assert run("doublons") == 0
+
+    out = capsys.readouterr().out
+    assert "3 titres dans la bibliothèque, 2 morceaux distincts" in out
+    assert "Nirvana – Lithium  ×2" in out
+    assert judged.submitted == [] and judged.polls == 0
+
+
+def test_the_estimate_says_how_many_duplicates_were_left_out(judged, config, capsys):
+    from ytmgc.store import Repository, connect
+
+    Repository(connect(config.store.path)).upsert_tracks([
+        Track("g3", "Lithium", ("Nirvana - Topic",), "Nevermind"),
+    ])
+    assert run("enrich", "--dry-run") == 0
+
+    out = capsys.readouterr().out
+    assert "dont 1 doublon(s) jugé(s) une seule fois" in out
+    assert "2 titre(s) à juger" in out

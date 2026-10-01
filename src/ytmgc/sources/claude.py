@@ -32,7 +32,7 @@ from typing import Any, Iterable, Sequence
 from ytmgc.config import ClaudeConfig
 from ytmgc.models import Classification, Track
 from ytmgc.taxonomy import Taxonomy
-from ytmgc.verdicts import MODEL, Verdict
+from ytmgc.verdicts import MODEL, Verdict, main_artist
 
 #: Tarifs indicatifs en dollars par million de jetons, pour annoncer un coût
 #: avant de le dépenser. L'API Batches applique moitié prix.
@@ -63,6 +63,8 @@ class Subject:
     parce que c'est précisément leur imprécision qui motive cette passe.
     """
 
+    #: Artiste principal seul : c'est sous lui que le verdict sera rangé, et
+    #: retrouvé. Les invités sont transmis à part, pour information.
     artist: str
     title: str
     album: str | None = None
@@ -70,11 +72,13 @@ class Subject:
     genres: tuple[str, ...] = ()
     styles: tuple[str, ...] = ()
     tags: tuple[str, ...] = ()
+    featuring: tuple[str, ...] = ()
 
     @classmethod
     def of(cls, track: Track, classification: Classification | None = None) -> "Subject":
         return cls(
-            artist=", ".join(track.artists) or "Artiste inconnu",
+            artist=main_artist(track),
+            featuring=tuple(track.artists[1:]),
             title=track.title,
             album=track.album,
             year=classification.year if classification else None,
@@ -96,6 +100,7 @@ class Subject:
             genres=tuple(data.get("genres") or ()),
             styles=tuple(data.get("styles") or ()),
             tags=tuple(data.get("tags") or ()),
+            featuring=tuple(data.get("featuring") or ()),
         )
 
     def line(self, index: int) -> str:
@@ -110,7 +115,8 @@ class Subject:
         if self.tags:
             facts.append("Last.fm : " + ", ".join(self.tags[:8]))
         suffix = f" — {' ; '.join(facts)}" if facts else ""
-        return f"{index}. {self.artist} – {self.title}{suffix}"
+        guests = f" (avec {', '.join(self.featuring)})" if self.featuring else ""
+        return f"{index}. {self.artist}{guests} – {self.title}{suffix}"
 
 
 SYSTEM = """\

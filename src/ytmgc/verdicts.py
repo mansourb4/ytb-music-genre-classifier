@@ -21,7 +21,7 @@ from __future__ import annotations
 from dataclasses import dataclass, replace
 from pathlib import Path
 
-from ytmgc.matching.normalize import normalize_artist, normalize_title
+from ytmgc.matching.normalize import normalize_artist, normalize_title, song_key
 from ytmgc.models import Track
 
 #: Colonnes du fichier, dans l'ordre. L'en-tête est réécrit à chaque
@@ -47,19 +47,33 @@ HEADER = f"""\
 MANUAL = "manuel"
 MODEL = "claude"
 
+#: Artiste d'un titre qui n'en porte aucun. Il doit être le même à l'écriture
+#: et à la relecture, sans quoi le verdict ne retrouverait jamais son titre.
+UNKNOWN_ARTIST = "Artiste inconnu"
+
 
 def entry_key(artist: str, title: str) -> str:
-    """Clé d'un titre : artiste et titre normalisés, jamais l'album.
+    """Clé d'un morceau : son artiste principal et son titre, jamais l'album.
 
-    La même normalisation que pour Last.fm, et pour la même raison : le fichier
-    doit rester valable après un changement de compte, un réencodage ou une
-    pochette différente. Deux éditions d'un même morceau partagent leur verdict.
+    Le fichier doit rester valable après un changement de compte ou une
+    pochette différente, et un même morceau publié sous plusieurs formes —
+    titre d'album, clip, chaîne « Topic » — ne doit être jugé qu'une fois.
     """
-    return f"{normalize_artist(artist)}::{normalize_title(title)}"
+    return song_key(artist, title)
+
+
+def main_artist(track: Track) -> str:
+    """L'artiste sous lequel un titre est jugé et retrouvé.
+
+    Un seul, le premier : les invités varient d'une publication à l'autre
+    (« Get Lucky » avec ou sans Pharrell), et une clé qui en dépendrait
+    ferait juger — et payer — deux fois le même morceau.
+    """
+    return track.artist or UNKNOWN_ARTIST
 
 
 def track_key(track: Track) -> str:
-    return entry_key(track.artist, track.title)
+    return entry_key(main_artist(track), track.title)
 
 
 @dataclass(frozen=True, slots=True)

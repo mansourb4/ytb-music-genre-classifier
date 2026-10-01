@@ -55,3 +55,68 @@ def test_split_discogs_title_splits_on_first_separator_only():
 def test_slugify_is_stable_and_never_empty():
     assert slugify("Drum & Bass") == "drum-and-bass"
     assert slugify("!!!") == "inconnu"
+
+
+# ------------------------------------------------------- identité d'un morceau
+
+from ytmgc.matching.normalize import song_key  # noqa: E402
+
+#: Un même morceau tel que YouTube Music le présente réellement.
+TEEN_SPIRIT = [
+    ("Nirvana", "Smells Like Teen Spirit"),
+    ("Nirvana", "Smells Like Teen Spirit (Official Music Video)"),
+    ("Nirvana", "Smells Like Teen Spirit (Official HD Video)"),
+    ("Nirvana", "Smells Like Teen Spirit [Official Video]"),
+    ("Nirvana", "Smells Like Teen Spirit (Official Audio)"),
+    ("Nirvana", "Smells Like Teen Spirit (Clip officiel)"),
+    ("Nirvana", "Smells Like Teen Spirit (Visualizer)"),
+    ("Nirvana", "Smells Like Teen Spirit (Single Version)"),
+    ("Nirvana", "Smells Like Teen Spirit - Remastered Version"),
+    ("Nirvana", "Smells Like Teen Spirit - 2011 Remaster"),
+    ("NirvanaVEVO", "Smells Like Teen Spirit"),
+    ("Nirvana - Topic", "Smells Like Teen Spirit"),
+    ("Nirvana", "Nirvana - Smells Like Teen Spirit"),
+    ("NirvanaVEVO", "Nirvana - Smells Like Teen Spirit (Official Music Video) [HD]"),
+]
+
+
+def test_every_publication_of_a_song_shares_one_key():
+    """Régression : huit de ces variantes passaient pour des morceaux
+    différents, et auraient été jugées — et payées — chacune à part."""
+    assert {song_key(artist, title) for artist, title in TEEN_SPIRIT} == {
+        "nirvana::smells like teen spirit"
+    }
+
+
+def test_versions_that_sound_different_keep_their_own_key():
+    """Un live, un remix, une version acoustique peuvent ne pas avoir
+    l'ambiance de l'original : ce sont d'autres morceaux pour l'outil."""
+    original = song_key("Nirvana", "Smells Like Teen Spirit")
+    for title in (
+        "Smells Like Teen Spirit (Live at Reading)",
+        "Smells Like Teen Spirit (Butch Vig Mix)",
+        "Smells Like Teen Spirit (Acoustic Version)",
+        "Smells Like Teen Spirit - Live",
+    ):
+        assert song_key("Nirvana", title) != original, title
+
+
+def test_a_title_prefix_is_dropped_only_when_it_names_the_artist():
+    """« Song 2 - Live » ne commence pas par l'artiste : rien à retirer."""
+    assert song_key("Blur", "Song 2 - Live") == "blur::song 2 live"
+    assert song_key("Blur", "Blur - Song 2") == "blur::song 2"
+
+
+def test_a_song_named_like_a_noise_word_survives():
+    """« Stereo » est un titre de Muse, pas une mention de mixage."""
+    assert song_key("Muse", "Stereo") == "muse::stereo"
+    assert strip_noise("Mono") == "Mono"
+
+
+def test_a_noise_word_inside_a_real_word_is_left_alone():
+    assert strip_noise("Shadow (Monologue)") == "Shadow (Monologue)"
+
+
+def test_youtube_channel_suffixes_are_not_part_of_the_artist():
+    assert normalize_artist("NirvanaVEVO") == "nirvana"
+    assert normalize_artist("Nirvana - Topic") == "nirvana"

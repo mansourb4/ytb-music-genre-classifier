@@ -53,6 +53,7 @@ et relancés sans perte, et `plan`/`apply` se rejouent hors ligne.
 | `sorting.py` | Types de tri prédéfinis — dont l'axe de rangement — partagés par le CLI et l'interface web. |
 | `sources/claude.py` | Jugement d'un titre par un modèle : préambule, schéma de sortie, dépôt et relecture d'un lot, estimation du coût. |
 | `verdicts.py` | Le fichier texte des verdicts : format, lecture tolérante, écriture atomique, préséance de la décision humaine. |
+| `duplicates.py` | Ce que l'outil tient pour un même morceau : doublons fusionnés, versions proches gardées à part. Diagnostic, sans réseau. |
 | `enrich.py` | La passe modèle de bout en bout : ce qui reste à juger, dépôt, attente, récupération, report en base. |
 | `preview.py` | Assemble plan, état distant et titres en un aperçu sérialisable — pochettes et taxonomie comprises. Ni HTTP ni terminal. |
 | `web/` | Application FastAPI et son interface (page unique, sans build), contrôle d'accès et construction des liens. |
@@ -393,6 +394,19 @@ partagent leur verdict. Ce fichier fait autorité : il est consulté avant tout
 appel, et sa ligne l'emporte sur Discogs comme sur Last.fm au moment de
 classer. Une base effacée ne coûte donc rien à reconstituer.
 
+Cette clé a dû être reprise après coup, sur deux défauts qu'aucun test ne
+couvrait. Un titre à plusieurs artistes partait vers le modèle sous « Daft Punk,
+Pharrell Williams » et était cherché sous « Daft Punk » : son verdict n'était
+jamais appliqué, et le titre repartait — et se repayait — à chaque passe. Et un
+même morceau publié comme clip, sur une chaîne « Topic » ou « VEVO », ou avec
+« (Official HD Video) », passait pour autant de morceaux distincts. `song_key`
+règle les deux : artiste principal seul, suffixes de chaîne retirés, préfixe
+« Artiste - » ôté du titre quand il nomme bien l'artiste, et bruit éditorial
+retiré jusqu'à ses reliquats (« official », « version »). Un segment qui dit
+quelque chose de la musique — live, remix, acoustique — arrête le nettoyage :
+ces versions-là n'ont pas forcément l'ambiance de l'originale. `ytmgc doublons`
+expose ce regroupement, pour qu'une variante qui lui échapperait se signale.
+
 **Annoncer avant de dépenser.** `estimate` chiffre la passe — requêtes, jetons,
 dollars — à partir du format réel du prompt, volontairement pessimiste du côté
 sortie puisque la réflexion du modèle s'y facture. Le montant est affiché dans
@@ -464,7 +478,7 @@ pas une panne, et il ne sert à rien de le redemander.
 
 ## Tests
 
-419 tests, aucun appel réseau, y compris l'API web complète (aperçu,
+437 tests, aucun appel réseau, y compris l'API web complète (aperçu,
 application, annulation), son contrôle d'accès et les quatre voies de connexion.
 
 Quarante-cinq d’entre eux chargent l’interface dans un vrai navigateur (`tests/test_ui.py`).

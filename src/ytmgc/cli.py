@@ -12,6 +12,7 @@ Le pipeline est découpé en étapes reprenables, chacune persistée en base :
     ytmgc enrich --essai   # fait juger quelques titres, pour voir
     ytmgc enrich     # fait juger la bibliothèque par le modèle (par lots)
     ytmgc lookup     # genre, style et ambiance d'un titre, tout de suite
+    ytmgc doublons   # morceaux présents sous plusieurs formes (gratuit)
     ytmgc purge      # supprime les playlists générées (annulation complète)
     ytmgc web        # interface locale : connexion, aperçu, application
 
@@ -262,6 +263,13 @@ def cmd_enrich(args: argparse.Namespace, config: Config) -> int:
             return 0
 
         approximate = estimate(len(subjects), config.claude)
+        if not limit:
+            from ytmgc.duplicates import find_duplicates
+
+            report = find_duplicates(repository.all_tracks())
+            if report.merged:
+                print(f"{report.tracks} titres dans la bibliothèque, dont {report.merged} "
+                      "doublon(s) jugé(s) une seule fois (détail : `ytmgc doublons`).")
         print(approximate.line())
         if args.essai:
             print(
@@ -357,6 +365,47 @@ def _show_verdict(verdict, config: Config, *, already: bool) -> None:
               "facturé. Ajoute --force pour le redemander.")
     else:
         print(f"Écrit dans {config.claude.verdicts_file} : la prochaine analyse le reprendra.")
+
+
+def cmd_doublons(args: argparse.Namespace, config: Config) -> int:
+    """Montre comment la bibliothèque est dédoublonnée. Aucun appel réseau.
+
+    C'est ce regroupement qui fixe le nombre de morceaux à juger : le voir
+    permet de vérifier qu'on ne paiera pas deux fois la même chanson, et de
+    signaler une variante que la normalisation laisserait passer.
+    """
+    from ytmgc.duplicates import find_duplicates
+
+    report = find_duplicates(_repository(config).all_tracks())
+    if not report.tracks:
+        print("Bibliothèque vide : lance d'abord `ytmgc scan`.")
+        return 0
+
+    print(f"{report.tracks} titres dans la bibliothèque, {report.distinct} morceaux distincts.")
+    print(f"{report.merged} doublon(s) fusionné(s) : ils ne seront ni jugés ni payés deux fois.")
+
+    shown = report.groups if args.tout else report.groups[: args.limit]
+    if shown:
+        print("\nDoublons fusionnés (même morceau, plusieurs publications) :")
+        for group in shown:
+            first = group.tracks[0]
+            print(f"\n  {first.artist} – {first.title}  ×{len(group.tracks)}")
+            for track in group.tracks:
+                origin = track.album or "sans album (clip ?)"
+                print(f"      · {track.title}   [{', '.join(track.artists)} · {origin}]")
+        if len(report.groups) > len(shown):
+            print(f"\n  … et {len(report.groups) - len(shown)} autre(s) groupe(s) (--tout pour tout voir).")
+
+    versions = report.versions if args.tout else report.versions[: args.limit]
+    if versions:
+        print("\nVersions proches gardées séparées (live, acoustique, remix…) :")
+        for original, variant in versions:
+            print(f"  {original.artist} – {original.title}   ≠   {variant.title}")
+        if len(report.versions) > len(versions):
+            print(f"  … et {len(report.versions) - len(versions)} autre(s) (--tout pour tout voir).")
+        print("\nSi l'une d'elles est en réalité le même morceau, signale-la : la règle "
+              "se corrige, pas la ligne.")
+    return 0
 
 
 def cmd_purge(args: argparse.Namespace, config: Config) -> int:
@@ -527,6 +576,13 @@ def build_parser() -> argparse.ArgumentParser:
         "--force", action="store_true", help="Redemander même si un verdict existe"
     )
     lookup_cmd.set_defaults(func=cmd_lookup)
+
+    doublons_cmd = subparsers.add_parser(
+        "doublons", help="Morceaux présents sous plusieurs formes (aucun appel réseau)"
+    )
+    doublons_cmd.add_argument("--limit", type=int, default=20, help="Groupes affichés")
+    doublons_cmd.add_argument("--tout", action="store_true", help="Tout afficher")
+    doublons_cmd.set_defaults(func=cmd_doublons)
 
     purge_cmd = subparsers.add_parser("purge", help="Supprimer les playlists générées par l'outil")
     purge_cmd.add_argument("--execute", action="store_true", help="Supprimer réellement (sinon : à blanc)")
