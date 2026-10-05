@@ -1,0 +1,316 @@
+# Plan de playlists — tri « Par famille ».
+#
+# Chaque morceau va dans la PREMIÈRE playlist dont une règle lui correspond,
+# en lisant ce fichier de haut en bas. D'où l'ordre :
+#   1. d'abord les playlists transversales (Brésil, R&B, BO…), qui réunissent
+#      un style quel que soit le genre que Claude lui a donné ;
+#   2. puis chaque famille, de la règle la plus étroite à la plus large.
+#
+# Une règle combine jusqu'à trois critères ; un critère absent accepte tout :
+#   genres    = genres du verdict (liste fermée : Electronic, Hip Hop, Jazz,
+#               Funk & Soul, Classical, Pop, Latin, Rock, Folk & World,
+#               BO & Scène, Blues, Reggae, Hors-musique, Jeunesse…)
+#   styles    = styles du verdict (texte libre, tel qu'écrit dans verdicts.txt)
+#   ambiances = Calme, Énergique, Festif, Groovy, Mélancolique, Planant,
+#               Sombre, Cérébral
+# Plusieurs blocs portant le même nom alimentent la même playlist.
+#
+# Un morceau qu'aucune règle n'accepte n'est versé nulle part : l'aperçu le
+# liste avec son genre, son style et son ambiance, pour qu'on ajoute la règle.
+#
+# Renommer une playlist ici en crée une nouvelle à l'application : l'ancienne
+# est vidée. Changer une règle, en revanche, se voit tout de suite à l'aperçu.
+
+# Taille visée : l'aperçu signale les playlists hors de cette plage.
+[taille]
+min = 30
+max = 150
+
+
+# ============================================================ transversales
+
+[[playlist]]
+nom = "BO · Films & jeux vidéo"
+description = "Musiques de film, de série et de jeu vidéo, illustrations sonores."
+genres = ["BO & Scène"]
+
+[[playlist]]
+nom = "BO · Films & jeux vidéo"
+styles = ["Video Game Music", "Soundtrack", "Score", "Library Music", "Theme"]
+
+[[playlist]]
+nom = "Monde · Brésil"
+description = "Bossa nova, samba et MPB, qu'elles viennent du jazz, de la pop ou de la musique latine."
+styles = ["Bossa Nova", "MPB", "Samba", "Baile Funk"]
+
+[[playlist]]
+nom = "Monde · Maghreb & Orient"
+description = "Gnawa, raï, chaâbi, tarab et pop arabe."
+styles = ["Gnawa", "Raï", "Chaabi", "Tarab", "Arabic Pop", "Arabic Classical", "Kabyle Pop", "Al Jeel"]
+
+[[playlist]]
+nom = "Monde · Afrique"
+description = "Afrobeat, afrobeats, afro house, highlife, blues du désert et musiques d'Afrique australe et lusophone."
+styles = ["Afrobeat", "Afrobeats", "Afroswing", "Highlife", "Desert Blues", "Semba", "Morna", "Mbaqanga", "Amapiano", "Afro House"]
+
+[[playlist]]
+nom = "Soul · Neo soul & R&B"
+description = "R&B contemporain et neo soul, que le morceau penche côté rap ou côté soul."
+styles = ["Neo Soul", "Contemporary R&B"]
+
+[[playlist]]
+nom = "Pop · Chanson"
+description = "Chanson à texte."
+styles = ["Chanson"]
+
+[[playlist]]
+nom = "Jazz · Jazz-funk & groove"
+description = "Jazz-funk, soul-jazz, acid jazz, et la fusion quand elle groove."
+styles = ["Jazz-Funk", "Soul-Jazz", "Acid Jazz"]
+
+[[playlist]]
+nom = "Jazz · Jazz-funk & groove"
+styles = ["Fusion"]
+ambiances = ["Groovy", "Festif"]
+
+[[playlist]]
+nom = "Rock · Psyché & prog"
+description = "Rock psychédélique, progressif et art rock."
+styles = ["Psychedelic Rock", "Progressive Rock", "Art Rock", "Space Rock", "Math Rock"]
+
+
+# ===================================================================== rap
+
+[[playlist]]
+nom = "Rap · Trap énergique"
+description = "Trap et drill qui cognent."
+genres = ["Hip Hop"]
+styles = ["Trap", "Drill", "Afro Trap"]
+ambiances = ["Énergique", "Festif", "Groovy"]
+
+[[playlist]]
+nom = "Rap · Trap sombre"
+description = "Trap et drill sombres, menaçantes."
+genres = ["Hip Hop"]
+styles = ["Trap", "Drill", "Afro Trap", "Horrorcore"]
+ambiances = ["Sombre"]
+
+[[playlist]]
+nom = "Rap · Trap mélancolique"
+description = "Trap et drill mélancoliques, posées ou planantes."
+genres = ["Hip Hop"]
+styles = ["Trap", "Drill", "Afro Trap", "Horrorcore"]
+
+[[playlist]]
+nom = "Rap · Cloud rap"
+description = "Rap vaporeux, voix noyées dans les nappes."
+genres = ["Hip Hop"]
+styles = ["Cloud Rap"]
+
+[[playlist]]
+nom = "Rap · Boom bap"
+description = "Batterie sèche et samples."
+genres = ["Hip Hop"]
+styles = ["Boom Bap"]
+
+[[playlist]]
+nom = "Rap · Conscient"
+description = "Rap à texte, engagé ou introspectif."
+genres = ["Hip Hop"]
+styles = ["Conscious"]
+
+[[playlist]]
+nom = "Rap · Jazzy & lo-fi"
+description = "Rap posé sur samples jazz, instrumentales et beats abstraits."
+genres = ["Hip Hop"]
+styles = ["Jazzy Hip-Hop", "Instrumental", "Abstract", "Downtempo", "Experimental", "Leftfield"]
+
+[[playlist]]
+nom = "Rap · Pop rap & divers"
+description = "Le reste du rap : pop rap, G-funk, ballades, rap mélodique."
+genres = ["Hip Hop"]
+
+
+# ================================================================== électro
+
+[[playlist]]
+nom = "Électro · Deep house groovy"
+description = "Deep house chaleureuse, pour bouger."
+genres = ["Electronic"]
+styles = ["Deep House"]
+ambiances = ["Groovy", "Festif", "Énergique"]
+
+[[playlist]]
+nom = "Électro · Deep house planante"
+description = "Deep house rêveuse, calme ou nocturne."
+genres = ["Electronic"]
+styles = ["Deep House"]
+
+[[playlist]]
+nom = "Électro · House"
+description = "House classique et garage house."
+genres = ["Electronic"]
+styles = ["House", "Garage House", "Euro House", "Italo House", "Tropical House"]
+
+[[playlist]]
+nom = "Électro · Techno & tech house"
+description = "Techno, minimale, tech house et progressive."
+genres = ["Electronic"]
+styles = ["Techno", "Deep Techno", "Minimal", "Minimal Techno", "Dub Techno", "Detroit Techno", "Melodic Techno", "Acid", "Tech House", "Progressive House", "Electro House", "Trance", "Psy-Trance"]
+
+[[playlist]]
+nom = "Électro · Nu-disco & synth"
+description = "Nu-disco, italo, synth-pop et synthwave."
+genres = ["Electronic"]
+styles = ["Nu-Disco", "Disco", "Italo-Disco", "Boogie", "Synth-Pop", "Synthwave"]
+
+[[playlist]]
+nom = "Électro · Downtempo & ambient"
+description = "Électronique lente : downtempo, trip hop, ambient, lounge."
+genres = ["Electronic"]
+styles = ["Downtempo", "Ambient", "Dark Ambient", "Drone", "Trip Hop", "Lounge", "New Age", "Berlin-School", "Modern Classical", "Dream Pop"]
+
+[[playlist]]
+nom = "Électro · Breaks & expérimental"
+description = "Broken beat, breakbeat, electro, UK garage, drum & bass, expérimentations — et le reste de l'électronique."
+genres = ["Electronic"]
+
+
+# ===================================================================== jazz
+
+[[playlist]]
+nom = "Jazz · Fusion"
+description = "Jazz électrique et jazz-rock."
+styles = ["Fusion"]
+
+[[playlist]]
+nom = "Jazz · Bop & cool"
+description = "Bebop, hard bop, post-bop, modal et cool jazz."
+genres = ["Jazz"]
+styles = ["Bebop", "Hard Bop", "Post Bop", "Modal", "Cool Jazz"]
+
+[[playlist]]
+nom = "Jazz · Spiritual & ethio-jazz"
+description = "Jazz spirituel, ethio-jazz et jazz aventureux."
+genres = ["Jazz"]
+styles = ["Spiritual Jazz", "Ethio-Jazz", "Third Stream", "Experimental"]
+
+[[playlist]]
+nom = "Jazz · Contemporain & smooth"
+description = "Jazz d'aujourd'hui et smooth jazz."
+genres = ["Jazz"]
+styles = ["Contemporary Jazz", "Smooth Jazz"]
+
+[[playlist]]
+nom = "Jazz · Vocal & ballades"
+description = "Voix et ballades jazz."
+genres = ["Jazz"]
+styles = ["Vocal", "Ballad"]
+
+[[playlist]]
+nom = "Jazz · Swing & big band"
+description = "Swing, big band, dixieland et jazz manouche."
+genres = ["Jazz"]
+styles = ["Swing", "Big Band", "Dixieland", "Ragtime", "Gypsy Jazz"]
+
+[[playlist]]
+nom = "Jazz · Divers"
+description = "Le reste du jazz."
+genres = ["Jazz"]
+
+
+# ============================================================= soul & funk
+
+[[playlist]]
+nom = "Soul · Soul"
+description = "Soul classique, psychédélique et ballades soul."
+genres = ["Funk & Soul"]
+styles = ["Soul", "Psychedelic Soul", "Modern Soul", "Rhythm & Blues", "Gospel", "Ballad", "Vocal"]
+
+[[playlist]]
+nom = "Funk · Funk, boogie & disco"
+description = "Funk, boogie et disco."
+genres = ["Funk & Soul"]
+
+
+# ================================================================ classique
+
+[[playlist]]
+nom = "Classique · Baroque & classique"
+description = "Baroque et période classique."
+genres = ["Classical"]
+styles = ["Baroque", "Classical Period", "Classical", "Choral"]
+
+[[playlist]]
+nom = "Classique · Romantique"
+description = "Romantisme : de Chopin à Rachmaninov."
+genres = ["Classical"]
+styles = ["Romantic", "Waltz", "Opera"]
+
+[[playlist]]
+nom = "Classique · Moderne & contemporain"
+description = "Impressionnisme, modernes, néo-classique et contemporains."
+genres = ["Classical"]
+
+
+# ===================================================================== pop
+
+[[playlist]]
+nom = "Pop · Indie & synth-pop"
+description = "Pop indépendante, synth-pop, dream pop et new wave."
+genres = ["Pop", "Rock"]
+styles = ["Indie Pop", "Synth-Pop", "Dream Pop", "New Wave"]
+
+[[playlist]]
+nom = "Pop · City pop & disco"
+description = "City pop japonaise, AOR et pop disco."
+styles = ["City Pop", "AOR"]
+
+[[playlist]]
+nom = "Pop · City pop & disco"
+genres = ["Pop"]
+styles = ["Disco", "Nu-Disco", "Italo-Disco", "Boogie", "Funk"]
+
+[[playlist]]
+nom = "Pop · Divers"
+description = "Le reste de la pop : ballades, pop rock…"
+genres = ["Pop"]
+
+
+# =================================================================== rock
+
+[[playlist]]
+nom = "Rock · Blues"
+description = "Blues électrique, texan, de Chicago, et blues rock."
+genres = ["Blues"]
+
+[[playlist]]
+nom = "Rock · Blues"
+styles = ["Blues Rock"]
+
+[[playlist]]
+nom = "Rock · Alternatif & indie"
+description = "Le reste du rock : alternatif, indie, pop rock."
+genres = ["Rock"]
+
+
+# ================================================================== monde
+
+[[playlist]]
+nom = "Monde · Latino"
+description = "Salsa, cumbia, boléro, latin jazz…"
+genres = ["Latin"]
+
+[[playlist]]
+nom = "Monde · Latino"
+styles = ["Latin Jazz"]
+
+[[playlist]]
+nom = "Monde · Reggae & dub"
+description = "Roots, dub, dancehall."
+genres = ["Reggae"]
+
+[[playlist]]
+nom = "Monde · Traditions & folk"
+description = "Musiques traditionnelles et folk du monde entier."
+genres = ["Folk & World"]

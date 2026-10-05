@@ -75,9 +75,14 @@ pilot_size = 50
 # milliers non.
 export_size = 500
 export_dir = "data/export"
-# Confiance en deçà de laquelle le verdict n'écrase pas les métadonnées : le
-# modèle a dit qu'il ne connaissait pas le morceau, on le croit.
-min_confidence = 0.35
+# Confiance en deçà de laquelle le verdict n'écrase pas les métadonnées. Nulle
+# par défaut : la confiance que rend Claude dit surtout « je connais mal ce
+# titre », et même alors son avis sur le morceau vaut mieux que celui de
+# Discogs sur l'album. Sur une bibliothèque réelle, un seuil de 0.35 écartait
+# un verdict sur cinq.
+min_confidence = 0.0
+# En deçà, l'aperçu marque le titre « à vérifier » — sans l'écarter.
+unsure_below = 0.35
 
 [matching]
 # Score minimal (0-1) pour accepter un appariement Discogs automatiquement.
@@ -107,6 +112,10 @@ fallback_playlist = "Divers — genres isolés"
 # Gabarits de nommage (voir docs/ARCHITECTURE.md).
 style_name_template = "{genre} — {style}"
 genre_name_template = "{genre} — Autres styles"
+# Plan de playlists du tri « Par famille » : quelles playlists existent, et
+# quelles règles y font entrer un morceau. Les seuils ci-dessus ne s'y
+# appliquent pas.
+playlists_file = "config/playlists.toml"
 
 [sync]
 # Symbole inscrit en fin de description des playlists gérées par l'outil.

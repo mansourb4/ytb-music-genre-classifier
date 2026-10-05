@@ -49,6 +49,7 @@ et relancés sans perte, et `plan`/`apply` se rejouent hors ligne.
 | `taxonomy/` | Alias de styles, priorité des genres, nommage, et définitions des genres et styles (`descriptions.toml`). |
 | `classifier.py` | Orchestration titre → candidats → classification. |
 | `planner.py` | Classifications → ensemble de playlists souhaité. Hors ligne. |
+| `playlist_plan.py` | Tri « Par famille » : lecture et vérification de `config/playlists.toml`, affectation de chaque morceau à la première playlist dont une règle l'accepte. |
 | `sync.py` | Diff état souhaité / état distant, puis application. |
 | `sorting.py` | Types de tri prédéfinis — dont l'axe de rangement — partagés par le CLI et l'interface web. |
 | `sources/claude.py` | Jugement d'un titre par un modèle : préambule, schéma de sortie, dépôt et relecture d'un lot, estimation du coût. |
@@ -547,12 +548,59 @@ manifeste de l'export (`export.json`) donne l'avancement de chaque fichier.
 Les fichiers exportés ne sont servis que par leur nom, validé contre leur
 motif : aucun autre fichier du disque n'est atteignable par l'interface.
 
+### 19. Un plan de playlists écrit à l'avance, plutôt que déduit
+
+Une fois la bibliothèque réelle jugée (4 083 verdicts), le tri par seuils
+restait mauvais, et pour des raisons mesurables :
+
+* **293 couples genre/style distincts**, soit environ 120 playlists en mode
+  Détaillé — le style étant libre, Claude nomme finement ;
+* **un même style éparpillé entre genres** : Bossa Nova sous Jazz, Latin, Pop,
+  Folk et BO ; Contemporary R&B sous quatre genres ; « Ballad », qui décrit une
+  forme et non un style, sous sept ;
+* **des tailles extrêmes** : Deep House 404 titres, ambiance Groovy 1 281 ;
+* **un axe à la fois** : « Calme » mêlait Chopin, rap jazzy et bossa, alors
+  que les gros styles se découpent bien par ambiance (Trap = 103 énergiques,
+  64 sombres, 62 mélancoliques) ;
+* **un verdict sur cinq écarté** par le seuil de confiance de 0,35. Claude.ai
+  s'en servait pour dire « je connais mal ce titre », pas « mon classement est
+  douteux » : ses verdicts peu sûrs restaient plausibles, et en les écartant on
+  retombait sur Discogs, qui juge l'album.
+
+Aucun réglage de seuil ne corrige cela : le défaut est de *déduire* les
+playlists. `playlist_plan.py` inverse la démarche. `config/playlists.toml`
+énumère les playlists voulues ; chaque bloc `[[playlist]]` porte une règle sur
+genres, styles et ambiances, et **la première règle qui correspond
+l'emporte**. Les choix qui en découlent :
+
+* **L'ordre tranche les cas limites.** Les playlists transversales (Brésil,
+  R&B, BO) viennent d'abord et réunissent un style quel que soit le genre du
+  verdict ; chaque famille suit, de la règle étroite à la large.
+* **Pas de fourre-tout implicite.** Un morceau qu'aucune règle n'accepte est
+  un non-rangé de cause `no_rule`, affiché avec son genre, son style et son
+  ambiance. Sur la bibliothèque réelle : 4 sur 4 083 — un sketch, un pack
+  d'échantillons, une annonce et une comptine.
+* **Le fichier est vérifié, pas deviné.** Genres et ambiances doivent
+  appartenir au vocabulaire fermé, les clés inconnues sont refusées : une
+  règle mal orthographiée ne correspondrait à rien, en silence.
+* **La taille est une alerte, pas une contrainte.** `[taille]` borne la plage
+  visée ; l'aperçu signale ce qui en sort, mais ne redécoupe rien de lui-même.
+* **Tous les verdicts s'appliquent** (`claude.min_confidence = 0`). Les peu sûrs
+  (`unsure_below`) sont marqués « à vérifier » dans l'aperçu, avec la note de
+  Claude.
+* **L'aperçu relit le fichier de verdicts** et le reporte en base avant de
+  planifier : une correction manuelle se voit au calcul suivant, sans nouvelle
+  analyse.
+
+La clé d'une playlist du plan est `plan/` suivi de son nom : renommer une
+playlist en crée une autre, et l'ancienne devient sans objet.
+
 ## Tests
 
-507 tests, aucun appel réseau, y compris l'API web complète (aperçu,
+551 tests, aucun appel réseau, y compris l'API web complète (aperçu,
 application, annulation), son contrôle d'accès et les quatre voies de connexion.
 
-Cinquante-neuf d’entre eux chargent l’interface dans un vrai navigateur (`tests/test_ui.py`).
+Soixante-quatre d’entre eux chargent l’interface dans un vrai navigateur (`tests/test_ui.py`).
 Le câblage du DOM échappe aux tests Python : deux défauts d'onglets sont passés
 au travers de la suite avant d'être vus à l'écran. Ces tests sont ignorés
 lorsque Playwright ou son navigateur sont absents, pour que la suite reste

@@ -11,6 +11,7 @@ from __future__ import annotations
 from dataclasses import asdict, dataclass, field, replace
 from typing import Iterable, Mapping
 
+from ytmgc import verdicts
 from ytmgc.config import Config
 from ytmgc.models import (
     Classification,
@@ -22,9 +23,11 @@ from ytmgc.models import (
     Track,
 )
 from ytmgc.planner import MAX_GATHERED_STYLES, NOTES, plan_playlists
+from ytmgc.playlist_plan import Plan, load_plan, usable
 from ytmgc.store import Repository
 from ytmgc.sync import diff, managed_by_key
 from ytmgc.taxonomy import load_taxonomy
+from ytmgc.verdicts import VerdictBook, track_key
 
 @dataclass(frozen=True, slots=True)
 class TrackPreview:
@@ -41,6 +44,11 @@ class TrackPreview:
     #: Tags Last.fm du titre : ce sont eux qui expliquent un classement
     #: différent de celui de son album.
     tags: list[str] = field(default_factory=list)
+    mood: str | None = None
+    #: Ce que le verdict dit du morceau, et avec quelle assurance.
+    note: str = ""
+    confidence: float | None = None
+    unsure: bool = False
 
 
 @dataclass(frozen=True, slots=True)
@@ -67,6 +75,11 @@ class PlaylistPreview:
     #: Styles réunis sous une ambiance : ce qui rend la déduction vérifiable.
     gathered: list[str] = field(default_factory=list)
     note: str | None = None
+    #: Tri « Par famille » : les règles d'entrée, et l'écart à la taille visée.
+    criteria: list[str] = field(default_factory=list)
+    size_warning: str | None = None
+    #: Titres dont le verdict est peu sûr.
+    unsure: int = 0
     tracks: list[TrackPreview] = field(default_factory=list)
 
 
@@ -80,6 +93,7 @@ REASONS = {
     "no_genre": "release sans genre exploitable",
     "no_tags": "ni tag Last.fm ni style Discogs",
     "no_mood": "aucune ambiance déterminable",
+    "no_rule": "aucune playlist du plan ne l'accepte",
 }
 
 
@@ -138,14 +152,17 @@ def _detail(
     video_ids: tuple[str, ...],
     tracks: dict[str, Track],
     classifications: dict[str, Classification],
+    book: VerdictBook,
+    unsure_below: float,
 ) -> list[TrackPreview]:
-    """Détail de chaque titre d'une playlist, taxonomie Discogs comprise."""
+    """Détail de chaque titre d'une playlist, taxonomie et verdict compris."""
     detailed: list[TrackPreview] = []
     for video_id in video_ids:
         track = tracks.get(video_id)
         if track is None:
             continue
         classification = classifications.get(video_id)
+        verdict = book.get(track_key(track))
         detailed.append(
             TrackPreview(
                 video_id=video_id,
@@ -157,12 +174,16 @@ def _detail(
                 styles=list(classification.styles) if classification else [],
                 year=classification.year if classification else None,
                 tags=list(classification.tags) if classification else [],
+                mood=classification.mood if classification else None,
+                note=verdict.note if verdict else "",
+                confidence=verdict.confidence if verdict else None,
+                unsure=verdict is not None and verdict.confidence < unsure_below,
             )
         )
     return detailed
 
 
-def _reason(classification: Classification | None, by_mood: bool) -> str:
+def _reason(classification: Classification | None, by_mood: bool, by_plan: bool = False) -> str:
     """Cause du non-rangement d'un titre.
 
     Plusieurs filtres successifs écartent des titres, et aucun n'est visible
@@ -170,6 +191,9 @@ def _reason(classification: Classification | None, by_mood: bool) -> str:
     """
     if classification is None:
         return "unscanned"
+    if by_plan and usable(classification):
+        # Le morceau est décrit : c'est le plan qui n'a pas prévu sa place.
+        return "no_rule"
     if by_mood:
         # En mode ambiance, Discogs n'est plus qu'un appoint : ce qui manque
         # est soit toute matière, soit une ambiance tirée de cette matière.
@@ -190,11 +214,22 @@ def _unsorted(
     config: Config,
 ) -> list[tuple[Track, str]]:
     by_mood = config.taxonomy.axis == "mood"
+    by_plan = config.taxonomy.axis == "plan"
     return [
-        (track, _reason(classifications.get(video_id), by_mood))
+        (track, _reason(classifications.get(video_id), by_mood, by_plan))
         for video_id, track in tracks.items()
         if video_id not in placed
     ]
+
+
+def _described(classification: Classification | None) -> str:
+    """Genre, style et ambiance d'un morceau : de quoi écrire la règle qui manque."""
+    if classification is None:
+        return ""
+    parts = [" / ".join((*classification.genres, *classification.styles))]
+    if classification.mood:
+        parts.append(classification.mood)
+    return " · ".join(part for part in parts if part)
 
 
 def _count_reasons(unsorted: list[tuple[Track, str]]) -> dict[str, int]:
@@ -226,10 +261,20 @@ def build_preview(
     première utilisation.
     """
     tracks = {track.video_id: track for track in repository.all_tracks()}
+    taxonomy = load_taxonomy()
+    book = verdicts.load(config.claude.verdicts_file) if config.claude.enabled else VerdictBook()
+    if len(book):
+        # Le fichier fait autorité : une ligne corrigée à la main se voit
+        # dès l'aperçu suivant, sans repasser par l'analyse.
+        from ytmgc.enrich import apply_verdicts
+
+        apply_verdicts(repository, book, taxonomy, config)
     classifications = repository.classifications()
     by_video = {item.video_id: item for item in classifications}
-    taxonomy = load_taxonomy()
     plans = plan_playlists(classifications, taxonomy, config)
+    by_plan = config.taxonomy.axis == "plan"
+    plan: Plan | None = load_plan(config.taxonomy.playlists_file, taxonomy) if by_plan else None
+    planned = plan.by_key() if plan else {}
 
     # La clé n'étant plus dans la description, elle vient de la base — et à
     # défaut du nom attendu, calculé depuis le plan qu'on vient d'établir.
@@ -240,7 +285,7 @@ def build_preview(
         remote or [],
         config.sync.marker,
         known=known,
-        names={plan.name: plan.key for plan in plans},
+        names={item.name: item.key for item in plans},
     )
     actions = diff(plans, existing, config)
 
@@ -257,53 +302,58 @@ def build_preview(
             removed_by_key[action.key] = removed_by_key.get(action.key, 0) + len(action.video_ids)
 
     previews: list[PlaylistPreview] = []
-    for plan in plans:
-        added = added_by_key.get(plan.key, 0)
-        removed = removed_by_key.get(plan.key, 0)
-        if plan.key in created_keys:
+    for item in plans:
+        added = added_by_key.get(item.key, 0)
+        removed = removed_by_key.get(item.key, 0)
+        if item.key in created_keys:
             change = "création"
         elif added or removed:
             change = "mise à jour"
         else:
             change = "inchangée"
+        detail = _detail(item.video_ids, tracks, by_video, book, config.claude.unsure_below)
+        written = planned.get(item.key)
         previews.append(
             PlaylistPreview(
-                key=plan.key,
-                name=plan.name,
-                description=plan.description,
-                kind=plan.kind,
-                count=len(plan.video_ids),
+                key=item.key,
+                name=item.name,
+                description=item.description,
+                kind=item.kind,
+                count=len(item.video_ids),
                 change=change,
                 added=added,
                 removed=removed,
-                image=_image(plan.video_ids, tracks),
+                image=_image(item.video_ids, tracks),
                 axis=config.taxonomy.axis,
-                genre=plan.genre,
-                style=plan.style,
+                genre=item.genre,
+                style=item.style,
                 genre_text=(
                     None
                     if config.taxonomy.axis == "mood"
-                    else taxonomy.describe_genre(plan.genre) if plan.genre else None
+                    else taxonomy.describe_genre(item.genre) if item.genre else None
                 ),
                 style_text=(
-                    (taxonomy.describe_mood(plan.style) if config.taxonomy.axis == "mood"
-                     else taxonomy.describe_style(plan.style))
-                    if plan.style else None
+                    (taxonomy.describe_mood(item.style) if config.taxonomy.axis == "mood"
+                     else taxonomy.describe_style(item.style))
+                    if item.style else None
                 ),
                 gathered=(
-                    taxonomy.styles_of_mood(plan.style)[:MAX_GATHERED_STYLES]
-                    if config.taxonomy.axis == "mood" and plan.style
+                    taxonomy.styles_of_mood(item.style)[:MAX_GATHERED_STYLES]
+                    if config.taxonomy.axis == "mood" and item.style
                     else []
                 ),
-                note=NOTES.get(plan.kind),
-                tracks=_detail(plan.video_ids, tracks, by_video),
+                note=(written.description or None) if written else NOTES.get(item.kind),
+                criteria=[rule.describe() for rule in written.rules] if written else [],
+                size_warning=plan.size_warning(len(item.video_ids)) if plan else None,
+                unsure=sum(1 for track in detail if track.unsure),
+                tracks=detail,
             )
         )
 
-    placed = {video_id for plan in plans for video_id in plan.video_ids}
+    placed = {video_id for item in plans for video_id in item.video_ids}
     unsorted = _unsorted(tracks, by_video, placed, config)
 
-    planned_keys = {plan.key for plan in plans}
+    planned_keys = {item.key for item in plans}
     obsolete = sorted(
         playlist.title for key, playlist in existing.items() if key not in planned_keys
     )
@@ -318,10 +368,11 @@ def build_preview(
         review=counts.get(MatchStatus.REVIEW.value, 0),
         unmatched=counts.get(MatchStatus.UNMATCHED.value, 0),
         unclassified=len(repository.unclassified_tracks()),
-        assignments=sum(len(plan.video_ids) for plan in plans),
+        assignments=sum(len(item.video_ids) for item in plans),
         unsorted=[
             {"video_id": track.video_id, "label": track.label(),
-             "thumbnail": track.thumbnail, "reason": reason}
+             "thumbnail": track.thumbnail, "reason": reason,
+             "detail": _described(by_video.get(track.video_id)) if reason == "no_rule" else ""}
             for track, reason in unsorted
         ],
         unsorted_by_reason=_count_reasons(unsorted),

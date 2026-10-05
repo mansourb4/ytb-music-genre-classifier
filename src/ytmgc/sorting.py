@@ -26,7 +26,8 @@ class SortMode:
     max_styles_per_track: int
     min_tracks_per_style: int
     min_tracks_per_genre: int
-    #: "style" (genre et style Discogs) ou "mood" (ambiance déduite des styles).
+    #: "style" (genre et style Discogs), "mood" (ambiance) ou "plan" (règles
+    #: écrites à l'avance dans config/playlists.toml).
     axis: str = "style"
     #: Gabarits propres au mode, quand son vocabulaire diffère.
     style_name_template: str | None = None
@@ -34,6 +35,11 @@ class SortMode:
     fallback_playlist: str | None = None
 
     def describe(self) -> str:
+        if self.axis == "plan":
+            return (
+                "playlists et règles écrites dans config/playlists.toml ; "
+                "un titre ne figure que dans une playlist"
+            )
         if self.axis == "mood":
             granularity = (
                 f"une ambiance obtient sa playlist à partir de {self.min_tracks_per_style} titres"
@@ -52,8 +58,19 @@ class SortMode:
 
 SORT_MODES: tuple[SortMode, ...] = (
     SortMode(
+        key="familles",
+        label="Par famille (recommandé)",
+        summary="Un plan de playlists écrit à l'avance : chaque titre va dans la première "
+                "dont la règle lui correspond.",
+        multi_style="primary",
+        max_styles_per_track=1,
+        min_tracks_per_style=1,
+        min_tracks_per_genre=1,
+        axis="plan",
+    ),
+    SortMode(
         key="detaille",
-        label="Détaillé (recommandé)",
+        label="Détaillé",
         summary="Une playlist par style, un titre pouvant relever de deux styles.",
         multi_style="all",
         max_styles_per_track=2,

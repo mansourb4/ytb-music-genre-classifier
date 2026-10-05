@@ -167,9 +167,10 @@ def test_a_verdict_overrides_what_discogs_said(seeded, config):
     assert by_id["g2"].styles == ("Grunge",)
 
 
-def test_an_unsure_verdict_leaves_the_databases_alone(seeded, config):
-    """Le modèle a dit qu'il ne connaissait pas le morceau : on le croit, et
-    on garde ce que Discogs avait trouvé."""
+def test_a_configured_threshold_leaves_unsure_verdicts_out(seeded, config):
+    """Seuil relevé par l'utilisateur : en deçà, on garde ce que Discogs avait
+    trouvé. Par défaut, il est nul (voir test_classifier)."""
+    config.claude.min_confidence = 0.35
     timid = Verdict("Nirvana", "Lithium", "Pop", "Bubblegum", "Festif", confidence=0.1)
     applied = apply_verdicts(seeded, VerdictBook([timid]), load_taxonomy(), config)
 

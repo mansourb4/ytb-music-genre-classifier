@@ -717,10 +717,17 @@ def create_app(services: Services) -> FastAPI:
     @app.post("/api/preview")
     def preview(request: PreviewRequest) -> dict:
         scoped = _scoped(request.sort_mode)
+        from ytmgc.playlist_plan import PlanError
+
         remote = _remote_playlists()
-        summary, _, actions = build_preview(
-            repository, scoped, sort_mode=request.sort_mode, remote=remote
-        )
+        try:
+            summary, _, actions = build_preview(
+                repository, scoped, sort_mode=request.sort_mode, remote=remote
+            )
+        except PlanError as exc:
+            # Une faute dans playlists.toml : à corriger par l'utilisateur, qui
+            # doit lire laquelle plutôt qu'une erreur serveur.
+            raise HTTPException(400, str(exc)) from exc
         return {
             "preview": summary.to_dict(),
             "actions": [action.summary() for action in actions],

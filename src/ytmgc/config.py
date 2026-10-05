@@ -108,7 +108,13 @@ class ClaudeConfig:
     #: Dossier des fichiers exportés, à glisser dans Claude.ai.
     export_dir: str = "data/export"
     #: Confiance en deçà de laquelle le verdict n'écrase pas les métadonnées.
-    min_confidence: float = 0.35
+    #: Nulle par défaut : la confiance que rend Claude dit surtout « je connais
+    #: mal ce titre », et même alors son avis sur le morceau vaut mieux que
+    #: celui de Discogs sur l'album. Les verdicts peu sûrs sont signalés à
+    #: l'aperçu plutôt qu'écartés.
+    min_confidence: float = 0.0
+    #: En deçà, l'aperçu marque le titre « à vérifier ».
+    unsure_below: float = 0.35
     #: Jamais lue depuis le fichier : uniquement depuis l'environnement.
     api_key: str = ""
 
@@ -122,7 +128,8 @@ class MatchingConfig:
 
 @dataclass(slots=True)
 class TaxonomyConfig:
-    #: "style" range par genre et style Discogs, "mood" par ambiance déduite.
+    #: "style" range par genre et style Discogs, "mood" par ambiance déduite,
+    #: "plan" selon les règles écrites dans `playlists_file`.
     axis: str = "style"
     multi_style: str = "all"
     max_styles_per_track: int = 2
@@ -131,6 +138,8 @@ class TaxonomyConfig:
     fallback_playlist: str = "Divers — genres isolés"
     style_name_template: str = "{genre} — {style}"
     genre_name_template: str = "{genre} — Autres styles"
+    #: Plan de playlists du tri « Par famille ».
+    playlists_file: str = "config/playlists.toml"
 
 
 @dataclass(slots=True)
@@ -177,8 +186,8 @@ class Config:
     web: WebConfig = field(default_factory=WebConfig)
 
     def validate(self) -> None:
-        if self.taxonomy.axis not in {"style", "mood"}:
-            raise ValueError("taxonomy.axis doit valoir 'style' ou 'mood'")
+        if self.taxonomy.axis not in {"style", "mood", "plan"}:
+            raise ValueError("taxonomy.axis doit valoir 'style', 'mood' ou 'plan'")
         if self.taxonomy.multi_style not in {"primary", "all"}:
             raise ValueError("taxonomy.multi_style doit valoir 'primary' ou 'all'")
         if not 0 < self.matching.min_score <= 1:
@@ -199,6 +208,8 @@ class Config:
             raise ValueError("claude.pilot_size doit valoir au moins 1")
         if not 0 <= self.claude.min_confidence <= 1:
             raise ValueError("claude.min_confidence doit être dans [0, 1]")
+        if not 0 <= self.claude.unsure_below <= 1:
+            raise ValueError("claude.unsure_below doit être dans [0, 1]")
         if not self.sync.marker:
             raise ValueError("sync.marker ne peut pas être vide : il protège les playlists manuelles")
 

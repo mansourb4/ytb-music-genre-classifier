@@ -205,9 +205,10 @@ def test_an_analysis_applies_the_verdicts_already_given(repository, config):
     assert classification.mood == "Mélancolique"
 
 
-def test_an_unsure_verdict_does_not_override_the_analysis(repository, config):
+def test_a_configured_threshold_keeps_unsure_verdicts_out(repository, config):
     from ytmgc.verdicts import Verdict, VerdictBook
 
+    config.claude.min_confidence = 0.35
     track = make_track("v1", "Lithium", "Nirvana", "Nevermind")
     repository.upsert_tracks([track])
     source = FakeDiscogs({"Nirvana": [make_candidate(1, "Nevermind", "Nirvana")]})
@@ -217,3 +218,20 @@ def test_an_unsure_verdict_does_not_override_the_analysis(repository, config):
 
     assert stats.judged == 0
     assert repository.classifications()[0].styles == ("Grunge",)
+
+
+def test_an_unsure_verdict_still_beats_the_album_by_default(repository, config):
+    """La confiance de Claude dit surtout « je connais mal ce titre » : son avis
+    sur le morceau reste meilleur que celui de Discogs sur l'album. Un verdict
+    sur cinq de la bibliothèque réelle était ainsi écarté."""
+    from ytmgc.verdicts import Verdict, VerdictBook
+
+    track = make_track("v1", "Lithium", "Nirvana", "Nevermind")
+    repository.upsert_tracks([track])
+    source = FakeDiscogs({"Nirvana": [make_candidate(1, "Nevermind", "Nirvana")]})
+    book = VerdictBook([Verdict("Nirvana", "Lithium", "Rock", "Grunge", "Énergique", 0.1)])
+
+    stats = classify_tracks([track], repository, source, config, verdicts=book)
+
+    assert stats.judged == 1
+    assert repository.classifications()[0].mood == "Énergique"

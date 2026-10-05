@@ -147,6 +147,11 @@ def plan_playlists(
 ) -> list[PlaylistPlan]:
     """Construit l'état souhaité des playlists. Aucun appel réseau."""
     settings = config.taxonomy
+    if settings.axis == "plan":
+        from ytmgc.playlist_plan import load_plan, plan_by_rules
+
+        plan = load_plan(settings.playlists_file, taxonomy)
+        return plan_by_rules(classifications, taxonomy, plan, config.sync.marker)
 
     resolved: dict[str, tuple[GenreStyle, ...]] = {}
     order: list[str] = []

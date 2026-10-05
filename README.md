@@ -398,11 +398,60 @@ serveur tiers.
 
 | Mode | Résultat |
 |---|---|
-| `detaille` (défaut) | Une playlist par style, un titre pouvant relever de deux styles. |
+| `familles` (défaut) | Un plan de playlists écrit à l'avance (`config/playlists.toml`) : chaque titre va dans la première playlist dont la règle lui correspond. |
+| `detaille` | Une playlist par style, un titre pouvant relever de deux styles. |
 | `exhaustif` | Le plus fin possible : chaque style représenté obtient sa playlist. |
 | `sans-doublon` | Chaque titre n'apparaît que dans une playlist : une cartographie exacte. |
 | `ambiance` | Range par humeur — calme, énergique, festif, groovy… — déduite des styles. |
 | `genre` | Une poignée de grandes playlists, sans détail de style. |
+
+### Le plan de playlists (tri « Par famille »)
+
+Les autres tris *déduisent* les playlists des données : un style devient une
+playlist dès qu'il atteint un seuil. Sur une bibliothèque de 4 000 titres, cela
+donne une centaine de playlists, la bossa nova coupée entre Jazz, Latin et Pop,
+et des fourre-tout dont on ignore le contenu.
+
+Le tri « Par famille » fait l'inverse : `config/playlists.toml` dit quelles
+playlists existent et ce qu'elles acceptent.
+
+```toml
+[taille]          # l'aperçu signale les playlists hors de cette plage
+min = 30
+max = 150
+
+[[playlist]]
+nom = "Rap · Trap énergique"
+description = "Trap et drill qui cognent."
+genres = ["Hip Hop"]
+styles = ["Trap", "Drill"]
+ambiances = ["Énergique", "Festif", "Groovy"]
+
+[[playlist]]
+nom = "Rap · Trap sombre"
+genres = ["Hip Hop"]
+styles = ["Trap", "Drill"]
+```
+
+* **La première règle qui correspond l'emporte**, en lisant le fichier de haut
+  en bas : une règle étroite placée avant une large prend ce qui la concerne.
+  Un titre ne figure donc que dans une playlist.
+* Un critère absent accepte tout ; plusieurs blocs du même nom alimentent la
+  même playlist (« Jazz-Funk, ou bien Fusion quand elle groove »).
+* Genres et ambiances sont vérifiés au chargement : une faute de frappe est
+  signalée au lieu de faire taire la règle.
+* **Aucun fourre-tout silencieux** : un titre qu'aucune règle n'accepte figure
+  dans « non rangés », avec son genre, son style et son ambiance — de quoi
+  écrire la règle qui manque.
+* L'aperçu montre, pour chaque titre, la note de Claude, et marque « à
+  vérifier » ceux dont le verdict est peu sûr (`claude.unsure_below`).
+* L'aperçu relit `data/verdicts.txt` à chaque calcul : une ligne corrigée à la
+  main s'y voit aussitôt, sans relancer l'analyse.
+
+Le plan livré a été calibré sur une bibliothèque réelle : 43 playlists, 4 079
+titres rangés sur 4 083, la plupart entre 30 et 150 titres. Modifie-le
+librement, puis recalcule l'aperçu. Renommer une playlist en crée une nouvelle
+à l'application : l'ancienne est vidée.
 
 ## Utilisation — ligne de commande
 
@@ -474,7 +523,8 @@ deux.
 
 ## Réglages
 
-Les deux réglages qui déterminent le résultat final :
+Le tri « Par famille » ne dépend que de `config/playlists.toml` (voir plus
+haut). Pour les autres tris, les deux réglages qui déterminent le résultat final :
 
 | Réglage | Défaut | Effet |
 |---|---|---|

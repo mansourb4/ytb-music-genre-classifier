@@ -80,7 +80,7 @@ def analyse(client):
 
 def test_sort_modes_are_exposed_with_their_meaning(client):
     payload = client.get("/api/sort-modes").json()
-    assert payload["default"] == "detaille"
+    assert payload["default"] == "familles"
     assert {mode["key"] for mode in payload["modes"]} >= {"detaille", "genre", "sans-doublon"}
     assert all(mode["summary"] and mode["detail"] for mode in payload["modes"])
 

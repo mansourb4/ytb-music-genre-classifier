@@ -505,6 +505,85 @@ def test_track_tags_are_shown_to_explain_the_placement(page):
     assert "Ballad" in page.locator(".track-facts").text_content()
 
 
+#: Une playlist du tri « Par famille » : règle, taille hors cible, verdict peu sûr.
+FAMILY_PREVIEW = """() => {
+  renderPreview({
+    remote_known: true,
+    preview: {
+      playlists: [{
+        key: "plan/jazz-fusion", name: "Jazz · Fusion", kind: "plan", count: 2,
+        change: "création", added: 2, removed: 0, description: "", axis: "plan",
+        note: "Jazz électrique et jazz-rock.", image: null,
+        criteria: ["style Fusion", "genre Jazz ; ambiance Cérébral"],
+        size_warning: "grande (170 titres, au-delà de 150) : à découper", unsure: 1,
+        tracks: [
+          {video_id: "f1", title: "Birdland", artist: "Weather Report", album: null,
+           thumbnail: null, genres: ["Jazz"], styles: ["Fusion"], year: null, mood: "Groovy",
+           note: "Hymne fusion.", confidence: 0.9, unsure: false},
+          {video_id: "f2", title: "Babel Live", artist: "Cos", album: null,
+           thumbnail: null, genres: ["Jazz"], styles: ["Fusion"], year: null, mood: "Cérébral",
+           note: "Jazz-rock complexe en live.", confidence: 0.3, unsure: true},
+        ],
+      }],
+      obsolete: [], created: 1, updated: 0, unchanged: 0, assignments: 2, total_tracks: 3,
+      unsorted: [{video_id: "x1", label: "Quelqu'un – Skit", thumbnail: null,
+                  reason: "no_rule", detail: "Hors-musique / Skit · Calme"}],
+      unsorted_by_reason: {no_rule: 1},
+      reason_labels: {no_rule: "aucune playlist du plan ne l'accepte"},
+    },
+  });
+}"""
+
+
+def test_a_family_playlist_shows_its_rules_and_size(page):
+    page.evaluate(FAMILY_PREVIEW)
+    summary = page.locator("#preview-list details.pl summary").text_content()
+    assert "taille" in summary
+
+    page.locator("#preview-list details.pl").click()
+    body = page.locator("#preview-list details.pl .pl-desc").text_content()
+    assert "Jazz électrique et jazz-rock." in body
+    assert "l'une ou l'autre" in body and "genre Jazz ; ambiance Cérébral" in body
+    assert "à découper" in body
+    assert "1 titre(s) au verdict peu sûr" in body
+
+
+def test_an_unsure_verdict_is_marked_and_explained(page):
+    page.evaluate(FAMILY_PREVIEW)
+    page.locator("#preview-list details.pl").click()
+    page.wait_for_selector("#preview-list li.track")
+    rows = page.locator("#preview-list li.track")
+
+    assert "à vérifier" not in rows.nth(0).text_content()
+    assert "à vérifier" in rows.nth(1).text_content()
+    assert "Jazz-rock complexe en live." in rows.nth(1).text_content()
+    assert "Cérébral" in rows.nth(1).locator(".track-facts").text_content()
+
+
+def test_a_track_no_rule_accepts_shows_what_it_is(page):
+    """De quoi écrire la règle qui manque, sans aller lire verdicts.txt."""
+    page.evaluate(FAMILY_PREVIEW)
+    page.locator("#unsorted details.pl").click()
+    text = page.locator("#unsorted").text_content()
+    assert "aucune playlist du plan ne l'accepte" in text
+    assert "Hors-musique / Skit · Calme" in text
+
+
+def test_unsorted_tracks_do_not_break_the_selection_total(page):
+    """Régression : avec des playlists ET des non-rangés, le décompte lisait la
+    case à cocher d'une section qui n'en a pas. L'aperçu s'interrompait, le
+    total manquait et le bouton Appliquer restait désactivé."""
+    page.evaluate(FAMILY_PREVIEW)
+
+    assert "1</b> playlist(s) sur 1" in page.locator("#preview-selection").inner_html()
+    assert page.locator("#apply-btn").is_enabled()
+
+
+def test_the_family_sort_is_offered_first(page):
+    page.wait_for_selector(".mode")
+    assert page.locator(".mode").first.get_attribute("data-key") == "familles"
+
+
 #: Aperçu comportant des titres écartés, avec deux causes distinctes.
 UNSORTED_PREVIEW = """() => {
   renderPreview({

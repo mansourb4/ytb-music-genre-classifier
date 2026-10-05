@@ -91,6 +91,9 @@ textarea {
 .badge { font-size: .7rem; padding: .1rem .45rem; border-radius: 4px; border: 1px solid var(--border); color: var(--muted); }
 .badge.creation { color: var(--ok); border-color: var(--ok); }
 .badge.maj { color: var(--warn); border-color: var(--warn); }
+.badge.warn { color: var(--warn); border-color: var(--warn); }
+.track-note { display: block; color: var(--muted); font-size: .8rem; font-style: italic; }
+.pl-desc ul.criteria { margin: .2rem 0 .4rem 1.1rem; padding: 0; }
 .pl .body { padding: .6rem 0 .4rem 1.4rem; }
 .pl-cover, .cover {
   border-radius: 5px; object-fit: cover; background: var(--bg);
@@ -498,6 +501,7 @@ select {
 <section>
   <h2><span class="step">5</span>Choisir le type de tri</h2>
   <p class="hint">Le tri ne change rien aux étapes précédentes : il dit seulement comment transformer genres, styles et ambiances en playlists. Change-le autant que tu veux, l'aperçu suit.</p>
+  <p class="hint">« Par famille » suit le plan écrit dans <code>config/playlists.toml</code> : chaque titre va dans la première playlist dont la règle lui correspond. Modifie ce fichier, puis recalcule l'aperçu.</p>
   <div class="modes" id="modes"></div>
 </section>
 
@@ -720,7 +724,13 @@ function trackRow(playlistKey, track) {
     track.year || null,
     track.genres.length ? escapeHtml(track.genres.join(", ")) : null,
     track.styles.length ? escapeHtml(track.styles.join(" · ")) : null,
+    track.mood ? escapeHtml(track.mood) : null,
   ].filter(Boolean);
+  // Le verdict dit pourquoi le titre est là ; un verdict peu sûr est à relire.
+  const unsure = track.unsure
+    ? ` <span class="badge warn" title="Confiance ${track.confidence}">à vérifier</span>`
+    : "";
+  const note = track.note ? `<span class="track-note">${escapeHtml(track.note)}</span>` : "";
   // Les tags expliquent pourquoi un titre s'écarte du classement de son album.
   const tags = (track.tags || []).length
     ? `<span class="track-tags">${track.tags.slice(0, 6).map(escapeHtml).join(" · ")}</span>`
@@ -730,9 +740,10 @@ function trackRow(playlistKey, track) {
            data-playlist="${escapeHtml(playlistKey)}" value="${escapeHtml(track.video_id)}" checked>
     ${cover}
     <label class="track-text" for="${id}">
-      <b>${escapeHtml(track.title)}</b>
+      <b>${escapeHtml(track.title)}</b>${unsure}
       <span class="track-artist">${escapeHtml(track.artist)}</span>
       <span class="track-facts">${facts.join(" — ")}</span>
+      ${note}
       ${tags}
     </label>
   </li>`;
@@ -766,7 +777,8 @@ function renderUnsorted(p) {
         ${t.thumbnail
           ? `<img class="cover" src="${escapeHtml(t.thumbnail)}" alt="" loading="lazy">`
           : `<span class="cover empty"></span>`}
-        <span class="track-text"><b>${escapeHtml(t.label)}</b></span>
+        <span class="track-text"><b>${escapeHtml(t.label)}</b>
+          ${t.detail ? `<span class="track-facts">${escapeHtml(t.detail)}</span>` : ""}</span>
       </li>`).join("");
       return `<div class="reason-group">
         <h4>${escapeHtml(labels[reason] || reason)} <span>— ${rows.length} titre(s)</span></h4>
@@ -796,6 +808,19 @@ function playlistCover(playlist) {
 
 function playlistDescription(pl) {
   const blocks = [];
+  if (pl.axis === "plan") {
+    if (pl.note) blocks.push(`<p>${escapeHtml(pl.note)}</p>`);
+    if (pl.criteria && pl.criteria.length) {
+      const rules = pl.criteria.map((c) => `<li>${escapeHtml(c)}</li>`).join("");
+      blocks.push(`<p class="msg">Règle d'entrée${pl.criteria.length > 1 ? "s (l'une ou l'autre)" : ""} :</p>
+        <ul class="criteria msg">${rules}</ul>`);
+    }
+    if (pl.size_warning) blocks.push(`<p class="msg">Taille ${escapeHtml(pl.size_warning)}.</p>`);
+    if (pl.unsure) {
+      blocks.push(`<p class="msg">${pl.unsure} titre(s) au verdict peu sûr, marqués « à vérifier ».</p>`);
+    }
+    return `<div class="pl-desc">${blocks.join("")}</div>`;
+  }
   if (pl.axis === "mood") {
     if (pl.style) {
       blocks.push(`<p><b>Ambiance — ${escapeHtml(pl.style)}</b><br>${escapeHtml(pl.style_text || "")}</p>`);
@@ -821,9 +846,12 @@ let previewByKey = {};
 function updatePreviewTotals() {
   let playlists = 0;
   let tracks = 0;
-  const total = document.querySelectorAll("details.pl").length;
+  // Limité à la liste des playlists : la section des non-rangés réutilise la
+  // même présentation, sans case à cocher.
+  const nodes = $("preview-list").querySelectorAll("details.pl");
+  const total = nodes.length;
 
-  document.querySelectorAll("details.pl").forEach((node) => {
+  nodes.forEach((node) => {
     if (!node.querySelector(".pl-check").checked) return;
     playlists += 1;
     // Une playlist repliée n'a pas de cases de titres dans le DOM : ses titres
@@ -879,6 +907,7 @@ function renderPreview(data) {
         ${playlistCover(pl)}
         <span class="name">${escapeHtml(pl.name)}</span>
         ${badge}
+        ${pl.size_warning ? `<span class="badge warn" title="${escapeHtml(pl.size_warning)}">taille</span>` : ""}
         <span class="count">${pl.count} titres</span>
       </summary>
       <div class="body">

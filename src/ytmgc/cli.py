@@ -119,8 +119,14 @@ def cmd_plan(args: argparse.Namespace, config: Config) -> int:
         return 0
     total = sum(len(plan.video_ids) for plan in plans)
     print(f"{len(plans)} playlist(s) pour {total} affectation(s) de titres :\n")
+    sizes = None
+    if config.taxonomy.axis == "plan":
+        from ytmgc.playlist_plan import load_plan
+
+        sizes = load_plan(config.taxonomy.playlists_file, load_taxonomy())
     for plan in plans:
-        print(f"  {len(plan.video_ids):>5}  {plan.name}")
+        warning = sizes.size_warning(len(plan.video_ids)) if sizes else None
+        print(f"  {len(plan.video_ids):>5}  {plan.name}" + (f"   ⚠ {warning}" if warning else ""))
     return 0
 
 
