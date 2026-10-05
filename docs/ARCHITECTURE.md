@@ -604,7 +604,13 @@ oasis à côté du funk libyen. Le plan range donc chaque morceau dans une
 famille musicale réelle — Brésil, Maghreb, Orient, Afrique, Caraïbes, Latino,
 Folk, ou une famille existante quand elle convient (ethio-jazz et latin jazz
 dans Jazz, afrobeat et funk arabe des années 70 dans Funk) — puis découpe
-chaque famille jusqu'à ce que l'ambiance tienne. Le seuil bas de `[taille]`
+chaque famille jusqu'à ce que l'ambiance tienne : la plupart en une playlist
+vive et une douce, certaines en trois (le boom bap groovy, dur, mélancolique).
+Le découpage s'écrit en deux blocs — le premier nomme les ambiances, le second,
+identique sans ambiance, prend le reste —, si bien qu'un titre à l'ambiance
+inconnue garde sa famille. Mesuré sur la bibliothèque réelle, l'ambiance
+dominante couvre désormais 60 à 100 % de presque chaque playlist, contre
+souvent 30 % auparavant ; les « Divers » ont disparu. Le seuil bas de `[taille]`
 (5) en découle : une playlist de six titres de flamenco vaut mieux qu'une de
 vingt qui finit sur un chœur russe.
 
@@ -651,7 +657,7 @@ publications.
 
 ## Tests
 
-610 tests, aucun appel réseau, y compris l'API web complète (aperçu,
+636 tests, aucun appel réseau, y compris l'API web complète (aperçu,
 application, annulation), son contrôle d'accès et les quatre voies de connexion.
 
 Soixante et onze d’entre eux chargent l’interface dans un vrai navigateur (`tests/test_ui.py`).

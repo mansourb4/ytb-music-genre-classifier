@@ -419,8 +419,10 @@ playlists existent et ce qu'elles acceptent. Deux principes le guident :
    (« Brésil · Bossa nova », « Maghreb · Gnawa », « Jazz · Ethio-jazz »),
    jamais un fourre-tout comme « Monde ».
 2. **Garder la même ambiance** du premier au dernier titre : une famille qui
-   mêle des ambiances est découpée (le Maghreb en gnawa, raï & chaâbi,
-   traditions des oasis ; le funk arabe des années 70 rejoint le Funk).
+   mêle des ambiances est découpée — le plus souvent en une playlist vive
+   (groovy, festive, énergique) et une douce (calme, planante, mélancolique) :
+   « Soul · Soul groovy » et « Soul · Soul ballades », « Classique · Baroque
+   vif » et « Classique · Baroque lent ». Aucune playlist « Divers ».
 
 ```toml
 [taille]          # l'aperçu signale les playlists hors de cette plage
@@ -479,7 +481,7 @@ Il n'y a pas de playlist « BO » : une musique de film ou de jeu est rangée
 selon sa musique (orchestre, jazz, synthés…). « BO & Scène » n'est donc plus
 proposé à Claude comme genre.
 
-Le plan livré a été calibré sur une bibliothèque réelle : 56 playlists, 4 078
+Le plan livré a été calibré sur une bibliothèque réelle : 79 playlists, 4 078
 titres rangés sur 4 083. Une petite playlist cohérente est préférée à une
 grande qui change d'ambiance : seules les plus de 150 titres sont signalées. Modifie-le
 librement, puis recalcule l'aperçu. Renommer une playlist en crée une nouvelle

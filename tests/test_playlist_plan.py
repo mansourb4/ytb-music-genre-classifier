@@ -190,11 +190,11 @@ def test_the_shipped_plan_is_valid():
         ("Hip Hop", "Trap", "Énergique", "Rap · Trap énergique"),
         ("Hip Hop", "Trap", "Sombre", "Rap · Trap sombre"),
         ("Hip Hop", "Trap", "Mélancolique", "Rap · Trap mélancolique"),
-        ("Hip Hop", "Contemporary R&B", "Calme", "Soul · Neo soul & R&B"),
+        ("Hip Hop", "Contemporary R&B", "Calme", "Soul · R&B & neo soul posés"),
         ("Electronic", "Deep House", "Planant", "Électro · Deep house planante"),
         ("Jazz", "Fusion", "Groovy", "Jazz · Jazz-funk & groove"),
         ("Jazz", "Bossa Nova", "Calme", "Brésil · Bossa nova"),
-        ("Latin", "Samba", "Festif", "Brésil · MPB & samba"),
+        ("Latin", "Samba", "Festif", "Brésil · Samba & groove"),
         ("Folk & World", "Gnawa", "Planant", "Maghreb · Gnawa"),
         ("Folk & World", "Raï", "Festif", "Maghreb · Raï & chaâbi"),
         ("Folk & World", "Tarab", "Mélancolique", "Orient · Fairouz, tarab & chanson"),
@@ -207,14 +207,55 @@ def test_the_shipped_plan_is_valid():
         ("Latin", "Flamenco", "Festif", "Folk · Flamenco & tsigane"),
         ("Reggae", "Roots Reggae", "Groovy", "Caraïbes · Reggae, dub & dancehall"),
         ("Pop", "Chanson", "Calme", "Pop · Variété française"),
-        ("Classical", "Romantic", "Mélancolique", "Classique · Romantique"),
-        ("Electronic", "Glitch", "Cérébral", "Électro · Breaks & expérimental"),
-        ("Electronic", "Video Game Music", "Calme", "Électro · Downtempo & ambient"),
+        ("Classical", "Romantic", "Mélancolique", "Classique · Romantique tendre"),
+        ("Electronic", "Glitch", "Cérébral", "Électro · Expérimental & IDM"),
+        ("Electronic", "Video Game Music", "Calme", "Électro · Downtempo chill"),
     ],
 )
 def test_the_shipped_plan_ranks_representative_verdicts(genre, style, mood, expected):
     plan = load_plan("config/playlists.toml", TAXONOMY)
     assert assign(judged("a", genre, style, mood), plan, TAXONOMY).name == expected
+
+
+@pytest.mark.parametrize(
+    ("genre", "style", "mood", "expected"),
+    [
+        ("Hip Hop", "Boom Bap", "Groovy", "Rap · Boom bap groovy"),
+        ("Hip Hop", "Boom Bap", "Sombre", "Rap · Boom bap dur"),
+        ("Hip Hop", "Boom Bap", "Mélancolique", "Rap · Boom bap mélancolique"),
+        ("Jazz", "Fusion", "Énergique", "Jazz · Fusion énergique"),
+        ("Jazz", "Fusion", "Calme", "Jazz · Fusion planante"),
+        ("Funk & Soul", "Soul", "Groovy", "Soul · Soul groovy"),
+        ("Funk & Soul", "Soul", "Mélancolique", "Soul · Soul ballades"),
+        ("Classical", "Baroque", "Énergique", "Classique · Baroque vif"),
+        ("Classical", "Baroque", "Calme", "Classique · Baroque lent"),
+        ("Electronic", "Techno", "Énergique", "Électro · Techno percutante"),
+        ("Electronic", "Techno", "Planant", "Électro · Techno hypnotique"),
+        ("Jazz", "Swing", "Calme", "Jazz · Vocal & ballades"),
+        ("Jazz", "Vocal", "Groovy", "Jazz · Swing & big band"),
+        ("Jazz", "Smooth Jazz", "Calme", "Jazz · Lounge & jazz d'ambiance"),
+    ],
+)
+def test_the_shipped_plan_keeps_one_mood_per_playlist(genre, style, mood, expected):
+    """Une même famille, deux ambiances : deux playlists. Lancer « Boom bap
+    groovy » ne doit pas tomber sur un titre sombre."""
+    plan = load_plan("config/playlists.toml", TAXONOMY)
+    assert assign(judged("a", genre, style, mood), plan, TAXONOMY).name == expected
+
+
+@pytest.mark.parametrize("genre", ["Hip Hop", "Electronic", "Jazz", "Funk & Soul", "Classical",
+                                   "Pop", "Rock", "Blues", "Latin", "Folk & World", "Reggae"])
+def test_a_track_without_a_known_mood_still_finds_its_family(genre):
+    """Un titre que seul Discogs décrit n'a pas d'ambiance : le découpage par
+    ambiance ne doit pas le laisser sans playlist."""
+    plan = load_plan("config/playlists.toml", TAXONOMY)
+    playlist = assign(judged("a", genre, "Style inconnu", None), plan, TAXONOMY)
+    assert playlist is not None
+
+
+def test_the_shipped_plan_has_no_catch_all_named_divers():
+    plan = load_plan("config/playlists.toml", TAXONOMY)
+    assert not [p.name for p in plan.playlists if "Divers" in p.name]
 
 
 def test_the_shipped_plan_has_no_catch_all_world_family():
