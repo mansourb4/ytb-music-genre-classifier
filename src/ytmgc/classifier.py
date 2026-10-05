@@ -198,10 +198,7 @@ def _judge(
     verdict = verdicts.get(track_key(track))
     if verdict is None or verdict.confidence < config.claude.min_confidence:
         return classification
-
-    from ytmgc.enrich import _merge
-
-    return _merge(track, classification, verdict, taxonomy)
+    return merge(track, classification, verdict, taxonomy)
 
 
 def _classify(track: Track, candidates: list[ReleaseCandidate], config: Config) -> Classification:

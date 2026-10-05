@@ -331,3 +331,16 @@ def test_results_can_be_filtered_and_searched(client, config):
     found = client.get("/api/verdicts", params={"q": "lith"}).json()
     assert [row["title"] for row in found["rows"]] == ["Lithium"]
     assert client.get("/api/verdicts", params={"show": "n'importe"}).status_code == 400
+
+
+def test_an_analysis_succeeds_when_verdicts_already_exist(client, config, repository):
+    """Régression, par le chemin même où elle a été vue : relancer l'analyse
+    après un import échouait — « cannot import name '_merge' »."""
+    verdicts.save(VerdictBook([ANSWERS["Something In The Way"]]), config.claude.verdicts_file)
+
+    job = wait(client, client.post("/api/analyse", json={"sources": ["library"]}))
+
+    assert job["status"] == "terminé", job["error"]
+    assert "tranchés par un verdict déjà rendu" in job["result"]["summary"]
+    judged = {c.video_id: c for c in repository.classifications() if c.judged}
+    assert [c.mood for c in judged.values()] == ["Mélancolique"]

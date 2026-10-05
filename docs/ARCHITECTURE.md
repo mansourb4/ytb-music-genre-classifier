@@ -549,7 +549,7 @@ motif : aucun autre fichier du disque n'est atteignable par l'interface.
 
 ## Tests
 
-504 tests, aucun appel réseau, y compris l'API web complète (aperçu,
+507 tests, aucun appel réseau, y compris l'API web complète (aperçu,
 application, annulation), son contrôle d'accès et les quatre voies de connexion.
 
 Cinquante-neuf d’entre eux chargent l’interface dans un vrai navigateur (`tests/test_ui.py`).

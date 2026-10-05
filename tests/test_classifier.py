@@ -179,3 +179,41 @@ def test_without_a_tag_source_nothing_changes(repository, config):
     repository.upsert_tracks(library)
     classify_tracks(library, repository, FakeDiscogs(PUNK_ALBUM), config)
     assert all(c.styles == ("Punk",) for c in repository.classifications())
+
+
+# ------------------------------------------------- verdicts déjà rendus
+
+
+def test_an_analysis_applies_the_verdicts_already_given(repository, config):
+    """Régression : l'analyse d'un titre déjà jugé échouait — « cannot import
+    name '_merge' » — dès qu'un verdict existait. Aucun test ne faisait passer
+    une analyse sur un titre jugé : le chemin n'était jamais exécuté."""
+    from ytmgc.verdicts import Verdict, VerdictBook
+
+    track = make_track("v1", "Something In The Way", "Nirvana", "Nevermind")
+    repository.upsert_tracks([track])
+    source = FakeDiscogs({"Nirvana": [make_candidate(1, "Nevermind", "Nirvana")]})
+    book = VerdictBook([Verdict("Nirvana", "Something In The Way", "Rock", "Acoustic",
+                                "Mélancolique", 0.95)])
+
+    stats = classify_tracks([track], repository, source, config, verdicts=book)
+
+    classification = repository.classifications()[0]
+    assert stats.judged == 1
+    assert classification.judged is True
+    assert classification.styles == ("Acoustic",)
+    assert classification.mood == "Mélancolique"
+
+
+def test_an_unsure_verdict_does_not_override_the_analysis(repository, config):
+    from ytmgc.verdicts import Verdict, VerdictBook
+
+    track = make_track("v1", "Lithium", "Nirvana", "Nevermind")
+    repository.upsert_tracks([track])
+    source = FakeDiscogs({"Nirvana": [make_candidate(1, "Nevermind", "Nirvana")]})
+    book = VerdictBook([Verdict("Nirvana", "Lithium", "Pop", "Bubblegum", "Festif", 0.1)])
+
+    stats = classify_tracks([track], repository, source, config, verdicts=book)
+
+    assert stats.judged == 0
+    assert repository.classifications()[0].styles == ("Grunge",)
