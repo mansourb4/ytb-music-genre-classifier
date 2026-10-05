@@ -413,7 +413,14 @@ donne une centaine de playlists, la bossa nova coupée entre Jazz, Latin et Pop,
 et des fourre-tout dont on ignore le contenu.
 
 Le tri « Par famille » fait l'inverse : `config/playlists.toml` dit quelles
-playlists existent et ce qu'elles acceptent.
+playlists existent et ce qu'elles acceptent. Deux principes le guident :
+
+1. **Comprendre ce qu'on écoute** : chaque playlist porte une famille réelle
+   (« Brésil · Bossa nova », « Maghreb · Gnawa », « Jazz · Ethio-jazz »),
+   jamais un fourre-tout comme « Monde ».
+2. **Garder la même ambiance** du premier au dernier titre : une famille qui
+   mêle des ambiances est découpée (le Maghreb en gnawa, raï & chaâbi,
+   traditions des oasis ; le funk arabe des années 70 rejoint le Funk).
 
 ```toml
 [taille]          # l'aperçu signale les playlists hors de cette plage
@@ -439,7 +446,7 @@ styles = ["Trap", "Drill"]
 * Un critère absent accepte tout ; plusieurs blocs du même nom alimentent la
   même playlist (« Jazz-Funk, ou bien Fusion quand elle groove »).
 * Un critère `artistes = [...]` range par artiste — invités et chaînes YouTube
-  compris. C'est ainsi que les playlists Monde sont rangées par région : le
+  compris. C'est ainsi que Maghreb, Orient ou Afrique sont rangés : le
   verdict dit « Ballad » ou « Traditional », pas Beyrouth ou Bamako. Un artiste
   nommé mais absent de la bibliothèque (faute de frappe ?) est signalé.
 * Genres et ambiances sont vérifiés au chargement : une faute de frappe est
@@ -472,8 +479,9 @@ Il n'y a pas de playlist « BO » : une musique de film ou de jeu est rangée
 selon sa musique (orchestre, jazz, synthés…). « BO & Scène » n'est donc plus
 proposé à Claude comme genre.
 
-Le plan livré a été calibré sur une bibliothèque réelle : 46 playlists, 4 078
-titres rangés sur 4 083, la plupart entre 15 et 150 titres. Modifie-le
+Le plan livré a été calibré sur une bibliothèque réelle : 56 playlists, 4 078
+titres rangés sur 4 083. Une petite playlist cohérente est préférée à une
+grande qui change d'ambiance : seules les plus de 150 titres sont signalées. Modifie-le
 librement, puis recalcule l'aperçu. Renommer une playlist en crée une nouvelle
 à l'application : l'ancienne est vidée.
 

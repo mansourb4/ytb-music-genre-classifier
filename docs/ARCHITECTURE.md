@@ -596,6 +596,18 @@ l'emporte**. Les choix qui en découlent :
 La clé d'une playlist du plan est `plan/` suivi de son nom : renommer une
 playlist en crée une autre, et l'ancienne devient sans objet.
 
+**Une famille réelle, une ambiance constante.** Une première version rangeait
+sous « Monde » tout ce qui n'était ni jazz, ni rap, ni électro. Le mot ne dit
+rien de ce qu'on va entendre, et chaque playlist « Monde · région » sautait
+d'une ambiance à l'autre : Mulatu Astatke à côté de Tyla, les chants des
+oasis à côté du funk libyen. Le plan range donc chaque morceau dans une
+famille musicale réelle — Brésil, Maghreb, Orient, Afrique, Caraïbes, Latino,
+Folk, ou une famille existante quand elle convient (ethio-jazz et latin jazz
+dans Jazz, afrobeat et funk arabe des années 70 dans Funk) — puis découpe
+chaque famille jusqu'à ce que l'ambiance tienne. Le seuil bas de `[taille]`
+(5) en découle : une playlist de six titres de flamenco vaut mieux qu'une de
+vingt qui finit sur un chœur russe.
+
 **Les artistes, pour ranger par région.** La musique du monde se découpait
 mal : le verdict dit « Ballad », « Traditional » ou « Instrumental » pour
 Fairouz comme pour les compagnies des oasis marocaines. Une règle peut donc
@@ -639,7 +651,7 @@ publications.
 
 ## Tests
 
-600 tests, aucun appel réseau, y compris l'API web complète (aperçu,
+610 tests, aucun appel réseau, y compris l'API web complète (aperçu,
 application, annulation), son contrôle d'accès et les quatre voies de connexion.
 
 Soixante et onze d’entre eux chargent l’interface dans un vrai navigateur (`tests/test_ui.py`).

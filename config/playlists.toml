@@ -2,7 +2,7 @@
 #
 # Chaque morceau va dans la PREMIÈRE playlist dont une règle lui correspond,
 # en lisant ce fichier de haut en bas. D'où l'ordre :
-#   1. d'abord les playlists transversales (Monde, R&B, variété…), qui
+#   1. d'abord les playlists transversales (Brésil, Maghreb, R&B…), qui
 #      réunissent un style ou des artistes quel que soit le genre que Claude a
 #      donné ;
 #   2. puis chaque famille, de la règle la plus étroite à la plus large.
@@ -25,91 +25,139 @@
 # Renommer une playlist ici en crée une nouvelle à l'application : l'ancienne
 # est vidée. Changer une règle, en revanche, se voit tout de suite à l'aperçu.
 
-# Taille visée : l'aperçu signale les playlists hors de cette plage.
+# Taille visée : l'aperçu signale les playlists hors de cette plage. Le
+# minimum est bas à dessein : une petite playlist qui garde la même ambiance
+# vaut mieux qu'une grande qui saute du flamenco au chant russe.
 [taille]
-min = 15
+min = 5
 max = 150
 
 
 # ============================================================ transversales
 
-# ------------------------------------------------------------------ monde
+# ----------------------------------------------------------------- brésil
 
 [[playlist]]
-nom = "Monde · Bossa nova"
+nom = "Brésil · Bossa nova"
 description = "Bossa nova, qu'elle vienne du Brésil, du jazz ou d'une musique de film."
 styles = ["Bossa Nova"]
 
 [[playlist]]
-nom = "Monde · MPB & samba"
+nom = "Brésil · MPB & samba"
 description = "Musique populaire brésilienne, samba et groove brésilien."
 styles = ["MPB", "Samba", "Baile Funk"]
 
 [[playlist]]
-nom = "Monde · MPB & samba"
+nom = "Brésil · MPB & samba"
 genres = ["Latin"]
 artistes = ["Elis Regina", "Ana Mazzotti", "Germannu", "Joutro Mundo"]
 
+# ---------------------------------------------------------------- maghreb
+
 [[playlist]]
-nom = "Monde · Gnawa"
+nom = "Maghreb · Gnawa"
 description = "Transe gnaoua : guembri, qraqeb et chants responsoriaux, du rituel à la fusion."
 styles = ["Gnawa"]
 
 [[playlist]]
-nom = "Monde · Maghreb"
-description = "Raï, chaâbi, kabyle, musiques des oasis, orgue marocain et funk libyen ou tunisien."
+nom = "Funk · Funk arabe des années 70"
+description = "Funk, orgue et synthés du Maghreb et du Liban des années 70-80 : le répertoire réédité par Habibi Funk."
+artistes = ["Abdou El Omari", "Carthago", "Najib Alhoush", "Ahmed Fakroun", "Douaa", "Ahmed Malek", "Ziad Rahbani"]
+styles = ["Funk", "Jazz-Funk", "Instrumental", "Synth-Pop", "Disco"]
+
+[[playlist]]
+nom = "Maghreb · Raï & chaâbi"
+description = "Raï, chaâbi, chanson kabyle et chansons de fête."
 styles = ["Raï", "Chaabi", "Kabyle Pop"]
 
 [[playlist]]
-nom = "Monde · Maghreb"
-artistes = ["Abdou El Omari", "Compagnie El Hamri", "Compagnie El Hashemi Nhass", "Compagnie Jellouili & Ghih", "Compagnie Meskaoui", "Labess", "Carthago", "Douaa", "Najib Alhoush", "Ahmed Fakroun", "Saber Rebai", "Hindi Zahra", "Mohamed Mazouni", "sofiane salamane", "Oum", "Rachid Taha", "Khaled", "Cheikha Rimitti", "Mohamed Lamouri", "Raïna Raï", "Mohamed Allaoua", "Samira Saïd", "Ahmed Malek"]
+nom = "Maghreb · Raï & chaâbi"
+artistes = ["Saber Rebai", "sofiane salamane", "Labess"]
 
 [[playlist]]
-nom = "Monde · Orient"
-description = "Liban, Égypte, Irak : tarab, oud, Fairouz et les Rahbani, pop arabe."
-styles = ["Tarab", "Arabic Classical", "Arabic Pop", "Al Jeel"]
+nom = "Maghreb · Traditions"
+description = "Chants et percussions des oasis marocaines, folk berbère."
+artistes = ["Compagnie El Hamri", "Compagnie El Hashemi Nhass", "Compagnie Jellouili & Ghih", "Compagnie Meskaoui", "Hindi Zahra"]
+
+# ----------------------------------------------------------------- orient
 
 [[playlist]]
-nom = "Monde · Orient"
-artistes = ["Fairuz", "Fairouz", "Ziad Rahbani", "Warda", "Warda El Gazaerya", "Marcel Khalife", "Munir Bachir", "Naseer Shamma", "Riyad Sunbati", "Abdallah Chahine", "Issam Hajali", "Mohamed Mounir", "Hany Shenoda Ferqet Masr", "Eng. Emad Al Atoum", "Fady", "MaHa", "marilyne naaman", "El Shab Arrab", "Bedouin Burger", "Rachid Aseyakhe", "Saint Levant"]
+nom = "Orient · Oud & taqsim"
+description = "Oud et improvisations sur les maqâms : musique savante instrumentale."
+styles = ["Arabic Classical"]
 
 [[playlist]]
-nom = "Monde · Caraïbes & reggae"
-description = "Reggae, dub, dancehall, zouk et musiques créoles."
+nom = "Orient · Oud & taqsim"
+artistes = ["Munir Bachir", "Naseer Shamma", "Riyad Sunbati", "Abdallah Chahine", "marilyne naaman"]
+
+[[playlist]]
+nom = "Orient · Pop arabe"
+description = "Al jeel et pop arabe dansante."
+styles = ["Al Jeel"]
+
+[[playlist]]
+nom = "Orient · Pop arabe"
+artistes = ["Hamid El Shaeri", "Hamid El Sha'ery", "Hamed Al Shaeri", "Hameed El Shaery", "Mohamed Mounir", "Bedouin Burger", "Samira Saïd"]
+
+[[playlist]]
+nom = "Orient · Fairouz, tarab & chanson"
+description = "Fairouz et les Rahbani, Warda, Marcel Khalife : la grande chanson arabe, tendre et nostalgique."
+styles = ["Tarab", "Arabic Pop"]
+
+[[playlist]]
+nom = "Orient · Fairouz, tarab & chanson"
+artistes = ["Fairuz", "Fairouz", "Warda", "Warda El Gazaerya", "Marcel Khalife", "Issam Hajali", "Eng. Emad Al Atoum", "Fady", "MaHa", "El Shab Arrab", "Rachid Aseyakhe", "Saint Levant", "Hany Shenoda Ferqet Masr"]
+
+# ---------------------------------------------------------------- afrique
+
+[[playlist]]
+nom = "Jazz · Ethio-jazz"
+description = "Le jazz éthiopien de Mulatu Astatke et de l'âge d'or d'Addis-Abeba."
+styles = ["Ethio-Jazz"]
+
+[[playlist]]
+nom = "Afrique · Folk, blues & mandingue"
+description = "Guitares mandingues, blues touareg, morna, semba : l'Afrique acoustique."
+styles = ["Desert Blues", "Semba", "Morna", "Mbaqanga"]
+
+[[playlist]]
+nom = "Afrique · Folk, blues & mandingue"
+artistes = ["Amadou & Mariam", "Blick Bassy", "Roseaux", "Victor Démé", "N'Gou Bagayoko", "3MA", "Bonga", "Cesária Evora", "Tinariwen", "Imarhan"]
+
+[[playlist]]
+nom = "Funk · Afrobeat"
+description = "Afrobeat et highlife : cuivres, polyrythmies et transe funk, de Fela à Kokoroko."
+styles = ["Afrobeat", "Highlife"]
+
+[[playlist]]
+nom = "Afrique · Afrobeats & amapiano"
+description = "Afrobeats, afroswing et amapiano : la pop africaine d'aujourd'hui, et ses échos dans le rap."
+styles = ["Afrobeats", "Afroswing", "Amapiano"]
+
+# --------------------------------------------------------------- caraïbes
+
+[[playlist]]
+nom = "Caraïbes · Reggae, dub & dancehall"
+description = "Roots reggae, dub, lovers rock, dancehall, ragga — et le zouk des Antilles."
 genres = ["Reggae"]
 
 [[playlist]]
-nom = "Monde · Caraïbes & reggae"
+nom = "Caraïbes · Reggae, dub & dancehall"
 styles = ["Zouk", "Ragga", "Roots Reggae", "Lovers Rock"]
 
 [[playlist]]
-nom = "Monde · Caraïbes & reggae"
+nom = "Caraïbes · Reggae, dub & dancehall"
 genres = ["Folk & World"]
 styles = ["Dancehall", "Dub"]
 
-[[playlist]]
-nom = "Monde · Caraïbes & reggae"
-artistes = ["David Walters"]
+# ------------------------------------------------------------------- jazz
 
 [[playlist]]
-nom = "Monde · Afrique"
-description = "Afrobeat, afrobeats, highlife, blues touareg, mandingue, musiques d'Afrique lusophone et australe."
-styles = ["Afrobeat", "Afrobeats", "Afroswing", "Highlife", "Desert Blues", "Semba", "Morna", "Mbaqanga", "Amapiano", "Ethio-Jazz"]
+nom = "Jazz · Latin jazz"
+description = "Jazz afro-cubain et latin, quel que soit le genre donné par le verdict."
+styles = ["Latin Jazz"]
 
-[[playlist]]
-nom = "Monde · Afrique"
-artistes = ["Amadou & Mariam", "Blick Bassy", "Roseaux", "Victor Démé", "N'Gou Bagayoko", "3MA", "Bonga", "Cesária Evora", "Girma Hadgu", "Tinariwen", "Imarhan"]
-genres = ["Folk & World", "Funk & Soul", "Jazz", "Pop"]
-
-[[playlist]]
-nom = "Monde · Europe & Méditerranée"
-description = "Flamenco et rumba, airs tsiganes et russes, chanson napolitaine, Anatolie, musique celtique."
-genres = ["Folk & World", "Latin"]
-styles = ["Flamenco", "Celtic", "Gypsy Jazz", "Choral"]
-
-[[playlist]]
-nom = "Monde · Europe & Méditerranée"
-artistes = ["Paco de Lucía", "Yasmin Levy", "LucasGitanoFamily", "Opa Tsupa", "Stanislav Stanchev", "Donatella Viggiano", "Neşe Karaböcek", "Altin Gün", "Christophe Lartilleux"]
+# ---------------------------------------------------------------- variés
 
 [[playlist]]
 nom = "Soul · Neo soul & R&B"
@@ -248,10 +296,10 @@ genres = ["Jazz"]
 styles = ["Bebop", "Hard Bop", "Post Bop", "Modal", "Cool Jazz"]
 
 [[playlist]]
-nom = "Jazz · Spiritual & ethio-jazz"
-description = "Jazz spirituel, ethio-jazz et jazz aventureux."
+nom = "Jazz · Spiritual jazz"
+description = "Jazz spirituel, third stream et jazz aventureux."
 genres = ["Jazz"]
-styles = ["Spiritual Jazz", "Ethio-Jazz", "Third Stream", "Experimental"]
+styles = ["Spiritual Jazz", "Third Stream", "Experimental"]
 
 [[playlist]]
 nom = "Jazz · Contemporain & smooth"
@@ -352,18 +400,39 @@ description = "Le reste du rock : alternatif, indie, pop rock."
 genres = ["Rock"]
 
 
-# ================================================================== monde
+# =================================================================== folk
 
 [[playlist]]
-nom = "Monde · Amérique latine"
-description = "Salsa, latin soul, cumbia, boléro, tango, reggaeton, latin jazz…"
-genres = ["Latin"]
+nom = "Folk · Flamenco & tsigane"
+description = "Guitares flamencas, rumba et airs tsiganes."
+genres = ["Folk & World", "Latin"]
+styles = ["Flamenco", "Gypsy Jazz"]
 
 [[playlist]]
-nom = "Monde · Amérique latine"
-styles = ["Latin Jazz"]
+nom = "Folk · Flamenco & tsigane"
+artistes = ["Opa Tsupa", "Christophe Lartilleux"]
 
 [[playlist]]
-nom = "Monde · Folk & traditions"
-description = "Folk acoustique et musiques traditionnelles venues d'ailleurs."
+nom = "Folk · Folk acoustique & traditions"
+description = "Folk acoustique, chants traditionnels et guitares nues."
 genres = ["Folk & World"]
+
+
+# ================================================================= latino
+
+[[playlist]]
+nom = "Latino · Salsa & latin soul"
+description = "Salsa, boogaloo, mambo, son cubain : les cuivres et les congas."
+genres = ["Latin"]
+styles = ["Salsa", "Boogaloo", "Mambo", "Afro-Cuban", "Guajira", "Son", "Disco", "Cha-Cha"]
+
+[[playlist]]
+nom = "Latino · Reggaeton, cumbia & corridos"
+description = "Musiques latines urbaines et dansantes d'aujourd'hui."
+genres = ["Latin"]
+styles = ["Reggaeton", "Cumbia", "Corrido Tumbado", "Dembow", "Funk"]
+
+[[playlist]]
+nom = "Latino · Boléro, tango & ballades"
+description = "Boléros, rancheras, tango et ballades latines."
+genres = ["Latin"]

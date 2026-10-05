@@ -47,7 +47,7 @@ nom = "Jazz · Fusion"
 styles = ["Fusion"]
 
 [[playlist]]
-nom = "Monde · Brésil"
+nom = "Brésil · Bossa nova"
 styles = ["Bossa Nova"]
 
 [[playlist]]
@@ -91,8 +91,8 @@ def test_a_cross_genre_style_gathers_whatever_genre_claude_gave():
     """La bossa nova rangée sous Jazz par un verdict et sous Latin par un autre
     finit dans la même playlist : c'était le principal éparpillement."""
     plan = parse_plan(PLAN, TAXONOMY)
-    assert assign(judged("a", "Jazz", "Bossa Nova"), plan, TAXONOMY).name == "Monde · Brésil"
-    assert assign(judged("b", "Latin", "Bossa Nova"), plan, TAXONOMY).name == "Monde · Brésil"
+    assert assign(judged("a", "Jazz", "Bossa Nova"), plan, TAXONOMY).name == "Brésil · Bossa nova"
+    assert assign(judged("b", "Latin", "Bossa Nova"), plan, TAXONOMY).name == "Brésil · Bossa nova"
 
 
 def test_a_genre_rule_catches_the_rest_of_its_family(plan):
@@ -193,12 +193,19 @@ def test_the_shipped_plan_is_valid():
         ("Hip Hop", "Contemporary R&B", "Calme", "Soul · Neo soul & R&B"),
         ("Electronic", "Deep House", "Planant", "Électro · Deep house planante"),
         ("Jazz", "Fusion", "Groovy", "Jazz · Jazz-funk & groove"),
-        ("Jazz", "Bossa Nova", "Calme", "Monde · Bossa nova"),
-        ("Latin", "Samba", "Festif", "Monde · MPB & samba"),
-        ("Folk & World", "Gnawa", "Planant", "Monde · Gnawa"),
-        ("Folk & World", "Raï", "Festif", "Monde · Maghreb"),
-        ("Folk & World", "Tarab", "Mélancolique", "Monde · Orient"),
-        ("Reggae", "Roots Reggae", "Groovy", "Monde · Caraïbes & reggae"),
+        ("Jazz", "Bossa Nova", "Calme", "Brésil · Bossa nova"),
+        ("Latin", "Samba", "Festif", "Brésil · MPB & samba"),
+        ("Folk & World", "Gnawa", "Planant", "Maghreb · Gnawa"),
+        ("Folk & World", "Raï", "Festif", "Maghreb · Raï & chaâbi"),
+        ("Folk & World", "Tarab", "Mélancolique", "Orient · Fairouz, tarab & chanson"),
+        ("Folk & World", "Al Jeel", "Festif", "Orient · Pop arabe"),
+        ("Folk & World", "Ethio-Jazz", "Groovy", "Jazz · Ethio-jazz"),
+        ("Funk & Soul", "Afrobeat", "Groovy", "Funk · Afrobeat"),
+        ("Pop", "Afrobeats", "Festif", "Afrique · Afrobeats & amapiano"),
+        ("Jazz", "Latin Jazz", "Groovy", "Jazz · Latin jazz"),
+        ("Latin", "Salsa", "Festif", "Latino · Salsa & latin soul"),
+        ("Latin", "Flamenco", "Festif", "Folk · Flamenco & tsigane"),
+        ("Reggae", "Roots Reggae", "Groovy", "Caraïbes · Reggae, dub & dancehall"),
         ("Pop", "Chanson", "Calme", "Pop · Variété française"),
         ("Classical", "Romantic", "Mélancolique", "Classique · Romantique"),
         ("Electronic", "Glitch", "Cérébral", "Électro · Breaks & expérimental"),
@@ -210,6 +217,13 @@ def test_the_shipped_plan_ranks_representative_verdicts(genre, style, mood, expe
     assert assign(judged("a", genre, style, mood), plan, TAXONOMY).name == expected
 
 
+def test_the_shipped_plan_has_no_catch_all_world_family():
+    """« Monde » ne dit rien de ce qu'on va entendre : chaque playlist porte
+    une famille réelle — Brésil, Maghreb, Orient, Jazz…"""
+    plan = load_plan("config/playlists.toml", TAXONOMY)
+    assert not [p.name for p in plan.playlists if p.name.startswith("Monde")]
+
+
 def test_the_shipped_plan_has_no_soundtrack_playlist():
     """Une musique de film est rangée selon sa musique, pas selon son usage."""
     plan = load_plan("config/playlists.toml", TAXONOMY)
@@ -219,10 +233,12 @@ def test_the_shipped_plan_has_no_soundtrack_playlist():
 @pytest.mark.parametrize(
     ("artist", "style", "expected"),
     [
-        ("Fairuz", "Ballad", "Monde · Orient"),
-        ("Abdou El Omari", "Instrumental", "Monde · Maghreb"),
-        ("Amadou & Mariam", "Folk", "Monde · Afrique"),
-        ("Simon & Garfunkel", "Folk", "Monde · Folk & traditions"),
+        ("Fairuz", "Ballad", "Orient · Fairouz, tarab & chanson"),
+        ("Munir Bachir", "Traditional", "Orient · Oud & taqsim"),
+        ("Abdou El Omari", "Instrumental", "Funk · Funk arabe des années 70"),
+        ("Compagnie El Hamri", "Traditional", "Maghreb · Traditions"),
+        ("Amadou & Mariam", "Folk", "Afrique · Folk, blues & mandingue"),
+        ("Simon & Garfunkel", "Folk", "Folk · Folk acoustique & traditions"),
     ],
 )
 def test_the_shipped_plan_places_world_music_by_region(artist, style, expected):
@@ -366,6 +382,6 @@ def test_a_mistake_in_the_plan_reaches_the_page_as_a_readable_error(repository, 
 
 def test_the_preview_reports_artists_missing_from_the_library(library, config):
     with open(config.taxonomy.playlists_file, "a", encoding="utf-8") as file:
-        file.write('\n[[playlist]]\nnom = "Monde · Orient"\nartistes = ["Herbie Hancock", "Fairouzz"]\n')
+        file.write('\n[[playlist]]\nnom = "Orient"\nartistes = ["Herbie Hancock", "Fairouzz"]\n')
     summary, _, _ = build_preview(library, apply_sort_mode(config, "familles"), sort_mode="familles")
     assert summary.unknown_artists == ["Fairouzz"]
