@@ -165,3 +165,31 @@ def test_the_estimate_says_how_many_duplicates_were_left_out(judged, config, cap
     out = capsys.readouterr().out
     assert "dont 1 doublon(s) jugé(s) une seule fois" in out
     assert "2 titre(s) à juger" in out
+
+
+def test_paquet_prints_only_the_message_on_stdout(judged, capsys):
+    """`ytmgc paquet | pbcopy` ne doit copier que le texte à coller."""
+    assert run("paquet") == 0
+    captured = capsys.readouterr()
+
+    assert captured.out.startswith("Tu es musicologue")
+    assert "pbpaste | ytmgc importe" in captured.err
+    assert judged.submitted == []
+
+
+def test_importe_reads_an_answer_from_a_file(judged, config, capsys, tmp_path):
+    import json as _json
+
+    from ytmgc.chat import load_packet
+
+    run("paquet")
+    capsys.readouterr()
+    packet = load_packet(config.claude.packet_file)
+    reply = tmp_path / "reponse.txt"
+    reply.write_text("```json\n" + _json.dumps({"paquet": packet.id, "verdicts": [
+        {"n": n, "titre": s.title, "genre": "Rock", "style": "Grunge", "mood": "Sombre",
+         "confidence": 0.9, "note": "…"} for n, s in enumerate(packet.subjects, 1)
+    ]}) + "\n```", encoding="utf-8")
+
+    assert run("importe", str(reply)) == 0
+    assert "Toute la bibliothèque est jugée" in capsys.readouterr().out

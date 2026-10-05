@@ -69,6 +69,11 @@ max_tokens = 8000
 # coûte quelques centimes : de quoi lire le résultat avant d'engager la passe
 # complète.
 pilot_size = 50
+# Passe gratuite via une conversation Claude.ai (`ytmgc paquet` / `importe`) :
+# titres par paquet. Une centaine tient dans une réponse ; au-delà, Claude
+# s'interrompt plus souvent et il faut répondre « continue ».
+packet_size = 100
+packet_file = "data/paquet.json"
 # Confiance en deçà de laquelle le verdict n'écrase pas les métadonnées : le
 # modèle a dit qu'il ne connaissait pas le morceau, on le croit.
 min_confidence = 0.35

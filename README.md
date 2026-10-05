@@ -70,7 +70,7 @@ Trois sources alimentent ce classement, de la moins à la plus précise :
 |---|---|---|
 | **Discogs** | La *release*. Tous les titres d'un album en héritent identiquement. | Gratuit |
 | **Last.fm** | Le *titre*, par les tags de ses auditeurs — où le genre écrase l'humeur. | Gratuit |
-| **Modèle** | La *musique* elle-même, morceau par morceau, avec une justification. | ~6 $ une fois |
+| **Modèle** | La *musique* elle-même, morceau par morceau, avec une justification. | Gratuit via Claude.ai, ou ~0,25 centime par titre via l'API |
 
 Chacune l'emporte sur la précédente quand elle a quelque chose à dire, et la
 dernière est facultative : voir [la section dédiée](#clé-anthropic-facultative-payante--la-précision-réelle).
@@ -164,7 +164,39 @@ Seuls les tags nommant un style connu sont retenus — les tags libres
 (« 00s », « seen live ») sont écartés par construction. Sans clé, l'outil
 fonctionne comme avant, sur les seuls styles de la release.
 
-### Clé Anthropic (facultative, payante — la précision réelle)
+### Juger les morceaux avec Claude — gratuitement, via Claude.ai
+
+Discogs décrit le disque et Last.fm des étiquettes ; seul un modèle connaît le
+morceau lui-même. Avec un compte Claude.ai, cette passe ne coûte rien : l'outil
+prépare un **paquet** — instructions, vocabulaire et une centaine de titres
+numérotés — que tu colles dans une conversation, puis tu recolles la réponse.
+
+Dans l'interface, étape 5, onglet « Gratuit — via Claude.ai » : *Préparer le
+paquet*, *Copier*, coller dans une nouvelle conversation, recopier la réponse
+(bouton « Copier » du bloc de code), *Importer*. Ou en ligne de commande, sur
+Mac :
+
+```bash
+ytmgc paquet | pbcopy      # copie le paquet suivant
+# … colle dans claude.ai, copie la réponse …
+pbpaste | ytmgc importe    # lit la réponse et range la bibliothèque
+```
+
+Si Claude s'interrompt avant la fin, réponds « continue » et importe la suite :
+le paquet reste ouvert. Ta bibliothèque actuelle demande quelques dizaines
+d'allers-retours, une fois ; ensuite, les titres ajoutés tiennent dans un seul.
+
+**La réponse est vérifiée avant d'être écrite.** Rien ne contraint ici sa
+forme, et un verdict rattaché au mauvais morceau serait pire qu'un verdict
+manquant — il serait tenu pour acquis, jamais redemandé. Chaque verdict doit
+donc recopier le titre qu'il juge, porter le numéro de paquet, et rester dans
+le vocabulaire fermé des genres et des huit ambiances. Ce qui échoue est
+écarté et signalé ; son titre revient de lui-même dans le paquet suivant.
+
+Les verdicts vont dans le même `data/verdicts.txt` que la voie payante
+ci-dessous, avec les mêmes règles.
+
+### Clé Anthropic (facultative, payante — la même chose, automatiquement)
 
 Discogs décrit le disque. Last.fm compile des tags posés par des auditeurs, où
 le genre écrase l'humeur : *Something In The Way* y pèse `grunge 100` et
@@ -362,6 +394,8 @@ ytmgc tags "Artiste" "Titre"   # tags d'un titre et classement qui en découle
 ytmgc enrich     # fait juger les titres par le modèle (par lots, payant)
 ytmgc lookup "Artiste" "Titre"  # genre, style et ambiance d'un titre, tout de suite
 ytmgc doublons   # morceaux présents sous plusieurs formes (gratuit, hors ligne)
+ytmgc paquet     # titres à faire juger dans Claude.ai (gratuit)
+ytmgc importe    # lit la réponse de Claude.ai
 ytmgc purge --execute   # supprime les playlists générées (annulation complète)
 ```
 
@@ -427,7 +461,7 @@ sans aucune écriture ni appel réseau.
 ## Développement
 
 ```bash
-python -m pytest        # 437 tests, aucun appel réseau
+python -m pytest        # 474 tests, aucun appel réseau
 ```
 
 Les API externes sont derrière des adaptateurs (`src/ytmgc/sources/`) ; toute la

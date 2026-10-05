@@ -13,6 +13,8 @@ Le pipeline est découpé en étapes reprenables, chacune persistée en base :
     ytmgc enrich     # fait juger la bibliothèque par le modèle (par lots)
     ytmgc lookup     # genre, style et ambiance d'un titre, tout de suite
     ytmgc doublons   # morceaux présents sous plusieurs formes (gratuit)
+    ytmgc paquet     # titres à faire juger dans Claude.ai (gratuit)
+    ytmgc importe    # lit la réponse de Claude.ai
     ytmgc purge      # supprime les playlists générées (annulation complète)
     ytmgc web        # interface locale : connexion, aperçu, application
 
@@ -408,6 +410,61 @@ def cmd_doublons(args: argparse.Namespace, config: Config) -> int:
     return 0
 
 
+def cmd_paquet(args: argparse.Namespace, config: Config) -> int:
+    """Prépare le paquet suivant à coller dans une conversation Claude.ai.
+
+    Le texte à coller va sur la sortie standard, les explications sur la
+    sortie d'erreur : `ytmgc paquet | pbcopy` copie ainsi le seul paquet.
+    """
+    from ytmgc.chat import build_message, prepare
+
+    packet, remaining = prepare(
+        _repository(config), config, size=args.taille, only_unsorted=args.only_unsorted
+    )
+    if packet is None:
+        print("Rien à juger : tous les titres ont déjà un verdict.", file=sys.stderr)
+        return 0
+
+    print(build_message(packet, load_taxonomy()))
+    rounds = -(-remaining // len(packet.subjects))
+    print(
+        f"\nPaquet {packet.id} : {len(packet.subjects)} titre(s), sur {remaining} encore "
+        f"à juger (environ {rounds} paquet(s) au total).\n"
+        "1. Colle ce texte dans une nouvelle conversation sur claude.ai.\n"
+        "2. Si Claude s'interrompt, réponds « continue ».\n"
+        "3. Copie sa réponse (bouton « Copier » du bloc de code), puis :\n"
+        "      pbpaste | ytmgc importe",
+        file=sys.stderr,
+    )
+    return 0
+
+
+def cmd_importe(args: argparse.Namespace, config: Config) -> int:
+    """Lit la réponse de Claude.ai, depuis un fichier ou l'entrée standard."""
+    from ytmgc.chat import import_answer
+
+    if args.fichier:
+        text = Path(args.fichier).read_text(encoding="utf-8")
+    else:
+        if sys.stdin.isatty():
+            print("Colle la réponse de Claude, puis Ctrl+D :", file=sys.stderr)
+        text = sys.stdin.read()
+
+    result = import_answer(text, _repository(config), config, load_taxonomy())
+    print(result.line())
+    for reason in result.rejected:
+        print(f"  écarté — {reason}")
+    if result.left_in_packet:
+        print(f"\n{result.left_in_packet} titre(s) de ce paquet sans verdict. Si Claude n'a pas "
+              "fini, réponds-lui « continue » et importe la suite ; sinon `ytmgc paquet` "
+              "les reproposera.")
+    elif result.remaining:
+        print("\nPaquet complet. `ytmgc paquet` prépare le suivant.")
+    else:
+        print("\nToute la bibliothèque est jugée.")
+    return 0
+
+
 def cmd_purge(args: argparse.Namespace, config: Config) -> int:
     """Annulation complète : supprime les playlists créées par l'outil."""
     repository = _repository(config)
@@ -583,6 +640,20 @@ def build_parser() -> argparse.ArgumentParser:
     doublons_cmd.add_argument("--limit", type=int, default=20, help="Groupes affichés")
     doublons_cmd.add_argument("--tout", action="store_true", help="Tout afficher")
     doublons_cmd.set_defaults(func=cmd_doublons)
+
+    paquet_cmd = subparsers.add_parser(
+        "paquet", help="Préparer des titres à faire juger dans Claude.ai (gratuit)"
+    )
+    paquet_cmd.add_argument("--taille", type=int, default=None,
+                            help="Titres par paquet (défaut : claude.packet_size)")
+    paquet_cmd.add_argument("--only-unsorted", action="store_true",
+                            help="Seulement les titres que Discogs n'a pas su classer")
+    paquet_cmd.set_defaults(func=cmd_paquet)
+
+    importe_cmd = subparsers.add_parser("importe", help="Lire la réponse de Claude.ai")
+    importe_cmd.add_argument("fichier", nargs="?", default=None,
+                             help="Fichier contenant la réponse (sinon : entrée standard)")
+    importe_cmd.set_defaults(func=cmd_importe)
 
     purge_cmd = subparsers.add_parser("purge", help="Supprimer les playlists générées par l'outil")
     purge_cmd.add_argument("--execute", action="store_true", help="Supprimer réellement (sinon : à blanc)")

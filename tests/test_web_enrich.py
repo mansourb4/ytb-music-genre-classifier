@@ -268,3 +268,47 @@ def test_an_unknown_track_is_reported_rather_than_invented(client):
 
 def test_a_lookup_needs_both_fields(client):
     assert client.post("/api/lookup", json={"artist": "", "title": "Rien"}).status_code == 422
+
+
+# ------------------------------------------------ passe gratuite (Claude.ai)
+
+
+def test_a_packet_is_prepared_with_its_message(client):
+    payload = client.post("/api/chat/packet", json={"size": 1}).json()
+
+    assert payload["packet"]["tracks"] == 1
+    assert payload["remaining"] == 2
+    assert payload["packet"]["id"] in payload["packet"]["message"]
+
+
+def test_a_pasted_answer_is_imported_and_sorts_the_library(client, config):
+    import json as _json
+
+    packet = client.post("/api/chat/packet", json={}).json()["packet"]
+    from ytmgc.chat import load_packet
+
+    titles = [s.title for s in load_packet(config.claude.packet_file).subjects]
+    text = "```json\n" + _json.dumps({"paquet": packet["id"], "verdicts": [
+        {"n": n, "titre": title, "genre": "Rock", "style": "Grunge", "mood": "Sombre",
+         "confidence": 0.9, "note": "…"} for n, title in enumerate(titles, 1)
+    ]}) + "\n```"
+    result = client.post("/api/chat/import", json={"text": text}).json()
+
+    assert result["accepted"] == 2 and result["remaining"] == 0
+    assert "2 verdict(s) enregistré(s)" in result["line"]
+    assert len(verdicts.load(config.claude.verdicts_file)) == 2
+
+
+def test_a_wrong_answer_is_refused_with_its_reason(client):
+    client.post("/api/chat/packet", json={})
+    response = client.post("/api/chat/import", json={"text": "pas de JSON ici"})
+
+    assert response.status_code == 400
+    assert "Copier" in response.json()["detail"]
+
+
+def test_the_free_route_needs_no_api_key(repository, config):
+    repository.upsert_tracks(LIBRARY)
+    client = build(repository, config, None)
+
+    assert client.post("/api/chat/packet", json={}).json()["packet"]["tracks"] == 2

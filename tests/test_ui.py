@@ -568,7 +568,13 @@ JUDGE_STATE = """() => {
 }"""
 
 
+def use_api(page):
+    """Passe sur l'onglet de la voie payante, comme le ferait l'utilisateur."""
+    page.click('#judge-methods [data-method="api"]')
+
+
 def test_the_cost_is_shown_before_anything_is_spent(page):
+    use_api(page)
     page.evaluate(JUDGE_STATE)
 
     assert "12" in page.locator("#judge-state").text_content()
@@ -579,6 +585,7 @@ def test_the_cost_is_shown_before_anything_is_spent(page):
 def test_the_trial_run_is_the_default_choice(page):
     """Se tromper sur toute une bibliothèque coûte cent fois plus que sur
     cinquante titres : c'est l'essai qui doit être proposé d'emblée."""
+    use_api(page)
     page.evaluate(JUDGE_STATE)
 
     assert "selected" in page.locator(".scope").first.get_attribute("class")
@@ -588,6 +595,7 @@ def test_the_trial_run_is_the_default_choice(page):
 
 def test_choosing_another_scope_restates_the_price(page):
     """Le montant affiché doit correspondre à ce qui sera réellement envoyé."""
+    use_api(page)
     page.evaluate(JUDGE_STATE)
     page.check('.scope input[value="all"]')
 
@@ -596,6 +604,7 @@ def test_choosing_another_scope_restates_the_price(page):
 
 
 def test_every_scope_shows_its_own_price(page):
+    use_api(page)
     page.evaluate(JUDGE_STATE)
     prices = page.locator(".scope .price").all_text_contents()
 
@@ -626,6 +635,7 @@ def test_an_empty_scope_cannot_be_chosen(page):
 
 def test_nothing_is_sent_before_an_explicit_confirmation(page):
     """Régression de principe : un clic ne doit jamais suffire à dépenser."""
+    use_api(page)
     page.evaluate("""() => {
       window.__posts = [];
       const real = window.fetch;
@@ -641,6 +651,7 @@ def test_nothing_is_sent_before_an_explicit_confirmation(page):
 
 
 def test_cancelling_the_confirmation_sends_nothing(page):
+    use_api(page)
     page.evaluate(JUDGE_STATE)
     page.click("#judge-btn")
     page.click("#judge-cancel")
@@ -711,3 +722,78 @@ def test_a_lookup_without_artist_is_refused_before_any_request(page):
     page.click("#lookup-btn")
 
     assert "l'artiste et le titre" in page.locator("#lookup-msg").text_content()
+
+
+
+# ------------------------------------------------ passe gratuite (Claude.ai)
+
+
+def test_without_an_api_key_the_free_route_is_shown_first(page):
+    """Sans clé, proposer d'abord la voie payante, c'est proposer une impasse."""
+    assert page.locator("#method-chat").is_visible()
+    assert not page.locator("#method-api").is_visible()
+
+
+def test_the_two_routes_can_be_switched(page):
+    use_api(page)
+    assert page.locator("#method-api").is_visible()
+    assert not page.locator("#method-chat").is_visible()
+
+    page.click('#judge-methods [data-method="chat"]')
+    assert page.locator("#method-chat").is_visible()
+
+
+def test_the_method_tabs_do_not_disturb_the_connection_tabs(page):
+    """Régression connue : des boutons portant la classe .tab avaient déjà
+    fait disparaître tous les panneaux de connexion."""
+    page.click('#judge-methods [data-method="api"]')
+    assert visible_panel(page) in PANELS
+
+
+def test_an_empty_library_has_nothing_to_package(page):
+    page.click("#chat-prepare")
+    page.wait_for_function("() => document.querySelector('#chat-packet-info').textContent")
+
+    assert "Rien à juger" in page.locator("#chat-packet-info").text_content()
+    assert page.locator("#chat-copy").is_disabled()
+
+
+def test_importing_nothing_is_refused_before_any_request(page):
+    page.click("#chat-import")
+    assert "Colle d'abord" in page.locator("#chat-msg").text_content()
+
+
+def test_the_free_route_end_to_end(page, repository, config):
+    """Préparer, coller la réponse, et voir la bibliothèque jugée : le parcours
+    réel, dans le navigateur, contre le vrai serveur."""
+    import json
+
+    from ytmgc.chat import load_packet
+    from ytmgc.models import Track
+
+    repository.upsert_tracks([
+        Track("g1", "Something In The Way", ("Nirvana",), "Nevermind"),
+        Track("g2", "Get Lucky", ("Daft Punk", "Pharrell Williams"), "RAM"),
+    ])
+
+    page.click("#chat-prepare")
+    page.wait_for_selector("#chat-packet:not([hidden])")
+    message = page.locator("#chat-packet").input_value()
+    assert "1. Nirvana – Something In The Way" in message
+    assert page.locator("#chat-copy").is_enabled()
+    assert "2 titre(s)" in page.locator("#chat-packet-info").text_content()
+
+    packet = load_packet(config.claude.packet_file)
+    reply = "```json\n" + json.dumps({"paquet": packet.id, "verdicts": [
+        {"n": n, "titre": s.title, "genre": "Rock", "style": "Acoustic", "mood": "Calme",
+         "confidence": 0.9, "note": "…"} for n, s in enumerate(packet.subjects, 1)
+    ]}, ensure_ascii=False) + "\n```"
+    page.fill("#chat-answer", reply)
+    page.click("#chat-import")
+    page.wait_for_function(
+        "() => document.querySelector('#chat-msg').textContent.includes('enregistré')"
+    )
+
+    assert "2 verdict(s) enregistré(s)" in page.locator("#chat-msg").text_content()
+    assert "Toute la bibliothèque est jugée" in page.locator("#chat-msg").text_content()
+    assert page.locator("#chat-answer").input_value() == ""

@@ -148,6 +148,17 @@ class LookupRequest(BaseModel):
     force: bool = False
 
 
+class PacketRequest(BaseModel):
+    #: Titres par paquet. Absent = celui de la configuration.
+    size: int | None = Field(default=None, ge=1, le=300)
+    only_unsorted: bool = False
+
+
+class ChatImportRequest(BaseModel):
+    #: Réponse de Claude.ai, telle que copiée — blocs de code compris.
+    text: str = Field(min_length=1)
+
+
 class PurgeRequest(BaseModel):
     confirm: bool = False
     #: Playlists à supprimer. Absent = toutes celles portant le marqueur.
@@ -590,6 +601,51 @@ def create_app(services: Services) -> FastAPI:
         book.add(found[0])
         verdict_file.save(book, config.claude.verdicts_file)
         return {"verdict": _verdict_dict(found[0], load_taxonomy()), "cached": False}
+
+    # ------------------------------------------- passe gratuite (Claude.ai)
+
+    @app.post("/api/chat/packet")
+    def chat_packet(request: PacketRequest) -> dict:
+        """Prépare le paquet suivant à coller dans une conversation Claude.ai."""
+        from ytmgc.chat import build_message, prepare
+        from ytmgc.taxonomy import load_taxonomy
+
+        packet, remaining = prepare(
+            repository, config, size=request.size, only_unsorted=request.only_unsorted
+        )
+        if packet is None:
+            return {"packet": None, "remaining": 0}
+        return {
+            "packet": {
+                "id": packet.id,
+                "tracks": len(packet.subjects),
+                "message": build_message(packet, load_taxonomy()),
+            },
+            "remaining": remaining,
+        }
+
+    @app.post("/api/chat/import")
+    def chat_import(request: ChatImportRequest) -> dict:
+        """Lit la réponse collée, n'en garde que les verdicts vérifiables."""
+        from ytmgc.chat import ChatError, import_answer
+        from ytmgc.taxonomy import load_taxonomy
+
+        # L'import reclasse des titres : il ne doit pas croiser une analyse
+        # qui vide la bibliothèque pour la relire.
+        if jobs.busy():
+            raise HTTPException(409, "Un traitement est déjà en cours")
+        try:
+            result = import_answer(request.text, repository, config, load_taxonomy())
+        except ChatError as exc:
+            raise HTTPException(400, str(exc)) from exc
+        return {
+            "accepted": result.accepted,
+            "applied": result.applied,
+            "rejected": result.rejected,
+            "left_in_packet": result.left_in_packet,
+            "remaining": result.remaining,
+            "line": result.line(),
+        }
 
     # ------------------------------------------------------------- aperçu
 
