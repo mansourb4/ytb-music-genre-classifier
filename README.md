@@ -282,12 +282,14 @@ Sans clé, tout le reste fonctionne exactement comme avant.
 Crée un jeton personnel sur <https://www.discogs.com/settings/developers>, puis :
 
 ```bash
-cp .env.example .env   # renseigne DISCOGS_TOKEN
-export $(grep -v '^#' .env | xargs)
+cp .env.example .env   # puis renseigne DISCOGS_TOKEN, et LASTFM_API_KEY si tu en as une
 ```
 
-Le jeton n'est **jamais** lu depuis `config.toml` : uniquement depuis
-l'environnement, pour qu'il ne finisse pas versionné.
+Le fichier `.env`, à la racine du projet, est **lu à chaque démarrage** de
+`ytmgc` : rien à réexporter quand tu ouvres un nouveau terminal. Une variable
+définie dans le terminal (`export DISCOGS_TOKEN=…`) l'emporte sur lui. Les
+jetons ne sont **jamais** lus depuis `config.toml`, et `.env` n'est pas
+versionné : ils ne finissent pas sur GitHub.
 
 ### Configuration
 
@@ -487,7 +489,7 @@ sans aucune écriture ni appel réseau.
 ## Développement
 
 ```bash
-python -m pytest        # 500 tests, aucun appel réseau
+python -m pytest        # 504 tests, aucun appel réseau
 ```
 
 Les API externes sont derrière des adaptateurs (`src/ytmgc/sources/`) ; toute la

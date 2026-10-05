@@ -69,7 +69,8 @@ class DiscogsClient:
     ) -> None:
         if not config.token:
             raise DiscogsError(
-                "Jeton Discogs manquant : renseigne DISCOGS_TOKEN (voir .env.example)"
+                "Jeton Discogs manquant : renseigne DISCOGS_TOKEN dans le fichier .env "
+                "à la racine du projet (copie de .env.example), puis relance l'outil."
             )
         if session is None:
             import requests  # import différé : dépendance optionnelle

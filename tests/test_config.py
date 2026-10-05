@@ -64,3 +64,45 @@ def test_a_chosen_marker_is_left_alone(tmp_path):
     path = tmp_path / "config.toml"
     path.write_text('[sync]\nmarker = "@@"\n', encoding="utf-8")
     assert load_config(path, env={}).sync.marker == "@@"
+
+
+# ------------------------------------------------------------------- .env
+
+
+def test_the_dotenv_file_is_read_at_startup(tmp_path, monkeypatch):
+    """Régression : les jetons n'étaient lus que dans le terminal, si bien
+    qu'un nouveau terminal faisait échouer l'analyse — « Jeton Discogs
+    manquant » — alors que le fichier .env était rempli."""
+    dotenv = tmp_path / ".env"
+    dotenv.write_text("# commentaire\nDISCOGS_TOKEN=abc123\nLASTFM_API_KEY='clé'\n",
+                      encoding="utf-8")
+    monkeypatch.delenv("DISCOGS_TOKEN", raising=False)
+    monkeypatch.delenv("LASTFM_API_KEY", raising=False)
+
+    config = load_config(tmp_path / "absent.toml", dotenv=dotenv)
+
+    assert config.discogs.token == "abc123"
+    assert config.lastfm.api_key == "clé"
+
+
+def test_a_variable_set_in_the_terminal_wins_over_the_dotenv_file(tmp_path, monkeypatch):
+    dotenv = tmp_path / ".env"
+    dotenv.write_text("DISCOGS_TOKEN=du-fichier\n", encoding="utf-8")
+    monkeypatch.setenv("DISCOGS_TOKEN", "du-terminal")
+
+    assert load_config(tmp_path / "absent.toml", dotenv=dotenv).discogs.token == "du-terminal"
+
+
+def test_an_empty_value_does_not_hide_anything(tmp_path):
+    """`DISCOGS_TOKEN=` tel que livré dans .env.example ne compte pas."""
+    from ytmgc.config import read_dotenv
+
+    dotenv = tmp_path / ".env"
+    dotenv.write_text("DISCOGS_TOKEN=\nexport LASTFM_API_KEY=xyz\nn'importe quoi\n",
+                      encoding="utf-8")
+    assert read_dotenv(dotenv) == {"LASTFM_API_KEY": "xyz"}
+
+
+def test_a_missing_dotenv_file_is_not_an_error(tmp_path, monkeypatch):
+    monkeypatch.delenv("DISCOGS_TOKEN", raising=False)
+    assert load_config(tmp_path / "absent.toml", dotenv=tmp_path / ".env").discogs.token == ""

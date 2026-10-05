@@ -10,6 +10,9 @@ from typing import Any
 
 DEFAULT_CONFIG_PATH = Path("config/config.toml")
 
+#: Secrets locaux (jetons Discogs, Last.fm, Anthropic). Jamais versionné.
+DEFAULT_DOTENV_PATH = Path(".env")
+
 #: Marqueur des premières versions, encore inscrit dans les fichiers de
 #: configuration copiés à l'époque. Il reste reconnu à la lecture des playlists,
 #: mais ne doit plus être écrit dans les descriptions.
@@ -208,13 +211,49 @@ def _apply_section(section: Any, values: dict[str, Any], path: str) -> None:
         setattr(section, key, value)
 
 
-def load_config(path: Path | None = None, env: dict[str, str] | None = None) -> Config:
+def read_dotenv(path: Path) -> dict[str, str]:
+    """Lit un fichier `.env` : `CLÉ=valeur` par ligne, commentaires ignorés.
+
+    Une valeur vide (`DISCOGS_TOKEN=`, tel que livré dans `.env.example`) est
+    ignorée : elle ne doit pas masquer une variable définie ailleurs.
+    """
+    if not path.is_file():
+        return {}
+    values: dict[str, str] = {}
+    for raw in path.read_text(encoding="utf-8").splitlines():
+        line = raw.strip()
+        if not line or line.startswith("#") or "=" not in line:
+            continue
+        if line.startswith("export "):
+            line = line[len("export "):]
+        key, _, value = line.partition("=")
+        value = value.strip()
+        if len(value) >= 2 and value[0] == value[-1] and value[0] in "'\"":
+            value = value[1:-1]
+        if key.strip() and value:
+            values[key.strip()] = value
+    return values
+
+
+def load_config(
+    path: Path | None = None,
+    env: dict[str, str] | None = None,
+    dotenv: Path | None = DEFAULT_DOTENV_PATH,
+) -> Config:
     """Construit la configuration : valeurs par défaut < fichier TOML < environnement.
 
     Les secrets (jeton Discogs) ne viennent *que* de l'environnement, pour ne
-    jamais finir versionnés dans config.toml.
+    jamais finir versionnés dans config.toml. Le fichier `.env` en fait partie :
+    il est lu à chaque démarrage, si bien qu'un nouveau terminal n'oblige plus
+    à réexporter les jetons à la main. Une variable réellement définie dans le
+    terminal l'emporte sur lui.
     """
-    env = os.environ if env is None else env
+    if env is None:
+        # Versé dans l'environnement du processus, et non seulement lu ici :
+        # d'autres modules lisent leurs secrets eux-mêmes (identifiants OAuth).
+        for key, value in (read_dotenv(dotenv) if dotenv is not None else {}).items():
+            os.environ.setdefault(key, value)
+        env = os.environ
     config = Config()
 
     config_path = path or DEFAULT_CONFIG_PATH
