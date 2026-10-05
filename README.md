@@ -479,12 +479,14 @@ l'aperçu à jour sur place : seul le titre bouge, sans recalcul ni relecture du
 compte YouTube Music.
 
 **Le rap, par pays.** Le rap se range en Rap · FR (France, Belgique, Suisse),
-US (avec le Canada), UK (avec l'Irlande), Maghreb et Ailleurs. Le pays de
+US (avec le Canada), UK (avec l'Irlande), Maghreb et Ailleurs. Le rap
+francophone, le plus fourni, est en plus découpé par ambiance : FR énergique,
+FR sombre, FR groovy & posé, FR mélancolique. Le pays de
 chaque artiste vient de `data/pays.txt` (`artiste <tab> code pays`),
 versionné et modifiable à la main ; une règle le désigne par
 `pays = ["FR", "BE"]`. Un artiste sans pays connu atterrit dans « Rap · Pays à
-préciser » (`pays = ["?"]`), où ses boutons proposent FR, US, Ailleurs… en un
-clic — ou ajoute une ligne au fichier pour ranger tous ses titres d'un coup.
+préciser » (`pays = ["?"]`), où ses boutons proposent une playlist par pays
+(FR, US, Ailleurs…) en un clic — ou ajoute une ligne au fichier pour ranger tous ses titres d'un coup.
 
 **Relire les verdicts peu sûrs.** Le panneau « à vérifier » de l'aperçu
 regroupe par artiste les titres que Claude ne connaissait pas. Pour chacun :
@@ -497,7 +499,7 @@ Il n'y a pas de playlist « BO » : une musique de film ou de jeu est rangée
 selon sa musique (orchestre, jazz, synthés…). « BO & Scène » n'est donc plus
 proposé à Claude comme genre.
 
-Le plan livré a été calibré sur une bibliothèque réelle : 72 playlists, 4 078
+Le plan livré a été calibré sur une bibliothèque réelle : 75 playlists, 4 078
 titres rangés sur 4 083. Une petite playlist cohérente est préférée à une
 grande qui change d'ambiance : seules les plus de 150 titres sont signalées. Modifie-le
 librement, puis recalcule l'aperçu. Renommer une playlist en crée une nouvelle

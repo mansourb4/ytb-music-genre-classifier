@@ -648,8 +648,12 @@ lien d'artiste, de style ou de genre : l'ambiance seule rapprochait
 Interstellar d'une transe gnaoua. Le pays connu d'un artiste écarte les
 playlists d'autres pays, et la playlist d'attente (`pays = ["?"]`).
 
-*Le rap par pays.* À la demande de l'utilisateur, le rap ne se découpe plus
-par ambiance mais par pays : Rap · FR, US, UK, Maghreb, Ailleurs. Le pays est
+*Le rap par pays.* À la demande de l'utilisateur, le rap se découpe d'abord
+par pays : Rap · FR, US, UK, Maghreb, Ailleurs. Le rap francophone (582 titres,
+toutes ambiances mêlées) est ensuite redécoupé par ambiance — énergique,
+sombre, groovy & posé, mélancolique — ; US et UK restent d'un seul tenant.
+Pour un titre dont le pays est inconnu, les suggestions proposent une
+playlist par pays plutôt que trois variantes du rap français. Le pays est
 une propriété de l'artiste, tenue dans `data/pays.txt` et désignée par une
 règle `pays`. Les 258 artistes identifiés avec assurance y figurent ; les
 autres attendent dans « Rap · Pays à préciser », plutôt que d'être devinés.
@@ -681,7 +685,7 @@ publications.
 
 ## Tests
 
-651 tests, aucun appel réseau, y compris l'API web complète (aperçu,
+659 tests, aucun appel réseau, y compris l'API web complète (aperçu,
 application, annulation), son contrôle d'accès et les quatre voies de connexion.
 
 Soixante-treize d’entre eux chargent l’interface dans un vrai navigateur (`tests/test_ui.py`).

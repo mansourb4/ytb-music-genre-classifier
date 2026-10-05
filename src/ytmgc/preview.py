@@ -314,9 +314,20 @@ def suggest_playlists(
             score = link + 0.3 * (moods[profile.mood] / size if profile.mood else 0.0)
             if score >= MIN_AFFINITY:
                 scored.append((-score, order, key, name))
-        suggestions[video_id] = [
-            {"key": key, "name": name} for _, _, key, name in sorted(scored)[:SUGGESTED]
-        ]
+        # Pays inconnu : la vraie question est le pays, pas l'ambiance. On
+        # propose donc une playlist par pays (la plus proche), plutôt que trois
+        # variantes d'un même pays.
+        chosen, countries_seen = [], set()
+        for _, _, key, name in sorted(scored):
+            wanted = required[key]
+            if not profile.countries and wanted is not None:
+                if wanted in countries_seen:
+                    continue
+                countries_seen.add(wanted)
+            chosen.append({"key": key, "name": name})
+            if len(chosen) == SUGGESTED:
+                break
+        suggestions[video_id] = chosen
     return suggestions
 
 

@@ -428,8 +428,8 @@ def test_the_preview_reports_artists_missing_from_the_library(library, config):
 @pytest.mark.parametrize(
     ("artist", "expected"),
     [
-        ("Nekfeu", "Rap · FR"),
-        ("Damso", "Rap · FR"),
+        ("Nekfeu", "Rap · FR sombre"),
+        ("Damso", "Rap · FR sombre"),
         ("Kendrick Lamar", "Rap · US"),
         ("Knucks", "Rap · UK"),
         ("ElGrandeToto", "Rap · Maghreb"),
@@ -481,3 +481,26 @@ def test_the_shipped_country_file_covers_the_main_rappers():
 
     known = origins.load("data/pays.txt")
     assert (known["nekfeu"], known["kendrick lamar"], known["damso"]) == ("FR", "US", "BE")
+
+
+@pytest.mark.parametrize(
+    ("mood", "expected"),
+    [
+        ("Énergique", "Rap · FR énergique"),
+        ("Festif", "Rap · FR énergique"),
+        ("Sombre", "Rap · FR sombre"),
+        ("Groovy", "Rap · FR groovy & posé"),
+        ("Calme", "Rap · FR groovy & posé"),
+        ("Mélancolique", "Rap · FR mélancolique"),
+        (None, "Rap · FR mélancolique"),
+    ],
+)
+def test_french_rap_is_also_split_by_mood(mood, expected):
+    """Le rap francophone, de loin le plus fourni, est découpé par ambiance ;
+    US et UK restent d'un seul tenant."""
+    from ytmgc import origins
+
+    plan = load_plan("config/playlists.toml", TAXONOMY)
+    known = origins.load("data/pays.txt")
+    playlist = assign(judged("a", "Hip Hop", "Trap", mood), plan, TAXONOMY, ("Nekfeu",), known)
+    assert playlist.name == expected

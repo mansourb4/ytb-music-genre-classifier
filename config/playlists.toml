@@ -220,15 +220,37 @@ styles = ["Psychedelic Rock", "Progressive Rock", "Art Rock", "Space Rock", "Mat
 
 # ===================================================================== rap
 #
-# Rangé par pays plutôt que par ambiance : on n'écoute pas le rap français et
-# le rap américain dans la même playlist. Le pays vient de data/pays.txt ; un
+# Rangé par pays : on n'écoute pas le rap français et le rap américain dans la
+# même playlist. Le rap francophone, de loin le plus fourni, est en plus
+# découpé par ambiance. Le pays vient de data/pays.txt ; un
 # artiste qui n'y figure pas atterrit dans « Pays à préciser » (pays = ["?"]),
 # où chaque titre propose les playlists voisines en un clic. Un pays qu'aucune
 # liste ne nomme laisse le titre dans les non-rangés : ajoute-le à « Ailleurs ».
 
 [[playlist]]
-nom = "Rap · FR"
-description = "Rap francophone : France, Belgique, Suisse."
+nom = "Rap · FR énergique"
+description = "Rap francophone qui cogne : trap, drill et boom bap énergiques, sons de fête."
+genres = ["Hip Hop"]
+pays = ["FR", "BE", "CH", "LU"]
+ambiances = ["Énergique", "Festif"]
+
+[[playlist]]
+nom = "Rap · FR sombre"
+description = "Rap francophone sombre : trap et drill menaçantes, boom bap noir."
+genres = ["Hip Hop"]
+pays = ["FR", "BE", "CH", "LU"]
+ambiances = ["Sombre"]
+
+[[playlist]]
+nom = "Rap · FR groovy & posé"
+description = "Rap francophone qui hoche la tête : boom bap groovy, rap jazzy, lo-fi posé."
+genres = ["Hip Hop"]
+pays = ["FR", "BE", "CH", "LU"]
+ambiances = ["Groovy", "Calme", "Planant"]
+
+[[playlist]]
+nom = "Rap · FR mélancolique"
+description = "Rap francophone mélancolique : cloud rap, rap introspectif, trap triste."
 genres = ["Hip Hop"]
 pays = ["FR", "BE", "CH", "LU"]
 

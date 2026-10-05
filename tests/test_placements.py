@@ -330,7 +330,10 @@ def profile(artist, style, mood, genre="Jazz", countries=()):
 def plan_of(**members):
     from ytmgc.models import PlaylistPlan
 
-    return [PlaylistPlan(key=f"plan/{k}", name=k, description="", video_ids=tuple(v), kind="plan")
+    from ytmgc.matching.normalize import slugify
+
+    return [PlaylistPlan(key=f"plan/{slugify(k)}", name=k, description="", video_ids=tuple(v),
+                         kind="plan")
             for k, v in members.items()]
 
 
@@ -409,3 +412,21 @@ def test_a_track_given_back_to_the_rules_returns_to_its_playlist(client):
     placed = put(client, "j1", "regles").json()["placed"]
     assert placed["j1"]["playlist"] == "plan/jazz-jazz-funk"
     assert not placed["j1"]["track"]["moved"]
+
+
+def test_a_track_of_unknown_country_is_offered_one_playlist_per_country():
+    """Pays inconnu : la question est le pays, pas l'ambiance. Trois variantes
+    du rap français masqueraient le rap américain."""
+    plan_text = ('[[playlist]]\nnom = "fr dur"\npays = ["FR"]\nambiances = ["Sombre"]\n'
+                 '[[playlist]]\nnom = "fr doux"\npays = ["FR"]\n'
+                 '[[playlist]]\nnom = "us"\npays = ["US"]\n'
+                 '[[playlist]]\nnom = "attente"\npays = ["?"]\n')
+    profiles = {
+        "a": profile("a", "trap", "Sombre", "Hip Hop", {"FR"}),
+        "b": profile("b", "trap", "Calme", "Hip Hop", {"FR"}),
+        "c": profile("c", "trap", "Sombre", "Hip Hop", {"US"}),
+        "u": profile("inconnu", "trap", "Sombre", "Hip Hop"),
+    }
+    plans = plan_of(**{"fr dur": ["a"], "fr doux": ["b"], "us": ["c"], "attente": ["u"]})
+    got = suggestions_for(plans, profiles, plan_text)
+    assert [s["name"] for s in got["u"]] == ["fr dur", "us"]
