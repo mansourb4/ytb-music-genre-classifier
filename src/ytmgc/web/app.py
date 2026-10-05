@@ -12,7 +12,7 @@ n'expose aucune authentification propre.
 
 from __future__ import annotations
 
-from dataclasses import dataclass, field
+from dataclasses import asdict, dataclass, field
 from pathlib import Path
 from typing import Any, Callable
 
@@ -785,6 +785,10 @@ def create_app(services: Services) -> FastAPI:
                 book.put(track, name)
         placements.save(book, path)
         return {
+            # Où chaque titre se trouve désormais, et comment l'afficher : la
+            # page se met à jour sur place, sans redemander l'aperçu entier —
+            # ni relire le compte YouTube, de loin le plus lent.
+            "placed": _placed([t.video_id for t in tracks]),
             "video_id": tracks[0].video_id,
             "label": tracks[0].label() if len(tracks) == 1 else f"{len(tracks)} titres",
             "count": len(tracks),
@@ -923,6 +927,19 @@ def create_app(services: Services) -> FastAPI:
         return jobs.start("suppression", work).to_dict()
 
     # ------------------------------------------------------------- outils
+
+    def _placed(video_ids: list[str]) -> dict:
+        summary, _, _ = build_preview(repository, _scoped("familles"), sort_mode="familles")
+        wanted = set(video_ids)
+        placed = {}
+        for playlist in summary.playlists:
+            for track in playlist.tracks:
+                if track.video_id in wanted:
+                    placed[track.video_id] = {"playlist": playlist.key, "track": asdict(track)}
+        for entry in summary.unsorted:
+            if entry["video_id"] in wanted:
+                placed[entry["video_id"]] = {"playlist": None, "unsorted": entry}
+        return placed
 
     def _scoped(sort_mode: str) -> Config:
         try:

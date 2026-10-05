@@ -470,6 +470,22 @@ versionné comme les verdicts et modifiable à la main. Toutes les publications
 d'un même morceau suivent le déplacement. Si la playlist visée disparaît du
 plan, l'aperçu le signale et le titre suit les règles en attendant.
 
+**Les playlists voisines, en un clic.** Sous chaque titre, « Aussi possible »
+propose jusqu'à trois autres playlists où il aurait sa place, sous forme de
+boutons. Elles sont choisies d'après ce que chaque playlist contient : d'abord
+les autres titres du même artiste, puis le même style, le même genre, et
+l'ambiance pour départager. Un clic y range le titre. Un déplacement met
+l'aperçu à jour sur place : seul le titre bouge, sans recalcul ni relecture du
+compte YouTube Music.
+
+**Le rap, par pays.** Le rap se range en Rap · FR (France, Belgique, Suisse),
+US (avec le Canada), UK (avec l'Irlande), Maghreb et Ailleurs. Le pays de
+chaque artiste vient de `data/pays.txt` (`artiste <tab> code pays`),
+versionné et modifiable à la main ; une règle le désigne par
+`pays = ["FR", "BE"]`. Un artiste sans pays connu atterrit dans « Rap · Pays à
+préciser » (`pays = ["?"]`), où ses boutons proposent FR, US, Ailleurs… en un
+clic — ou ajoute une ligne au fichier pour ranger tous ses titres d'un coup.
+
 **Relire les verdicts peu sûrs.** Le panneau « à vérifier » de l'aperçu
 regroupe par artiste les titres que Claude ne connaissait pas. Pour chacun :
 ▶ pour l'écouter, « ✓ C'est bon » pour valider — le verdict passe en source
@@ -481,7 +497,7 @@ Il n'y a pas de playlist « BO » : une musique de film ou de jeu est rangée
 selon sa musique (orchestre, jazz, synthés…). « BO & Scène » n'est donc plus
 proposé à Claude comme genre.
 
-Le plan livré a été calibré sur une bibliothèque réelle : 79 playlists, 4 078
+Le plan livré a été calibré sur une bibliothèque réelle : 72 playlists, 4 078
 titres rangés sur 4 083. Une petite playlist cohérente est préférée à une
 grande qui change d'ambiance : seules les plus de 150 titres sont signalées. Modifie-le
 librement, puis recalcule l'aperçu. Renommer une playlist en crée une nouvelle

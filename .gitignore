@@ -15,6 +15,8 @@ data/*
 !data/verdicts.txt
 # Les déplacements faits à la main : même raison, ce sont des décisions.
 !data/placements.txt
+# Le pays des artistes : une connaissance, pas un cache.
+!data/pays.txt
 *.db
 *.db-journal
 headers_auth.json

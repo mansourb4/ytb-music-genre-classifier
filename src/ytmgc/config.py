@@ -142,6 +142,8 @@ class TaxonomyConfig:
     playlists_file: str = "config/playlists.toml"
     #: Morceaux déplacés à la main d'une playlist du plan à une autre.
     placements_file: str = "data/placements.txt"
+    #: Pays d'origine des artistes, pour les règles « pays » du plan.
+    origins_file: str = "data/pays.txt"
 
 
 @dataclass(slots=True)

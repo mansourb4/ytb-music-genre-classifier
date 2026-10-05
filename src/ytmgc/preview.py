@@ -8,10 +8,11 @@ l'interface web.
 
 from __future__ import annotations
 
+from collections import Counter
 from dataclasses import asdict, dataclass, field, replace
 from typing import Iterable, Mapping
 
-from ytmgc import placements, verdicts
+from ytmgc import origins, placements, verdicts
 from ytmgc.config import Config
 from ytmgc.models import (
     Classification,
@@ -53,6 +54,9 @@ class TrackPreview:
     moved: bool = False
     #: Artiste principal : c'est par lui que la relecture regroupe les titres.
     main_artist: str = ""
+    #: Autres playlists où le titre aurait sa place, de la plus proche à la
+    #: moins proche : un clic suffit pour l'y déplacer.
+    suggestions: list[dict] = field(default_factory=list)
 
 
 @dataclass(frozen=True, slots=True)
@@ -170,6 +174,7 @@ def _detail(
     book: VerdictBook,
     unsure_below: float,
     moved: set[str] = frozenset(),
+    suggestions: dict[str, list[dict]] | None = None,
 ) -> list[TrackPreview]:
     """Détail de chaque titre d'une playlist, taxonomie et verdict compris."""
     detailed: list[TrackPreview] = []
@@ -203,9 +208,116 @@ def _detail(
                 ),
                 moved=video_id in moved,
                 main_artist=track.artist,
+                suggestions=(suggestions or {}).get(video_id, []),
             )
         )
     return detailed
+
+
+#: Nombre de playlists proposées par titre, et proximité minimale pour l'être.
+SUGGESTED = 3
+MIN_AFFINITY = 0.15
+
+
+@dataclass(frozen=True, slots=True)
+class _Profile:
+    """Ce qu'on compare d'un titre à une playlist."""
+
+    artist: str
+    styles: frozenset[str]
+    mood: str | None
+    genres: frozenset[str]
+    countries: frozenset[str] = frozenset()
+
+
+def _profile(
+    track: Track, classification: Classification | None, taxonomy, origins=None
+) -> _Profile:
+    from ytmgc.matching.normalize import fold, normalize_artist
+    from ytmgc.origins import countries_of
+
+    styles = (taxonomy.canonical_style(s) for s in (classification.styles if classification else ()))
+    return _Profile(
+        artist=normalize_artist(track.artist),
+        styles=frozenset(fold(s) for s in styles if s),
+        mood=classification.mood if classification else None,
+        genres=frozenset(
+            fold(taxonomy.display_genre(g)) for g in (classification.genres if classification else ())
+        ),
+        countries=frozenset(countries_of(track.artists, origins or {})),
+    )
+
+
+def suggest_playlists(
+    plans: list[PlaylistPlan],
+    profiles: dict[str, _Profile],
+    plan: Plan,
+) -> dict[str, list[dict]]:
+    """Les playlists voisines de chaque titre, d'après ce qu'elles contiennent.
+
+    Une règle dit où un titre *doit* aller ; elle ne dit pas où il pourrait
+    aussi aller. Ce qu'une playlist contient le dit mieux : on y cherche les
+    autres titres du même artiste, puis le même style, la même ambiance et le
+    même genre. Une playlist fourre-tout d'une famille, majoritairement calme,
+    n'est ainsi pas proposée pour un titre énergique.
+
+    Il faut un lien réel — artiste, style ou genre — pour être proposé :
+    l'ambiance seule rapprocherait Interstellar d'une transe gnaoua. Et le pays
+    d'un artiste, quand on le connaît, est respecté : Nekfeu n'est pas proposé
+    pour le rap marocain.
+    """
+    targets = [(p.key, p.name) for p in plan.playlists]
+    # Pays exigés par chaque playlist ; None si l'une de ses règles n'en exige pas.
+    required = {
+        p.key: (frozenset(c for r in p.rules for c in r.countries)
+                if all(r.countries for r in p.rules) else None)
+        for p in plan.playlists
+    }
+    members = {plan.key: plan.video_ids for plan in plans}
+    by_artist: Counter[str] = Counter(p.artist for p in profiles.values())
+    stats = {}
+    for key, video_ids in members.items():
+        known = [profiles[v] for v in video_ids if v in profiles]
+        if not known:
+            continue
+        stats[key] = (
+            len(known),
+            Counter(p.artist for p in known),
+            Counter(s for p in known for s in p.styles),
+            Counter(p.mood for p in known if p.mood),
+            Counter(g for p in known for g in p.genres),
+        )
+    current = {v: key for key, video_ids in members.items() for v in video_ids}
+
+    suggestions: dict[str, list[dict]] = {}
+    for video_id, profile in profiles.items():
+        here = current.get(video_id)
+        others = by_artist[profile.artist] - 1
+        scored = []
+        for order, (key, name) in enumerate(targets):
+            if key == here or key not in stats:
+                continue
+            wanted = required[key]
+            # Une playlist d'attente (`pays = ["?"]`) n'a rien à offrir à un
+            # titre dont le pays est connu.
+            if wanted is not None and profile.countries and not profile.countries & wanted:
+                continue
+            size, artists, styles, moods, genres = stats[key]
+            same_artist = artists[profile.artist] / others if others > 0 else 0.0
+            link = (
+                0.6 * min(same_artist, 1.0)
+                + 0.4 * max((styles[s] / size for s in profile.styles), default=0.0)
+                + 0.2 * max((genres[g] / size for g in profile.genres), default=0.0)
+            )
+            if link == 0:
+                continue
+            score = link + 0.3 * (moods[profile.mood] / size if profile.mood else 0.0)
+            if score >= MIN_AFFINITY:
+                scored.append((-score, order, key, name))
+        suggestions[video_id] = [
+            {"key": key, "name": name} for _, _, key, name in sorted(scored)[:SUGGESTED]
+        ]
+    return suggestions
 
 
 def _reason(classification: Classification | None, by_mood: bool, by_plan: bool = False) -> str:
@@ -338,6 +450,16 @@ def build_preview(
         elif action.op is Op.REMOVE:
             removed_by_key[action.key] = removed_by_key.get(action.key, 0) + len(action.video_ids)
 
+    known_origins = origins.load(config.taxonomy.origins_file) if plan else {}
+    suggested = (
+        suggest_playlists(
+            plans,
+            {v: _profile(t, by_video.get(v), taxonomy, known_origins) for v, t in tracks.items()},
+            plan,
+        )
+        if plan else {}
+    )
+
     previews: list[PlaylistPreview] = []
     for item in plans:
         added = added_by_key.get(item.key, 0)
@@ -349,7 +471,7 @@ def build_preview(
         else:
             change = "inchangée"
         detail = _detail(item.video_ids, tracks, by_video, book, config.claude.unsure_below,
-                         moved=set(honoured))
+                         moved=set(honoured), suggestions=suggested)
         written = planned.get(item.key)
         previews.append(
             PlaylistPreview(
@@ -411,7 +533,8 @@ def build_preview(
         unsorted=[
             {"video_id": track.video_id, "label": track.label(),
              "thumbnail": track.thumbnail, "reason": reason,
-             "detail": _described(by_video.get(track.video_id)) if reason == "no_rule" else ""}
+             "detail": _described(by_video.get(track.video_id)) if reason == "no_rule" else "",
+             "suggestions": suggested.get(track.video_id, [])}
             for track, reason in unsorted
         ],
         unsorted_by_reason=_count_reasons(unsorted),

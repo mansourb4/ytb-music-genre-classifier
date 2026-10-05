@@ -187,9 +187,6 @@ def test_the_shipped_plan_is_valid():
 @pytest.mark.parametrize(
     ("genre", "style", "mood", "expected"),
     [
-        ("Hip Hop", "Trap", "Énergique", "Rap · Trap énergique"),
-        ("Hip Hop", "Trap", "Sombre", "Rap · Trap sombre"),
-        ("Hip Hop", "Trap", "Mélancolique", "Rap · Trap mélancolique"),
         ("Hip Hop", "Contemporary R&B", "Calme", "Soul · R&B & neo soul posés"),
         ("Electronic", "Deep House", "Planant", "Électro · Deep house planante"),
         ("Jazz", "Fusion", "Groovy", "Jazz · Jazz-funk & groove"),
@@ -220,9 +217,6 @@ def test_the_shipped_plan_ranks_representative_verdicts(genre, style, mood, expe
 @pytest.mark.parametrize(
     ("genre", "style", "mood", "expected"),
     [
-        ("Hip Hop", "Boom Bap", "Groovy", "Rap · Boom bap groovy"),
-        ("Hip Hop", "Boom Bap", "Sombre", "Rap · Boom bap dur"),
-        ("Hip Hop", "Boom Bap", "Mélancolique", "Rap · Boom bap mélancolique"),
         ("Jazz", "Fusion", "Énergique", "Jazz · Fusion énergique"),
         ("Jazz", "Fusion", "Calme", "Jazz · Fusion planante"),
         ("Funk & Soul", "Soul", "Groovy", "Soul · Soul groovy"),
@@ -426,3 +420,64 @@ def test_the_preview_reports_artists_missing_from_the_library(library, config):
         file.write('\n[[playlist]]\nnom = "Orient"\nartistes = ["Herbie Hancock", "Fairouzz"]\n')
     summary, _, _ = build_preview(library, apply_sort_mode(config, "familles"), sort_mode="familles")
     assert summary.unknown_artists == ["Fairouzz"]
+
+
+# -------------------------------------------------------------------- pays
+
+
+@pytest.mark.parametrize(
+    ("artist", "expected"),
+    [
+        ("Nekfeu", "Rap · FR"),
+        ("Damso", "Rap · FR"),
+        ("Kendrick Lamar", "Rap · US"),
+        ("Knucks", "Rap · UK"),
+        ("ElGrandeToto", "Rap · Maghreb"),
+        ("Pashanim", "Rap · Ailleurs"),
+        ("Personne De Connu", "Rap · Pays à préciser"),
+    ],
+)
+def test_the_shipped_plan_sorts_rap_by_country(artist, expected):
+    """Le rap se range par pays : on n'écoute pas Nekfeu et Kendrick Lamar
+    dans la même playlist. Le pays vient de data/pays.txt."""
+    from ytmgc import origins
+
+    plan = load_plan("config/playlists.toml", TAXONOMY)
+    known = origins.load("data/pays.txt")
+    playlist = assign(judged("a", "Hip Hop", "Trap", "Sombre"), plan, TAXONOMY, (artist,), known)
+    assert playlist.name == expected
+
+
+def test_a_country_rule_matches_any_artist_of_the_track():
+    plan = parse_plan('[[playlist]]\nnom = "FR"\npays = ["FR"]', TAXONOMY)
+    assert assign(judged("a", "Hip Hop", "Trap"), plan, TAXONOMY,
+                  ("Kendrick Lamar", "Nekfeu"), {"nekfeu": "FR", "kendrick lamar": "US"})
+
+
+def test_the_question_mark_keeps_tracks_whose_country_is_unknown():
+    plan = parse_plan('[[playlist]]\nnom = "FR"\npays = ["FR"]\n'
+                      '[[playlist]]\nnom = "Attente"\npays = ["?"]', TAXONOMY)
+    origins = {"nekfeu": "FR", "kendrick lamar": "US"}
+    assert assign(judged("a", "Hip Hop", "Trap"), plan, TAXONOMY, ("Inconnu",), origins).name == "Attente"
+    assert assign(judged("b", "Hip Hop", "Trap"), plan, TAXONOMY, ("Kendrick Lamar",), origins) is None
+
+
+def test_a_malformed_country_code_is_refused():
+    with pytest.raises(PlanError, match="pays « FRANCE »"):
+        parse_plan('[[playlist]]\nnom = "X"\npays = ["France"]', TAXONOMY)
+
+
+def test_the_country_file_is_read_tolerantly(tmp_path):
+    from ytmgc import origins
+
+    path = tmp_path / "pays.txt"
+    path.write_text("# commentaire\nNekfeu\tfr\nbancale\nKendrick Lamar - Topic\tUS\nX\tFrance\n",
+                    encoding="utf-8")
+    assert origins.load(path) == {"nekfeu": "FR", "kendrick lamar": "US"}
+
+
+def test_the_shipped_country_file_covers_the_main_rappers():
+    from ytmgc import origins
+
+    known = origins.load("data/pays.txt")
+    assert (known["nekfeu"], known["kendrick lamar"], known["damso"]) == ("FR", "US", "BE")

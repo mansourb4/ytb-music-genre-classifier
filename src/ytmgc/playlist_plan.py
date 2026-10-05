@@ -25,12 +25,13 @@ from dataclasses import dataclass, field
 from pathlib import Path
 
 from ytmgc.matching.normalize import fold, normalize_artist, slugify
+from ytmgc.origins import CODE_RE, UNKNOWN_COUNTRY, countries_of
 from ytmgc.models import Classification, MatchStatus, PlaylistPlan
 from ytmgc.taxonomy import Taxonomy
 
 #: Clés comprises dans un bloc `[[playlist]]`. Toute autre est une faute de
 #: frappe : l'ignorer élargirait la règle sans prévenir.
-_BLOCK_KEYS = {"nom", "description", "genres", "styles", "ambiances", "artistes"}
+_BLOCK_KEYS = {"nom", "description", "genres", "styles", "ambiances", "artistes", "pays"}
 _SIZE_KEYS = {"min", "max"}
 
 #: YouTube Music refuse les chevrons dans une description de playlist.
@@ -53,6 +54,8 @@ class Rule:
     #: « Ballad » valent pour Beyrouth comme pour Bamako. Nommer les artistes
     #: est le seul moyen de ranger par région.
     artists: tuple[str, ...] = ()
+    #: Pays d'origine d'un des artistes (`data/pays.txt`).
+    countries: tuple[str, ...] = ()
     _folded: tuple = field(init=False, repr=False, compare=False, default=())
 
     def __post_init__(self) -> None:
@@ -62,10 +65,11 @@ class Rule:
             frozenset(fold(s) for s in self.styles),
             frozenset(fold(m) for m in self.moods),
             frozenset(normalize_artist(a) for a in self.artists),
+            frozenset(self.countries),
         ))
 
     def matches(self, seen: "Features") -> bool:
-        wanted_genres, wanted_styles, wanted_moods, wanted_artists = self._folded
+        wanted_genres, wanted_styles, wanted_moods, wanted_artists, wanted_countries = self._folded
         if wanted_genres and not seen.genres & wanted_genres:
             return False
         if wanted_styles and not seen.styles & wanted_styles:
@@ -73,6 +77,11 @@ class Rule:
         if wanted_moods and seen.mood not in wanted_moods:
             return False
         if wanted_artists and not seen.artists & wanted_artists:
+            return False
+        if wanted_countries and not (
+            seen.countries & wanted_countries
+            or (UNKNOWN_COUNTRY in wanted_countries and not seen.countries)
+        ):
             return False
         return True
 
@@ -88,6 +97,8 @@ class Rule:
             shown = ", ".join(self.artists[:6])
             more = f" et {len(self.artists) - 6} autres" if len(self.artists) > 6 else ""
             parts.append(f"artiste {shown}{more}")
+        if self.countries:
+            parts.append("pays " + ", ".join(self.countries))
         return " ; ".join(parts) or "tout morceau restant"
 
 
@@ -139,6 +150,7 @@ class Features:
     styles: set[str]
     mood: str | None
     artists: set[str] = field(default_factory=set)
+    countries: set[str] = field(default_factory=set)
 
 
 # ------------------------------------------------------------------ lecture
@@ -168,6 +180,14 @@ def _check_vocabulary(names: tuple[str, ...], known: list[str], label: str, wher
             )
         resolved.append(by_fold[fold(name)])
     return tuple(resolved)
+
+
+def _countries(codes: tuple[str, ...], where: str) -> tuple[str, ...]:
+    upper = tuple(code.upper() for code in codes)
+    for code in upper:
+        if code != UNKNOWN_COUNTRY and not CODE_RE.match(code):
+            raise PlanError(f"{where} : pays « {code} » invalide (attendu : un code comme FR, US, UK)")
+    return upper
 
 
 def parse_plan(text: str, taxonomy: Taxonomy, source: str = "playlists.toml") -> Plan:
@@ -212,6 +232,7 @@ def parse_plan(text: str, taxonomy: Taxonomy, source: str = "playlists.toml") ->
             styles=styles,
             moods=_check_vocabulary(_names(block, "ambiances", where), moods, "ambiance", where),
             artists=_names(block, "artistes", where),
+            countries=_countries(_names(block, "pays", where), where),
         )
         # Deux blocs du même nom alimentent la même playlist : c'est ainsi
         # qu'on écrit « Jazz-Funk, ou bien Fusion quand elle est groovy ».
@@ -250,7 +271,10 @@ def usable(classification: Classification) -> bool:
 
 
 def features(
-    classification: Classification, taxonomy: Taxonomy, artists: tuple[str, ...] = ()
+    classification: Classification,
+    taxonomy: Taxonomy,
+    artists: tuple[str, ...] = (),
+    origins: Mapping[str, str] | None = None,
 ) -> Features:
     styles = (taxonomy.canonical_style(style) for style in classification.styles)
     return Features(
@@ -258,6 +282,7 @@ def features(
         styles={fold(style) for style in styles if style},
         mood=fold(classification.mood) if classification.mood else None,
         artists={normalize_artist(artist) for artist in artists},
+        countries=countries_of(artists, origins or {}),
     )
 
 
@@ -266,6 +291,7 @@ def assign(
     plan: Plan,
     taxonomy: Taxonomy,
     artists: tuple[str, ...] = (),
+    origins: Mapping[str, str] | None = None,
 ) -> PlannedPlaylist | None:
     """La première playlist du plan qui accepte ce morceau, ou None.
 
@@ -274,7 +300,7 @@ def assign(
     """
     if not usable(classification):
         return None
-    seen = features(classification, taxonomy, artists)
+    seen = features(classification, taxonomy, artists, origins)
     for playlist in plan.playlists:
         if any(rule.matches(seen) for rule in playlist.rules):
             return playlist
@@ -298,6 +324,7 @@ def plan_by_rules(
     marker: str,
     overrides: Mapping[str, str | None] | None = None,
     artists: Mapping[str, tuple[str, ...]] | None = None,
+    origins: Mapping[str, str] | None = None,
 ) -> list[PlaylistPlan]:
     """Les playlists du plan, dans l'ordre du fichier. Les vides sont omises.
 
@@ -316,7 +343,7 @@ def plan_by_rules(
             if target is not None:
                 members[target].append(video_id)
             continue
-        playlist = assign(classification, plan, taxonomy, (artists or {}).get(video_id, ()))
+        playlist = assign(classification, plan, taxonomy, (artists or {}).get(video_id, ()), origins)
         if playlist is not None:
             members[playlist.key].append(video_id)
 

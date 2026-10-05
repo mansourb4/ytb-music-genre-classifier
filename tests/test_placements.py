@@ -309,3 +309,103 @@ def test_several_tracks_can_be_moved_at_once(client, config):
 
     assert response["count"] == 2 and response["label"] == "2 titres"
     assert {p.playlist for p in placements.load(config.taxonomy.placements_file)} == {"Électro · House"}
+
+
+# ------------------------------------------------------------- suggestions
+
+
+def suggestions_for(plans, profiles, plan_text):
+    from ytmgc.preview import suggest_playlists
+
+    return suggest_playlists(plans, profiles, parse_plan(plan_text, TAXONOMY))
+
+
+def profile(artist, style, mood, genre="Jazz", countries=()):
+    from ytmgc.preview import _Profile
+
+    return _Profile(artist=artist, styles=frozenset({style}), mood=mood,
+                    genres=frozenset({genre.casefold()}), countries=frozenset(countries))
+
+
+def plan_of(**members):
+    from ytmgc.models import PlaylistPlan
+
+    return [PlaylistPlan(key=f"plan/{k}", name=k, description="", video_ids=tuple(v), kind="plan")
+            for k, v in members.items()]
+
+
+SUGGEST_PLAN = """
+[[playlist]]
+nom = "a"
+genres = ["Jazz"]
+[[playlist]]
+nom = "b"
+genres = ["Jazz"]
+[[playlist]]
+nom = "c"
+genres = ["Jazz"]
+"""
+
+
+def test_a_playlist_holding_the_same_artist_is_suggested_first():
+    profiles = {
+        "t": profile("herbie", "fusion", "Groovy"),
+        "o": profile("herbie", "fusion", "Groovy"),
+        "x": profile("autre", "fusion", "Groovy"),
+    }
+    got = suggestions_for(plan_of(a=["t"], b=["x"], c=["o"]), profiles, SUGGEST_PLAN)
+    assert [s["name"] for s in got["t"]] == ["c", "b"]
+
+
+def test_a_shared_mood_alone_is_not_enough():
+    """L'ambiance seule rapprocherait Interstellar d'une transe gnaoua."""
+    profiles = {
+        "t": profile("zimmer", "minimalism", "Planant", genre="Classical"),
+        "g": profile("guinia", "gnawa", "Planant", genre="Folk"),
+    }
+    got = suggestions_for(plan_of(a=["t"], b=["g"]), profiles, SUGGEST_PLAN)
+    assert got["t"] == []
+
+
+def test_a_known_country_is_respected():
+    plan_text = ('[[playlist]]\nnom = "fr"\npays = ["FR"]\n'
+                 '[[playlist]]\nnom = "ma"\npays = ["MA"]\n'
+                 '[[playlist]]\nnom = "attente"\npays = ["?"]\n')
+    profiles = {
+        "t": profile("nekfeu", "trap", "Sombre", "Hip Hop", {"FR"}),
+        "m": profile("toto", "trap", "Sombre", "Hip Hop", {"MA"}),
+        "u": profile("inconnu", "trap", "Sombre", "Hip Hop"),
+    }
+    plans = plan_of(fr=["t"], ma=["m"], attente=["u"])
+    got = suggestions_for(plans, profiles, plan_text)
+
+    assert got["t"] == []
+    assert [s["name"] for s in got["u"]] == ["fr", "ma"]
+
+
+def test_the_preview_carries_suggestions_for_each_track(library, config):
+    summary = preview(library, config)
+    chameleon = next(t for p in summary.playlists for t in p.tracks if t.title == "Chameleon")
+    assert [s["name"] for s in chameleon.suggestions] == ["Jazz · Fusion"]
+
+
+def test_a_move_answers_with_the_new_place_of_each_track(client, library, config):
+    unsure_library(config)
+    placed = put(client, "j1", "plan/electro-house").json()["placed"]
+
+    assert placed["j1"]["playlist"] == "plan/electro-house"
+    track = placed["j1"]["track"]
+    assert track["title"] == "Chameleon" and track["moved"] and not track["unsure"]
+
+
+def test_a_track_kept_out_comes_back_as_unsorted(client):
+    placed = put(client, "w1", "aucune").json()["placed"]
+    assert placed["w1"] == {"playlist": None, "unsorted": placed["w1"]["unsorted"]}
+    assert placed["w1"]["unsorted"]["reason"] == "kept_out"
+
+
+def test_a_track_given_back_to_the_rules_returns_to_its_playlist(client):
+    put(client, "j1", "plan/jazz-fusion")
+    placed = put(client, "j1", "regles").json()["placed"]
+    assert placed["j1"]["playlist"] == "plan/jazz-jazz-funk"
+    assert not placed["j1"]["track"]["moved"]

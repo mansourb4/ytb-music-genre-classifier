@@ -1,0 +1,265 @@
+# Pays d'origine des artistes ytmgc — pour les règles « pays » du plan.
+#
+# Une ligne par artiste, colonnes séparées par une tabulation :
+#   artiste  |  code pays (FR, BE, CH, US, CA, UK, IE, MA, DZ, IT, DE, JP…)
+#
+# La casse, les accents et les chaînes « - Topic » ou « VEVO » sont
+# indifférents. Un artiste absent n'a pas de pays connu.
+113	FR
+1995	FR
+21 Savage	US
+2Pac	US
+5 Majeur	FR
+50 Cent	US
+667	FR
+7liwa	MA
+8ruki	FR
+8ruki, JMK$	FR
+A2H	FR
+ABSOLEM	FR
+Al Nather	MA
+Alpha Wann	FR
+AMK	FR
+ASHE 22	FR
+Ateyaba	FR
+B.B. Jacques	FR
+Barney Artist	UK
+Bb trickz	ES
+Bekar	FR
+Benab	FR
+Benidel	FR
+Beny Jr	ES
+Bluestaeb	DE
+Bluestaeb, Mick Jenkins, & Aréna	DE
+Bokken	FR
+Boldy James	US
+Booba	FR
+Bouss	FR
+Bradaframanadamada	FR
+Caballero	BE
+Cam'Ron	US
+Chill Bump	FR
+Chow-Chow	FR
+Cielbleu	FR
+Cookin Soul	ES
+Cordae	US
+CRC	FR
+Cypress Hill	US
+Damso	BE
+Darryl Zeuja	FR
+Deen Burbigo	FR
+DeevoDaGenius	US
+Dinos	FR
+Dioscures	FR
+Disiz	FR
+Doechii	US
+Don Bigg	MA
+Doums	FR
+Dr. Dre	US
+Draganov	MA
+Dred Scott	US
+Droop-E	US
+Ele A	CH
+ElGrandeToto	MA
+Elpatron970	MX
+Elyon	FR
+Eminem	US
+ENNY	UK
+Ezhel	TR
+Fabe	FR
+Favé	FR
+FEMTOGO	FR
+Fixpen Sill	FR
+Frah Quintale	IT
+Frankie hi-nrg mc	IT
+French The Kid	FR
+Furlax	FR
+GAL	FR
+Give Me 5 Prod.	FR
+Gracy Hopkins	BE
+Green Montana	BE
+Grems	FR
+Gros Mo	FR
+Gunna	US
+Hamza	BE
+Haris Hamza	MA
+HARIS HAMZA	MA
+Headie One	UK
+Hologram Lo'	FR
+Hugo Tsr	FR
+Ice Cube	US
+Ikaz Boi	FR
+Isaiah Rashad	US
+Issam	MA
+ISSAM	MA
+J. Cole	US
+J9ueve	FR
+Jack Harlow	US
+Jaden	US
+Jalen Santoy	US
+James Daniels	UK
+Jazz Liberatorz	FR
+jazzbois	HU
+Jazzy Bazz	FR
+JeanJass	BE
+JeanJass & Le Seize	BE
+Jeune Mort	FR
+Joey Bada$$	US
+Jok'air	FR
+Joke	FR
+Josman	FR
+JUL	FR
+Jungle Jack	FR
+Kanye West	US
+Kendrick Lamar	US
+Keroué	FR
+Khali	FR
+KiLLOWEN	IE
+Knucks	UK
+Kofi Stone	UK
+Kohndo	FR
+Koma	FR
+KOTA The Friend	US
+Kouz1	FR
+Krisy	BE
+Kyo Itachi	FR
+L'Algerino	FR
+L'Entourage	FR
+L'Or du Commun	BE
+La Fève	FR
+La Rumeur	FR
+Larry June	US
+LaSignature	FR
+LAUSSE THE CAT	FR
+Laylow	FR
+Le Blaze	FR
+Le Dé	FR
+Le Dé, Lobo EL	FR
+Le Merlu & Nordinomouk	FR
+Le Rabb1	FR
+LEDOUBLE	FR
+Ledé Markson	FR
+Lesram	FR
+lojii	US
+Loko & Hugo TSR	FR
+Lomepal	FR
+Lord Esperanza	FR
+Louis Culture	UK
+Luidji	FR
+Lunatic	FR
+Luther	FR
+Luv Resval	FR
+L’morphine	MA
+Mac Miller	US
+Madd	MA
+Maes	FR
+Makala	CH
+Malo	FR
+Malto	FR
+MANSO̶U̶R̶	FR
+MC Solaar	FR
+Medine	FR
+Melodiesinfonie	FR
+menace Santana	FR
+MF DOOM	US
+Mick Jenkins	US
+Milanezie	FR
+Miles Davis	US
+Ministère Amer	FR
+Mister V	FR
+Mobb Deep	US
+Moji x Sboy	FR
+Moka Boka	BE
+Moussa	FR
+mynameisntjmack	US
+Myth Syzer	FR
+MZ	FR
+Mézigue	FR
+Naar	FR
+Naps	FR
+Nekfeu	FR
+Nelly	US
+Nemir	FR
+NeS	FR
+Nicola Armellin	IT
+Ninho	FR
+Nordinomouk & Bavaz	FR
+Notorious B.I.G.	US
+Népal	FR
+Odezenne	FR
+okis	FR
+Onoe Caponoe	UK
+Oxmo Puccino	FR
+Pashanim	DE
+Peet	BE
+Pinty	FR
+Planet Giza	CA
+PlanetKush	FR
+PLK	FR
+PNL	FR
+Potatohead People	CA
+PRIME	FR
+Prince Waly	FR
+prodbyjulpich__	FR
+Quincy Jones	US
+Rejjie Snow	IE
+Rim'K	FR
+Roméo Elvis	BE
+Roméo Elvis & Le Motel	BE
+Rounhaa	FR
+RTHLSS Ent. 日本	JP
+Russ	US
+Ry's	FR
+rémi.fr	FR
+S-Crew	FR
+S.Pri Noir	FR
+Safar (FR)	FR
+Sainté	FR
+Sameer Ahmad	FR
+Santa	FR
+Saul feat. Brother Portrait	US
+Saïan Supa Crew	FR
+SCH	FR
+Scylla	BE
+Seafood Sam	US
+Selug	FR
+Senamo	FR
+Seth Gueko	FR
+Shobee	MA
+Sköne	FR
+Smockey	BF
+Sneazzy	FR
+Snoop Dogg	US
+Sopico	FR
+Spider ZED	FR
+Spirit of Ecstasy	FR
+Squall p	FR
+Stress	CH
+Sublime	US
+Swing	BE
+TALE$	MX
+tey	FR
+The Alchemist	US
+The Silhouettes Project	US
+Thed	FR
+TIF	FR
+TIF & Flenn	FR
+Tuerie	FR
+Tyler, The Creator	US
+Tzii	MA
+Venna	UK
+Veridis Project	FR
+Vieux Père	FR
+VT	FR
+Vulax	FR
+Wale The Sage	FR
+Weld Lgriya 09	DZ
+X-Men	FR
+YG Pablo	FR
+YL	FR
+Youssef Swatt's	BE
+Ysos	FR
+YVNNIS	FR
+Zamdane	FR
+Zeu	FR
+Zuukou Mayzie	JP

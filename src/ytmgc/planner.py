@@ -157,8 +157,11 @@ def plan_playlists(
     if settings.axis == "plan":
         from ytmgc.playlist_plan import load_plan, plan_by_rules
 
+        from ytmgc import origins
+
         plan = load_plan(settings.playlists_file, taxonomy)
-        return plan_by_rules(classifications, taxonomy, plan, config.sync.marker, overrides, artists)
+        return plan_by_rules(classifications, taxonomy, plan, config.sync.marker, overrides,
+                             artists, origins.load(settings.origins_file))
 
     resolved: dict[str, tuple[GenreStyle, ...]] = {}
     order: list[str] = []

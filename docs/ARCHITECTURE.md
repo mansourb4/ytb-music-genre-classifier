@@ -49,6 +49,7 @@ et relancés sans perte, et `plan`/`apply` se rejouent hors ligne.
 | `taxonomy/` | Alias de styles, priorité des genres, nommage, et définitions des genres et styles (`descriptions.toml`). |
 | `classifier.py` | Orchestration titre → candidats → classification. |
 | `planner.py` | Classifications → ensemble de playlists souhaité. Hors ligne. |
+| `origins.py` | Pays d'origine des artistes (`data/pays.txt`), pour les règles `pays` du plan. |
 | `placements.py` | Déplacements faits à la main dans l'aperçu : fichier `data/placements.txt`, résolution par morceau, priorité sur les règles. |
 | `playlist_plan.py` | Tri « Par famille » : lecture et vérification de `config/playlists.toml`, affectation de chaque morceau à la première playlist dont une règle l'accepte. |
 | `sync.py` | Diff état souhaité / état distant, puis application. |
@@ -630,6 +631,29 @@ existants ont été rejugés selon leur musique.
 
 ### 20. Un déplacement est une décision, pas un réglage d'affichage
 
+*Mise à jour sur place.* Recalculer l'aperçu après chaque déplacement
+relisait le compte YouTube Music et renvoyait des milliers de titres : une
+attente à chaque clic. Le serveur renvoie désormais, pour chaque titre
+déplacé, sa nouvelle place et sa fiche ; la page retire le titre de son
+ancienne playlist, l'ajoute à la nouvelle et recompte, sans autre requête.
+Les compteurs « +N / −N » face au compte ne sont exacts qu'au prochain
+« Recalculer l'aperçu ».
+
+*Les playlists voisines.* Chaque titre propose jusqu'à trois autres
+playlists, en boutons sous son nom. Les règles disent où un titre *doit*
+aller, pas où il pourrait aussi aller ; ce que chaque playlist contient le
+dit mieux. `suggest_playlists` pondère la part des autres titres du même
+artiste qui s'y trouvent, puis le style, le genre et l'ambiance. Il faut un
+lien d'artiste, de style ou de genre : l'ambiance seule rapprochait
+Interstellar d'une transe gnaoua. Le pays connu d'un artiste écarte les
+playlists d'autres pays, et la playlist d'attente (`pays = ["?"]`).
+
+*Le rap par pays.* À la demande de l'utilisateur, le rap ne se découpe plus
+par ambiance mais par pays : Rap · FR, US, UK, Maghreb, Ailleurs. Le pays est
+une propriété de l'artiste, tenue dans `data/pays.txt` et désignée par une
+règle `pays`. Les 258 artistes identifiés avec assurance y figurent ; les
+autres attendent dans « Rap · Pays à préciser », plutôt que d'être devinés.
+
 Décocher un titre dans l'aperçu ne vaut que pour l'application en cours. Le
 *déplacer* est d'une autre nature : c'est dire où il doit vivre, une fois pour
 toutes. `placements.py` le tient donc hors de la base, dans
@@ -657,10 +681,10 @@ publications.
 
 ## Tests
 
-636 tests, aucun appel réseau, y compris l'API web complète (aperçu,
+651 tests, aucun appel réseau, y compris l'API web complète (aperçu,
 application, annulation), son contrôle d'accès et les quatre voies de connexion.
 
-Soixante et onze d’entre eux chargent l’interface dans un vrai navigateur (`tests/test_ui.py`).
+Soixante-treize d’entre eux chargent l’interface dans un vrai navigateur (`tests/test_ui.py`).
 Le câblage du DOM échappe aux tests Python : deux défauts d'onglets sont passés
 au travers de la suite avant d'être vus à l'écran. Ces tests sont ignorés
 lorsque Playwright ou son navigateur sont absents, pour que la suite reste

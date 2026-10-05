@@ -106,6 +106,10 @@ textarea {
 ul.tracks { list-style: none; margin: 0; padding: 0; }
 .track { display: flex; gap: .6rem; align-items: center; padding: .3rem 0; }
 .track select.move { margin-left: auto; flex: 0 0 auto; max-width: 11rem; font-size: .8rem; }
+.track-main { display: flex; flex-direction: column; min-width: 0; flex: 1 1 auto; }
+.suggest { display: flex; flex-wrap: wrap; align-items: center; gap: .3rem; margin-top: .3rem; }
+.suggest span { color: var(--muted); font-size: .75rem; }
+.suggest button.go { font-size: .75rem; padding: .15rem .55rem; border-radius: 999px; }
 .track-text { display: flex; flex-direction: column; min-width: 0; }
 .track-text b { font-weight: 500; }
 .track-artist { color: var(--muted); font-size: .84rem; }
@@ -749,15 +753,30 @@ function trackRow(playlistKey, track) {
            data-playlist="${escapeHtml(playlistKey)}" value="${escapeHtml(track.video_id)}" checked>
     ${playLink(track.video_id)}
     ${cover}
-    <label class="track-text" for="${id}">
-      <b>${escapeHtml(track.title)}</b>${unsure}${moved}
-      <span class="track-artist">${escapeHtml(track.artist)}</span>
-      <span class="track-facts">${facts.join(" — ")}</span>
-      ${note}
-      ${tags}
-    </label>
+    <div class="track-main">
+      <label class="track-text" for="${id}">
+        <b>${escapeHtml(track.title)}</b>${unsure}${moved}
+        <span class="track-artist">${escapeHtml(track.artist)}</span>
+        <span class="track-facts">${facts.join(" — ")}</span>
+        ${note}
+        ${tags}
+      </label>
+      ${suggestionButtons(track.video_id, track.suggestions)}
+    </div>
     ${moveMenu(track.video_id, playlistKey, track.moved)}
   </li>`;
+}
+
+/**
+ * Les playlists voisines, en boutons sous le titre : en parcourant une
+ * playlist, un clic range le titre là où il sonne le mieux.
+ */
+function suggestionButtons(videoId, suggestions) {
+  if (!previewTargets.length || !(suggestions || []).length) return "";
+  const buttons = suggestions.map((s) => `<button class="go" data-videos="${escapeHtml(videoId)}"
+      data-target="${escapeHtml(s.key)}" title="Déplacer vers ${escapeHtml(s.name)}">${escapeHtml(s.name)}</button>`)
+    .join("");
+  return `<div class="suggest"><span>Aussi possible :</span>${buttons}</div>`;
 }
 
 //: Playlists du plan où un titre peut être déplacé ; vide hors tri « Par famille ».
@@ -824,6 +843,7 @@ function renderReview(p) {
           <span class="track-facts">dans « ${escapeHtml(pl.name)} » — ${escapeHtml(
             [...track.styles, track.mood].filter(Boolean).join(" · "))}</span>
           ${track.note ? `<span class="track-note">${escapeHtml(track.note)}</span>` : ""}
+          ${suggestionButtons(track.video_id, track.suggestions)}
         </span>
         ${moveMenu(track.video_id, pl.key, false)}
         <button class="confirm" data-videos="${escapeHtml(track.video_id)}">✓ C'est bon</button>
@@ -884,7 +904,8 @@ function renderUnsorted(p) {
           ? `<img class="cover" src="${escapeHtml(t.thumbnail)}" alt="" loading="lazy">`
           : `<span class="cover empty"></span>`}
         <span class="track-text"><b>${escapeHtml(t.label)}</b>
-          ${t.detail ? `<span class="track-facts">${escapeHtml(t.detail)}</span>` : ""}</span>
+          ${t.detail ? `<span class="track-facts">${escapeHtml(t.detail)}</span>` : ""}
+          ${suggestionButtons(t.video_id, t.suggestions)}</span>
         ${moveMenu(t.video_id, null, t.reason === "kept_out")}
       </li>`).join("");
       return `<div class="reason-group">
@@ -951,6 +972,7 @@ function playlistDescription(pl) {
 let previewByKey = {};
 //: Dernier aperçu reçu : la relecture s'y redessine sans nouveau calcul.
 let lastPreview = null;
+let lastData = null;
 
 function updatePreviewTotals() {
   let playlists = 0;
@@ -976,6 +998,7 @@ function updatePreviewTotals() {
 
 function renderPreview(data) {
   const p = data.preview;
+  lastData = data;
   lastPreview = p;
   previewTargets = p.targets || [];
   // Chaque rendu repart de zéro : rien de l'aperçu précédent ne doit subsister.
@@ -1117,34 +1140,94 @@ function restorePreviewState(state) {
 
 // Lié une seule fois : l'aperçu est reconstruit à chaque calcul, et un
 // gestionnaire posé à chaque rendu enregistrerait un déplacement plusieurs fois.
-document.addEventListener("change", async (event) => {
+document.addEventListener("change", (event) => {
   const select = event.target;
   if (!select.matches("select.move") || !select.value) return;
-  select.disabled = true;
+  moveTo(select.dataset.videos.split(","), select.value, select);
+});
+
+document.addEventListener("click", (event) => {
+  const button = event.target.closest("button.go");
+  if (!button) return;
+  event.preventDefault();
+  moveTo(button.dataset.videos.split(","), button.dataset.target, button);
+});
+
+/**
+ * Déplace, puis met l'aperçu à jour sur place : seul le titre déplacé change,
+ * sans recalculer l'aperçu ni relire le compte YouTube Music.
+ */
+async function moveTo(videoIds, target, control) {
+  control.disabled = true;
   try {
-    const moved = await api("/api/placements",
-      { video_ids: select.dataset.videos.split(","), target: select.value }, "PUT");
-    await refreshKeepingState();
+    const moved = await api("/api/placements", { video_ids: videoIds, target }, "PUT");
+    applyPlaced(moved.placed || {});
     const plural = moved.count > 1;
     const where = moved.playlist === null
       ? (plural ? "rendus aux règles" : "rendu aux règles")
       : moved.playlist === "(aucune)"
         ? (plural ? "tenus hors des playlists" : "tenu hors des playlists")
         : `${plural ? "déplacés" : "déplacé"} vers « ${moved.playlist} »`;
+    $("preview-msg").classList.remove("error");
     $("preview-msg").innerHTML =
       `${escapeHtml(moved.label)} : ${escapeHtml(where)}. Enregistré dans <code>${escapeHtml(moved.file)}</code>.`;
   } catch (error) {
     $("preview-msg").textContent = error.message;
     $("preview-msg").classList.add("error");
-    select.disabled = false;
-    select.value = "";
+    control.disabled = false;
+    if (control.matches("select")) control.value = "";
   }
-});
+}
 
-async function refreshKeepingState() {
+//: Recompte ce que la page affiche à partir des titres de chaque playlist.
+function recount(p) {
+  p.playlists = p.playlists.filter((pl) => pl.tracks.length);
+  p.playlists.forEach((pl) => {
+    pl.count = pl.tracks.length;
+    pl.unsure = pl.tracks.filter((t) => t.unsure).length;
+    if (!pl.image) pl.image = (pl.tracks.find((t) => t.thumbnail) || {}).thumbnail || null;
+  });
+  p.assignments = p.playlists.reduce((n, pl) => n + pl.count, 0);
+  p.to_review = p.playlists.reduce((n, pl) => n + pl.unsure, 0);
+  p.moved = p.playlists.reduce((n, pl) => n + pl.tracks.filter((t) => t.moved).length, 0)
+    + (p.unsorted || []).filter((u) => u.reason === "kept_out").length;
+  p.unsorted_by_reason = {};
+  (p.unsorted || []).forEach((u) => {
+    p.unsorted_by_reason[u.reason] = (p.unsorted_by_reason[u.reason] || 0) + 1;
+  });
+}
+
+function redraw() {
   const state = capturePreviewState();
-  await refreshPreview();
+  renderPreview(lastData);
   restorePreviewState(state);
+}
+
+function applyPlaced(placed) {
+  const p = lastPreview;
+  const ids = new Set(Object.keys(placed));
+  p.playlists.forEach((pl) => { pl.tracks = pl.tracks.filter((t) => !ids.has(t.video_id)); });
+  p.unsorted = (p.unsorted || []).filter((u) => !ids.has(u.video_id));
+  Object.values(placed).forEach((info) => {
+    if (info.playlist) {
+      let pl = p.playlists.find((x) => x.key === info.playlist);
+      if (!pl) {
+        // Une playlist du plan encore vide : elle naît avec ce titre.
+        const target = previewTargets.find((t) => t.key === info.playlist) || { key: info.playlist, name: info.playlist };
+        pl = { key: target.key, name: target.name, kind: "plan", axis: "plan", count: 0,
+               change: "création", added: 0, removed: 0, description: "", image: null,
+               criteria: [], note: null, size_warning: null, unsure: 0, tracks: [] };
+        p.playlists.push(pl);
+        const order = previewTargets.map((t) => t.key);
+        p.playlists.sort((a, b) => order.indexOf(a.key) - order.indexOf(b.key));
+      }
+      pl.tracks.push(info.track);
+    } else if (info.unsorted) {
+      p.unsorted.push(info.unsorted);
+    }
+  });
+  recount(p);
+  redraw();
 }
 
 // « C'est bon » : le verdict relu devient une décision, et sort de la relecture.
@@ -1159,8 +1242,13 @@ document.addEventListener("click", async (event) => {
   }
   button.disabled = true;
   try {
-    const done = await api("/api/verdicts/confirm", { video_ids: button.dataset.videos.split(",") });
-    await refreshKeepingState();
+    const ids = new Set(button.dataset.videos.split(","));
+    const done = await api("/api/verdicts/confirm", { video_ids: [...ids] });
+    lastPreview.playlists.forEach((pl) => pl.tracks.forEach((t) => {
+      if (ids.has(t.video_id)) t.unsure = false;
+    }));
+    recount(lastPreview);
+    redraw();
     $("preview-msg").innerHTML = `${done.confirmed} verdict(s) validé(s), notés « manuel » dans <code>${escapeHtml(done.file)}</code>.`;
   } catch (error) {
     $("preview-msg").textContent = error.message;

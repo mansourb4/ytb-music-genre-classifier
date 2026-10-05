@@ -1176,3 +1176,50 @@ def test_a_long_review_is_shown_a_few_artists_at_a_time(page, repository, config
     page.click("#review-more")
     assert page.locator("#review .review-group").count() == 27
     assert page.locator("#review-more").count() == 0
+
+
+# ------------------------------------------------------------- suggestions
+
+
+def test_a_suggested_playlist_is_one_click_away_and_nothing_is_recomputed(
+        page, repository, config, tmp_path):
+    """Les playlists voisines sont des boutons sous le titre ; un clic déplace
+    le titre sur place, sans redemander l'aperçu ni relire le compte."""
+    from ytmgc import placements
+
+    seed_jazz(repository, config, tmp_path)
+    page.click("#preview-btn")
+    funk = page.locator('#preview-list details.pl[data-key="plan/jazz-jazz-funk"]')
+    funk.wait_for()
+    funk.locator("summary .name").click()
+    row = funk.locator("li.track", has_text="Chameleon")
+    row.wait_for()
+    funk.locator('.track-check[value="j2"]').uncheck()
+
+    button = row.locator(".suggest button.go")
+    assert button.all_text_contents() == ["Jazz · Fusion"]
+    # Sous le titre, pas dans la case à cocher : cliquer ne décoche rien.
+    assert row.locator("label .suggest").count() == 0
+
+    previews = []
+    page.on("request", lambda r: previews.append(r.url) if "/api/preview" in r.url else None)
+    button.click()
+    page.wait_for_function(
+        "() => document.querySelector('#preview-msg').textContent.includes('déplacé vers')"
+    )
+
+    assert previews == []
+    assert [p.playlist for p in placements.load(config.taxonomy.placements_file)] == ["Jazz · Fusion"]
+    assert "2 titres" in page.locator(
+        '#preview-list details.pl[data-key="plan/jazz-fusion"] .count').text_content()
+    funk = page.locator('#preview-list details.pl[data-key="plan/jazz-jazz-funk"]')
+    assert funk.get_attribute("open") is not None
+    assert "1 titres" in funk.locator(".count").text_content()
+    assert not funk.locator('.track-check[value="j2"]').is_checked()
+
+
+def test_the_review_offers_suggestions_too(page, repository, config, tmp_path):
+    seed_unsure(repository, config, tmp_path)
+    open_review(page)
+    row = page.locator("#review li.track", has_text="Birdland")
+    assert row.locator(".suggest button.go").all_text_contents() == ["Jazz · Jazz-funk"]

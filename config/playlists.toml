@@ -219,88 +219,48 @@ styles = ["Psychedelic Rock", "Progressive Rock", "Art Rock", "Space Rock", "Mat
 
 
 # ===================================================================== rap
+#
+# Rangé par pays plutôt que par ambiance : on n'écoute pas le rap français et
+# le rap américain dans la même playlist. Le pays vient de data/pays.txt ; un
+# artiste qui n'y figure pas atterrit dans « Pays à préciser » (pays = ["?"]),
+# où chaque titre propose les playlists voisines en un clic. Un pays qu'aucune
+# liste ne nomme laisse le titre dans les non-rangés : ajoute-le à « Ailleurs ».
 
 [[playlist]]
-nom = "Rap · Trap énergique"
-description = "Trap et drill qui cognent."
+nom = "Rap · FR"
+description = "Rap francophone : France, Belgique, Suisse."
 genres = ["Hip Hop"]
-styles = ["Trap", "Drill", "Afro Trap"]
-ambiances = ["Énergique", "Festif", "Groovy"]
+pays = ["FR", "BE", "CH", "LU"]
 
 [[playlist]]
-nom = "Rap · Trap sombre"
-description = "Trap et drill sombres, menaçantes."
+nom = "Rap · US"
+description = "Rap américain et canadien."
 genres = ["Hip Hop"]
-styles = ["Trap", "Drill", "Afro Trap", "Horrorcore"]
-ambiances = ["Sombre"]
+pays = ["US", "CA"]
 
 [[playlist]]
-nom = "Rap · Trap mélancolique"
-description = "Trap et drill mélancoliques, posées ou planantes."
+nom = "Rap · UK"
+description = "Rap britannique et irlandais : grime, drill UK, rap londonien."
 genres = ["Hip Hop"]
-styles = ["Trap", "Drill", "Afro Trap", "Horrorcore"]
+pays = ["UK", "IE"]
 
 [[playlist]]
-nom = "Rap · Cloud rap"
-description = "Rap vaporeux, voix noyées dans les nappes."
+nom = "Rap · Maghreb"
+description = "Rap marocain, algérien et tunisien."
 genres = ["Hip Hop"]
-styles = ["Cloud Rap"]
+pays = ["MA", "DZ", "TN"]
 
 [[playlist]]
-nom = "Rap · Boom bap groovy"
-description = "Boom bap qui balance : batterie sèche, samples soul et funk."
+nom = "Rap · Ailleurs"
+description = "Rap d'Italie, d'Allemagne, d'Espagne, du Japon, du Mexique…"
 genres = ["Hip Hop"]
-styles = ["Boom Bap"]
-ambiances = ["Groovy", "Festif"]
+pays = ["IT", "DE", "AT", "ES", "PT", "NL", "DK", "NO", "SE", "FI", "PL", "CZ", "HU", "RU", "UA", "GR", "TR", "IL", "LB", "EG", "JP", "KR", "CN", "IN", "AU", "NZ", "MX", "BR", "AR", "CL", "CO", "PE", "CU", "PR", "JM", "BF", "SN", "CI", "ML", "CM", "CD", "GH", "NG", "KE", "ZA"]
 
 [[playlist]]
-nom = "Rap · Boom bap dur"
-description = "Boom bap énergique ou sombre : rap de rue, beats lourds."
+nom = "Rap · Pays à préciser"
+description = "Rap dont l'artiste n'a pas encore de pays dans data/pays.txt."
 genres = ["Hip Hop"]
-styles = ["Boom Bap"]
-ambiances = ["Énergique", "Sombre"]
-
-[[playlist]]
-nom = "Rap · Boom bap mélancolique"
-description = "Boom bap introspectif, mélancolique ou posé."
-genres = ["Hip Hop"]
-styles = ["Boom Bap"]
-
-[[playlist]]
-nom = "Rap · Conscient"
-description = "Rap à texte, engagé ou introspectif."
-genres = ["Hip Hop"]
-styles = ["Conscious"]
-
-[[playlist]]
-nom = "Rap · Jazzy & lo-fi groovy"
-description = "Rap sur samples jazz qui hoche la tête."
-genres = ["Hip Hop"]
-styles = ["Jazzy Hip-Hop", "Instrumental", "Abstract", "Downtempo", "Experimental", "Leftfield"]
-ambiances = ["Groovy", "Festif", "Énergique", "Sombre"]
-
-[[playlist]]
-nom = "Rap · Jazzy & lo-fi posé"
-description = "Rap posé sur samples jazz, instrumentales lo-fi : pour se poser."
-genres = ["Hip Hop"]
-styles = ["Jazzy Hip-Hop", "Instrumental", "Abstract", "Downtempo", "Experimental", "Leftfield"]
-
-[[playlist]]
-nom = "Rap · G-funk & West Coast"
-description = "G-funk, gangsta rap et P-funk : synthés sifflants et basses rondes."
-genres = ["Hip Hop"]
-styles = ["G-Funk", "Gangsta", "P.Funk"]
-
-[[playlist]]
-nom = "Rap · Pop rap entraînant"
-description = "Pop rap et rap chanté qui bougent."
-genres = ["Hip Hop"]
-ambiances = ["Groovy", "Festif", "Énergique"]
-
-[[playlist]]
-nom = "Rap · Rap mélodique & ballades"
-description = "Rap chanté, mélancolique ou posé, et ballades rap."
-genres = ["Hip Hop"]
+pays = ["?"]
 
 
 # ================================================================== électro
