@@ -51,6 +51,8 @@ class TrackPreview:
     unsure: bool = False
     #: Placé ici à la main, et non par les règles.
     moved: bool = False
+    #: Artiste principal : c'est par lui que la relecture regroupe les titres.
+    main_artist: str = ""
 
 
 @dataclass(frozen=True, slots=True)
@@ -127,6 +129,10 @@ class LibraryPreview:
     #: Titres déplacés à la main, et playlists visées qui n'existent plus.
     moved: int = 0
     stale_placements: list[str] = field(default_factory=list)
+    #: Titres rangés sur un verdict peu sûr, ni validés ni déplacés.
+    to_review: int = 0
+    #: Artistes nommés par le plan sans titre dans la bibliothèque.
+    unknown_artists: list[str] = field(default_factory=list)
 
     def to_dict(self) -> dict:
         return asdict(self)
@@ -187,8 +193,16 @@ def _detail(
                 mood=classification.mood if classification else None,
                 note=verdict.note if verdict else "",
                 confidence=verdict.confidence if verdict else None,
-                unsure=verdict is not None and verdict.confidence < unsure_below,
+                # Un titre validé (verdict passé en « manuel ») ou déplacé a été
+                # relu : il n'est plus à vérifier, quelle que soit la confiance.
+                unsure=(
+                    verdict is not None
+                    and verdict.source != verdicts.MANUAL
+                    and verdict.confidence < unsure_below
+                    and video_id not in moved
+                ),
                 moved=video_id in moved,
+                main_artist=track.artist,
             )
         )
     return detailed
@@ -294,7 +308,10 @@ def build_preview(
     )
     honoured = {v: p for v, p in wished.items() if p.nowhere or p.target in planned}
     stale = sorted({p.playlist for p in wished.values() if p.target and p.target not in planned})
-    plans = plan_playlists(classifications, taxonomy, config, placements.overrides(honoured))
+    plans = plan_playlists(
+        classifications, taxonomy, config, placements.overrides(honoured),
+        artists={video_id: track.artists for video_id, track in tracks.items()},
+    )
 
     # La clé n'étant plus dans la description, elle vient de la base — et à
     # défaut du nom attendu, calculé depuis le plan qu'on vient d'établir.
@@ -401,6 +418,10 @@ def build_preview(
         targets=[{"key": p.key, "name": p.name} for p in plan.playlists] if plan else [],
         moved=len(honoured),
         stale_placements=stale,
+        to_review=sum(p.unsure for p in previews),
+        unknown_artists=(
+            plan.unknown_artists([track.artists for track in tracks.values()]) if plan else []
+        ),
         created=sum(1 for p in previews if p.change == "création"),
         updated=sum(1 for p in previews if p.change == "mise à jour"),
         unchanged=sum(1 for p in previews if p.change == "inchangée"),

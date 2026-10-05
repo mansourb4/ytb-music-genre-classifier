@@ -438,6 +438,10 @@ styles = ["Trap", "Drill"]
   Un titre ne figure donc que dans une playlist.
 * Un critère absent accepte tout ; plusieurs blocs du même nom alimentent la
   même playlist (« Jazz-Funk, ou bien Fusion quand elle groove »).
+* Un critère `artistes = [...]` range par artiste — invités et chaînes YouTube
+  compris. C'est ainsi que les playlists Monde sont rangées par région : le
+  verdict dit « Ballad » ou « Traditional », pas Beyrouth ou Bamako. Un artiste
+  nommé mais absent de la bibliothèque (faute de frappe ?) est signalé.
 * Genres et ambiances sont vérifiés au chargement : une faute de frappe est
   signalée au lieu de faire taire la règle.
 * **Aucun fourre-tout silencieux** : un titre qu'aucune règle n'accepte figure
@@ -451,14 +455,25 @@ styles = ["Trap", "Drill"]
 **Déplacer un titre.** Dans l'aperçu, chaque titre porte un menu « Déplacer
 vers… » : toutes les playlists du plan, « Ne ranger nulle part », et « Rendre
 aux règles » pour un titre déjà déplacé. Les titres non rangés ont le même
-menu. Un déplacement l'emporte sur les règles et tient après chaque analyse ;
+menu, et un ▶ ouvre chaque titre dans YouTube Music. Un déplacement l'emporte sur les règles et tient après chaque analyse ;
 il est écrit dans `data/placements.txt` (`artiste <tab> titre <tab> playlist`),
 versionné comme les verdicts et modifiable à la main. Toutes les publications
 d'un même morceau suivent le déplacement. Si la playlist visée disparaît du
 plan, l'aperçu le signale et le titre suit les règles en attendant.
 
-Le plan livré a été calibré sur une bibliothèque réelle : 43 playlists, 4 079
-titres rangés sur 4 083, la plupart entre 30 et 150 titres. Modifie-le
+**Relire les verdicts peu sûrs.** Le panneau « à vérifier » de l'aperçu
+regroupe par artiste les titres que Claude ne connaissait pas. Pour chacun :
+▶ pour l'écouter, « ✓ C'est bon » pour valider — le verdict passe en source
+`manuel` dans `data/verdicts.txt` —, ou un déplacement. Un artiste se valide
+ou se déplace d'un geste. Un titre validé ou déplacé sort de la liste, pour
+de bon.
+
+Il n'y a pas de playlist « BO » : une musique de film ou de jeu est rangée
+selon sa musique (orchestre, jazz, synthés…). « BO & Scène » n'est donc plus
+proposé à Claude comme genre.
+
+Le plan livré a été calibré sur une bibliothèque réelle : 46 playlists, 4 078
+titres rangés sur 4 083, la plupart entre 15 et 150 titres. Modifie-le
 librement, puis recalcule l'aperçu. Renommer une playlist en crée une nouvelle
 à l'application : l'ancienne est vidée.
 

@@ -145,18 +145,20 @@ def plan_playlists(
     taxonomy: Taxonomy,
     config: Config,
     overrides: dict[str, str | None] | None = None,
+    artists: dict[str, tuple[str, ...]] | None = None,
 ) -> list[PlaylistPlan]:
     """Construit l'état souhaité des playlists. Aucun appel réseau.
 
-    `overrides` — les déplacements faits à la main — ne vaut que pour le tri
-    « Par famille » : les autres tris n'ont pas de playlists fixes où déplacer.
+    `overrides` — les déplacements faits à la main — et `artists` — les
+    artistes de chaque titre, pour les règles qui en nomment — ne valent que
+    pour le tri « Par famille ».
     """
     settings = config.taxonomy
     if settings.axis == "plan":
         from ytmgc.playlist_plan import load_plan, plan_by_rules
 
         plan = load_plan(settings.playlists_file, taxonomy)
-        return plan_by_rules(classifications, taxonomy, plan, config.sync.marker, overrides)
+        return plan_by_rules(classifications, taxonomy, plan, config.sync.marker, overrides, artists)
 
     resolved: dict[str, tuple[GenreStyle, ...]] = {}
     order: list[str] = []

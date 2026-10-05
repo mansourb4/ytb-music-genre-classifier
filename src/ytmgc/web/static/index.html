@@ -190,6 +190,12 @@ label.file-pick input { font-size: .8rem; }
 .reason-group { margin: 0 0 .9rem; }
 .reason-group > h4 { margin: 0 0 .3rem; font-size: .84rem; font-weight: 600; }
 .reason-group > h4 span { color: var(--muted); font-weight: 400; }
+a.play { text-decoration: none; color: var(--accent); font-size: .9rem; flex: 0 0 auto; }
+.review-group { margin: 0 0 1.1rem; }
+.review-group > h4 { margin: 0 0 .3rem; font-size: .9rem; }
+.review-group > h4 span { color: var(--muted); font-weight: 400; }
+.review-group .row { gap: .5rem; flex-wrap: wrap; }
+.track button.confirm { flex: 0 0 auto; font-size: .78rem; padding: .2rem .5rem; }
 .pl-desc p { margin: 0 0 .7rem; line-height: 1.5; }
 .pl-desc b { font-size: .82rem; text-transform: uppercase; letter-spacing: .04em; }
 .pl-desc { border-left: 2px solid var(--accent-soft); padding-left: .8rem; margin-bottom: .9rem; }
@@ -514,6 +520,7 @@ select {
   <p class="hint spacer">Ce que deviendra ton compte avec le tri choisi. Coche ou décoche des playlists et des titres avant d'appliquer.</p>
   <div id="preview-summary" class="stats spacer hidden"></div>
   <div id="preview-msg" class="msg spacer"></div>
+  <div id="review" class="spacer"></div>
   <p id="preview-selection" class="total spacer"></p>
   <div id="preview-list" class="spacer"></div>
   <div id="unsorted" class="spacer"></div>
@@ -740,6 +747,7 @@ function trackRow(playlistKey, track) {
   return `<li class="track">
     <input type="checkbox" class="track-check" id="${id}"
            data-playlist="${escapeHtml(playlistKey)}" value="${escapeHtml(track.video_id)}" checked>
+    ${playLink(track.video_id)}
     ${cover}
     <label class="track-text" for="${id}">
       <b>${escapeHtml(track.title)}</b>${unsure}${moved}
@@ -755,18 +763,96 @@ function trackRow(playlistKey, track) {
 //: Playlists du plan où un titre peut être déplacé ; vide hors tri « Par famille ».
 let previewTargets = [];
 
-function moveMenu(videoId, currentKey, moved) {
+function playLink(videoId) {
+  return `<a class="play" href="https://music.youtube.com/watch?v=${encodeURIComponent(videoId)}"
+     target="_blank" rel="noopener" title="Écouter sur YouTube Music" aria-label="Écouter">▶</a>`;
+}
+
+/**
+ * Menu de déplacement. `videoIds` : un identifiant, ou plusieurs pour déplacer
+ * d'un coup les titres d'un artiste.
+ */
+function moveMenu(videoIds, currentKey, moved, label = "Déplacer vers…") {
   if (!previewTargets.length) return "";
+  const ids = Array.isArray(videoIds) ? videoIds : [videoIds];
   const options = previewTargets
     .filter((t) => t.key !== currentKey)
     .map((t) => `<option value="${escapeHtml(t.key)}">${escapeHtml(t.name)}</option>`)
     .join("");
-  return `<select class="move" data-video="${escapeHtml(videoId)}" aria-label="Déplacer ce titre">
-    <option value="" selected disabled>Déplacer vers…</option>
+  return `<select class="move" data-videos="${escapeHtml(ids.join(","))}" aria-label="${escapeHtml(label)}">
+    <option value="" selected disabled>${escapeHtml(label)}</option>
     ${options}
-    ${currentKey ? `<option value="aucune">Ne ranger nulle part</option>` : ""}
+    ${currentKey !== null ? `<option value="aucune">Ne ranger nulle part</option>` : ""}
     ${moved ? `<option value="regles">Rendre aux règles</option>` : ""}
   </select>`;
+}
+
+//: Groupes d'artistes affichés dans la relecture ; on en ajoute à la demande.
+const REVIEW_STEP = 20;
+let reviewShown = REVIEW_STEP;
+
+/**
+ * Relecture des verdicts peu sûrs, regroupés par artiste : un artiste peu
+ * connu est souvent cohérent d'un titre à l'autre, et se corrige d'un geste.
+ * Un titre validé ou déplacé sort de la liste.
+ */
+function renderReview(p) {
+  const box = $("review");
+  const rows = [];
+  (p.playlists || []).forEach((pl) => {
+    pl.tracks.forEach((track) => { if (track.unsure) rows.push({ track, pl }); });
+  });
+  if (!rows.length) {
+    box.innerHTML = "";
+    return;
+  }
+  const groups = new Map();
+  rows.forEach((row) => {
+    const artist = row.track.main_artist || row.track.artist;
+    if (!groups.has(artist)) groups.set(artist, []);
+    groups.get(artist).push(row);
+  });
+  const ordered = Array.from(groups.entries())
+    .sort((a, b) => b[1].length - a[1].length || a[0].localeCompare(b[0]));
+  const shown = ordered.slice(0, reviewShown);
+
+  const html = shown.map(([artist, items]) => {
+    const ids = items.map((r) => r.track.video_id);
+    const list = items.map(({ track, pl }) => `<li class="track">
+        ${playLink(track.video_id)}
+        <span class="track-text"><b>${escapeHtml(track.title)}</b>
+          <span class="track-facts">dans « ${escapeHtml(pl.name)} » — ${escapeHtml(
+            [...track.styles, track.mood].filter(Boolean).join(" · "))}</span>
+          ${track.note ? `<span class="track-note">${escapeHtml(track.note)}</span>` : ""}
+        </span>
+        ${moveMenu(track.video_id, pl.key, false)}
+        <button class="confirm" data-videos="${escapeHtml(track.video_id)}">✓ C'est bon</button>
+      </li>`).join("");
+    const many = items.length > 1;
+    return `<div class="review-group">
+      <h4>${escapeHtml(artist)} <span>— ${items.length} titre(s)</span></h4>
+      ${many ? `<div class="row">
+        ${moveMenu(ids, null, false, `Déplacer ces ${items.length} titres vers…`)}
+        <button class="confirm" data-videos="${escapeHtml(ids.join(","))}">✓ Tout est bon</button>
+      </div>` : ""}
+      <ul class="tracks">${list}</ul>
+    </div>`;
+  }).join("");
+  const rest = ordered.length - shown.length;
+
+  box.innerHTML = `<details class="pl review">
+    <summary>
+      <span class="cover empty"></span>
+      <span class="name">${rows.length} titre(s) à vérifier</span>
+      <span class="count">${ordered.length} artiste(s)</span>
+    </summary>
+    <div class="body">
+      <p class="hint">Verdicts peu sûrs : Claude ne connaissait pas ces morceaux. Écoute (▶), puis valide
+        (✓) ou déplace. Un titre validé ou déplacé sort de la liste, et le reste à chaque analyse.</p>
+      ${html}
+      ${rest > 0 ? `<button id="review-more">Afficher ${Math.min(rest, REVIEW_STEP)} artiste(s) de plus (${rest} restant(s))</button>` : ""}
+    </div>
+  </details>`;
 }
 
 //: Un titre non rangé : pas de case à cocher, rien à appliquer le concernant.
@@ -863,6 +949,8 @@ function playlistDescription(pl) {
 }
 
 let previewByKey = {};
+//: Dernier aperçu reçu : la relecture s'y redessine sans nouveau calcul.
+let lastPreview = null;
 
 function updatePreviewTotals() {
   let playlists = 0;
@@ -888,6 +976,7 @@ function updatePreviewTotals() {
 
 function renderPreview(data) {
   const p = data.preview;
+  lastPreview = p;
   previewTargets = p.targets || [];
   // Chaque rendu repart de zéro : rien de l'aperçu précédent ne doit subsister.
   $("preview-list").innerHTML = "";
@@ -898,9 +987,11 @@ function renderPreview(data) {
     stat(p.assignments, "affectations") +
     stat(p.created, "à créer") +
     stat(p.updated, "à mettre à jour") +
-    stat(p.unchanged, "inchangées");
+    stat(p.unchanged, "inchangées") +
+    (p.to_review ? stat(p.to_review, "à vérifier") : "");
 
   renderUnsorted(p);
+  renderReview(p);
 
   if (!p.playlists.length) {
     $("preview-list").innerHTML = `<p class="msg">Aucune playlist à proposer : lance d'abord l'analyse.</p>`;
@@ -922,7 +1013,11 @@ function renderPreview(data) {
     ? `<p class="msg error">Déplacements vers une playlist absente du plan (${p.stale_placements.map(escapeHtml).join(", ")}) : ces titres suivent les règles en attendant.</p>`
     : "";
 
-  $("preview-list").innerHTML = warning + obsolete + moves + stale + p.playlists.map((pl) => {
+  const unknown = (p.unknown_artists || []).length
+    ? `<p class="msg error">Artistes nommés dans config/playlists.toml mais absents de la bibliothèque — faute de frappe ? ${p.unknown_artists.map(escapeHtml).join(", ")}.</p>`
+    : "";
+
+  $("preview-list").innerHTML = warning + obsolete + moves + stale + unknown + p.playlists.map((pl) => {
     const badge = pl.change === "création"
       ? `<span class="badge creation">création</span>`
       : pl.change === "mise à jour"
@@ -987,6 +1082,7 @@ function capturePreviewState() {
   return {
     open: Array.from(list.querySelectorAll("details.pl[open]")).map((n) => n.dataset.key),
     unsortedOpen: !!document.querySelector("#unsorted details[open]"),
+    reviewOpen: !!document.querySelector("#review details[open]"),
     playlists: Array.from(list.querySelectorAll(".pl-check:not(:checked)")).map((i) => i.value),
     tracks: Array.from(list.querySelectorAll(".track-check:not(:checked)"))
       .map((i) => `${i.dataset.playlist}|${i.value}`),
@@ -1003,6 +1099,8 @@ function restorePreviewState(state) {
   });
   const unsorted = document.querySelector("#unsorted details");
   if (unsorted && state.unsortedOpen) unsorted.open = true;
+  const review = document.querySelector("#review details");
+  if (review && state.reviewOpen) review.open = true;
   list.querySelectorAll(".track-check").forEach((input) => {
     if (state.tracks.includes(`${input.dataset.playlist}|${input.value}`)) input.checked = false;
   });
@@ -1025,13 +1123,14 @@ document.addEventListener("change", async (event) => {
   select.disabled = true;
   try {
     const moved = await api("/api/placements",
-      { video_id: select.dataset.video, target: select.value }, "PUT");
-    const state = capturePreviewState();
-    await refreshPreview();
-    restorePreviewState(state);
+      { video_ids: select.dataset.videos.split(","), target: select.value }, "PUT");
+    await refreshKeepingState();
+    const plural = moved.count > 1;
     const where = moved.playlist === null
-      ? "rendu aux règles"
-      : moved.playlist === "(aucune)" ? "tenu hors des playlists" : `déplacé vers « ${moved.playlist} »`;
+      ? (plural ? "rendus aux règles" : "rendu aux règles")
+      : moved.playlist === "(aucune)"
+        ? (plural ? "tenus hors des playlists" : "tenu hors des playlists")
+        : `${plural ? "déplacés" : "déplacé"} vers « ${moved.playlist} »`;
     $("preview-msg").innerHTML =
       `${escapeHtml(moved.label)} : ${escapeHtml(where)}. Enregistré dans <code>${escapeHtml(moved.file)}</code>.`;
   } catch (error) {
@@ -1039,6 +1138,34 @@ document.addEventListener("change", async (event) => {
     $("preview-msg").classList.add("error");
     select.disabled = false;
     select.value = "";
+  }
+});
+
+async function refreshKeepingState() {
+  const state = capturePreviewState();
+  await refreshPreview();
+  restorePreviewState(state);
+}
+
+// « C'est bon » : le verdict relu devient une décision, et sort de la relecture.
+document.addEventListener("click", async (event) => {
+  const button = event.target.closest("button.confirm, #review-more");
+  if (!button) return;
+  if (button.id === "review-more") {
+    reviewShown += REVIEW_STEP;
+    if (lastPreview) renderReview(lastPreview);
+    document.querySelector("#review details").open = true;
+    return;
+  }
+  button.disabled = true;
+  try {
+    const done = await api("/api/verdicts/confirm", { video_ids: button.dataset.videos.split(",") });
+    await refreshKeepingState();
+    $("preview-msg").innerHTML = `${done.confirmed} verdict(s) validé(s), notés « manuel » dans <code>${escapeHtml(done.file)}</code>.`;
+  } catch (error) {
+    $("preview-msg").textContent = error.message;
+    $("preview-msg").classList.add("error");
+    button.disabled = false;
   }
 });
 

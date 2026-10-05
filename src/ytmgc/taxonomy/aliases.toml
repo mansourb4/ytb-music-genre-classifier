@@ -28,7 +28,10 @@ order = [
     "Latin",
     "Classical",
     "Folk, World, & Country",
-    "Stage & Screen",
+    # "Stage & Screen" (BO & Scène) n'y figure pas : il dit à quoi sert une
+    # musique — un film, un jeu —, pas ce qu'elle est. Il n'est donc pas proposé
+    # au modèle, qui range un thème de film selon sa musique (orchestre,
+    # jazz, synthés…). Venu de Discogs, il reste accepté, après tous les autres.
     "Brass & Military",
     "Rock",
     "Pop",

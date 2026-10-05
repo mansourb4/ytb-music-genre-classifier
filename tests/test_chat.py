@@ -268,3 +268,11 @@ def test_a_hand_corrected_line_survives_an_import(library, config):
 
 def test_no_export_means_no_progress_to_show(config):
     assert export_progress(config) == []
+
+
+def test_a_soundtrack_is_judged_by_its_music_not_its_use():
+    """« BO & Scène » n'est plus un genre proposé : un thème de film se range
+    selon sa musique, et la ligne qui l'emploie est refusée."""
+    reading = read_answer("Radiohead | Creep | BO & Scène | Score | Sombre", LIBRARY, TAXONOMY)
+    assert reading.verdicts == [] and "genre" in reading.rejected[0]
+    assert "BO & Scène" not in build_file([Subject("A", "B")], 1, 1, TAXONOMY)

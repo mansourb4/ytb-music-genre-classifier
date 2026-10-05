@@ -575,8 +575,8 @@ genres, styles et ambiances, et **la première règle qui correspond
 l'emporte**. Les choix qui en découlent :
 
 * **L'ordre tranche les cas limites.** Les playlists transversales (Brésil,
-  R&B, BO) viennent d'abord et réunissent un style quel que soit le genre du
-  verdict ; chaque famille suit, de la règle étroite à la large.
+  R&B, variété) viennent d'abord et réunissent un style quel que soit le genre
+  du verdict ; chaque famille suit, de la règle étroite à la large.
 * **Pas de fourre-tout implicite.** Un morceau qu'aucune règle n'accepte est
   un non-rangé de cause `no_rule`, affiché avec son genre, son style et son
   ambiance. Sur la bibliothèque réelle : 4 sur 4 083 — un sketch, un pack
@@ -596,6 +596,20 @@ l'emporte**. Les choix qui en découlent :
 La clé d'une playlist du plan est `plan/` suivi de son nom : renommer une
 playlist en crée une autre, et l'ancienne devient sans objet.
 
+**Les artistes, pour ranger par région.** La musique du monde se découpait
+mal : le verdict dit « Ballad », « Traditional » ou « Instrumental » pour
+Fairouz comme pour les compagnies des oasis marocaines. Une règle peut donc
+nommer des artistes (`artistes = [...]`), comparés comme les clés de morceau
+— casse, accents, chaîne « Topic » ou « VEVO » indifférents — et sur tous les
+artistes du titre, invités compris. Une liste d'artistes vieillit mal : ceux
+qu'aucun titre de la bibliothèque ne porte sont donc signalés à l'aperçu.
+
+**Pas de « BO ».** « Stage & Screen » dit l'usage d'une musique, pas ce
+qu'elle est : une playlist BO mêlait Zimmer à l'orgue, Miles Davis et des
+reprises de Mario. Le genre n'est plus proposé au modèle (il sort de
+`genre_priority`) ; une réponse qui l'emploie est refusée, et les 57 verdicts
+existants ont été rejugés selon leur musique.
+
 ### 20. Un déplacement est une décision, pas un réglage d'affichage
 
 Décocher un titre dans l'aperçu ne vaut que pour l'application en cours. Le
@@ -613,6 +627,11 @@ publications.
   le morceau suit les règles — et nommé dans l'aperçu, jamais perdu en silence.
 * **Seul le tri « Par famille » l'applique** : les autres tris n'ont pas de
   playlists fixes où déplacer.
+* **La relecture des verdicts peu sûrs est regroupée par artiste.** Un artiste
+  inconnu du modèle l'est pour tous ses titres, et se corrige d'un geste.
+  Valider un verdict le fait passer en source `manuel` : c'est désormais une
+  décision, qui n'est ni réécrite par le modèle ni redemandée à la relecture.
+  Un titre déplacé sort aussi de la relecture : sa place a été décidée.
 * **L'aperçu se recalcule après chaque déplacement**, en conservant ce que
   l'utilisateur a ouvert et décoché : sans cela, chaque déplacement refermerait
   la playlist en cours de relecture. Le gestionnaire est lié une seule fois,
@@ -620,10 +639,10 @@ publications.
 
 ## Tests
 
-575 tests, aucun appel réseau, y compris l'API web complète (aperçu,
+600 tests, aucun appel réseau, y compris l'API web complète (aperçu,
 application, annulation), son contrôle d'accès et les quatre voies de connexion.
 
-Soixante-sept d’entre eux chargent l’interface dans un vrai navigateur (`tests/test_ui.py`).
+Soixante et onze d’entre eux chargent l’interface dans un vrai navigateur (`tests/test_ui.py`).
 Le câblage du DOM échappe aux tests Python : deux défauts d'onglets sont passés
 au travers de la suite avant d'être vus à l'écran. Ces tests sont ignorés
 lorsque Playwright ou son navigateur sont absents, pour que la suite reste

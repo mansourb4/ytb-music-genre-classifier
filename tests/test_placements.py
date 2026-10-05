@@ -255,3 +255,57 @@ def test_a_playlist_outside_the_plan_is_refused(client):
 
 def test_an_unknown_track_is_refused(client):
     assert put(client, "nope", "aucune").status_code == 404
+
+
+# --------------------------------------------------------------- relecture
+
+
+def unsure_library(config):
+    verdicts.save(VerdictBook([
+        Verdict("Herbie Hancock", "Chameleon", "Jazz", "Jazz-Funk", "Groovy", 0.2, note="Peu sûr."),
+        Verdict("Weather Report", "Birdland", "Jazz", "Fusion", "Groovy", 0.2),
+    ]), config.claude.verdicts_file)
+
+
+def unsure_titles(summary):
+    return sorted(t.title for p in summary.playlists for t in p.tracks if t.unsure)
+
+
+def test_unsure_tracks_are_counted_for_review(library, config):
+    unsure_library(config)
+    summary = preview(library, config)
+
+    assert unsure_titles(summary) == ["Birdland", "Chameleon"]
+    assert summary.to_review == 2
+    track = next(t for p in summary.playlists for t in p.tracks if t.title == "Chameleon")
+    assert track.main_artist == "Herbie Hancock"
+
+
+def test_a_confirmed_verdict_leaves_the_review(client, library, config):
+    unsure_library(config)
+    response = client.post("/api/verdicts/confirm", json={"video_ids": ["j1", "j1", "nope"]}).json()
+
+    assert response["confirmed"] == 1
+    kept = verdicts.load(config.claude.verdicts_file)
+    assert next(v for v in kept if v.title == "Chameleon").source == verdicts.MANUAL
+    assert unsure_titles(preview(library, config)) == ["Birdland"]
+
+
+def test_confirming_twice_changes_nothing(client, library, config):
+    unsure_library(config)
+    client.post("/api/verdicts/confirm", json={"video_ids": ["j1"]})
+    assert client.post("/api/verdicts/confirm", json={"video_ids": ["j1"]}).json()["confirmed"] == 0
+
+
+def test_a_moved_track_leaves_the_review(client, library, config):
+    unsure_library(config)
+    put(client, "w1", "plan/jazz-jazz-funk")
+    assert unsure_titles(preview(library, config)) == ["Chameleon"]
+
+
+def test_several_tracks_can_be_moved_at_once(client, config):
+    response = client.put("/api/placements", json={
+        "video_ids": ["j1", "w1"], "target": "plan/electro-house"}).json()
+
+    assert response["count"] == 2 and response["label"] == "2 titres"
+    assert {p.playlist for p in placements.load(config.taxonomy.placements_file)} == {"Électro · House"}

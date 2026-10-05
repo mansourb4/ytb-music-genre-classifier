@@ -1043,7 +1043,7 @@ def test_a_track_can_be_moved_from_the_preview(page, repository, config, tmp_pat
     page.wait_for_selector('#preview-list details.pl[data-key="plan/jazz-jazz-funk"] li.track')
     funk.locator('.track-check[value="j2"]').uncheck()
 
-    funk.locator('select.move[data-video="j1"]').select_option("plan/jazz-fusion")
+    funk.locator('select.move[data-videos="j1"]').select_option("plan/jazz-fusion")
     page.wait_for_function(
         "() => document.querySelector('#preview-msg').textContent.includes('déplacé vers')"
     )
@@ -1079,3 +1079,100 @@ def test_no_move_menu_outside_the_family_sort(page):
     page.locator("details.pl").first.click()
     page.wait_for_selector("li.track")
     assert page.locator("select.move").count() == 0
+
+
+# --------------------------------------------------------------- relecture
+
+
+def seed_unsure(repository, config, tmp_path, extra_artists=0):
+    """Deux titres peu sûrs de Herbie Hancock, un de Weather Report, et
+    `extra_artists` artistes de plus, un titre chacun."""
+    from ytmgc import verdicts
+    from ytmgc.classifier import classify_tracks
+    from ytmgc.models import Track
+    from ytmgc.verdicts import Verdict, VerdictBook
+
+    plan = tmp_path / "playlists.toml"
+    plan.write_text(MOVE_PLAN, encoding="utf-8")
+    config.taxonomy.playlists_file = str(plan)
+    tracks = [
+        Track("j1", "Chameleon", ("Herbie Hancock",)),
+        Track("j2", "Watermelon Man", ("Herbie Hancock",)),
+        Track("w1", "Birdland", ("Weather Report",)),
+        *[Track(f"x{i}", f"Titre {i}", (f"Artiste {i:02d}",)) for i in range(extra_artists)],
+    ]
+    repository.upsert_tracks(tracks)
+    classify_tracks(tracks, repository, FakeDiscogs({}), config)
+    verdicts.save(VerdictBook([
+        Verdict("Herbie Hancock", "Chameleon", "Jazz", "Jazz-Funk", "Groovy", 0.2, note="Supposé."),
+        Verdict("Herbie Hancock", "Watermelon Man", "Jazz", "Jazz-Funk", "Groovy", 0.2),
+        Verdict("Weather Report", "Birdland", "Jazz", "Fusion", "Groovy", 0.2),
+        *[Verdict(f"Artiste {i:02d}", f"Titre {i}", "Jazz", "Fusion", "Calme", 0.1)
+          for i in range(extra_artists)],
+    ]), config.claude.verdicts_file)
+
+
+def open_review(page):
+    page.click("#preview-btn")
+    page.wait_for_selector("#review details")
+    page.click("#review details summary")
+
+
+def test_unsure_tracks_are_grouped_by_artist_with_a_listen_link(page, repository, config, tmp_path):
+    seed_unsure(repository, config, tmp_path)
+    open_review(page)
+
+    assert "3 titre(s) à vérifier" in page.locator("#review summary").text_content()
+    groups = page.locator("#review .review-group")
+    assert groups.count() == 2
+    first = groups.nth(0)
+    assert "Herbie Hancock" in first.locator("h4").text_content()
+    assert "dans « Jazz · Jazz-funk »" in first.text_content() and "Supposé." in first.text_content()
+    assert first.locator("a.play").first.get_attribute("href") == "https://music.youtube.com/watch?v=j1"
+    # Un artiste à un seul titre n'a pas d'action groupée.
+    assert groups.nth(1).locator(".row button.confirm").count() == 0
+
+
+def test_confirming_an_artist_takes_it_out_of_the_review(page, repository, config, tmp_path):
+    from ytmgc import verdicts
+
+    seed_unsure(repository, config, tmp_path)
+    open_review(page)
+    page.locator("#review .review-group").nth(0).locator(".row button.confirm").click()
+    page.wait_for_function(
+        "() => document.querySelector('#preview-msg').textContent.includes('validé')"
+    )
+
+    sources = {v.title: v.source for v in verdicts.load(config.claude.verdicts_file)}
+    assert sources == {"Chameleon": "manuel", "Watermelon Man": "manuel", "Birdland": "claude"}
+    # La relecture reste ouverte, et ne montre plus que Weather Report.
+    assert page.locator("#review details").get_attribute("open") is not None
+    assert page.locator("#review .review-group").count() == 1
+    assert "1 titre(s) à vérifier" in page.locator("#review summary").text_content()
+
+
+def test_an_artist_can_be_moved_in_one_go(page, repository, config, tmp_path):
+    from ytmgc import placements
+
+    seed_unsure(repository, config, tmp_path)
+    open_review(page)
+    page.locator("#review .review-group").nth(0).locator(".row select.move").select_option(
+        "plan/jazz-fusion")
+    page.wait_for_function(
+        "() => document.querySelector('#preview-msg').textContent.includes('déplacés vers')"
+    )
+
+    moved = {p.title: p.playlist for p in placements.load(config.taxonomy.placements_file)}
+    assert moved == {"Chameleon": "Jazz · Fusion", "Watermelon Man": "Jazz · Fusion"}
+    assert "3 titres" in page.locator(
+        '#preview-list details.pl[data-key="plan/jazz-fusion"] .count').text_content()
+
+
+def test_a_long_review_is_shown_a_few_artists_at_a_time(page, repository, config, tmp_path):
+    seed_unsure(repository, config, tmp_path, extra_artists=25)
+    open_review(page)
+
+    assert page.locator("#review .review-group").count() == 20
+    page.click("#review-more")
+    assert page.locator("#review .review-group").count() == 27
+    assert page.locator("#review-more").count() == 0

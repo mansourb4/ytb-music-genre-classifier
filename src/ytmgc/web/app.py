@@ -124,10 +124,16 @@ class ExclusionsRequest(BaseModel):
 
 
 class PlacementRequest(BaseModel):
-    video_id: str
+    #: Un titre, ou plusieurs d'un coup (« déplacer ces titres de l'artiste »).
+    video_id: str = ""
+    video_ids: list[str] = Field(default_factory=list)
     #: Clé d'une playlist du plan, « aucune » pour tenir le titre hors de
     #: toute playlist, ou « regles » pour le rendre aux règles.
     target: str
+
+
+class ConfirmRequest(BaseModel):
+    video_ids: list[str] = Field(default_factory=list)
 
 
 class PreviewRequest(BaseModel):
@@ -749,17 +755,18 @@ def create_app(services: Services) -> FastAPI:
         from ytmgc.playlist_plan import PlanError, load_plan
         from ytmgc.taxonomy import load_taxonomy
 
-        track = next((t for t in repository.all_tracks() if t.video_id == request.video_id), None)
-        if track is None:
+        wanted = [*([request.video_id] if request.video_id else []), *request.video_ids]
+        by_id = {t.video_id: t for t in repository.all_tracks()}
+        tracks = [by_id[v] for v in dict.fromkeys(wanted) if v in by_id]
+        if not tracks:
             raise HTTPException(404, "Titre inconnu : relance l'analyse")
         path = config.taxonomy.placements_file
         book = placements.load(path)
 
         if request.target == "regles":
-            book.remove(track)
-            destination = None
+            name = None
         elif request.target == "aucune":
-            destination = book.put(track, placements.NOWHERE).playlist
+            name = placements.NOWHERE
         else:
             try:
                 playlist = load_plan(config.taxonomy.playlists_file, load_taxonomy()).by_key().get(
@@ -769,16 +776,44 @@ def create_app(services: Services) -> FastAPI:
                 raise HTTPException(400, str(exc)) from exc
             if playlist is None:
                 raise HTTPException(400, "Cette playlist n'existe pas dans le plan")
-            destination = book.put(track, playlist.name).playlist
+            name = playlist.name
 
+        for track in tracks:
+            if name is None:
+                book.remove(track)
+            else:
+                book.put(track, name)
         placements.save(book, path)
         return {
-            "video_id": track.video_id,
-            "label": track.label(),
-            "playlist": destination,
+            "video_id": tracks[0].video_id,
+            "label": tracks[0].label() if len(tracks) == 1 else f"{len(tracks)} titres",
+            "count": len(tracks),
+            "playlist": name,
             "file": str(Path(path).resolve()),
             "moved": len(book),
         }
+
+    @app.post("/api/verdicts/confirm")
+    def confirm(request: ConfirmRequest) -> dict:
+        """« C'est bon » : le verdict, relu, devient une décision. Il passe en
+        source « manuel » — jamais réécrit par le modèle, plus jamais à vérifier."""
+        from ytmgc import verdicts
+        from ytmgc.verdicts import track_key
+
+        by_id = {t.video_id: t for t in repository.all_tracks()}
+        path = config.claude.verdicts_file
+        book = verdicts.load(path)
+        confirmed = 0
+        for video_id in dict.fromkeys(request.video_ids):
+            track = by_id.get(video_id)
+            verdict = book.get(track_key(track)) if track else None
+            if verdict is None or verdict.source == verdicts.MANUAL:
+                continue
+            book.add(verdicts.manual(verdict))
+            confirmed += 1
+        if confirmed:
+            verdicts.save(book, path)
+        return {"confirmed": confirmed, "file": str(Path(path).resolve())}
 
     # -------------------------------------------------------- application
 

@@ -193,15 +193,70 @@ def test_the_shipped_plan_is_valid():
         ("Hip Hop", "Contemporary R&B", "Calme", "Soul · Neo soul & R&B"),
         ("Electronic", "Deep House", "Planant", "Électro · Deep house planante"),
         ("Jazz", "Fusion", "Groovy", "Jazz · Jazz-funk & groove"),
-        ("Jazz", "Bossa Nova", "Calme", "Monde · Brésil"),
-        ("Folk & World", "Gnawa", "Planant", "Monde · Maghreb & Orient"),
+        ("Jazz", "Bossa Nova", "Calme", "Monde · Bossa nova"),
+        ("Latin", "Samba", "Festif", "Monde · MPB & samba"),
+        ("Folk & World", "Gnawa", "Planant", "Monde · Gnawa"),
+        ("Folk & World", "Raï", "Festif", "Monde · Maghreb"),
+        ("Folk & World", "Tarab", "Mélancolique", "Monde · Orient"),
+        ("Reggae", "Roots Reggae", "Groovy", "Monde · Caraïbes & reggae"),
+        ("Pop", "Chanson", "Calme", "Pop · Variété française"),
         ("Classical", "Romantic", "Mélancolique", "Classique · Romantique"),
         ("Electronic", "Glitch", "Cérébral", "Électro · Breaks & expérimental"),
+        ("Electronic", "Video Game Music", "Calme", "Électro · Downtempo & ambient"),
     ],
 )
 def test_the_shipped_plan_ranks_representative_verdicts(genre, style, mood, expected):
     plan = load_plan("config/playlists.toml", TAXONOMY)
     assert assign(judged("a", genre, style, mood), plan, TAXONOMY).name == expected
+
+
+def test_the_shipped_plan_has_no_soundtrack_playlist():
+    """Une musique de film est rangée selon sa musique, pas selon son usage."""
+    plan = load_plan("config/playlists.toml", TAXONOMY)
+    assert not [p.name for p in plan.playlists if p.name.startswith("BO")]
+
+
+@pytest.mark.parametrize(
+    ("artist", "style", "expected"),
+    [
+        ("Fairuz", "Ballad", "Monde · Orient"),
+        ("Abdou El Omari", "Instrumental", "Monde · Maghreb"),
+        ("Amadou & Mariam", "Folk", "Monde · Afrique"),
+        ("Simon & Garfunkel", "Folk", "Monde · Folk & traditions"),
+    ],
+)
+def test_the_shipped_plan_places_world_music_by_region(artist, style, expected):
+    """« Ballad » ou « Folk » ne disent pas d'où vient une musique : l'artiste, si."""
+    plan = load_plan("config/playlists.toml", TAXONOMY)
+    playlist = assign(judged("a", "Folk & World", style), plan, TAXONOMY, (artist,))
+    assert playlist.name == expected
+
+
+# ---------------------------------------------------------------- artistes
+
+
+def test_an_artist_rule_matches_guests_and_youtube_channels():
+    plan = parse_plan('[[playlist]]\nnom = "Orient"\nartistes = ["Ziad Rahbani"]\n'
+                      '[[playlist]]\nnom = "Reste"', TAXONOMY)
+    as_guest = assign(judged("a", "Folk & World", "Ballad"), plan, TAXONOMY,
+                      ("Fairuz", "Ziad Rahbani"))
+    as_channel = assign(judged("b", "Folk & World", "Ballad"), plan, TAXONOMY,
+                        ("Ziad Rahbani - Topic",))
+    other = assign(judged("c", "Folk & World", "Ballad"), plan, TAXONOMY, ("Fairuz",))
+
+    assert (as_guest.name, as_channel.name, other.name) == ("Orient", "Orient", "Reste")
+
+
+def test_an_artist_rule_combines_with_the_other_criteria():
+    plan = parse_plan('[[playlist]]\nnom = "X"\nartistes = ["Fela Kuti"]\ngenres = ["Funk & Soul"]',
+                      TAXONOMY)
+    assert assign(judged("a", "Funk & Soul", "Afrobeat"), plan, TAXONOMY, ("Fela Kuti",))
+    assert assign(judged("b", "Jazz", "Afrobeat"), plan, TAXONOMY, ("Fela Kuti",)) is None
+
+
+def test_artists_named_but_absent_from_the_library_are_reported():
+    plan = parse_plan('[[playlist]]\nnom = "X"\nartistes = ["Fairuz", "Fairouzz"]', TAXONOMY)
+    assert plan.unknown_artists([("Fairuz",), ("Warda",)]) == ["Fairouzz"]
 
 
 # ------------------------------------------------------------------- aperçu
@@ -307,3 +362,10 @@ def test_a_mistake_in_the_plan_reaches_the_page_as_a_readable_error(repository, 
     response = client.post("/api/preview", json={"sort_mode": "familles"})
     assert response.status_code == 400
     assert "genre « Jaz » inconnu" in response.json()["detail"]
+
+
+def test_the_preview_reports_artists_missing_from_the_library(library, config):
+    with open(config.taxonomy.playlists_file, "a", encoding="utf-8") as file:
+        file.write('\n[[playlist]]\nnom = "Monde · Orient"\nartistes = ["Herbie Hancock", "Fairouzz"]\n')
+    summary, _, _ = build_preview(library, apply_sort_mode(config, "familles"), sort_mode="familles")
+    assert summary.unknown_artists == ["Fairouzz"]

@@ -123,7 +123,8 @@ def cmd_plan(args: argparse.Namespace, config: Config) -> int:
     repository = _repository(config)
     config = apply_sort_mode(config, args.tri)
     plans = plan_playlists(repository.classifications(), load_taxonomy(), config,
-                           _overrides(repository, config))
+                           _overrides(repository, config),
+                           artists={t.video_id: t.artists for t in repository.all_tracks()})
     if not plans:
         print("Aucune playlist à créer : aucun titre classé pour l'instant.")
         return 0
@@ -144,7 +145,8 @@ def cmd_apply(args: argparse.Namespace, config: Config) -> int:
     repository = _repository(config)
     config = apply_sort_mode(config, args.tri)
     plans = plan_playlists(repository.classifications(), load_taxonomy(), config,
-                           _overrides(repository, config))
+                           _overrides(repository, config),
+                           artists={t.video_id: t.artists for t in repository.all_tracks()})
     if not plans:
         print("Rien à appliquer.")
         return 0

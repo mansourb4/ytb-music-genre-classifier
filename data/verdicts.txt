@@ -14,7 +14,7 @@
 113	Tonton du bled	Hip Hop	Boom Bap	Festif	0.85	claude	Rap à la mandole raï, hymne de fête et de retour au bled.
 1995	J'Aime Ca	Hip Hop	Boom Bap	Groovy	0.45	claude	Boom bap parisien décontracté.
 1995	Nekfeu & Alpha Wann (1995) - Monsieur Sable (Prod. Basement Beatzz)	Hip Hop	Boom Bap	Énergique	0.60	claude	Boom bap technique des débuts.
-1DERER	GTA Vice City Stories - Introduction Theme [REMASTERED & EXTENDED]	BO & Scène	Video Game Music	Énergique	0.40	claude	Thème de jeu aux synthés rétro des années 80.
+1DERER	GTA Vice City Stories - Introduction Theme [REMASTERED & EXTENDED]	Electronic	Synthwave	Énergique	0.40	claude	Thème de jeu aux synthés rétro des années 80.
 2 Eivissa	Oh La La La (Radio Mix)	Electronic	Euro House	Festif	0.85	claude	Tube eurodance à refrain scandé.
 21 Savage	Rich Nigga Shit (feat. Young Thug)	Hip Hop	Trap	Sombre	0.55	claude	Trap menaçante de Metro Boomin.
 24kGoldn	CITY OF ANGELS	Pop	Pop Rock	Énergique	0.65	claude	Rap guitare emo.
@@ -83,8 +83,8 @@ Agoria	Singing [Dixon Dub] (feat. Scalde)	Electronic	Deep House	Planant	0.45	cla
 Ahmed Fakroun	Falah	Pop	Synth-Pop	Groovy	0.35	claude	Pop libyenne aux synthés.
 Ahmed Fakroun	La ya hob	Folk & World	Synth-Pop	Groovy	0.40	claude	Pop libyenne synthétique et dansante.
 Ahmed Fakroun	Nisyan	Pop	Synth-Pop	Groovy	0.50	claude	Synth-pop libyenne aux mélodies orientales.
-Ahmed Malek	Bossa	BO & Scène	Bossa Nova	Calme	0.50	claude	Musique de film algérienne aux accents bossa.
-Ahmed Malek	Thème Rythme Léger	BO & Scène	Soundtrack	Groovy	0.45	claude	Musique de film algérienne, groove funky et orgue.
+Ahmed Malek	Bossa	Jazz	Bossa Nova	Calme	0.50	claude	Musique de film algérienne aux accents bossa.
+Ahmed Malek	Thème Rythme Léger	Funk & Soul	Funk	Groovy	0.45	claude	Musique de film algérienne, groove funky et orgue.
 Ahmed Sirour	"Afro Blue" - Ahmed Sirour & Cleveland P. Jones (2013)	Jazz	Spiritual Jazz	Planant	0.35	claude	Reprise du standard modal.
 Ahmed Sirour	Sade - I Couldn't Love You More (Ahmed Sirour rework)	Electronic	Deep House	Groovy	0.40	claude	Relecture house de la ballade de Sade, voix samplée sur un kick feutré.
 Ahmed Sirour	Sade - Kiss of Life (Ahmed Sirour rework) [Love Deluxe 30th Anniversary tribute]	Electronic	Deep House	Groovy	0.50	claude	Sade transformée en deep house.
@@ -159,7 +159,7 @@ Amadou & Mariam	Sabali	Pop	Synth-Pop	Planant	0.75	claude	Voix de Mariam sur synt
 Ambiance Skandal	Offishal	Funk & Soul	Contemporary R&B	Groovy	0.25	claude	Titre peu documenté, classement incertain.
 Aminition	Answerless Question	Hip Hop	Boom Bap	Mélancolique	0.20	claude	Morceau mal identifié, probablement rap introspectif.
 AMK	Malya	Hip Hop	Trap	Mélancolique	0.10	claude	Inconnu de moi, classement indicatif.
-Amosdoll Music	HOW TO PLAY - Nintendo Wii - Mii Channel Theme (Piano Tutorial Lesson)	BO & Scène	Video Game Music	Calme	0.60	claude	Tutoriel piano du thème Mii, bossa candide.
+Amosdoll Music	HOW TO PLAY - Nintendo Wii - Mii Channel Theme (Piano Tutorial Lesson)	Jazz	Lounge	Calme	0.60	claude	Tutoriel piano du thème Mii, bossa candide.
 Amotik	Chihattar (feat. Tina Ramamurthy)	Electronic	Techno	Planant	0.25	claude	Techno hypnotique ; classement prudent.
 Amy Winehouse	Addicted	Funk & Soul	Soul	Groovy	0.80	claude	Soul rétro cuivrée.
 Amy Winehouse	Amy Amy Amy	Funk & Soul	Neo Soul	Groovy	0.75	claude	Jazz-soul enjoué et autodérisoire, cuivres et contrebasse qui swinguent.
@@ -229,7 +229,7 @@ Angèle	Victime des réseaux	Pop	Indie Pop	Groovy	0.60	claude	Pop ironique sur l
 Angie Stone	Wish I Didn't Miss You	Funk & Soul	Neo Soul	Groovy	0.80	claude	Boucle des O'Jays, chagrin d'amour sur groove ferme.
 Angie Stone	Wish I Didn't Miss You (Pound Boys Stoneface Bootleg Mix)	Electronic	House	Groovy	0.45	claude	R&B converti en house.
 Angora	Enchantment	Electronic	Deep House	Planant	0.25	claude	Deep house supposée d'après la compilation.
-AngryParkRanger	Sweden	BO & Scène	Video Game Music	Calme	0.80	claude	Reprise du thème de Minecraft, piano contemplatif.
+AngryParkRanger	Sweden	Classical	Neo-Classical	Calme	0.80	claude	Reprise du thème de Minecraft, piano contemplatif.
 Ani	Love Is The Message (For Those Who Didn't Hear It)	Electronic	Deep House	Groovy	0.10	claude	Titre inconnu ; classement très incertain.
 Anita Baker	Caught Up in the Rapture	Funk & Soul	Contemporary R&B	Calme	0.85	claude	Quiet storm par excellence, voix de velours.
 Anne Queffélec	Fantasia for Piano Four-Hands in F Minor, Op. Posth. 103, D. 940: I. Allegro molto moderato (feat. Imogen Cooper)	Classical	Romantic	Mélancolique	0.90	claude	Thème plaintif en fa mineur repris obstinément, l'une des pages les plus déchirantes de Schubert.
@@ -270,7 +270,7 @@ Aug 9, 2019	Super Focus: Flow State Music - Alpha Binaural Beats, Study Music fo
 aupinard	jeu pour enfant	Pop	Bossa Nova	Calme	0.40	claude	Chanson acoustique légère, guitare bossa et voix douce.
 aupinard	penelope	Pop	Indie Pop	Calme	0.30	claude	Pop de chambre intimiste, voix douce et production lo-fi.
 aupinard	quel type de vibe?	Pop	Indie Pop	Calme	0.25	claude	Titre peu documenté, classement incertain.
-Austin Alford	Asleep in Space	BO & Scène	Score	Planant	0.40	claude	Musique de film en nappes spatiales.
+Austin Alford	Asleep in Space	Electronic	Ambient	Planant	0.40	claude	Musique de film en nappes spatiales.
 Austin Farwell	New Home (Piano & Cello)	Classical	Modern Classical	Calme	0.55	claude	Piano et violoncelle doux et cinématographiques.
 Avner	Ma première composition - Moment Musical n°1 - Avner Piano	Classical	Neo-Classical	Calme	0.35	claude	Pièce pour piano seul d'un jeune compositeur.
 Axelle Red	Sensualité	Pop	Ballad	Calme	0.65	claude	Ballade soul langoureuse portée par une voix chuchotée.
@@ -430,9 +430,9 @@ Booba	DKR	Hip Hop	Trap	Sombre	0.70	claude	Trap aux accents africains, ton conqu�
 Booba	Pitbull	Hip Hop	Gangsta	Sombre	0.70	claude	Rap menaçant et martelé.
 Book Club Radio	Disco & House Classics Mix in New York | Bridge	Electronic	House	Festif	0.60	claude	DJ set de classiques disco et house pensé pour la piste.
 Book Club Radio	Groovy Disco and R&B Mix at a New York Basement Party | Tinzo	Funk & Soul	Disco	Festif	0.60	claude	Mix DJ disco et R&B enregistré en soirée.
-Boopala Rajendran	Interstellar_HANS ZIMMER (RELAXING MUSIC FOR WORKING )	BO & Scène	Soundtrack	Planant	0.55	claude	Orgue de Zimmer en boucle.
+Boopala Rajendran	Interstellar_HANS ZIMMER (RELAXING MUSIC FOR WORKING )	Classical	Minimalism	Planant	0.55	claude	Orgue de Zimmer en boucle.
 Bouss	Ça parle mal	Hip Hop	Trap	Sombre	0.30	claude	Rap de rue sombre.
-Box of Music	Interstellar Main Theme	BO & Scène	Score	Calme	0.60	claude	Thème de Zimmer en boîte à musique.
+Box of Music	Interstellar Main Theme	Classical	Modern Classical	Calme	0.60	claude	Thème de Zimmer en boîte à musique.
 The Boyz from Brazil	O nosso amor (Armada mix)	Electronic	House	Festif	0.45	claude	House latine aux percussions brésiliennes, faite pour danser.
 Bradaframanadamada	Légalité	Hip Hop	Trap	Énergique	0.10	claude	Titre inconnu ; classement très incertain.
 Bratisla Boys	Stach Stach	Pop	Europop	Festif	0.80	claude	Parodie dance kitsch et absurde.
@@ -476,7 +476,7 @@ Captain Sky	Hero (12" Mix)	Funk & Soul	Boogie	Groovy	0.50	claude	Funk boogie de 
 Captain Sky	Moon Child (The Re-Entry) (Terry Hunter Beats, Bass, Capella Mix)	Electronic	House	Groovy	0.60	claude	Remix house de Chicago dépouillé, basse et voix a cappella sur un beat bien carré.
 Captain Sky	Moonchild (Peter Lewicki Disco Mix)	Funk & Soul	Boogie	Groovy	0.40	claude	Funk-disco étiré en version club.
 Carlyle Fraser	Rattlin' Bog	Folk & World	Celtic	Festif	0.70	claude	Chanson à accumulation irlandaise qui accélère, à reprendre en chœur.
-Carolina Eyck	Ennio Morricone - The Ecstasy of Gold - Theremin & Voice	BO & Scène	Score	Planant	0.60	claude	Morricone au thérémine et voix en boucle.
+Carolina Eyck	Ennio Morricone - The Ecstasy of Gold - Theremin & Voice	Classical	Contemporary	Planant	0.60	claude	Morricone au thérémine et voix en boucle.
 Carpe	silly cat	Hip Hop	Jazzy Hip-Hop	Calme	0.20	claude	Lo-fi supposé, inconnu de moi.
 Carrion	True Love	Electronic	House	Groovy	0.15	claude	Morceau que je ne connais pas ; classement prudent.
 Carthago	Alech	Folk & World	Funk	Groovy	0.40	claude	Funk tunisien rétro.
@@ -678,7 +678,7 @@ Cielbleu	APPART SALE	Hip Hop	Cloud Rap	Mélancolique	0.15	claude	Morceau que je 
 Cielbleu	FLEURS ET DOLIPRANES	Hip Hop	Cloud Rap	Mélancolique	0.30	claude	Rap chanté autotuné, introspectif et vaporeux.
 Cigarettes After Sex	Cry	Pop	Dream Pop	Mélancolique	0.85	claude	Ballade lente et brumeuse.
 Cigarettes After Sex	K.	Rock	Dream Pop	Mélancolique	0.80	claude	Slowcore éthéré, voix murmurée et guitares réverbérées.
-Cinémavore	Interstellar Main Theme - Extra Extended - Soundtrack by  Hans Zimmer	BO & Scène	Score	Planant	0.80	claude	Orgue répétitif de Zimmer, prolongé et vertigineux.
+Cinémavore	Interstellar Main Theme - Extra Extended - Soundtrack by  Hans Zimmer	Classical	Minimalism	Planant	0.80	claude	Orgue répétitif de Zimmer, prolongé et vertigineux.
 Circulation	Scarlet (Mix 2)	Electronic	Tech House	Planant	0.45	claude	Tech house profonde.
 CJ Bolland	Camargue	Electronic	Trance	Planant	0.65	claude	Classique belge du début des 90s, mélodie hypnotique et montée.
 CKay	love nwantiti [North African Remix] (feat. ElGrande Toto)	Pop	Afrobeats	Groovy	0.60	claude	Afropop sensuelle avec couplet en darija et touches orientales.
@@ -778,7 +778,7 @@ Daft Punk	One More Time (Romanthony's Unplugged)	Electronic	Downtempo	Mélancoli
 Daft Punk	Revolution 909	Electronic	House	Groovy	0.85	claude	House filtrée et martelée, irrésistiblement dansante.
 Daft Punk	Something About Us	Electronic	Downtempo	Calme	0.85	claude	Ballade robotique douce, voix vocodée et Rhodes.
 Daft Punk	The Game of Love	Electronic	Downtempo	Mélancolique	0.85	claude	Disco ralentie au vocoder triste.
-Daft Punk	The Son of Flynn	BO & Scène	Score	Planant	0.80	claude	Arpèges synthétiques et cordes en apesanteur, mystère numérique.
+Daft Punk	The Son of Flynn	Electronic	Ambient	Planant	0.80	claude	Arpèges synthétiques et cordes en apesanteur, mystère numérique.
 Daft Punk	Too Long	Electronic	House	Groovy	0.80	claude	Long jam funk-house, voix robotique et groove étiré.
 Daft Punk	Too Long (Gonzales Version)	Classical	Modern Classical	Calme	0.60	claude	Relecture au piano solo par Chilly Gonzales, intime et dépouillée.
 Daft Punk	Touch (feat. Paul Williams)	Electronic	Experimental	Cérébral	0.75	claude	Odyssée en plusieurs actes, du vide spatial au chœur de cuivres.
@@ -860,7 +860,7 @@ David August	J.B.Y.	Electronic	Deep House	Planant	0.35	claude	House mélodique a
 DAVID AUGUST	Last Day (David August Revision)	Electronic	Deep House	Planant	0.40	claude	Relecture deep et contemplative.
 David August	THE LIFE OF MERISI	Electronic	Modern Classical	Planant	0.40	claude	Électronique orchestrale contemplative.
 David Benoit	Botswana Bossa Nova	Jazz	Smooth Jazz	Calme	0.50	claude	Piano smooth jazz sur rythme bossa.
-David Gold	Phenomena	BO & Scène	Library Music	Planant	0.30	claude	Musique d'illustration KPM aux synthés atmosphériques.
+David Gold	Phenomena	Electronic	Ambient	Planant	0.30	claude	Musique d'illustration KPM aux synthés atmosphériques.
 David Martial	Célimène	Folk & World	Zouk	Festif	0.70	claude	Biguine antillaise joyeuse, tube de bal.
 David Matthews	Space Oddity	Jazz	Jazz-Funk	Groovy	0.60	claude	Reprise jazz-funk de Bowie, cuivres et Rhodes.
 David Sylvian	Velvet Revolution	Electronic	Drone	Planant	0.50	claude	Drone lent et texturé.
@@ -1035,7 +1035,7 @@ Eminem	Stan (feat. Dido)	Hip Hop	Pop Rap	Sombre	0.90	claude	Récit d'un fan obse
 Emmanuelle	Italove	Electronic	Italo-Disco	Festif	0.40	claude	Italo-disco.
 Emptyset	Blossom	Electronic	Experimental	Sombre	0.50	claude	Matières sonores brutes et percussives, sans mélodie.
 Eng. Emad Al Atoum	Fairouz - Eh Fi Amal	Folk & World	Ballad	Mélancolique	0.60	claude	Ballade jazzy de Ziad Rahbani, espoir désabusé.
-Ennio Morricone	Chi Maï	BO & Scène	Soundtrack	Mélancolique	0.85	claude	Thème aux cordes poignant.
+Ennio Morricone	Chi Maï	Classical	Modern Classical	Mélancolique	0.85	claude	Thème aux cordes poignant.
 ENNY	Charge It	Hip Hop	Conscious	Groovy	0.35	claude	Rap britannique jazzy.
 Enrico Pieranunzi	Sicilyan Dream (D’après Siciliano, BWV. 1031 de Johann Sebastian Bach)	Jazz	Contemporary Jazz	Mélancolique	0.60	claude	Trio jazz rêvant sur la Sicilienne de Bach, lyrisme tendre.
 Enzo Siffredi	Star Nights	Electronic	Deep House	Groovy	0.40	claude	House afro mélodique.
@@ -1101,7 +1101,7 @@ Fish Go Deep	Battery Man	Electronic	Deep House	Groovy	0.40	claude	Deep house voc
 Fish Go Deep	The Cure & The Cause (Dennis Ferrer Remix)	Electronic	Deep House	Groovy	0.80	claude	Classique deep house tribal, voix hantée et basse hypnotique.
 Fixpen Sill	C'est pas compliqué	Hip Hop	Boom Bap	Groovy	0.50	claude	Rap nantais décontracté sur un beat boom bap souple.
 FKJ	Losing My Way	Electronic	Downtempo	Calme	0.60	claude	Dialogue de guitares feutrées, voix douce.
-Flaradox	Mii channel theme but the violin and electric piano are swapped	BO & Scène	Video Game Music	Calme	0.50	claude	Thème de la chaîne Mii réorchestré, jazzy et anodin.
+Flaradox	Mii channel theme but the violin and electric piano are swapped	Jazz	Lounge	Calme	0.50	claude	Thème de la chaîne Mii réorchestré, jazzy et anodin.
 Flavia Coelho	Billy Django	Reggae	Ragga	Festif	0.45	claude	Ragga brésilien solaire.
 Flavour Trip	Chillout Jazz House Music Mix - Cozy Pancakes Brunch Bar | Relaxing Living Room Lounge	Electronic	Lounge	Calme	0.40	claude	Mix fonctionnel de house jazzy pensé comme fond sonore.
 Floating Points	Fast Forward	Electronic	House	Énergique	0.35	claude	House rapide et texturée.
@@ -1140,9 +1140,9 @@ Frah Quintale	Sì può darsi	Pop	Indie Pop	Calme	0.25	claude	Pop italienne ; cla
 Franc Spangler	Dreamworld	Electronic	Deep House	Groovy	0.40	claude	Deep house avec Jimpster.
 Francesco Demegni	Don't Forget	Jazz	Lounge	Calme	0.25	claude	Jazz de café doux.
 Francis Harris	Lostfound	Electronic	Deep House	Planant	0.50	claude	Deep house texturée.
-Francis Lai	Un homme et une femme (Instrumental)	BO & Scène	Soundtrack	Calme	0.80	claude	Thème de film léger aux accents bossa, tendre et aérien.
-Franco Micalizzi	Sadness Theme	BO & Scène	Score	Mélancolique	0.55	claude	Thème de film lent et triste.
-Franco Micalizzi	Voices for Sadness Theme	BO & Scène	Score	Mélancolique	0.45	claude	Thème de film triste.
+Francis Lai	Un homme et une femme (Instrumental)	Jazz	Bossa Nova	Calme	0.80	claude	Thème de film léger aux accents bossa, tendre et aérien.
+Franco Micalizzi	Sadness Theme	Classical	Modern Classical	Mélancolique	0.55	claude	Thème de film lent et triste.
+Franco Micalizzi	Voices for Sadness Theme	Classical	Modern Classical	Mélancolique	0.45	claude	Thème de film triste.
 François Sentinelle	Est-ce que tu regrettes ?	Pop	Chanson	Mélancolique	0.20	claude	Titre inconnu, supposé chanson.
 Françoise Hardy	Tirez Pas Sur L'Ambulance	Pop	Chanson	Mélancolique	0.40	claude	Chanson de Françoise Hardy sur un texte de Gainsbourg.
 Frank Houston	Life Happens (feat. Phil Davis & Terreon Gully)	Jazz	Contemporary Jazz	Groovy	0.25	claude	Jazz contemporain en trio ; titre peu connu.
@@ -1209,7 +1209,7 @@ Fuera	Hero	Electronic	Deep House	Groovy	0.25	claude	Deep house française peu do
 Full Crate & Gaidaa	A Storm on a Summers Day	Funk & Soul	Neo Soul	Calme	0.30	claude	Soul douce ; classement prudent.
 FUNERAL Ant Bell	City of Champions	Hip Hop	Boom Bap	Énergique	0.30	claude	Rap combatif sur prod soulful.
 Funkadelic	Maggot Brain	Rock	Psychedelic Rock	Mélancolique	0.95	claude	Dix minutes de solo de guitare éploré, pas de funk.
-Funkissman 78	Game (Fun City) - 大都会 Part II テーマ - Theme of Daitokai Part II (Japanese OST - Daitokai - 1977)	BO & Scène	Jazz-Funk	Groovy	0.40	claude	Thème de série policière japonaise, cuivres et basse funk.
+Funkissman 78	Game (Fun City) - 大都会 Part II テーマ - Theme of Daitokai Part II (Japanese OST - Daitokai - 1977)	Jazz	Jazz-Funk	Groovy	0.40	claude	Thème de série policière japonaise, cuivres et basse funk.
 Furlax	Cosmos	Electronic	Ambient	Planant	0.20	claude	Pièce spatiale peu documentée.
 Furlax	Galactique	Hip Hop	Cloud Rap	Planant	0.25	claude	Rap aérien sur une instru spatiale.
 Furlax	Ride	Hip Hop	Cloud Rap	Planant	0.20	claude	Rap vaporeux en duo.
@@ -1218,7 +1218,7 @@ Furlax	Sensation	Hip Hop	Cloud Rap	Planant	0.20	claude	Morceau peu connu, classe
 Furlax	Stunna	Hip Hop	Trap	Énergique	0.20	claude	Morceau que je ne connais pas ; classement prudent.
 Fusion Groove Orchestra	If Only I Could (Liem Remix) (feat. Steve Lucas)	Electronic	Garage House	Groovy	0.40	claude	Garage soulful et chaleureux.
 Gaan	Sade - Smooth Operator (De Rigueur Bootleg)	Electronic	House	Groovy	0.30	claude	Bootleg house de Sade.
-Gabriel Yared	Betty et Zorg	BO & Scène	Score	Mélancolique	0.75	claude	Thème de film tendre et fragile.
+Gabriel Yared	Betty et Zorg	Classical	Modern Classical	Mélancolique	0.75	claude	Thème de film tendre et fragile.
 Gabriels	Love and Hate in a Different Time (Kerri Chandler Remix)	Electronic	Deep House	Groovy	0.70	claude	Voix soul magistrale sur une deep house de Kerri Chandler.
 GAL	Je le pèse Intro	Hip Hop	Trap	Énergique	0.20	claude	Titre que je ne connais pas ; classement indicatif.
 GAL	Kendrick Lamar	Hip Hop	Trap	Énergique	0.15	claude	Rap français peu connu, classement incertain.
@@ -1237,7 +1237,7 @@ Gazzz696	Scruscru & Los Protos - Os Sons Do Rio	Electronic	House	Festif	0.20	cla
 GeeJay	Devil Called Love	Electronic	Deep House	Groovy	0.10	claude	Morceau que je ne connais pas ; classement prudent.
 GeeJay	Ordinary Girl	Pop	Indie Pop	Calme	0.20	claude	Titre inconnu, supposé pop douce.
 GeeJay	Stronger	Electronic	Deep House	Groovy	0.10	claude	Morceau que je ne connais pas ; classement prudent.
-Geek Music	Interstellar Main Theme (From "Interstellar")	BO & Scène	Minimalism	Planant	0.60	claude	Orgue répétitif qui enfle, minimalisme de Zimmer.
+Geek Music	Interstellar Main Theme (From "Interstellar")	Classical	Minimalism	Planant	0.60	claude	Orgue répétitif qui enfle, minimalisme de Zimmer.
 Gene Lawrence	Feel Like Making Love	Funk & Soul	Soul	Groovy	0.30	claude	Reprise soul du standard.
 Gene Phillips & His Rhythm Aces	Big Legs	Blues	Jump Blues	Festif	0.70	claude	Jump blues de la côte ouest, cuivres et paroles grivoises.
 Georg Kallweit	Violin Sonata in C Major, Wq. 73, H. 504: III. Allegretto	Classical	Baroque	Calme	0.50	claude	Sonate galante de C.P.E. Bach.
@@ -1308,7 +1308,7 @@ Green Montana	CHAQUE JOUR DE LA SEMAINE	Hip Hop	Cloud Rap	Mélancolique	0.40	cla
 Greg Spero	Careless (Tiny Room Sessions)	Jazz	Fusion	Groovy	0.40	claude	Fusion moderne en session live, basse de MonoNeon.
 Grégoire Blanc	Mozart | Lacrimosa from Requiem in D minor | Theremin choir and piano	Classical	Classical	Mélancolique	0.80	claude	Lacrimosa transposé au thérémine, spectral et funèbre.
 Grégoire Blanc	Pink Floyd - The Great Gig In The Sky | Theremin, Continuum & Vintage Synthesizer	Rock	Progressive Rock	Planant	0.50	claude	Le cri vocal de Pink Floyd confié au thérémine et aux synthés.
-Grégoire Blanc	Schindler's List Theme | Theremin & Piano	BO & Scène	Soundtrack	Mélancolique	0.90	claude	Thème de Williams au thérémine, voix fantomatique.
+Grégoire Blanc	Schindler's List Theme | Theremin & Piano	Classical	Modern Classical	Mélancolique	0.90	claude	Thème de Williams au thérémine, voix fantomatique.
 Gregory Porter	Hey Laura	Jazz	Vocal	Mélancolique	0.70	claude	Ballade soul-jazz au baryton chaleureux, amour qui s'éloigne.
 Gregory Porter	L-O-V-E	Jazz	Swing	Groovy	0.60	claude	Hommage à Nat King Cole, swing joyeux.
 Gregory Porter	Liquid Spirit (Claptone Remix)	Electronic	Deep House	Groovy	0.75	claude	Remix deep house qui transforme le gospel-jazz de Porter en tube de club, voix et claps en avant.
@@ -1383,7 +1383,7 @@ Hassan Boussou	Nomade	Folk & World	Gnawa	Planant	0.40	claude	Gnaoua modernisé.
 Hassan Boussou	Sewarye	Folk & World	Gnawa	Planant	0.45	claude	Gnawa au guembri et aux qraqeb, répétition hypnotique proche de la transe.
 Hassan Boussou	Soumaya	Folk & World	Gnawa	Planant	0.50	claude	Gnawa modernisé, guembri répétitif et chant en transe.
 Hassan Boussou	Zid el mal	Folk & World	Gnawa	Planant	0.55	claude	Gnawa répétitif et transe, guembri au centre.
-Hayato Sumino	[Melodica × Grand Piano]  Howl's Moving Castle - Merry Go Round of Life  (Joe Hisaishi)	BO & Scène	Soundtrack	Mélancolique	0.75	claude	Valse d'Hisaishi en duo mélodica et piano, intime et nostalgique.
+Hayato Sumino	[Melodica × Grand Piano]  Howl's Moving Castle - Merry Go Round of Life  (Joe Hisaishi)	Classical	Neo-Classical	Mélancolique	0.75	claude	Valse d'Hisaishi en duo mélodica et piano, intime et nostalgique.
 Hazel Scott	'Round Midnight	Jazz	Ballad	Mélancolique	0.70	claude	Ballade nocturne de Monk au piano.
 HDA Pianomusic	Chopin - Prelude Op.28 No.20 in C Minor	Classical	Romantic	Mélancolique	0.95	claude	Le prélude-choral funèbre, accords lourds qui s'éteignent.
 Headie One	Back to Basics (Floating Points Remix) (feat. Skepta)	Hip Hop	Leftfield	Sombre	0.35	claude	Couplets drill sur relecture électronique atmosphérique de Floating Points.
@@ -1633,10 +1633,10 @@ Joe Bataan	Muchacho Ordinario (2022 - Remaster)	Latin	Salsa	Festif	0.55	claude	L
 Joe Dassin	Marie-Jeanne	Pop	Chanson	Mélancolique	0.85	claude	Récit grave et retenu adapté d'une ballade américaine.
 Joe Dassin	Salut	Pop	Chanson	Mélancolique	0.70	claude	Chanson d'adieu tendre de Joe Dassin.
 Joe Henderson	Inner Urge (Remastered 2004/Rudy Van Gelder Edition)	Jazz	Post Bop	Cérébral	0.80	claude	Thème modal aux accords mouvants, ténor intense poussé par Elvin Jones.
-Joe Hisaishi	Merry-Go-Round of Life (from 'Howl's Moving Castle')	BO & Scène	Soundtrack	Mélancolique	0.80	claude	Valse de film au piano, nostalgie tournoyante.
+Joe Hisaishi	Merry-Go-Round of Life (from 'Howl's Moving Castle')	Classical	Neo-Classical	Mélancolique	0.80	claude	Valse de film au piano, nostalgie tournoyante.
 Joe Pass	Django	Jazz	Cool Jazz	Mélancolique	0.60	claude	Hommage à Reinhardt, guitare souple et mélodie endeuillée.
 Joe Pass	I Cover the Waterfront	Jazz	Ballad	Calme	0.65	claude	Ballade à la guitare solo, harmonie raffinée.
-Joe Saiyan	Dragon Ball Sparking Zero Kame House OST EXTENDED	BO & Scène	Video Game Music	Calme	0.50	claude	Thème paisible de la maison de Tortue Géniale, en boucle.
+Joe Saiyan	Dragon Ball Sparking Zero Kame House OST EXTENDED	Electronic	Downtempo	Calme	0.50	claude	Thème paisible de la maison de Tortue Géniale, en boucle.
 Joe Sample	In All My Wildest Dreams	Jazz	Smooth Jazz	Calme	0.75	claude	Ballade au piano tendre et ample.
 Joe Sansom	3 hour vinyl deep house & techno dj mix | Joe Sansom	Electronic	Deep House	Groovy	0.50	claude	Long mix vinyle entre deep house et techno.
 Joel Holmes	Pose	Electronic	Nu-Disco	Groovy	0.40	claude	House teintée de disco, basse bondissante et samples soul.
@@ -1644,7 +1644,7 @@ Joep Beving	Morpheus' Dream	Classical	Neo-Classical	Calme	0.55	claude	Piano feut
 Joey Bada$$	Righteous Minds	Hip Hop	Boom Bap	Groovy	0.45	claude	Boom bap new-yorkais classique.
 Johan Papaconstantino	Les mots bleus	Pop	Chanson	Mélancolique	0.55	claude	Reprise de Christophe, autotune et cordes grecques.
 Johann Sebastian Bach	Prelude in C minor BWV 999	Classical	Baroque	Mélancolique	0.75	claude	Arpèges en mineur au luth.
-John Cameron	Liquid Sunshine	BO & Scène	Lounge	Calme	0.30	claude	Musique d'illustration vocale ; classement prudent.
+John Cameron	Liquid Sunshine	Jazz	Lounge	Calme	0.30	claude	Musique d'illustration vocale ; classement prudent.
 John Coltrane	Equinox	Jazz	Modal	Mélancolique	0.70	claude	Blues mineur lent et grave, sax ténor méditatif.
 John Coltrane	Giant Steps (2020 Remaster)	Jazz	Hard Bop	Cérébral	0.95	claude	Enchaînements d'accords vertigineux à tempo rapide.
 John Coltrane Quartet	Soul Eyes	Jazz	Modal	Calme	0.80	claude	Ballade de Coltrane, lyrique et apaisée.
@@ -1861,7 +1861,7 @@ Kassia	Passacaglia | Handel/Halvorsen (Piano Solo)	Classical	Baroque	Énergique	
 Kassia	Saint-Saëns: Danse Macabre	Classical	Romantic	Sombre	0.70	claude	Valse de la mort.
 Kassia	Schubert: Fantasy in F minor D. 940	Classical	Romantic	Mélancolique	0.80	claude	Thème schubertien poignant, alternance de douleur et d'élan.
 Kassia	The Best of Chopin Nocturnes	Classical	Romantic	Calme	0.60	claude	Compilation de nocturnes, piano rêveur.
-Katsuhisa Hattori	二人だけの海 - Futaridake No Umi	BO & Scène	Soundtrack	Calme	0.30	claude	Thème de film doux et maritime.
+Katsuhisa Hattori	二人だけの海 - Futaridake No Umi	Jazz	Lounge	Calme	0.30	claude	Thème de film doux et maritime.
 KAYTRANADA	Dance Dance Dance Dance	Electronic	House	Groovy	0.60	claude	House funky et sautillante, groove typique de Kaytranada.
 Kaznova	Perfect Girl (feat. Charlene Lai)	Electronic	Deep House	Groovy	0.15	claude	Morceau que je ne connais pas ; classement par défaut.
 Kazy Lambist	On You	Pop	Synth-Pop	Calme	0.50	claude	Électro-pop douce et estivale.
@@ -1990,10 +1990,10 @@ Krisy	sensuellement vôtre	Hip Hop	Trap	Calme	0.30	claude	Rap mélodique et sens
 Krystian Zimerman	Chopin: Ballade No. 1 in G Minor, Op. 23	Classical	Romantic	Cérébral	0.85	claude	Récit dramatique jusqu'à une coda furieuse.
 Krystyna Prońko	Deszcz w Cisnej (1976)	Jazz	Vocal	Mélancolique	0.35	claude	Chanson polonaise jazzy sur la pluie.
 Kumi	The Feeling	Electronic	House	Groovy	0.15	claude	Titre inconnu, classement à vérifier.
-kuribo98	NSMB Overworld theme but in minor	BO & Scène	Video Game Music	Mélancolique	0.70	claude	Thème de jeu joyeux passé en mineur.
-kuribo98	NSMB Versus Overworld theme but in minor	BO & Scène	Video Game Music	Mélancolique	0.60	claude	Thème Mario transposé en mineur, gaieté tournée en tristesse.
-kuribo98	Super Bell Hill theme but in minor (using audio manipulation)	BO & Scène	Video Game Music	Mélancolique	0.60	claude	Thème Mario joyeux passé en mineur, devenu nostalgique.
-kuribo98	Wii Shop Bossa Nova 1 Hour	BO & Scène	Video Game Music	Calme	0.60	claude	Musique de boutique Wii en bossa, bouclée une heure.
+kuribo98	NSMB Overworld theme but in minor	Electronic	Downtempo	Mélancolique	0.70	claude	Thème de jeu joyeux passé en mineur.
+kuribo98	NSMB Versus Overworld theme but in minor	Electronic	Downtempo	Mélancolique	0.60	claude	Thème Mario transposé en mineur, gaieté tournée en tristesse.
+kuribo98	Super Bell Hill theme but in minor (using audio manipulation)	Electronic	Downtempo	Mélancolique	0.60	claude	Thème Mario joyeux passé en mineur, devenu nostalgique.
+kuribo98	Wii Shop Bossa Nova 1 Hour	Jazz	Lounge	Calme	0.60	claude	Musique de boutique Wii en bossa, bouclée une heure.
 Kx9000	Air Dodge	Electronic	House	Groovy	0.25	claude	Morceau que je ne connais pas ; classement prudent.
 Kylie Minogue	Can't Get You out of My Head	Pop	Synth-Pop	Festif	0.95	claude	Synth-pop hypnotique à refrain obsédant.
 Kyo Itachi	99 en peuf	Hip Hop	Boom Bap	Sombre	0.55	claude	Boom bap rugueux, technique d'Alpha Wann.
@@ -2029,7 +2029,7 @@ La Rumeur	L'ombre sur la mesure	Hip Hop	Boom Bap	Sombre	0.75	claude	Rap sombre e
 Labess	Babour El Leuh	Folk & World	Flamenco	Mélancolique	0.35	claude	Rumba et chaâbi sur l'exil.
 Labess	Valérie	Folk & World	Flamenco	Festif	0.30	claude	Rumba chaabi ; classement prudent.
 LaChele	Sade - Room 55 (B-Side)	Funk & Soul	Neo Soul	Calme	0.15	claude	Morceau peu documenté, probablement soul feutrée.
-Lalo Schifrin	Mannix (From "Mannix" Soundtrack)	BO & Scène	Theme	Énergique	0.75	claude	Générique en 3/4 haletant, cuivres et orchestre jazz lancés à pleine vitesse.
+Lalo Schifrin	Mannix (From "Mannix" Soundtrack)	Jazz	Big Band	Énergique	0.75	claude	Générique en 3/4 haletant, cuivres et orchestre jazz lancés à pleine vitesse.
 Lamp	Yume Utsutsu	Pop	City Pop	Calme	0.45	claude	Pop japonaise douce, teintée de bossa.
 Lang Lang	Debussy: Clair de lune, CD 82 No. 3	Classical	Impressionist	Calme	0.95	claude	Le clair de lune de Debussy, arpèges suspendus et lumière tamisée.
 Lang Lang	Richter: The Departure	Classical	Modern Classical	Mélancolique	0.80	claude	Piano minimaliste et poignant de Max Richter.
@@ -2270,7 +2270,7 @@ MANSO̶U̶R̶	NORTHERN LINE (feat. SAMSON)	Hip Hop	Trap	Calme	0.20	claude	Titre 
 Manu Dibango	Besoka on Salsa	Latin	Salsa	Festif	0.55	claude	Salsa aux accents afro.
 Manuel Darquart	The Vibe	Electronic	Downtempo	Groovy	0.25	claude	Beat instrumental chaud et détendu.
 Manuele Cid	Vivaldi 4 Seasons, Summer 3 - Presto	Classical	Baroque	Énergique	0.80	claude	L'orage de l'Été transcrit au piano, traits rapides et furieux.
-Mar 3, 2017	Interstellar: The Ultimate Space Experience | Hans Zimmer	BO & Scène	Score	Planant	0.75	claude	Orgue et nappes répétitives de Zimmer qui s'étirent jusqu'à l'immensité.
+Mar 3, 2017	Interstellar: The Ultimate Space Experience | Hans Zimmer	Classical	Minimalism	Planant	0.75	claude	Orgue et nappes répétitives de Zimmer qui s'étirent jusqu'à l'immensité.
 Mar Malade	Cabriolet	Pop	Indie Pop	Calme	0.30	claude	Indie pop légère et vintage.
 Marc Copland	Flip Side	Jazz	Contemporary Jazz	Cérébral	0.35	claude	Piano jazz introspectif aux harmonies flottantes, dans un hommage à John Abercrombie.
 Marc Cotterell	Is Love A Game	Electronic	Deep House	Groovy	0.30	claude	House chantée, classement indicatif.
@@ -2528,7 +2528,7 @@ Miles Davis	The Doo-Bop Song	Hip Hop	Jazzy Hip-Hop	Groovy	0.80	claude	Trompette 
 Miles Davis	The Theme (Remastered 2025)	Jazz	Hard Bop	Énergique	0.60	claude	Thème de clôture rapide du quintette de Miles.
 Miles Davis	There Is No Greater Love (Remastered 2025)	Jazz	Cool Jazz	Calme	0.60	claude	Standard joué en sourdine, retenue élégante.
 Miles Davis	Will You Still Be Mine? (Remastered 2025)	Jazz	Hard Bop	Groovy	0.60	claude	Quartet médium-up, phrasé économe de Miles.
-Miles Davis (trumpet), Barney Wilen (tenor sax), Rene Urtreger (piano), Pierre Michelot (bass), Kenny Clarke (drums)	Ascenseur (Evasion De Julien)	Jazz	Soundtrack	Sombre	0.70	claude	Trompette sourdine dans la nuit, tension de film noir.
+Miles Davis (trumpet), Barney Wilen (tenor sax), Rene Urtreger (piano), Pierre Michelot (bass), Kenny Clarke (drums)	Ascenseur (Evasion De Julien)	Jazz	Cool Jazz	Sombre	0.70	claude	Trompette sourdine dans la nuit, tension de film noir.
 Miles Davis (trumpet), Barney Wilen (tenor sax), Rene Urtreger (piano), Pierre Michelot (bass), Kenny Clarke (drums)	Assassinat (Take 1) (Visite Du Vigile)	Jazz	Cool Jazz	Sombre	0.75	claude	Trompette sourde et contrebasse inquiète, tension de film noir.
 Miles Davis (trumpet), Barney Wilen (tenor sax), Rene Urtreger (piano), Pierre Michelot (bass), Kenny Clarke (drums)	Assassinat (Take 2) (Julien Dans L'ascenseur)	Jazz	Modal	Sombre	0.70	claude	Improvisation nocturne et tendue pour Malle.
 Miles Davis (trumpet), Barney Wilen (tenor sax), Rene Urtreger (piano), Pierre Michelot (bass), Kenny Clarke (drums)	Assassinat (Take 3) (L'assassinat De Carala)	Jazz	Modal	Sombre	0.70	claude	Improvisation nocturne de film noir, trompette sourde.
@@ -2538,9 +2538,9 @@ Miles Davis (trumpet), Barney Wilen (tenor sax), Rene Urtreger (piano), Pierre M
 Miles Davis (trumpet), Barney Wilen (tenor sax), Rene Urtreger (piano), Pierre Michelot (bass), Kenny Clarke (drums)	Evasion De Julien	Jazz	Cool Jazz	Sombre	0.70	claude	Fragment de BO tendu et nocturne.
 Miles Davis (trumpet), Barney Wilen (tenor sax), Rene Urtreger (piano), Pierre Michelot (bass), Kenny Clarke (drums)	Final (Chez Le Photographe Du Motel)	Jazz	Modal	Mélancolique	0.60	claude	Coda lente et désolée, trompette solitaire.
 Miles Davis (trumpet), Barney Wilen (tenor sax), Rene Urtreger (piano), Pierre Michelot (bass), Kenny Clarke (drums)	Florence Sur Les Champs-Elysees	Jazz	Cool Jazz	Groovy	0.70	claude	Swing nocturne et errant.
-Miles Davis (trumpet), Barney Wilen (tenor sax), Rene Urtreger (piano), Pierre Michelot (bass), Kenny Clarke (drums)	Generique	BO & Scène	Cool Jazz	Mélancolique	0.85	claude	Trompette sourde improvisée sur l'image, solitude nocturne.
+Miles Davis (trumpet), Barney Wilen (tenor sax), Rene Urtreger (piano), Pierre Michelot (bass), Kenny Clarke (drums)	Generique	Jazz	Cool Jazz	Mélancolique	0.85	claude	Trompette sourde improvisée sur l'image, solitude nocturne.
 Miles Davis (trumpet), Barney Wilen (tenor sax), Rene Urtreger (piano), Pierre Michelot (bass), Kenny Clarke (drums)	Julien Dans L'Ascenseur	Jazz	Cool Jazz	Sombre	0.75	claude	Trompette solitaire et angoissée.
-Miles Davis (trumpet), Barney Wilen (tenor sax), Rene Urtreger (piano), Pierre Michelot (bass), Kenny Clarke (drums)	L'Assassinat De Carala	BO & Scène	Score	Sombre	0.60	claude	Thème de film noir, trompette inquiète.
+Miles Davis (trumpet), Barney Wilen (tenor sax), Rene Urtreger (piano), Pierre Michelot (bass), Kenny Clarke (drums)	L'Assassinat De Carala	Jazz	Cool Jazz	Sombre	0.60	claude	Thème de film noir, trompette inquiète.
 Miles Davis (trumpet), Barney Wilen (tenor sax), Rene Urtreger (piano), Pierre Michelot (bass), Kenny Clarke (drums)	Le Petit Bal (Au Bar Du Petit Bac)	Jazz	Cool Jazz	Groovy	0.60	claude	Court thème swinguant de la BO, trompette légère.
 Miles Davis (trumpet), Barney Wilen (tenor sax), Rene Urtreger (piano), Pierre Michelot (bass), Kenny Clarke (drums)	Motel (Diner Au Motel)	Jazz	Hard Bop	Énergique	0.60	claude	Bop rapide et tendu, unisson trompette-ténor sur une rythmique serrée.
 Miles Davis (trumpet), Barney Wilen (tenor sax), Rene Urtreger (piano), Pierre Michelot (bass), Kenny Clarke (drums)	Nuit Sur Les Champs-ELysees (Florence Sur Les Champs-ELysees)	Jazz	Modal	Sombre	0.60	claude	Trompette en sourdine lente et brumeuse, errance nocturne.
@@ -2787,7 +2787,7 @@ Nicola Cruz	Colibria	Electronic	Downtempo	Planant	0.70	claude	Électronique andi
 Nicola Cruz	Danza de Vision	Electronic	Downtempo	Groovy	0.55	claude	Électronique andine aux percussions organiques.
 Nicolas Horvath	Gnossienne No. 4	Classical	Impressionist	Mélancolique	0.85	claude	Arpèges roulants et mélodie orientalisante, rêverie triste de Satie.
 Nicolas Jaar	And I Say	Electronic	Minimal	Groovy	0.35	claude	Minimal lente et feutrée.
-Nicolas Jaar	Beasts of This Earth	BO & Scène	Score	Sombre	0.30	claude	Musique de film inquiète ; classement prudent.
+Nicolas Jaar	Beasts of This Earth	Electronic	Ambient	Sombre	0.30	claude	Musique de film inquiète ; classement prudent.
 Nicolas Jaar	Club Kapital	Electronic	Techno	Sombre	0.35	claude	Pulsation de club déformée.
 Nicolas Jaar	Colomb	Electronic	Downtempo	Planant	0.60	claude	Électronique lente et minimaliste, voix lointaine.
 Nicolas Jaar	Construction	Electronic	Ambient	Planant	0.30	claude	Fragment ambient de Pomegranates.
@@ -2803,8 +2803,8 @@ Nicolas Jaar	Killing Time	Electronic	Ambient	Mélancolique	0.60	claude	Piano ép
 Nicolas Jaar	Leaves	Electronic	Ambient	Planant	0.55	claude	Silence, piano et voix qui s'effilochent, introduction contemplative.
 Nicolás Jaar	Mi Mujer	Electronic	Minimal	Groovy	0.70	claude	Minimal house aux samples de voix et cuivres latins, pulsation hypnotique.
 Nicolas Jaar	Mistress	Electronic	Ambient	Mélancolique	0.60	claude	Longue pièce pour piano dépouillée et brumeuse.
-Nicolas Jaar	Muse	BO & Scène	Score	Planant	0.30	claude	Fragment de musique de film ; classement prudent.
-Nicolas Jaar	Near Death	BO & Scène	Score	Sombre	0.30	claude	Musique de film inquiétante ; classement prudent.
+Nicolas Jaar	Muse	Electronic	Ambient	Planant	0.30	claude	Fragment de musique de film ; classement prudent.
+Nicolas Jaar	Near Death	Electronic	Ambient	Sombre	0.30	claude	Musique de film inquiétante ; classement prudent.
 Nicolas Jaar	Never Have I Ever	Electronic	Downtempo	Planant	0.45	claude	Électronique lente et voilée.
 Nicolas Jaar	No	Electronic	Downtempo	Mélancolique	0.55	claude	Ballade lente en espagnol sur un rythme proche de la cumbia ralentie.
 Nicolas Jaar	No One Is Looking at U	Electronic	Downtempo	Groovy	0.40	claude	Disco ralentie et déglinguée, voix lointaine.
@@ -2984,11 +2984,11 @@ Phazers	The Herbie Hancock Group on Danish TV, 1976	Jazz	Jazz-Funk	Groovy	0.60	c
 Phil Berg	Menace	Electronic	Deep Techno	Sombre	0.45	claude	Techno hypnotique et nocturne, tension contenue.
 Phil Upchurch	Inner City Blues (Make Me Wanna Holler)	Jazz	Jazz-Funk	Groovy	0.65	claude	Reprise de Marvin Gaye en jazz-funk à la guitare, groove souple.
 Phonique	For The Time Being (feat. Erlend Øye)	Electronic	Deep House	Mélancolique	0.70	claude	House minimaliste et triste, voix douce d'Erlend Øye.
-Piano Beats and Jam	Fly Me to a Moon [Lethal Company Parody]	BO & Scène	Video Game Music	Calme	0.25	claude	Parodie jazzy liée à un jeu vidéo ; classement prudent.
+Piano Beats and Jam	Fly Me to a Moon [Lethal Company Parody]	Jazz	Lounge	Calme	0.25	claude	Parodie jazzy liée à un jeu vidéo ; classement prudent.
 PianoTips	Czerny op.599 nr.62 Piano Tutorial | Practical Method for Beginners	Classical	Romantic	Calme	0.40	claude	Petite pièce pédagogique de Czerny, en tutoriel.
-Piero Piccioni	It's Possible (feat. Catherine Howe)	BO & Scène	Soundtrack	Calme	0.35	claude	Chanson de film italienne douce.
-Piero Piccioni	It's Possible (From "Il Dio sotto la pelle") (feat. Catherine Howe)	BO & Scène	Soundtrack	Mélancolique	0.45	claude	Chanson de film des années 70, voix folk et orchestre doux.
-Piero Umiliani	Borgo montano	BO & Scène	Score	Calme	0.30	claude	Musique d'illustration pastorale d'Umiliani, conçue pour évoquer un paysage.
+Piero Piccioni	It's Possible (feat. Catherine Howe)	Pop	Ballad	Calme	0.35	claude	Chanson de film italienne douce.
+Piero Piccioni	It's Possible (From "Il Dio sotto la pelle") (feat. Catherine Howe)	Pop	Ballad	Mélancolique	0.45	claude	Chanson de film des années 70, voix folk et orchestre doux.
+Piero Umiliani	Borgo montano	Jazz	Library Music	Calme	0.30	claude	Musique d'illustration pastorale d'Umiliani, conçue pour évoquer un paysage.
 Piero Umiliani	Ciliegi in fiore	Jazz	Lounge	Calme	0.35	claude	Pièce de librairie douce et légèrement orientalisante.
 Piero Umiliani	Lady Magnolia	Jazz	Lounge	Groovy	0.40	claude	Lounge italien.
 Piero Umiliani	Laguna tropicale	Jazz	Lounge	Calme	0.50	claude	Musique d'illustration italienne, exotisme feutré et paysage sonore tranquille.
@@ -2996,12 +2996,12 @@ Piero Umiliani	Lungo il canale	Jazz	Bossa Nova	Calme	0.30	claude	Illustration do
 Piero Umiliani	Mahè	Jazz	Lounge	Calme	0.40	claude	Musique d'illustration exotique et douce, ambiance d'île.
 Piero Umiliani	Nel parco	Jazz	Lounge	Calme	0.45	claude	Musique d'illustration douce aux couleurs bossa.
 Piero Umiliani	Oriente rosso	Jazz	Lounge	Calme	0.30	claude	Musique d'illustration exotique aux couleurs orientales.
-Piero Umiliani	Pianure d'Asia	BO & Scène	Score	Calme	0.40	claude	Musique d'illustration exotique et contemplative.
+Piero Umiliani	Pianure d'Asia	Jazz	Library Music	Calme	0.40	claude	Musique d'illustration exotique et contemplative.
 Piero Umiliani	Porta d'Oriente	Jazz	Lounge	Planant	0.40	claude	Musique d'illustration exotique.
-Piero Umiliani	Prime nebbie	BO & Scène	Score	Calme	0.35	claude	Pièce de library music atmosphérique, nappes feutrées évoquant la brume.
-Piero Umiliani	Risaie	BO & Scène	Score	Calme	0.30	claude	Musique d'illustration pastorale ; classement prudent.
+Piero Umiliani	Prime nebbie	Jazz	Library Music	Calme	0.35	claude	Pièce de library music atmosphérique, nappes feutrées évoquant la brume.
+Piero Umiliani	Risaie	Jazz	Library Music	Calme	0.30	claude	Musique d'illustration pastorale ; classement prudent.
 Piero Umiliani	Tanto lontano	Jazz	Bossa Nova	Calme	0.40	claude	Musique de librairie italienne aux couleurs bossa et lounge.
-Piero Umiliani	Vecchie strade	BO & Scène	Score	Calme	0.25	claude	Musique d'illustration ; classement prudent.
+Piero Umiliani	Vecchie strade	Jazz	Library Music	Calme	0.25	claude	Musique d'illustration ; classement prudent.
 Pink Floyd	Breathe (In the Air)	Rock	Psychedelic Rock	Planant	0.85	claude	Guitare lap steel et voix flottante.
 Pink Floyd	Careful with That Axe, Eugene (Alternative Take) [Live at Pompeii] [2016 Remix]	Rock	Psychedelic Rock	Sombre	0.90	claude	Montée inquiétante jusqu'au cri.
 Pink Floyd	Comfortably Numb	Rock	Progressive Rock	Mélancolique	0.95	claude	Couplets engourdis et deux solos de guitare de Gilmour qui déchirent.
@@ -3494,7 +3494,7 @@ Schmoov!	Taking Me Over	Electronic	Nu-Disco	Groovy	0.30	claude	Disco house filtr
 Scylla	Solitude	Hip Hop	Conscious	Mélancolique	0.55	claude	Rap déclamé sur piano de Sofiane Pamart.
 Seafood Sam	Ramsey	Hip Hop	G-Funk	Groovy	0.35	claude	Rap West Coast.
 Sean McCabe feat. Jennifer Wallace	Something About You	Electronic	Deep House	Groovy	0.35	claude	Deep house vocale.
-Seatbelts	Mushroom Hunting	BO & Scène	Score	Planant	0.40	claude	Interlude étrange et psychédélique de la BO de Cowboy Bebop.
+Seatbelts	Mushroom Hunting	Jazz	Experimental	Planant	0.40	claude	Interlude étrange et psychédélique de la BO de Cowboy Bebop.
 Seatbelts	Rush	Jazz	Big Band	Énergique	0.70	claude	Big band rapide et nerveux.
 Seb Wildblood	Jazz, Vol. 1	Electronic	Deep House	Groovy	0.40	claude	Deep house aux accords jazz.
 Seb Wildblood	Jazz, Vol. 1 (Christopher Rau Remix)	Electronic	Deep House	Groovy	0.40	claude	Deep house feutrée aux accords jazz.
@@ -3530,7 +3530,7 @@ Shigeo Sekito	The Word 2 (Remixed by Masamichi Torii)	Electronic	Downtempo	Plana
 Shigeru Suzuki	Coral Reef	Pop	City Pop	Calme	0.50	claude	Instrumental ensoleillé et léger, guitare claire et arrangements soyeux d'esprit insulaire.
 Shigeru Suzuki	Noa Noa	Pop	City Pop	Calme	0.35	claude	Instrumental tropical de l'album Pacific.
 Shigeru Suzuki	Passion Flower	Jazz	City Pop	Calme	0.30	claude	Instrumental city pop ; classement prudent.
-Shiro SAGISU	Nothing Can Be Explained (inst ver.) - Nothing Can Be Explained (Instumental Version)	BO & Scène	Soundtrack	Mélancolique	0.40	claude	Instrumental de la BO de Bleach.
+Shiro SAGISU	Nothing Can Be Explained (inst ver.) - Nothing Can Be Explained (Instumental Version)	Classical	Modern Classical	Mélancolique	0.40	claude	Instrumental de la BO de Bleach.
 Shkoon	Ala Moj Al Bahr (Goldcap Remix)	Electronic	Deep House	Planant	0.50	claude	House mélodique sur chant arabe.
 Shobee	Train De Vie (feat. Laylow)	Hip Hop	Trap	Mélancolique	0.35	claude	Rap introspectif ; classement prudent.
 Shouse	Love Tonight (Edit)	Electronic	House	Festif	0.90	claude	Hymne house chanté en chœur, euphorie collective.
@@ -3645,8 +3645,8 @@ Stef Mendesidis	Spectral Transmission	Electronic	Techno	Planant	0.25	claude	Tech
 Stef Mendesidis	Techno	Electronic	Techno	Sombre	0.40	claude	Techno dure et martelée.
 Stefan Schilli	Oboe Concerto in C Major, RV 452: II. Adagio	Classical	Baroque	Calme	0.70	claude	Mouvement lent où le hautbois chante sur un accompagnement de cordes discret.
 Stela	Piece of soul	Funk & Soul	Neo Soul	Calme	0.15	claude	Titre mal identifié.
-Stelvio Cipriani	Libidine (#8)	BO & Scène	Score	Calme	0.35	claude	Thème de film sensuel.
-Stelvio Cipriani	Mary's Theme	BO & Scène	Lounge	Calme	0.50	claude	Thème de film sensuel et lounge, typique du cinéma italien des 60s.
+Stelvio Cipriani	Libidine (#8)	Jazz	Lounge	Calme	0.35	claude	Thème de film sensuel.
+Stelvio Cipriani	Mary's Theme	Jazz	Lounge	Calme	0.50	claude	Thème de film sensuel et lounge, typique du cinéma italien des 60s.
 Stephan Bodzin	Collider	Electronic	Techno	Planant	0.50	claude	Techno mélodique, arpèges de synthé qui montent en spirale.
 Stephan Bodzin	Singularity	Electronic	Techno	Énergique	0.75	claude	Techno mélodique aux arpèges en montée.
 Steve Lacy	Atomic Vomit	Funk & Soul	Neo Soul	Groovy	0.30	claude	Esquisse lo-fi, guitare funky.
@@ -3670,7 +3670,7 @@ Sublime	baume	Hip Hop	Cloud Rap	Mélancolique	0.30	claude	Rap mélodique collect
 Submorphics	Long Been Gone	Electronic	Drum & Bass	Mélancolique	0.45	claude	Drum & bass liquide, nappes rêveuses et vocal lointain.
 Suchmos	PINKVIBES	Rock	Funk	Groovy	0.40	claude	Rock japonais acid-jazz.
 Sunbear	Rhythm of Our Souls	Funk & Soul	Jazz-Funk	Groovy	0.35	claude	Jazz-funk moderne.
-Super Guitar Bros	Fairy Fountain	BO & Scène	Video Game Music	Calme	0.80	claude	Reprise à deux guitares du thème de la fontaine des fées de Zelda.
+Super Guitar Bros	Fairy Fountain	Jazz	Lounge	Calme	0.80	claude	Reprise à deux guitares du thème de la fontaine des fées de Zelda.
 SuperMegaSuperCool Révolution	Full Shine Render	Electronic	Experimental	Planant	0.15	claude	Morceau très peu documenté.
 The Supermen Lovers	Starlight	Electronic	House	Festif	0.90	claude	Tube French Touch, vocal euphorique et guitare filtrée.
 Superstar Prince Aziz	Batman	Electronic	Experimental	Planant	0.20	claude	Morceau très peu documenté.
@@ -3813,7 +3813,7 @@ Tom Zé	A felicidade	Latin	MPB	Calme	0.35	claude	Relecture décalée de Jobim.
 Toman	Una Y Nada	Electronic	Deep House	Planant	0.10	claude	Morceau que je ne connais pas ; classement prudent.
 Tomasz Guiddo	Where The Wild Roam (Erobique Disko Remix Radio Edit)	Electronic	Nu-Disco	Festif	0.40	claude	Remix disco enjoué, fait pour danser.
 Tommy Flanagan	Willow Weep for Me	Jazz	Hard Bop	Calme	0.50	claude	Standard bluesy en trio piano, toucher élégant et tempo de ballade.
-Tomohito Nishiura	教授のカバン (ミニカー) (ハイクオリティーバージョン) - The Toy Car (High Quality Version)	BO & Scène	Video Game Music	Calme	0.35	claude	Thème de jeu vidéo léger et mélancolique à l'accordéon.
+Tomohito Nishiura	教授のカバン (ミニカー) (ハイクオリティーバージョン) - The Toy Car (High Quality Version)	Folk & World	Instrumental	Calme	0.35	claude	Thème de jeu vidéo léger et mélancolique à l'accordéon.
 tonton4o	Pepe Bradock - Deep Burnt	Electronic	Deep House	Groovy	0.80	claude	Classique deep house à la flûte et cuivres samplés.
 Toploader	Dancing in the Moonlight	Pop	Pop Rock	Festif	0.90	claude	Reprise enjouée au piano, refrain à chanter tous ensemble.
 Toquinho	Carolina, Carol Bela	Latin	Samba	Groovy	0.70	claude	Samba-rock acoustique léger avec Jorge Ben.
@@ -3821,7 +3821,7 @@ Toquinho	Insensatez	Latin	Bossa Nova	Mélancolique	0.80	claude	Bossa de Jobim su
 Tortured Soul	Take Me to Your House	Electronic	Garage House	Groovy	0.65	claude	House jouée par un vrai trio, batterie et basse live.
 TORYONTHEBEAT	You're in My System	Funk & Soul	Contemporary R&B	Calme	0.15	claude	Titre inconnu, classement à vérifier.
 Toshiko Akiyoshi	Imagination	Jazz	Bebop	Calme	0.40	claude	Standard en trio, toucher bop.
-Toshiro Konno	The Pokemon Piano MEDLEY	BO & Scène	Video Game Music	Calme	0.45	claude	Medley de thèmes Pokémon au piano.
+Toshiro Konno	The Pokemon Piano MEDLEY	Classical	Neo-Classical	Calme	0.45	claude	Medley de thèmes Pokémon au piano.
 Toto	Georgy Porgy	Funk & Soul	Soul	Groovy	0.75	claude	Groove R&B feutré avec Cheryl Lynn.
 Tour-Maubourg	Ode to Love	Electronic	Deep House	Groovy	0.55	claude	Deep house teintée de jazz, accords chauds et boucle de batterie souple.
 TRAUM	Frédéric Chopin: Étude Op. 10, No. 1 in C Major (Allegro)	Classical	Romantic	Énergique	0.85	claude	Arpèges immenses balayant le clavier.
@@ -3887,9 +3887,9 @@ Underworld	Dark And Long (Dark Train)	Electronic	Progressive House	Planant	0.80	
 USG feat. Monica Elam	Life 4 Living	Electronic	Deep House	Groovy	0.25	claude	Deep house vocale supposée.
 V.I.C.A.R.I.	Pascià (Dub)	Electronic	Deep House	Planant	0.30	claude	Deep house dub.
 Vanessa Da Mata	Boa Sorte / Good Luck (feat. Ben Harper)	Latin	MPB	Calme	0.80	claude	Duo acoustique tendre sur une séparation.
-Varnish La Piscine	ADIOS, TORNADO'S EFFECT	BO & Scène	Score	Cérébral	0.30	claude	Pièce de bande originale expérimentale, peu documentée.
+Varnish La Piscine	ADIOS, TORNADO'S EFFECT	Electronic	Experimental	Cérébral	0.30	claude	Pièce de bande originale expérimentale, peu documentée.
 Varnish La Piscine	FACE TO FACE (feat. Bonnie Banane)	Funk & Soul	Neo Soul	Groovy	0.50	claude	Soul bizarre et sensuelle, duo de voix sur un groove décalé.
-Varnish La Piscine	ILLUSION SUR MAUNA LOA	BO & Scène	Score	Planant	0.20	claude	Pièce de BO expérimentale peu documentée.
+Varnish La Piscine	ILLUSION SUR MAUNA LOA	Electronic	Experimental	Planant	0.20	claude	Pièce de BO expérimentale peu documentée.
 Varyk	C.P.E. Bach - Solfeggio in C minor	Classical	Baroque	Énergique	0.60	claude	Perpetuum mobile en arpèges rapides, ut mineur nerveux.
 Varyk	Debussy - Doctor Gradus ad Parnassum	Classical	Impressionist	Cérébral	0.70	claude	Étude espiègle en arpèges.
 Varyk	Kabalevsky - Etude Op. 27 No. 3	Classical	Modern Classical	Énergique	0.45	claude	Étude rapide et rythmique.
@@ -4083,7 +4083,7 @@ Zeu	HAALAND	Hip Hop	Drill	Énergique	0.40	claude	Drill offensive et martelée.
 Zeu	RARE	Hip Hop	Trap	Énergique	0.15	claude	Morceau très peu documenté.
 Ziad Rahbani	Bisaraha	Jazz	Jazz-Funk	Groovy	0.60	claude	Jazz oriental funky, piano et cuivres sur rythmique libanaise.
 Ziad Rahbani	Khalas	Jazz	Jazz-Funk	Groovy	0.45	claude	Jazz oriental funky.
-Ziad Rahbani	Prelude Theme From Mais Al Rim	BO & Scène	Score	Calme	0.30	claude	Ouverture orchestrale d'une pièce des Rahbani.
+Ziad Rahbani	Prelude Theme From Mais Al Rim	Folk & World	Arabic Classical	Calme	0.30	claude	Ouverture orchestrale d'une pièce des Rahbani.
 Ziad Rahbani	Rouh Khabbir	Jazz	Jazz-Funk	Groovy	0.45	claude	Jazz-funk oriental libanais.
 zones2surf	Blues Japanese Style - Kunimoto Takeharu Jam w/ Buddy Guy & Chris Duarte! / 国本武春、バディ・ガイ、クリス・デュアーテ	Blues	Electric Blues	Énergique	0.40	claude	Jam blues mêlant shamisen et guitares.
 Zubaran1977	Carl Czerny - Etude Op.299, No.21	Classical	Romantic	Énergique	0.55	claude	Étude de vélocité, traits rapides et réguliers.
@@ -4092,4 +4092,4 @@ Zuukou Mayzie	Vincent	Hip Hop	Cloud Rap	Énergique	0.25	claude	Rap parisien exp�
 Zycopolis TV	Bobby McFerrin & Chick Corea - Spain - LIVE HD	Jazz	Latin Jazz	Festif	0.60	claude	Duo voix-piano joueur avec le public.
 ØXYR	Calarth	Electronic	Techno	Sombre	0.15	claude	Morceau que je ne connais pas ; classement prudent.
 Дурной Вкус	Пластинки	Pop	Synth-Pop	Mélancolique	0.45	claude	Synth-pop russe froide aux accents post-punk.
-照井順政	一緒なら	BO & Scène	Score	Calme	0.35	claude	Pièce d'anime douce et intime.
+照井順政	一緒なら	Classical	Neo-Classical	Calme	0.35	claude	Pièce d'anime douce et intime.

@@ -24,13 +24,13 @@ from collections.abc import Mapping
 from dataclasses import dataclass, field
 from pathlib import Path
 
-from ytmgc.matching.normalize import fold, slugify
+from ytmgc.matching.normalize import fold, normalize_artist, slugify
 from ytmgc.models import Classification, MatchStatus, PlaylistPlan
 from ytmgc.taxonomy import Taxonomy
 
 #: Clés comprises dans un bloc `[[playlist]]`. Toute autre est une faute de
 #: frappe : l'ignorer élargirait la règle sans prévenir.
-_BLOCK_KEYS = {"nom", "description", "genres", "styles", "ambiances"}
+_BLOCK_KEYS = {"nom", "description", "genres", "styles", "ambiances", "artistes"}
 _SIZE_KEYS = {"min", "max"}
 
 #: YouTube Music refuse les chevrons dans une description de playlist.
@@ -49,6 +49,10 @@ class Rule:
     genres: tuple[str, ...] = ()
     styles: tuple[str, ...] = ()
     moods: tuple[str, ...] = ()
+    #: Le verdict ne dit pas d'où vient une musique : « Traditional » ou
+    #: « Ballad » valent pour Beyrouth comme pour Bamako. Nommer les artistes
+    #: est le seul moyen de ranger par région.
+    artists: tuple[str, ...] = ()
     _folded: tuple = field(init=False, repr=False, compare=False, default=())
 
     def __post_init__(self) -> None:
@@ -57,15 +61,18 @@ class Rule:
             frozenset(fold(g) for g in self.genres),
             frozenset(fold(s) for s in self.styles),
             frozenset(fold(m) for m in self.moods),
+            frozenset(normalize_artist(a) for a in self.artists),
         ))
 
-    def matches(self, genres: set[str], styles: set[str], mood: str | None) -> bool:
-        wanted_genres, wanted_styles, wanted_moods = self._folded
-        if wanted_genres and not genres & wanted_genres:
+    def matches(self, seen: "Features") -> bool:
+        wanted_genres, wanted_styles, wanted_moods, wanted_artists = self._folded
+        if wanted_genres and not seen.genres & wanted_genres:
             return False
-        if wanted_styles and not styles & wanted_styles:
+        if wanted_styles and not seen.styles & wanted_styles:
             return False
-        if wanted_moods and mood not in wanted_moods:
+        if wanted_moods and seen.mood not in wanted_moods:
+            return False
+        if wanted_artists and not seen.artists & wanted_artists:
             return False
         return True
 
@@ -77,6 +84,10 @@ class Rule:
             parts.append("style " + ", ".join(self.styles))
         if self.moods:
             parts.append("ambiance " + ", ".join(self.moods))
+        if self.artists:
+            shown = ", ".join(self.artists[:6])
+            more = f" et {len(self.artists) - 6} autres" if len(self.artists) > 6 else ""
+            parts.append(f"artiste {shown}{more}")
         return " ; ".join(parts) or "tout morceau restant"
 
 
@@ -108,6 +119,17 @@ class Plan:
     def by_key(self) -> dict[str, PlannedPlaylist]:
         return {playlist.key: playlist for playlist in self.playlists}
 
+    def unknown_artists(self, library: list[tuple[str, ...]]) -> list[str]:
+        """Artistes nommés par une règle et absents de la bibliothèque.
+
+        Le plus souvent une faute de frappe : la règle ne correspond alors à
+        rien, en silence. Une chaîne YouTube ou une casse différente, elles,
+        ne comptent pas comme une absence.
+        """
+        present = {normalize_artist(artist) for artists in library for artist in artists}
+        named = [a for p in self.playlists for rule in p.rules for a in rule.artists]
+        return sorted({a for a in named if normalize_artist(a) not in present}, key=str.casefold)
+
 
 @dataclass(frozen=True, slots=True)
 class Features:
@@ -116,6 +138,7 @@ class Features:
     genres: set[str]
     styles: set[str]
     mood: str | None
+    artists: set[str] = field(default_factory=set)
 
 
 # ------------------------------------------------------------------ lecture
@@ -188,6 +211,7 @@ def parse_plan(text: str, taxonomy: Taxonomy, source: str = "playlists.toml") ->
             genres=_check_vocabulary(_names(block, "genres", where), genres, "genre", where),
             styles=styles,
             moods=_check_vocabulary(_names(block, "ambiances", where), moods, "ambiance", where),
+            artists=_names(block, "artistes", where),
         )
         # Deux blocs du même nom alimentent la même playlist : c'est ainsi
         # qu'on écrit « Jazz-Funk, ou bien Fusion quand elle est groovy ».
@@ -225,22 +249,34 @@ def usable(classification: Classification) -> bool:
     return classification.judged or classification.status is MatchStatus.MATCHED
 
 
-def features(classification: Classification, taxonomy: Taxonomy) -> Features:
+def features(
+    classification: Classification, taxonomy: Taxonomy, artists: tuple[str, ...] = ()
+) -> Features:
     styles = (taxonomy.canonical_style(style) for style in classification.styles)
     return Features(
         genres={fold(taxonomy.display_genre(genre)) for genre in classification.genres},
         styles={fold(style) for style in styles if style},
         mood=fold(classification.mood) if classification.mood else None,
+        artists={normalize_artist(artist) for artist in artists},
     )
 
 
-def assign(classification: Classification, plan: Plan, taxonomy: Taxonomy) -> PlannedPlaylist | None:
-    """La première playlist du plan qui accepte ce morceau, ou None."""
+def assign(
+    classification: Classification,
+    plan: Plan,
+    taxonomy: Taxonomy,
+    artists: tuple[str, ...] = (),
+) -> PlannedPlaylist | None:
+    """La première playlist du plan qui accepte ce morceau, ou None.
+
+    `artists` : les artistes du titre, invités compris — une règle d'artiste
+    vaut aussi pour un titre où il n'est qu'invité.
+    """
     if not usable(classification):
         return None
-    seen = features(classification, taxonomy)
+    seen = features(classification, taxonomy, artists)
     for playlist in plan.playlists:
-        if any(rule.matches(seen.genres, seen.styles, seen.mood) for rule in playlist.rules):
+        if any(rule.matches(seen) for rule in playlist.rules):
             return playlist
     return None
 
@@ -261,6 +297,7 @@ def plan_by_rules(
     plan: Plan,
     marker: str,
     overrides: Mapping[str, str | None] | None = None,
+    artists: Mapping[str, tuple[str, ...]] | None = None,
 ) -> list[PlaylistPlan]:
     """Les playlists du plan, dans l'ordre du fichier. Les vides sont omises.
 
@@ -279,7 +316,7 @@ def plan_by_rules(
             if target is not None:
                 members[target].append(video_id)
             continue
-        playlist = assign(classification, plan, taxonomy)
+        playlist = assign(classification, plan, taxonomy, (artists or {}).get(video_id, ()))
         if playlist is not None:
             members[playlist.key].append(video_id)
 

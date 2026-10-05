@@ -2,17 +2,21 @@
 #
 # Chaque morceau va dans la PREMIÈRE playlist dont une règle lui correspond,
 # en lisant ce fichier de haut en bas. D'où l'ordre :
-#   1. d'abord les playlists transversales (Brésil, R&B, BO…), qui réunissent
-#      un style quel que soit le genre que Claude lui a donné ;
+#   1. d'abord les playlists transversales (Monde, R&B, variété…), qui
+#      réunissent un style ou des artistes quel que soit le genre que Claude a
+#      donné ;
 #   2. puis chaque famille, de la règle la plus étroite à la plus large.
 #
-# Une règle combine jusqu'à trois critères ; un critère absent accepte tout :
+# Une règle combine jusqu'à quatre critères ; un critère absent accepte tout :
 #   genres    = genres du verdict (liste fermée : Electronic, Hip Hop, Jazz,
 #               Funk & Soul, Classical, Pop, Latin, Rock, Folk & World,
-#               BO & Scène, Blues, Reggae, Hors-musique, Jeunesse…)
+#               Blues, Reggae, Hors-musique, Jeunesse…)
 #   styles    = styles du verdict (texte libre, tel qu'écrit dans verdicts.txt)
 #   ambiances = Calme, Énergique, Festif, Groovy, Mélancolique, Planant,
 #               Sombre, Cérébral
+#   artistes  = noms d'artistes (invités compris, casse et accents libres).
+#               Le verdict ne dit pas d'où vient une musique : c'est ainsi
+#               qu'on range par région.
 # Plusieurs blocs portant le même nom alimentent la même playlist.
 #
 # Un morceau qu'aucune règle n'accepte n'est versé nulle part : l'aperçu le
@@ -23,35 +27,89 @@
 
 # Taille visée : l'aperçu signale les playlists hors de cette plage.
 [taille]
-min = 30
+min = 15
 max = 150
 
 
 # ============================================================ transversales
 
-[[playlist]]
-nom = "BO · Films & jeux vidéo"
-description = "Musiques de film, de série et de jeu vidéo, illustrations sonores."
-genres = ["BO & Scène"]
+# ------------------------------------------------------------------ monde
 
 [[playlist]]
-nom = "BO · Films & jeux vidéo"
-styles = ["Video Game Music", "Soundtrack", "Score", "Library Music", "Theme"]
+nom = "Monde · Bossa nova"
+description = "Bossa nova, qu'elle vienne du Brésil, du jazz ou d'une musique de film."
+styles = ["Bossa Nova"]
 
 [[playlist]]
-nom = "Monde · Brésil"
-description = "Bossa nova, samba et MPB, qu'elles viennent du jazz, de la pop ou de la musique latine."
-styles = ["Bossa Nova", "MPB", "Samba", "Baile Funk"]
+nom = "Monde · MPB & samba"
+description = "Musique populaire brésilienne, samba et groove brésilien."
+styles = ["MPB", "Samba", "Baile Funk"]
 
 [[playlist]]
-nom = "Monde · Maghreb & Orient"
-description = "Gnawa, raï, chaâbi, tarab et pop arabe."
-styles = ["Gnawa", "Raï", "Chaabi", "Tarab", "Arabic Pop", "Arabic Classical", "Kabyle Pop", "Al Jeel"]
+nom = "Monde · MPB & samba"
+genres = ["Latin"]
+artistes = ["Elis Regina", "Ana Mazzotti", "Germannu", "Joutro Mundo"]
+
+[[playlist]]
+nom = "Monde · Gnawa"
+description = "Transe gnaoua : guembri, qraqeb et chants responsoriaux, du rituel à la fusion."
+styles = ["Gnawa"]
+
+[[playlist]]
+nom = "Monde · Maghreb"
+description = "Raï, chaâbi, kabyle, musiques des oasis, orgue marocain et funk libyen ou tunisien."
+styles = ["Raï", "Chaabi", "Kabyle Pop"]
+
+[[playlist]]
+nom = "Monde · Maghreb"
+artistes = ["Abdou El Omari", "Compagnie El Hamri", "Compagnie El Hashemi Nhass", "Compagnie Jellouili & Ghih", "Compagnie Meskaoui", "Labess", "Carthago", "Douaa", "Najib Alhoush", "Ahmed Fakroun", "Saber Rebai", "Hindi Zahra", "Mohamed Mazouni", "sofiane salamane", "Oum", "Rachid Taha", "Khaled", "Cheikha Rimitti", "Mohamed Lamouri", "Raïna Raï", "Mohamed Allaoua", "Samira Saïd", "Ahmed Malek"]
+
+[[playlist]]
+nom = "Monde · Orient"
+description = "Liban, Égypte, Irak : tarab, oud, Fairouz et les Rahbani, pop arabe."
+styles = ["Tarab", "Arabic Classical", "Arabic Pop", "Al Jeel"]
+
+[[playlist]]
+nom = "Monde · Orient"
+artistes = ["Fairuz", "Fairouz", "Ziad Rahbani", "Warda", "Warda El Gazaerya", "Marcel Khalife", "Munir Bachir", "Naseer Shamma", "Riyad Sunbati", "Abdallah Chahine", "Issam Hajali", "Mohamed Mounir", "Hany Shenoda Ferqet Masr", "Eng. Emad Al Atoum", "Fady", "MaHa", "marilyne naaman", "El Shab Arrab", "Bedouin Burger", "Rachid Aseyakhe", "Saint Levant"]
+
+[[playlist]]
+nom = "Monde · Caraïbes & reggae"
+description = "Reggae, dub, dancehall, zouk et musiques créoles."
+genres = ["Reggae"]
+
+[[playlist]]
+nom = "Monde · Caraïbes & reggae"
+styles = ["Zouk", "Ragga", "Roots Reggae", "Lovers Rock"]
+
+[[playlist]]
+nom = "Monde · Caraïbes & reggae"
+genres = ["Folk & World"]
+styles = ["Dancehall", "Dub"]
+
+[[playlist]]
+nom = "Monde · Caraïbes & reggae"
+artistes = ["David Walters"]
 
 [[playlist]]
 nom = "Monde · Afrique"
-description = "Afrobeat, afrobeats, afro house, highlife, blues du désert et musiques d'Afrique australe et lusophone."
-styles = ["Afrobeat", "Afrobeats", "Afroswing", "Highlife", "Desert Blues", "Semba", "Morna", "Mbaqanga", "Amapiano", "Afro House"]
+description = "Afrobeat, afrobeats, highlife, blues touareg, mandingue, musiques d'Afrique lusophone et australe."
+styles = ["Afrobeat", "Afrobeats", "Afroswing", "Highlife", "Desert Blues", "Semba", "Morna", "Mbaqanga", "Amapiano", "Ethio-Jazz"]
+
+[[playlist]]
+nom = "Monde · Afrique"
+artistes = ["Amadou & Mariam", "Blick Bassy", "Roseaux", "Victor Démé", "N'Gou Bagayoko", "3MA", "Bonga", "Cesária Evora", "Girma Hadgu", "Tinariwen", "Imarhan"]
+genres = ["Folk & World", "Funk & Soul", "Jazz", "Pop"]
+
+[[playlist]]
+nom = "Monde · Europe & Méditerranée"
+description = "Flamenco et rumba, airs tsiganes et russes, chanson napolitaine, Anatolie, musique celtique."
+genres = ["Folk & World", "Latin"]
+styles = ["Flamenco", "Celtic", "Gypsy Jazz", "Choral"]
+
+[[playlist]]
+nom = "Monde · Europe & Méditerranée"
+artistes = ["Paco de Lucía", "Yasmin Levy", "LucasGitanoFamily", "Opa Tsupa", "Stanislav Stanchev", "Donatella Viggiano", "Neşe Karaböcek", "Altin Gün", "Christophe Lartilleux"]
 
 [[playlist]]
 nom = "Soul · Neo soul & R&B"
@@ -59,8 +117,8 @@ description = "R&B contemporain et neo soul, que le morceau penche côté rap ou
 styles = ["Neo Soul", "Contemporary R&B"]
 
 [[playlist]]
-nom = "Pop · Chanson"
-description = "Chanson à texte."
+nom = "Pop · Variété française"
+description = "Chanson et variété françaises."
 styles = ["Chanson"]
 
 [[playlist]]
@@ -148,9 +206,9 @@ styles = ["Deep House"]
 
 [[playlist]]
 nom = "Électro · House"
-description = "House classique et garage house."
+description = "House classique, garage et afro house."
 genres = ["Electronic"]
-styles = ["House", "Garage House", "Euro House", "Italo House", "Tropical House"]
+styles = ["House", "Garage House", "Afro House", "Euro House", "Italo House", "Tropical House"]
 
 [[playlist]]
 nom = "Électro · Techno & tech house"
@@ -166,9 +224,9 @@ styles = ["Nu-Disco", "Disco", "Italo-Disco", "Boogie", "Synth-Pop", "Synthwave"
 
 [[playlist]]
 nom = "Électro · Downtempo & ambient"
-description = "Électronique lente : downtempo, trip hop, ambient, lounge."
+description = "Électronique lente : downtempo, trip hop, ambient, lounge, musiques de jeu et d'illustration."
 genres = ["Electronic"]
-styles = ["Downtempo", "Ambient", "Dark Ambient", "Drone", "Trip Hop", "Lounge", "New Age", "Berlin-School", "Modern Classical", "Dream Pop"]
+styles = ["Downtempo", "Ambient", "Dark Ambient", "Drone", "Trip Hop", "Lounge", "New Age", "Berlin-School", "Modern Classical", "Dream Pop", "Video Game Music", "Library Music", "Soundtrack", "Score"]
 
 [[playlist]]
 nom = "Électro · Breaks & expérimental"
@@ -297,20 +355,15 @@ genres = ["Rock"]
 # ================================================================== monde
 
 [[playlist]]
-nom = "Monde · Latino"
-description = "Salsa, cumbia, boléro, latin jazz…"
+nom = "Monde · Amérique latine"
+description = "Salsa, latin soul, cumbia, boléro, tango, reggaeton, latin jazz…"
 genres = ["Latin"]
 
 [[playlist]]
-nom = "Monde · Latino"
+nom = "Monde · Amérique latine"
 styles = ["Latin Jazz"]
 
 [[playlist]]
-nom = "Monde · Reggae & dub"
-description = "Roots, dub, dancehall."
-genres = ["Reggae"]
-
-[[playlist]]
-nom = "Monde · Traditions & folk"
-description = "Musiques traditionnelles et folk du monde entier."
+nom = "Monde · Folk & traditions"
+description = "Folk acoustique et musiques traditionnelles venues d'ailleurs."
 genres = ["Folk & World"]
