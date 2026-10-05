@@ -992,3 +992,90 @@ def test_check_all_does_not_bring_back_an_excluded_playlist(page):
     page.evaluate(SOURCES_WITH_PLAYLISTS)
     page.click("#sources-all")
     assert not page.locator('.source[data-key="playlist:PLdodo"] input').is_checked()
+
+
+# ------------------------------------------------------------- déplacements
+
+MOVE_PLAN = """
+[[playlist]]
+nom = "Jazz · Fusion"
+styles = ["Fusion"]
+
+[[playlist]]
+nom = "Jazz · Jazz-funk"
+styles = ["Jazz-Funk"]
+"""
+
+
+def seed_jazz(repository, config, tmp_path):
+    from ytmgc import verdicts
+    from ytmgc.classifier import classify_tracks
+    from ytmgc.models import Track
+    from ytmgc.verdicts import Verdict, VerdictBook
+
+    plan = tmp_path / "playlists.toml"
+    plan.write_text(MOVE_PLAN, encoding="utf-8")
+    config.taxonomy.playlists_file = str(plan)
+    tracks = [
+        Track("j1", "Chameleon", ("Herbie Hancock",)),
+        Track("j2", "Watermelon Man", ("Herbie Hancock",)),
+        Track("w1", "Birdland", ("Weather Report",)),
+    ]
+    repository.upsert_tracks(tracks)
+    classify_tracks(tracks, repository, FakeDiscogs({}), config)
+    verdicts.save(VerdictBook([
+        Verdict("Herbie Hancock", "Chameleon", "Jazz", "Jazz-Funk", "Groovy", 0.9),
+        Verdict("Herbie Hancock", "Watermelon Man", "Jazz", "Jazz-Funk", "Groovy", 0.9),
+        Verdict("Weather Report", "Birdland", "Jazz", "Fusion", "Groovy", 0.9),
+    ]), config.claude.verdicts_file)
+
+
+def test_a_track_can_be_moved_from_the_preview(page, repository, config, tmp_path):
+    """Le parcours réel : ouvrir une playlist, décocher un titre, en déplacer
+    un autre — et retrouver la playlist ouverte, le titre toujours décoché."""
+    from ytmgc import placements
+
+    seed_jazz(repository, config, tmp_path)
+    page.click("#preview-btn")
+    funk = page.locator('#preview-list details.pl[data-key="plan/jazz-jazz-funk"]')
+    funk.wait_for()
+    funk.locator("summary .name").click()
+    page.wait_for_selector('#preview-list details.pl[data-key="plan/jazz-jazz-funk"] li.track')
+    funk.locator('.track-check[value="j2"]').uncheck()
+
+    funk.locator('select.move[data-video="j1"]').select_option("plan/jazz-fusion")
+    page.wait_for_function(
+        "() => document.querySelector('#preview-msg').textContent.includes('déplacé vers')"
+    )
+
+    assert [p.playlist for p in placements.load(config.taxonomy.placements_file)] == ["Jazz · Fusion"]
+    funk = page.locator('#preview-list details.pl[data-key="plan/jazz-jazz-funk"]')
+    assert funk.get_attribute("open") is not None
+    assert not funk.locator('.track-check[value="j2"]').is_checked()
+    assert "1 titres" in funk.locator(".count").text_content()
+
+    fusion = page.locator('#preview-list details.pl[data-key="plan/jazz-fusion"]')
+    assert "2 titres" in fusion.locator(".count").text_content()
+    fusion.locator("summary .name").click()
+    moved = fusion.locator("li.track", has_text="Chameleon")
+    assert "déplacé" in moved.text_content()
+    assert moved.locator('option[value="regles"]').count() == 1
+
+
+def test_the_move_menu_lists_the_other_playlists(page, repository, config, tmp_path):
+    seed_jazz(repository, config, tmp_path)
+    page.click("#preview-btn")
+    fusion = page.locator('#preview-list details.pl[data-key="plan/jazz-fusion"]')
+    fusion.wait_for()
+    fusion.locator("summary .name").click()
+    fusion.locator("li.track").first.wait_for()
+
+    options = fusion.locator("select.move option").all_text_contents()
+    assert options == ["Déplacer vers…", "Jazz · Jazz-funk", "Ne ranger nulle part"]
+
+
+def test_no_move_menu_outside_the_family_sort(page):
+    render_sample_preview(page)
+    page.locator("details.pl").first.click()
+    page.wait_for_selector("li.track")
+    assert page.locator("select.move").count() == 0

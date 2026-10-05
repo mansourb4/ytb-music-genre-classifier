@@ -49,6 +49,7 @@ et relancés sans perte, et `plan`/`apply` se rejouent hors ligne.
 | `taxonomy/` | Alias de styles, priorité des genres, nommage, et définitions des genres et styles (`descriptions.toml`). |
 | `classifier.py` | Orchestration titre → candidats → classification. |
 | `planner.py` | Classifications → ensemble de playlists souhaité. Hors ligne. |
+| `placements.py` | Déplacements faits à la main dans l'aperçu : fichier `data/placements.txt`, résolution par morceau, priorité sur les règles. |
 | `playlist_plan.py` | Tri « Par famille » : lecture et vérification de `config/playlists.toml`, affectation de chaque morceau à la première playlist dont une règle l'accepte. |
 | `sync.py` | Diff état souhaité / état distant, puis application. |
 | `sorting.py` | Types de tri prédéfinis — dont l'axe de rangement — partagés par le CLI et l'interface web. |
@@ -595,12 +596,34 @@ l'emporte**. Les choix qui en découlent :
 La clé d'une playlist du plan est `plan/` suivi de son nom : renommer une
 playlist en crée une autre, et l'ancienne devient sans objet.
 
+### 20. Un déplacement est une décision, pas un réglage d'affichage
+
+Décocher un titre dans l'aperçu ne vaut que pour l'application en cours. Le
+*déplacer* est d'une autre nature : c'est dire où il doit vivre, une fois pour
+toutes. `placements.py` le tient donc hors de la base, dans
+`data/placements.txt`, versionné, par morceau (`song_key`) et non par
+identifiant vidéo — une analyse vide la base, et un morceau a plusieurs
+publications.
+
+* **Le déplacement l'emporte sur les règles**, y compris pour un morceau que
+  les règles ne savent pas ranger (un sketch, un titre sans verdict). « (aucune) »
+  le tient hors de toute playlist : cause `kept_out` dans les non-rangés.
+* **La cible est désignée par son nom.** Lisible dans le fichier, mais fragile
+  si le plan change : un déplacement vers une playlist disparue est ignoré —
+  le morceau suit les règles — et nommé dans l'aperçu, jamais perdu en silence.
+* **Seul le tri « Par famille » l'applique** : les autres tris n'ont pas de
+  playlists fixes où déplacer.
+* **L'aperçu se recalcule après chaque déplacement**, en conservant ce que
+  l'utilisateur a ouvert et décoché : sans cela, chaque déplacement refermerait
+  la playlist en cours de relecture. Le gestionnaire est lié une seule fois,
+  l'aperçu étant reconstruit à chaque calcul.
+
 ## Tests
 
-551 tests, aucun appel réseau, y compris l'API web complète (aperçu,
+575 tests, aucun appel réseau, y compris l'API web complète (aperçu,
 application, annulation), son contrôle d'accès et les quatre voies de connexion.
 
-Soixante-quatre d’entre eux chargent l’interface dans un vrai navigateur (`tests/test_ui.py`).
+Soixante-sept d’entre eux chargent l’interface dans un vrai navigateur (`tests/test_ui.py`).
 Le câblage du DOM échappe aux tests Python : deux défauts d'onglets sont passés
 au travers de la suite avant d'être vus à l'écran. Ces tests sont ignorés
 lorsque Playwright ou son navigateur sont absents, pour que la suite reste

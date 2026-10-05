@@ -105,6 +105,7 @@ textarea {
 .pl summary { align-items: center; }
 ul.tracks { list-style: none; margin: 0; padding: 0; }
 .track { display: flex; gap: .6rem; align-items: center; padding: .3rem 0; }
+.track select.move { margin-left: auto; flex: 0 0 auto; max-width: 11rem; font-size: .8rem; }
 .track-text { display: flex; flex-direction: column; min-width: 0; }
 .track-text b { font-weight: 500; }
 .track-artist { color: var(--muted); font-size: .84rem; }
@@ -731,6 +732,7 @@ function trackRow(playlistKey, track) {
     ? ` <span class="badge warn" title="Confiance ${track.confidence}">à vérifier</span>`
     : "";
   const note = track.note ? `<span class="track-note">${escapeHtml(track.note)}</span>` : "";
+  const moved = track.moved ? ` <span class="badge">déplacé</span>` : "";
   // Les tags expliquent pourquoi un titre s'écarte du classement de son album.
   const tags = (track.tags || []).length
     ? `<span class="track-tags">${track.tags.slice(0, 6).map(escapeHtml).join(" · ")}</span>`
@@ -740,13 +742,31 @@ function trackRow(playlistKey, track) {
            data-playlist="${escapeHtml(playlistKey)}" value="${escapeHtml(track.video_id)}" checked>
     ${cover}
     <label class="track-text" for="${id}">
-      <b>${escapeHtml(track.title)}</b>${unsure}
+      <b>${escapeHtml(track.title)}</b>${unsure}${moved}
       <span class="track-artist">${escapeHtml(track.artist)}</span>
       <span class="track-facts">${facts.join(" — ")}</span>
       ${note}
       ${tags}
     </label>
+    ${moveMenu(track.video_id, playlistKey, track.moved)}
   </li>`;
+}
+
+//: Playlists du plan où un titre peut être déplacé ; vide hors tri « Par famille ».
+let previewTargets = [];
+
+function moveMenu(videoId, currentKey, moved) {
+  if (!previewTargets.length) return "";
+  const options = previewTargets
+    .filter((t) => t.key !== currentKey)
+    .map((t) => `<option value="${escapeHtml(t.key)}">${escapeHtml(t.name)}</option>`)
+    .join("");
+  return `<select class="move" data-video="${escapeHtml(videoId)}" aria-label="Déplacer ce titre">
+    <option value="" selected disabled>Déplacer vers…</option>
+    ${options}
+    ${currentKey ? `<option value="aucune">Ne ranger nulle part</option>` : ""}
+    ${moved ? `<option value="regles">Rendre aux règles</option>` : ""}
+  </select>`;
 }
 
 //: Un titre non rangé : pas de case à cocher, rien à appliquer le concernant.
@@ -779,6 +799,7 @@ function renderUnsorted(p) {
           : `<span class="cover empty"></span>`}
         <span class="track-text"><b>${escapeHtml(t.label)}</b>
           ${t.detail ? `<span class="track-facts">${escapeHtml(t.detail)}</span>` : ""}</span>
+        ${moveMenu(t.video_id, null, t.reason === "kept_out")}
       </li>`).join("");
       return `<div class="reason-group">
         <h4>${escapeHtml(labels[reason] || reason)} <span>— ${rows.length} titre(s)</span></h4>
@@ -867,6 +888,7 @@ function updatePreviewTotals() {
 
 function renderPreview(data) {
   const p = data.preview;
+  previewTargets = p.targets || [];
   // Chaque rendu repart de zéro : rien de l'aperçu précédent ne doit subsister.
   $("preview-list").innerHTML = "";
   $("preview-selection").innerHTML = "";
@@ -893,8 +915,14 @@ function renderPreview(data) {
   const obsolete = p.obsolete.length
     ? `<p class="msg">Playlists gérées devenues sans objet, qui seront vidées : ${p.obsolete.join(", ")}.</p>`
     : "";
+  const moves = p.moved
+    ? `<p class="msg">${p.moved} titre(s) déplacé(s) à la main : ils restent où tu les as mis, quoi que disent les règles.</p>`
+    : "";
+  const stale = (p.stale_placements || []).length
+    ? `<p class="msg error">Déplacements vers une playlist absente du plan (${p.stale_placements.map(escapeHtml).join(", ")}) : ces titres suivent les règles en attendant.</p>`
+    : "";
 
-  $("preview-list").innerHTML = warning + obsolete + p.playlists.map((pl) => {
+  $("preview-list").innerHTML = warning + obsolete + moves + stale + p.playlists.map((pl) => {
     const badge = pl.change === "création"
       ? `<span class="badge creation">création</span>`
       : pl.change === "mise à jour"
@@ -920,15 +948,9 @@ function renderPreview(data) {
   // Les titres ne sont construits qu'à l'ouverture : une bibliothèque fournie
   // en représenterait des milliers, inutiles tant qu'ils restent repliés.
   previewByKey = Object.fromEntries(p.playlists.map((pl) => [pl.key, pl]));
-  const byKey = previewByKey;
   $("preview-list").querySelectorAll("details.pl").forEach((node) => {
     node.addEventListener("toggle", () => {
-      const list = node.querySelector("ul.tracks");
-      if (!node.open || list.dataset.filled) return;
-      const key = node.dataset.key;
-      list.innerHTML = byKey[key].tracks.map((track) => trackRow(key, track)).join("");
-      list.dataset.filled = "1";
-      updatePreviewTotals();
+      if (node.open) fillTracks(node);
     });
   });
 
@@ -945,6 +967,80 @@ function renderPreview(data) {
 
   updatePreviewTotals();
 }
+
+function fillTracks(node) {
+  const list = node.querySelector("ul.tracks");
+  if (list.dataset.filled) return;
+  const key = node.dataset.key;
+  list.innerHTML = previewByKey[key].tracks.map((track) => trackRow(key, track)).join("");
+  list.dataset.filled = "1";
+  updatePreviewTotals();
+}
+
+/**
+ * Ce que l'utilisateur a ouvert et décoché dans l'aperçu. Un déplacement
+ * recalcule tout : sans cela, chaque déplacement refermerait la playlist en
+ * cours de relecture et rendrait les titres décochés.
+ */
+function capturePreviewState() {
+  const list = $("preview-list");
+  return {
+    open: Array.from(list.querySelectorAll("details.pl[open]")).map((n) => n.dataset.key),
+    unsortedOpen: !!document.querySelector("#unsorted details[open]"),
+    playlists: Array.from(list.querySelectorAll(".pl-check:not(:checked)")).map((i) => i.value),
+    tracks: Array.from(list.querySelectorAll(".track-check:not(:checked)"))
+      .map((i) => `${i.dataset.playlist}|${i.value}`),
+    scroll: window.scrollY,
+  };
+}
+
+function restorePreviewState(state) {
+  const list = $("preview-list");
+  list.querySelectorAll("details.pl").forEach((node) => {
+    if (!state.open.includes(node.dataset.key)) return;
+    node.open = true;
+    fillTracks(node);
+  });
+  const unsorted = document.querySelector("#unsorted details");
+  if (unsorted && state.unsortedOpen) unsorted.open = true;
+  list.querySelectorAll(".track-check").forEach((input) => {
+    if (state.tracks.includes(`${input.dataset.playlist}|${input.value}`)) input.checked = false;
+  });
+  list.querySelectorAll(".pl-check").forEach((input) => {
+    if (!state.playlists.includes(input.value)) return;
+    input.checked = false;
+    const body = input.closest("details.pl");
+    body.classList.add("excluded");
+    body.querySelectorAll(".track-check").forEach((i) => { i.checked = false; });
+  });
+  updatePreviewTotals();
+  window.scrollTo(0, state.scroll);
+}
+
+// Lié une seule fois : l'aperçu est reconstruit à chaque calcul, et un
+// gestionnaire posé à chaque rendu enregistrerait un déplacement plusieurs fois.
+document.addEventListener("change", async (event) => {
+  const select = event.target;
+  if (!select.matches("select.move") || !select.value) return;
+  select.disabled = true;
+  try {
+    const moved = await api("/api/placements",
+      { video_id: select.dataset.video, target: select.value }, "PUT");
+    const state = capturePreviewState();
+    await refreshPreview();
+    restorePreviewState(state);
+    const where = moved.playlist === null
+      ? "rendu aux règles"
+      : moved.playlist === "(aucune)" ? "tenu hors des playlists" : `déplacé vers « ${moved.playlist} »`;
+    $("preview-msg").innerHTML =
+      `${escapeHtml(moved.label)} : ${escapeHtml(where)}. Enregistré dans <code>${escapeHtml(moved.file)}</code>.`;
+  } catch (error) {
+    $("preview-msg").textContent = error.message;
+    $("preview-msg").classList.add("error");
+    select.disabled = false;
+    select.value = "";
+  }
+});
 
 function currentExclusions() {
   const excluded_playlists = Array.from(document.querySelectorAll(".pl-check:not(:checked)"))

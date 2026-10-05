@@ -11,7 +11,7 @@ from __future__ import annotations
 from dataclasses import asdict, dataclass, field, replace
 from typing import Iterable, Mapping
 
-from ytmgc import verdicts
+from ytmgc import placements, verdicts
 from ytmgc.config import Config
 from ytmgc.models import (
     Classification,
@@ -49,6 +49,8 @@ class TrackPreview:
     note: str = ""
     confidence: float | None = None
     unsure: bool = False
+    #: Placé ici à la main, et non par les règles.
+    moved: bool = False
 
 
 @dataclass(frozen=True, slots=True)
@@ -94,6 +96,7 @@ REASONS = {
     "no_tags": "ni tag Last.fm ni style Discogs",
     "no_mood": "aucune ambiance déterminable",
     "no_rule": "aucune playlist du plan ne l'accepte",
+    "kept_out": "tenu hors des playlists à la main",
 }
 
 
@@ -118,6 +121,12 @@ class LibraryPreview:
     unsorted_by_reason: dict[str, int] = field(default_factory=dict)
     #: Libellés des causes, pour que l'interface n'ait pas à les redire.
     reason_labels: dict[str, str] = field(default_factory=lambda: dict(REASONS))
+    #: Tri « Par famille » : les playlists où un titre peut être déplacé —
+    #: toutes celles du plan, même vides.
+    targets: list[dict] = field(default_factory=list)
+    #: Titres déplacés à la main, et playlists visées qui n'existent plus.
+    moved: int = 0
+    stale_placements: list[str] = field(default_factory=list)
 
     def to_dict(self) -> dict:
         return asdict(self)
@@ -154,6 +163,7 @@ def _detail(
     classifications: dict[str, Classification],
     book: VerdictBook,
     unsure_below: float,
+    moved: set[str] = frozenset(),
 ) -> list[TrackPreview]:
     """Détail de chaque titre d'une playlist, taxonomie et verdict compris."""
     detailed: list[TrackPreview] = []
@@ -178,6 +188,7 @@ def _detail(
                 note=verdict.note if verdict else "",
                 confidence=verdict.confidence if verdict else None,
                 unsure=verdict is not None and verdict.confidence < unsure_below,
+                moved=video_id in moved,
             )
         )
     return detailed
@@ -212,11 +223,13 @@ def _unsorted(
     classifications: dict[str, Classification],
     placed: set[str],
     config: Config,
+    kept_out: set[str] = frozenset(),
 ) -> list[tuple[Track, str]]:
     by_mood = config.taxonomy.axis == "mood"
     by_plan = config.taxonomy.axis == "plan"
     return [
-        (track, _reason(classifications.get(video_id), by_mood, by_plan))
+        (track, "kept_out" if video_id in kept_out
+         else _reason(classifications.get(video_id), by_mood, by_plan))
         for video_id, track in tracks.items()
         if video_id not in placed
     ]
@@ -271,10 +284,17 @@ def build_preview(
         apply_verdicts(repository, book, taxonomy, config)
     classifications = repository.classifications()
     by_video = {item.video_id: item for item in classifications}
-    plans = plan_playlists(classifications, taxonomy, config)
     by_plan = config.taxonomy.axis == "plan"
     plan: Plan | None = load_plan(config.taxonomy.playlists_file, taxonomy) if by_plan else None
     planned = plan.by_key() if plan else {}
+    # Les déplacements ne valent que pour le plan : ailleurs, pas de playlist fixe.
+    wished = (
+        placements.resolve(list(tracks.values()), placements.load(config.taxonomy.placements_file))
+        if by_plan else {}
+    )
+    honoured = {v: p for v, p in wished.items() if p.nowhere or p.target in planned}
+    stale = sorted({p.playlist for p in wished.values() if p.target and p.target not in planned})
+    plans = plan_playlists(classifications, taxonomy, config, placements.overrides(honoured))
 
     # La clé n'étant plus dans la description, elle vient de la base — et à
     # défaut du nom attendu, calculé depuis le plan qu'on vient d'établir.
@@ -311,7 +331,8 @@ def build_preview(
             change = "mise à jour"
         else:
             change = "inchangée"
-        detail = _detail(item.video_ids, tracks, by_video, book, config.claude.unsure_below)
+        detail = _detail(item.video_ids, tracks, by_video, book, config.claude.unsure_below,
+                         moved=set(honoured))
         written = planned.get(item.key)
         previews.append(
             PlaylistPreview(
@@ -351,7 +372,8 @@ def build_preview(
         )
 
     placed = {video_id for item in plans for video_id in item.video_ids}
-    unsorted = _unsorted(tracks, by_video, placed, config)
+    unsorted = _unsorted(tracks, by_video, placed, config,
+                         kept_out={v for v, p in honoured.items() if p.nowhere})
 
     planned_keys = {item.key for item in plans}
     obsolete = sorted(
@@ -376,6 +398,9 @@ def build_preview(
             for track, reason in unsorted
         ],
         unsorted_by_reason=_count_reasons(unsorted),
+        targets=[{"key": p.key, "name": p.name} for p in plan.playlists] if plan else [],
+        moved=len(honoured),
+        stale_placements=stale,
         created=sum(1 for p in previews if p.change == "création"),
         updated=sum(1 for p in previews if p.change == "mise à jour"),
         unchanged=sum(1 for p in previews if p.change == "inchangée"),

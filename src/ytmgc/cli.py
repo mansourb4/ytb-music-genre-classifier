@@ -110,10 +110,20 @@ def cmd_classify(args: argparse.Namespace, config: Config) -> int:
     return 0
 
 
+def _overrides(repository: Repository, config: Config) -> dict[str, str | None]:
+    """Déplacements faits à la main, pour le tri « Par famille » seulement."""
+    if config.taxonomy.axis != "plan":
+        return {}
+    from ytmgc.placements import library_overrides
+
+    return library_overrides(repository.all_tracks(), config.taxonomy.placements_file)
+
+
 def cmd_plan(args: argparse.Namespace, config: Config) -> int:
     repository = _repository(config)
     config = apply_sort_mode(config, args.tri)
-    plans = plan_playlists(repository.classifications(), load_taxonomy(), config)
+    plans = plan_playlists(repository.classifications(), load_taxonomy(), config,
+                           _overrides(repository, config))
     if not plans:
         print("Aucune playlist à créer : aucun titre classé pour l'instant.")
         return 0
@@ -133,7 +143,8 @@ def cmd_plan(args: argparse.Namespace, config: Config) -> int:
 def cmd_apply(args: argparse.Namespace, config: Config) -> int:
     repository = _repository(config)
     config = apply_sort_mode(config, args.tri)
-    plans = plan_playlists(repository.classifications(), load_taxonomy(), config)
+    plans = plan_playlists(repository.classifications(), load_taxonomy(), config,
+                           _overrides(repository, config))
     if not plans:
         print("Rien à appliquer.")
         return 0

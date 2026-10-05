@@ -448,6 +448,15 @@ styles = ["Trap", "Drill"]
 * L'aperçu relit `data/verdicts.txt` à chaque calcul : une ligne corrigée à la
   main s'y voit aussitôt, sans relancer l'analyse.
 
+**Déplacer un titre.** Dans l'aperçu, chaque titre porte un menu « Déplacer
+vers… » : toutes les playlists du plan, « Ne ranger nulle part », et « Rendre
+aux règles » pour un titre déjà déplacé. Les titres non rangés ont le même
+menu. Un déplacement l'emporte sur les règles et tient après chaque analyse ;
+il est écrit dans `data/placements.txt` (`artiste <tab> titre <tab> playlist`),
+versionné comme les verdicts et modifiable à la main. Toutes les publications
+d'un même morceau suivent le déplacement. Si la playlist visée disparaît du
+plan, l'aperçu le signale et le titre suit les règles en attendant.
+
 Le plan livré a été calibré sur une bibliothèque réelle : 43 playlists, 4 079
 titres rangés sur 4 083, la plupart entre 30 et 150 titres. Modifie-le
 librement, puis recalcule l'aperçu. Renommer une playlist en crée une nouvelle

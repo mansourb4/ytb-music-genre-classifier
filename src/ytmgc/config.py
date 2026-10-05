@@ -140,6 +140,8 @@ class TaxonomyConfig:
     genre_name_template: str = "{genre} — Autres styles"
     #: Plan de playlists du tri « Par famille ».
     playlists_file: str = "config/playlists.toml"
+    #: Morceaux déplacés à la main d'une playlist du plan à une autre.
+    placements_file: str = "data/placements.txt"
 
 
 @dataclass(slots=True)

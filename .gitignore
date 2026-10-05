@@ -13,6 +13,8 @@ data/*
 # machine et à une réinstallation. Le fichier est fait pour ça — texte, une
 # ligne par titre, lisible dans un diff.
 !data/verdicts.txt
+# Les déplacements faits à la main : même raison, ce sont des décisions.
+!data/placements.txt
 *.db
 *.db-journal
 headers_auth.json

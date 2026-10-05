@@ -123,6 +123,13 @@ class ExclusionsRequest(BaseModel):
     playlists: list[str] = Field(default_factory=list)
 
 
+class PlacementRequest(BaseModel):
+    video_id: str
+    #: Clé d'une playlist du plan, « aucune » pour tenir le titre hors de
+    #: toute playlist, ou « regles » pour le rendre aux règles.
+    target: str
+
+
 class PreviewRequest(BaseModel):
     sort_mode: str = DEFAULT_SORT_MODE
 
@@ -732,6 +739,45 @@ def create_app(services: Services) -> FastAPI:
             "preview": summary.to_dict(),
             "actions": [action.summary() for action in actions],
             "remote_known": remote is not None,
+        }
+
+    @app.put("/api/placements")
+    def place(request: PlacementRequest) -> dict:
+        """Déplace un morceau, durablement : le fichier des déplacements fait
+        autorité sur les règles, à chaque aperçu comme à chaque application."""
+        from ytmgc import placements
+        from ytmgc.playlist_plan import PlanError, load_plan
+        from ytmgc.taxonomy import load_taxonomy
+
+        track = next((t for t in repository.all_tracks() if t.video_id == request.video_id), None)
+        if track is None:
+            raise HTTPException(404, "Titre inconnu : relance l'analyse")
+        path = config.taxonomy.placements_file
+        book = placements.load(path)
+
+        if request.target == "regles":
+            book.remove(track)
+            destination = None
+        elif request.target == "aucune":
+            destination = book.put(track, placements.NOWHERE).playlist
+        else:
+            try:
+                playlist = load_plan(config.taxonomy.playlists_file, load_taxonomy()).by_key().get(
+                    request.target
+                )
+            except PlanError as exc:
+                raise HTTPException(400, str(exc)) from exc
+            if playlist is None:
+                raise HTTPException(400, "Cette playlist n'existe pas dans le plan")
+            destination = book.put(track, playlist.name).playlist
+
+        placements.save(book, path)
+        return {
+            "video_id": track.video_id,
+            "label": track.label(),
+            "playlist": destination,
+            "file": str(Path(path).resolve()),
+            "moved": len(book),
         }
 
     # -------------------------------------------------------- application

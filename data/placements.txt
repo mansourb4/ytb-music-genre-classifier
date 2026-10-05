@@ -1,0 +1,10 @@
+# Déplacements ytmgc — les morceaux que tu as mis toi-même dans une playlist.
+#
+# Une ligne par morceau, colonnes séparées par des tabulations :
+#   artiste  |  titre  |  playlist
+#
+# Un déplacement l'emporte sur les règles de config/playlists.toml, et tient
+# après chaque analyse. La playlist est désignée par son nom, tel qu'écrit
+# dans le plan ; « (aucune) » tient le morceau hors de toute playlist.
+# Supprime une ligne pour rendre le morceau aux règles.
+

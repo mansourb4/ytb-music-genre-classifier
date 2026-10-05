@@ -26,6 +26,7 @@ def config(tmp_path) -> Config:
     config.claude.verdicts_file = str(tmp_path / "verdicts.txt")
     config.claude.pending_file = str(tmp_path / "verdicts.batch.json")
     config.claude.export_dir = str(tmp_path / "export")
+    config.taxonomy.placements_file = str(tmp_path / "placements.txt")
     config.validate()
     return config
 

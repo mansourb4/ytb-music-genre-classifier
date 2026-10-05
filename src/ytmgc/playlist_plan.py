@@ -20,6 +20,7 @@ from __future__ import annotations
 
 import tomllib
 from collections import defaultdict
+from collections.abc import Mapping
 from dataclasses import dataclass, field
 from pathlib import Path
 
@@ -259,13 +260,28 @@ def plan_by_rules(
     taxonomy: Taxonomy,
     plan: Plan,
     marker: str,
+    overrides: Mapping[str, str | None] | None = None,
 ) -> list[PlaylistPlan]:
-    """Les playlists du plan, dans l'ordre du fichier. Les vides sont omises."""
+    """Les playlists du plan, dans l'ordre du fichier. Les vides sont omises.
+
+    `overrides` associe un identifiant vidéo à la clé de la playlist choisie à
+    la main, ou à None pour « nulle part ». Il l'emporte sur les règles — même
+    pour un morceau qu'elles ne sauraient pas ranger. Une clé absente du plan
+    est ignorée : le morceau retombe sous les règles.
+    """
+    playlists = plan.by_key()
+    overrides = overrides or {}
     members: dict[str, list[str]] = defaultdict(list)
     for classification in classifications:
+        video_id = classification.video_id
+        if video_id in overrides and (overrides[video_id] is None or overrides[video_id] in playlists):
+            target = overrides[video_id]
+            if target is not None:
+                members[target].append(video_id)
+            continue
         playlist = assign(classification, plan, taxonomy)
         if playlist is not None:
-            members[playlist.key].append(classification.video_id)
+            members[playlist.key].append(video_id)
 
     return [
         PlaylistPlan(
