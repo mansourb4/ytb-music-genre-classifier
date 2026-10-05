@@ -221,6 +221,14 @@ label.file-pick input { font-size: .8rem; }
 .source .count { color: var(--muted); font-size: .82rem; font-variant-numeric: tabular-nums; }
 .source-group { border-top: 1px solid var(--border); margin-top: .7rem; padding-top: .5rem; }
 .source-group:first-child { border-top: 0; margin-top: 0; padding-top: 0; }
+.exclude-btn { font-size: .74rem; padding: .15rem .5rem; color: var(--muted); }
+.excluded-note { display: none; font-size: .76rem; color: var(--danger); margin-left: .4rem; }
+/* inline-block : un texte barré se propage aux éléments en ligne qu'il
+   contient, sans qu'aucune règle ne puisse l'annuler ; la mention, elle, doit
+   rester lisible. */
+.source.excluded .excluded-note { display: inline-block; }
+.source.excluded label { color: var(--muted); text-decoration: line-through; text-decoration-color: var(--danger); }
+.source.excluded .exclude-btn { color: var(--danger); border-color: var(--danger); }
 .purge-row { display: flex; align-items: center; gap: .6rem; padding: .35rem 0;
   border-top: 1px solid var(--border); }
 .purge-row:first-child { border-top: 0; }
@@ -374,31 +382,20 @@ select {
     <button id="sources-none">Tout décocher</button>
     <span class="msg" id="sources-msg"></span>
   </div>
-  <p class="hint spacer">Seules les sources cochées seront lues. Les playlists créées par l'outil ne sont pas proposées : les analyser reviendrait à reclasser sa propre sortie.</p>
+  <p class="hint spacer">Seules les sources cochées seront lues. Décocher une playlist ne suffit pas à l'écarter : ses titres reviennent par ta bibliothèque ou tes likes. <b>Exclure</b> la retire vraiment — ses titres sont ôtés de l'analyse d'où qu'ils viennent, et ce choix est gardé pour les analyses suivantes. Les playlists créées par l'outil ne sont pas proposées : les analyser reviendrait à reclasser sa propre sortie.</p>
 </section>
 
 <section>
-  <h2><span class="step">3</span>Choisir le type de tri</h2>
-  <div class="modes" id="modes"></div>
-</section>
-
-<section>
-  <h2><span class="step">4</span>Analyser et prévisualiser</h2>
+  <h2><span class="step">3</span>Analyser</h2>
   <div class="row">
     <button class="primary" id="analyse-btn">Lancer l'analyse</button>
-    <button id="preview-btn">Recalculer l'aperçu</button>
     <span class="msg" id="analyse-msg"></span>
   </div>
-  <p class="hint spacer">Lit les sources choisies, interroge Discogs pour chaque album, puis affiche aussitôt le rangement obtenu. Compte environ une seconde par album au premier passage ; les analyses suivantes sont servies par le cache.</p>
-  <div id="preview-summary" class="stats spacer hidden"></div>
-  <div id="preview-msg" class="msg spacer"></div>
-  <p id="preview-selection" class="total spacer"></p>
-  <div id="preview-list" class="spacer"></div>
-  <div id="unsorted" class="spacer"></div>
+  <p class="hint spacer">Lit les sources choisies, retire les titres des playlists exclues, puis interroge Discogs pour chaque album et Last.fm pour chaque titre. Le rangement obtenu s'affiche à l'étape 6. Compte environ une seconde par album au premier passage ; les analyses suivantes sont servies par le cache.</p>
 </section>
 
 <section id="judge-section">
-  <h2><span class="step">5</span>Affiner par le modèle <span class="tagline">facultatif</span></h2>
+  <h2><span class="step">4</span>Affiner par le modèle <span class="tagline">facultatif</span></h2>
   <p class="hint">Discogs décrit le <i>disque</i> et Last.fm compile des tags : ni l'un ni l'autre ne sait qu'un morceau donné est une ballade au milieu d'un album de rage. Un modèle, lui, connaît la musique. Chaque titre n'est jugé qu'une fois, et son verdict est écrit dans un fichier texte que tu peux relire, corriger et garder.</p>
 
   <div id="judge-state" class="stats spacer hidden"></div>
@@ -499,7 +496,26 @@ select {
 </section>
 
 <section>
-  <h2><span class="step">6</span>Appliquer</h2>
+  <h2><span class="step">5</span>Choisir le type de tri</h2>
+  <p class="hint">Le tri ne change rien aux étapes précédentes : il dit seulement comment transformer genres, styles et ambiances en playlists. Change-le autant que tu veux, l'aperçu suit.</p>
+  <div class="modes" id="modes"></div>
+</section>
+
+<section>
+  <h2><span class="step">6</span>Prévisualiser</h2>
+  <div class="row">
+    <button id="preview-btn">Recalculer l'aperçu</button>
+  </div>
+  <p class="hint spacer">Ce que deviendra ton compte avec le tri choisi. Coche ou décoche des playlists et des titres avant d'appliquer.</p>
+  <div id="preview-summary" class="stats spacer hidden"></div>
+  <div id="preview-msg" class="msg spacer"></div>
+  <p id="preview-selection" class="total spacer"></p>
+  <div id="preview-list" class="spacer"></div>
+  <div id="unsorted" class="spacer"></div>
+</section>
+
+<section>
+  <h2><span class="step">7</span>Appliquer</h2>
   <div class="row">
     <button class="primary" id="apply-btn" disabled>Appliquer à mon compte</button>
     <span class="msg" id="apply-msg"></span>
@@ -542,10 +558,10 @@ const $ = (id) => document.getElementById(id);
 let sortMode = null;
 let pollTimer = null;
 
-async function api(path, body) {
+async function api(path, body, method = "POST") {
   const options = body === undefined
     ? {}
-    : { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) };
+    : { method, headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) };
   const response = await fetch(path, options);
   const payload = await response.json().catch(() => ({}));
   if (!response.ok) throw new Error(payload.detail || `Erreur ${response.status}`);
@@ -1088,23 +1104,75 @@ function updateSourceTotal() {
   const suffix = pending
     ? `<span>+ ${pending} source(s) en cours de décompte</span>`
     : "";
+  // Le chevauchement entre sources et playlists exclues n'est connu qu'à
+  // l'analyse : on le dit plutôt que d'afficher un total faux.
+  const excluded = excludedPlaylists.size
+    ? `<span>— moins les titres de ${excludedPlaylists.size} playlist(s) exclue(s)</span>`
+    : "";
   $("sources-total").innerHTML =
-    `<b>${total}</b> titre(s) dans ${checked.length} source(s) cochée(s) ${suffix}`;
+    `<b>${total}</b> titre(s) dans ${checked.length} source(s) cochée(s) ${suffix} ${excluded}`;
 }
 
 const sourceCounts = new Map();
+
+//: Playlists exclues : leurs titres sont retirés de l'analyse même quand ils
+//: arrivent par la bibliothèque ou les likes. Enregistrées côté serveur dès
+//: le clic, elles valent pour toutes les analyses suivantes.
+let excludedPlaylists = new Set();
+
+function playlistId(key) {
+  return key.startsWith("playlist:") ? key.slice("playlist:".length) : null;
+}
 
 function sourceRow(entry, checked) {
   const id = `src-${entry.key.replace(/[^\w-]/g, "_")}`;
   const cover = entry.thumbnail
     ? `<img class="cover" src="${escapeHtml(entry.thumbnail)}" alt="" loading="lazy">`
     : "";
-  return `<div class="source" data-key="${escapeHtml(entry.key)}">
-    <input type="checkbox" id="${id}" value="${entry.key}" ${checked ? "checked" : ""}>
+  const pid = playlistId(entry.key);
+  const excluded = pid !== null && excludedPlaylists.has(pid);
+  const exclude = pid === null ? "" :
+    `<button class="exclude-btn" data-exclude="${escapeHtml(pid)}"
+             title="Retirer ses titres de l'analyse, même s'ils sont dans ta bibliothèque">
+       ${excluded ? "Ne plus exclure" : "Exclure"}</button>`;
+  return `<div class="source ${excluded ? "excluded" : ""}" data-key="${escapeHtml(entry.key)}">
+    <input type="checkbox" id="${id}" value="${entry.key}"
+           ${checked && !excluded ? "checked" : ""} ${excluded ? "disabled" : ""}>
     ${cover}
-    <label for="${id}">${escapeHtml(entry.label)}</label>
+    <label for="${id}">${escapeHtml(entry.label)}
+      <span class="excluded-note">exclue : ses titres seront retirés de l'analyse</span></label>
     <span class="count" data-count-for="${escapeHtml(entry.key)}">…</span>
+    ${exclude}
   </div>`;
+}
+
+function renderExclusion(row, excluded) {
+  row.classList.toggle("excluded", excluded);
+  const input = row.querySelector('input[type="checkbox"]');
+  input.disabled = excluded;
+  if (excluded) input.checked = false;
+  row.querySelector(".exclude-btn").textContent = excluded ? "Ne plus exclure" : "Exclure";
+}
+
+async function toggleExclusion(button) {
+  const pid = button.dataset.exclude;
+  const row = button.closest(".source");
+  const excluded = !excludedPlaylists.has(pid);
+  if (excluded) excludedPlaylists.add(pid); else excludedPlaylists.delete(pid);
+  renderExclusion(row, excluded);
+  updateSourceTotal();
+  try {
+    const saved = await api("/api/exclusions", { playlists: [...excludedPlaylists] }, "PUT");
+    excludedPlaylists = new Set(saved.excluded);
+    $("sources-msg").textContent = "";
+  } catch (error) {
+    // L'enregistrement a échoué : l'affichage ne doit pas promettre une
+    // exclusion que la prochaine analyse n'appliquera pas.
+    if (excluded) excludedPlaylists.delete(pid); else excludedPlaylists.add(pid);
+    renderExclusion(row, !excluded);
+    updateSourceTotal();
+    $("sources-msg").textContent = error.message;
+  }
 }
 
 async function measureSources() {
@@ -1131,6 +1199,7 @@ async function measureSources() {
 async function loadSources() {
   try {
     const data = await api("/api/sources");
+    excludedPlaylists = new Set(data.excluded || []);
     const defaults = new Set(data.defaults || []);
     const special = data.special.map((entry) => sourceRow(entry, defaults.has(entry.key))).join("");
     const playlists = data.playlists.length
@@ -1140,7 +1209,6 @@ async function loadSources() {
     $("sources-msg").textContent = data.reachable
       ? ""
       : "Compte non joignable : seules les sources générales sont proposées.";
-    $("sources-list").addEventListener("change", updateSourceTotal);
     updateSourceTotal();
     measureSources();
   } catch (error) {
@@ -1148,8 +1216,17 @@ async function loadSources() {
   }
 }
 
+// Attachés une seule fois : la liste est reconstruite à chaque reconnexion,
+// et un écouteur ajouté à chaque fois ferait basculer une exclusion deux fois
+// pour un seul clic — c'est-à-dire pas du tout.
+$("sources-list").addEventListener("change", updateSourceTotal);
+$("sources-list").addEventListener("click", (event) => {
+  const button = event.target.closest(".exclude-btn");
+  if (button) toggleExclusion(button);
+});
+
 $("sources-all").addEventListener("click", () => {
-  document.querySelectorAll("#sources-list input").forEach((i) => { i.checked = true; });
+  document.querySelectorAll("#sources-list input:not(:disabled)").forEach((i) => { i.checked = true; });
   updateSourceTotal();
 });
 $("sources-none").addEventListener("click", () => {

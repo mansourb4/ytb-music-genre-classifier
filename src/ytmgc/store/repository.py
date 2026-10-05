@@ -295,3 +295,45 @@ class Repository:
         """Clé de playlist -> (playlist_id, nom)."""
         cursor = self._db.execute("SELECT key, playlist_id, name FROM managed_playlists")
         return {row["key"]: (row["playlist_id"], row["name"]) for row in cursor}
+
+    # ------------------------------------------------------------ exclusions
+
+    @_locked
+    def excluded_playlists(self) -> list[str]:
+        """Playlists dont les titres sont retirés de chaque analyse.
+
+        Tenues dans `meta`, que l'effacement de la bibliothèque avant chaque
+        analyse ne touche pas : une exclusion est un choix durable, pas un
+        réglage à refaire à chaque fois.
+        """
+        row = self._db.execute(
+            "SELECT value FROM meta WHERE key = 'excluded_playlists'"
+        ).fetchone()
+        if row is None:
+            return []
+        try:
+            values = json.loads(row["value"])
+        except json.JSONDecodeError:
+            return []
+        return [str(value) for value in values if value]
+
+    @_locked
+    def set_excluded_playlists(self, playlist_ids: list[str]) -> None:
+        unique = list(dict.fromkeys(playlist_id for playlist_id in playlist_ids if playlist_id))
+        self._db.execute(
+            "INSERT INTO meta(key, value) VALUES('excluded_playlists', ?) "
+            "ON CONFLICT(key) DO UPDATE SET value = excluded.value",
+            (json.dumps(unique),),
+        )
+        self._db.commit()
+
+    @_locked
+    def remove_tracks(self, video_ids: list[str]) -> int:
+        """Retire des titres et leur classification. Renvoie le nombre retiré."""
+        if not video_ids:
+            return 0
+        cursor = self._db.executemany(
+            "DELETE FROM tracks WHERE video_id = ?", [(video_id,) for video_id in video_ids]
+        )
+        self._db.commit()
+        return cursor.rowcount

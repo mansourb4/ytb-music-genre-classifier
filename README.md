@@ -169,7 +169,7 @@ fonctionne comme avant, sur les seuls styles de la release.
 Discogs décrit le disque et Last.fm des étiquettes ; seul un modèle connaît le
 morceau lui-même. Avec un compte Claude.ai, cette passe ne coûte rien.
 
-**1. Exporte.** Étape 5 de l'interface, onglet « Gratuit — via Claude.ai »,
+**1. Exporte.** Étape 4 de l'interface, onglet « Gratuit — via Claude.ai »,
 *Exporter les titres à juger* — ou `ytmgc export`. Tous les titres pas encore
 jugés partent d'un coup, en fichiers de 500 (`titres-1-sur-9.txt`…), chacun
 autonome : consignes, vocabulaire, titres.
@@ -192,7 +192,7 @@ et chaque ligne porte le nom de son morceau. Pas de numéro, pas d'état à
 retrouver : une réponse d'il y a trois jours s'importe comme celle d'il y a
 trois minutes.
 
-**Où en es-tu.** Le bloc *Résultats*, en tête de l'étape 5, dit combien de
+**Où en es-tu.** Le bloc *Résultats*, en tête de l'étape 4, dit combien de
 morceaux sont jugés, **où** ils sont enregistrés (le chemin complet de
 `data/verdicts.txt`) et liste chaque morceau — jugé, avec genre, style,
 ambiance et note, ou à juger — avec un filtre et une recherche. Chaque fichier
@@ -273,7 +273,7 @@ ytmgc lookup "Nirvana" "Something In The Way"
 ```
 
 Une réponse immédiate à quelques centimes, écrite dans le même fichier. La
-même recherche existe dans l'interface web, à l'étape 5.
+même recherche existe dans l'interface web, à l'étape 4.
 
 Sans clé, tout le reste fonctionne exactement comme avant.
 
@@ -346,13 +346,29 @@ engendré au démarrage et inclus dans le lien affiché ; définis
 `YTMGC_ACCESS_TOKEN` pour en garder un stable. `--no-token` lève l'exigence,
 à ne faire que si l'accès est déjà protégé par ailleurs.
 
-Le parcours tient en cinq étapes : connecter le compte, choisir ce qui sera
-analysé (bibliothèque, titres likés, et n'importe laquelle de tes playlists),
-choisir un type de tri, lancer l'analyse, confirmer. Pendant l'analyse, un
-bandeau fixe indique l'avancement, le titre en cours et une estimation du temps
-restant.
+Le parcours suit l'ordre réel du travail, chaque étape ne dépendant que des
+précédentes :
 
-**L'aperçu s'affiche de lui-même à la fin de l'analyse**, dans la même section.
+1. **Connecter** le compte.
+2. **Choisir ce qui sera analysé** : bibliothèque, titres likés, n'importe
+   laquelle de tes playlists — et les playlists à **exclure**.
+3. **Analyser** : lecture des sources, Discogs, Last.fm. Un bandeau fixe
+   indique l'avancement, le titre en cours et le temps restant.
+4. **Affiner par le modèle** (facultatif) : Claude juge chaque morceau.
+5. **Choisir le type de tri** : il ne change rien à ce qui précède, seulement
+   la façon d'en faire des playlists ; l'aperçu suit chaque changement.
+6. **Prévisualiser**, puis 7. **Appliquer**.
+
+**Exclure une playlist** n'est pas la même chose que la décocher. Décochée, une
+playlist n'est simplement pas lue — mais ses titres reviennent par ta
+bibliothèque ou tes likes. Exclue, ses titres sont retirés de l'analyse d'où
+qu'ils viennent, clips et autres publications du même morceau compris. C'est
+fait pour une playlist de berceuses, de bruit blanc, de sons de méditation :
+ce qui n'a rien à faire dans le portrait de ce que tu écoutes. Le choix est
+gardé d'une analyse à l'autre, et `ytmgc scan` l'applique aussi.
+
+**L'aperçu se calcule de lui-même** à la fin de l'analyse, à chaque changement
+de tri et à chaque import de verdicts.
 Chaque playlist proposée y porte sa pochette, la définition de son genre et de
 son style, et se déplie sur la liste de ses titres — pochette, album, année,
 genre et style pour chacun.
@@ -471,7 +487,7 @@ sans aucune écriture ni appel réseau.
 ## Développement
 
 ```bash
-python -m pytest        # 485 tests, aucun appel réseau
+python -m pytest        # 500 tests, aucun appel réseau
 ```
 
 Les API externes sont derrière des adaptateurs (`src/ytmgc/sources/`) ; toute la

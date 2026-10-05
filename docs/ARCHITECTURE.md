@@ -53,6 +53,7 @@ et relancés sans perte, et `plan`/`apply` se rejouent hors ligne.
 | `sorting.py` | Types de tri prédéfinis — dont l'axe de rangement — partagés par le CLI et l'interface web. |
 | `sources/claude.py` | Jugement d'un titre par un modèle : préambule, schéma de sortie, dépôt et relecture d'un lot, estimation du coût. |
 | `verdicts.py` | Le fichier texte des verdicts : format, lecture tolérante, écriture atomique, préséance de la décision humaine. |
+| `exclusions.py` | Playlists exclues : leurs titres, et les autres publications des mêmes morceaux, sortent de l'analyse. |
 | `duplicates.py` | Ce que l'outil tient pour un même morceau : doublons fusionnés, versions proches gardées à part. Diagnostic, sans réseau. |
 | `chat.py` | Passe gratuite : bibliothèque exportée en fichiers pour Claude.ai, lecture défiante des réponses recollées. |
 | `progress.py` | Ce qui est jugé, ce qui reste, et le verdict de chaque morceau. |
@@ -256,10 +257,17 @@ hors écran au moment précis où l'utilisateur attend un signe de vie.
 
 ### 13. L'aperçu conclut l'analyse, et montre la matière
 
-Le tri se choisit désormais **avant** l'analyse, puisqu'il détermine ce que
-celle-ci produira, et l'aperçu s'affiche de lui-même à la fin plutôt que
-d'attendre un second geste : une analyse dont le résultat reste invisible ne
-conclut rien.
+L'aperçu s'affiche de lui-même à la fin de l'analyse plutôt que d'attendre
+un second geste : une analyse dont le résultat reste invisible ne conclut rien.
+
+Le tri a d'abord été placé *avant* l'analyse, au motif qu'il déterminait ce
+qu'elle produirait. C'était faux : l'analyse ne lit pas le tri — elle produit
+genres, styles et ambiances, et le tri ne dit que comment en faire des
+playlists. Une fois la passe modèle ajoutée, l'ordre affiché trompait
+franchement : l'aperçu venait avant les verdicts qui le modifient. La page suit
+désormais l'ordre réel des dépendances — connecter, choisir les sources,
+analyser, affiner, choisir le tri, prévisualiser, appliquer — et l'aperçu se
+recalcule à chaque changement de tri comme à chaque import de verdicts.
 
 Chaque playlist proposée porte la pochette de son premier titre illustré — les
 playlists prévues n'existant pas encore, elles n'ont pas d'image propre — et se
@@ -292,6 +300,21 @@ et Last.fm ne connaissent tout simplement pas ce morceau.
 En mode ambiance les causes diffèrent, Discogs n'y étant plus qu'un appoint :
 soit le titre n'a ni tag Last.fm ni style (`no_tags`, rien à exploiter), soit
 cette matière existe mais n'a donné aucune ambiance (`no_mood`).
+
+### 13 ter. Exclure n'est pas décocher
+
+Décocher une playlist à l'étape des sources ne fait que ne pas la lire : ses
+titres reviennent par la bibliothèque ou les likes. Une playlist de berceuses
+ou de bruit blanc continuait donc de peser dans le portrait de ce qu'on écoute.
+`exclusions.apply_exclusions` retire de l'analyse tout titre d'une playlist
+exclue, et tout autre titre du même morceau (`song_key`) — le clip d'une
+comptine arrivé par les likes compris.
+
+Les exclusions sont tenues dans `meta`, que l'effacement de la bibliothèque
+avant chaque analyse épargne : c'est un choix durable. L'interface les
+enregistre dès le clic, sans attendre l'analyse, et `ytmgc scan` les applique
+aussi — retirant au passage de la base un titre lu avant son exclusion, `scan`
+ne vidant pas la bibliothèque.
 
 ### 14. L'aperçu est un plan négociable, pas un compte rendu
 
@@ -526,10 +549,10 @@ motif : aucun autre fichier du disque n'est atteignable par l'interface.
 
 ## Tests
 
-485 tests, aucun appel réseau, y compris l'API web complète (aperçu,
+500 tests, aucun appel réseau, y compris l'API web complète (aperçu,
 application, annulation), son contrôle d'accès et les quatre voies de connexion.
 
-Cinquante-trois d’entre eux chargent l’interface dans un vrai navigateur (`tests/test_ui.py`).
+Cinquante-neuf d’entre eux chargent l’interface dans un vrai navigateur (`tests/test_ui.py`).
 Le câblage du DOM échappe aux tests Python : deux défauts d'onglets sont passés
 au travers de la suite avant d'être vus à l'écran. Ces tests sont ignorés
 lorsque Playwright ou son navigateur sont absents, pour que la suite reste

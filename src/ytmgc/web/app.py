@@ -118,6 +118,11 @@ class AnalyseRequest(BaseModel):
     sources: list[str] | None = None
 
 
+class ExclusionsRequest(BaseModel):
+    #: Identifiants des playlists exclues (sans le préfixe « playlist: »).
+    playlists: list[str] = Field(default_factory=list)
+
+
 class PreviewRequest(BaseModel):
     sort_mode: str = DEFAULT_SORT_MODE
 
@@ -352,7 +357,7 @@ def create_app(services: Services) -> FastAPI:
             summaries = services.youtube_factory(config).list_playlist_summaries()
         except Exception:  # noqa: BLE001 - compte non joignable : sources spéciales seules
             return {"special": special, "playlists": [], "defaults": config.youtube.sources,
-                    "reachable": False}
+                    "reachable": False, "excluded": repository.excluded_playlists()}
 
         playlists = [
             {
@@ -364,7 +369,15 @@ def create_app(services: Services) -> FastAPI:
             if item["playlist_id"] not in managed
         ]
         return {"special": special, "playlists": playlists,
-                "defaults": config.youtube.sources, "reachable": True}
+                "defaults": config.youtube.sources, "reachable": True,
+                "excluded": repository.excluded_playlists()}
+
+    @app.put("/api/exclusions")
+    def set_exclusions(request: ExclusionsRequest) -> dict:
+        """Enregistre les playlists exclues, aussitôt cochées : un choix fait
+        dans l'interface ne doit pas dépendre d'une analyse lancée ensuite."""
+        repository.set_excluded_playlists(request.playlists)
+        return {"excluded": repository.excluded_playlists()}
 
     @app.get("/api/sources/count")
     def count_source(source: str) -> dict:
@@ -416,9 +429,21 @@ def create_app(services: Services) -> FastAPI:
             # Chaque analyse repart de zéro : sans cela, l'aperçu cumulerait les
             # sources des analyses précédentes, alors qu'il doit refléter la
             # sélection en cours.
+            from ytmgc.exclusions import apply_exclusions, excluded_tracks
+
             repository.clear_library()
             job.message = f"Lecture de {len(sources)} source(s) YouTube Music…"
-            tracks: list[Track] = services.youtube_factory(config).scan(sources)
+            youtube = services.youtube_factory(config)
+            tracks: list[Track] = youtube.scan(sources)
+
+            excluded_ids = repository.excluded_playlists()
+            if excluded_ids:
+                job.message = f"Lecture des {len(excluded_ids)} playlist(s) exclue(s)…"
+                scope = apply_exclusions(tracks, excluded_tracks(youtube, excluded_ids))
+                tracks = scope.kept
+                removed = len(scope.removed)
+            else:
+                removed = 0
             repository.upsert_tracks(tracks)
 
             pending = repository.unclassified_tracks()
@@ -438,8 +463,12 @@ def create_app(services: Services) -> FastAPI:
                 # priment sur Discogs et ne coûtent rien.
                 verdicts=verdict_file.load(config.claude.verdicts_file),
             )
-            job.message = stats.line()
-            return {"scanned": len(tracks), "sources": sources, "summary": stats.line()}
+            summary = stats.line()
+            if removed:
+                summary += f" — {removed} titre(s) retiré(s) par les playlists exclues"
+            job.message = summary
+            return {"scanned": len(tracks), "sources": sources, "excluded": removed,
+                    "summary": summary}
 
         return jobs.start("analyse", work).to_dict()
 

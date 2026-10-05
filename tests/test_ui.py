@@ -228,20 +228,29 @@ def test_analysis_without_a_selected_source_is_refused_client_side(page):
     assert "étape 2" in page.locator("#analyse-msg").text_content()
 
 
-def test_the_sort_type_comes_before_the_analysis(page):
-    """Le tri conditionne l'aperçu produit par l'analyse : le choisir après
-    obligeait à revenir en arrière."""
-    headings = page.locator("section h2").all_text_contents()
-    order = [h for h in headings if "TRI" in h.upper() or "ANALYSER" in h.upper()]
-    assert "tri" in order[0].lower()
-    assert "analyser" in order[1].lower()
+def test_the_steps_follow_the_real_order_of_the_work(page):
+    """Chaque étape ne dépend que des précédentes : analyser, affiner, puis
+    choisir le tri, prévisualiser et appliquer. L'ancien ordre plaçait le tri
+    avant l'analyse, et l'aperçu avant les verdicts qui le modifient."""
+    titles = [
+        h.split("\n")[0].strip().lower()
+        for h in page.locator("section h2").all_text_contents()
+        if h.strip()[:1].isdigit()
+    ]
+    expected = ["connecter", "choisir ce qui", "analyser", "affiner", "type de tri",
+                "prévisualiser", "appliquer"]
+    assert len(titles) == len(expected)
+    for title, word in zip(titles, expected):
+        assert word in title, (title, word)
 
 
-def test_the_preview_lives_in_the_analysis_section(page):
-    """L'aperçu n'a plus de section propre : il conclut l'analyse."""
-    section = page.locator("section", has=page.locator("#analyse-btn"))
-    assert section.locator("#preview-list").count() == 1
-    assert section.locator("#preview-summary").count() == 1
+def test_the_preview_has_its_own_step_after_the_sort_type(page):
+    analyse = page.locator("section", has=page.locator("#analyse-btn"))
+    preview = page.locator("section", has=page.locator("#preview-list"))
+
+    assert analyse.locator("#preview-list").count() == 0
+    assert preview.locator("#preview-btn").count() == 1
+    assert "Prévisualiser" in preview.locator("h2").text_content()
 
 
 def test_preview_rows_expand_to_show_track_details(page):
@@ -836,3 +845,71 @@ def test_results_can_be_searched(page, repository, config):
         "() => document.querySelectorAll('#results-rows tr').length === 1"
     )
     assert "Get Lucky" in page.locator("#results-rows").text_content()
+
+
+
+# ------------------------------------------------------- playlists exclues
+
+
+SOURCES_WITH_PLAYLISTS = """() => {
+  excludedPlaylists = new Set(["PLdodo"]);
+  $("sources-list").innerHTML =
+    `<div class="source-group">${sourceRow({key: "library", label: "Bibliothèque"}, true)}</div>`
+    + `<div class="source-group">${sourceRow({key: "playlist:PLdodo", label: "Berceuses"}, false)}`
+    + `${sourceRow({key: "playlist:PLrock", label: "Rock"}, true)}</div>`;
+  updateSourceTotal();
+}"""
+
+
+@pytest.mark.parametrize("reloads", [1, 2])
+def test_reloading_the_sources_does_not_double_the_exclusion_toggle(page, reloads):
+    """Régression : chaque chargement de la liste ajoutait un écouteur ; après
+    une reconnexion, un clic basculait l'exclusion deux fois — sans effet.
+    Deux nombres de rechargements, pour qu'un nombre pair d'écouteurs se
+    présente quel que soit l'état initial."""
+    page.evaluate(f"async () => {{ for (let i = 0; i < {reloads}; i++) await loadSources(); }}")
+    page.evaluate(SOURCES_WITH_PLAYLISTS)
+    page.click('.source[data-key="playlist:PLrock"] .exclude-btn')
+
+    assert "excluded" in page.locator('.source[data-key="playlist:PLrock"]').get_attribute("class")
+
+
+def test_an_excluded_playlist_is_shown_as_such(page):
+    page.evaluate(SOURCES_WITH_PLAYLISTS)
+    row = page.locator('.source[data-key="playlist:PLdodo"]')
+
+    assert "excluded" in row.get_attribute("class")
+    assert row.locator("input").is_disabled()
+    assert "seront retirés" in row.text_content()
+    assert "Ne plus exclure" in row.locator(".exclude-btn").text_content()
+    assert "1 playlist(s) exclue(s)" in page.locator("#sources-total").text_content()
+
+
+def test_only_playlists_can_be_excluded(page):
+    """La bibliothèque entière ne s'exclut pas : il suffit de la décocher."""
+    page.evaluate(SOURCES_WITH_PLAYLISTS)
+    assert page.locator('.source[data-key="library"] .exclude-btn').count() == 0
+
+
+def test_excluding_a_playlist_is_saved_at_once(page, repository):
+    page.evaluate(SOURCES_WITH_PLAYLISTS)
+    page.click('.source[data-key="playlist:PLrock"] .exclude-btn')
+    page.wait_for_function(
+        "() => document.querySelector('.source[data-key=\"playlist:PLrock\"] .exclude-btn')"
+        ".textContent.includes('Ne plus')"
+    )
+    row = page.locator('.source[data-key="playlist:PLrock"]')
+    assert not row.locator("input").is_checked()
+    page.wait_for_function("() => !document.querySelector('#sources-msg').textContent")
+    # Le serveur l'a enregistrée : elle vaudra pour l'analyse suivante.
+    for _ in range(50):
+        if "PLrock" in repository.excluded_playlists():
+            break
+        page.wait_for_timeout(50)
+    assert set(repository.excluded_playlists()) == {"PLdodo", "PLrock"}
+
+
+def test_check_all_does_not_bring_back_an_excluded_playlist(page):
+    page.evaluate(SOURCES_WITH_PLAYLISTS)
+    page.click("#sources-all")
+    assert not page.locator('.source[data-key="playlist:PLdodo"] input').is_checked()

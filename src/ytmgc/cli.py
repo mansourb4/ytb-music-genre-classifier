@@ -56,10 +56,21 @@ def _youtube(config: Config):
 
 
 def cmd_scan(args: argparse.Namespace, config: Config) -> int:
+    from ytmgc.exclusions import apply_exclusions, excluded_tracks
+
     repository = _repository(config)
-    tracks = _youtube(config).scan(config.youtube.sources)
-    count = repository.upsert_tracks(tracks)
+    youtube = _youtube(config)
+    tracks = youtube.scan(config.youtube.sources)
+    # Les exclusions choisies dans l'interface valent aussi ici : c'est la
+    # même bibliothèque, et elle doit donner le même portrait.
+    excluded = repository.excluded_playlists()
+    scope = apply_exclusions(tracks, excluded_tracks(youtube, excluded))
+    count = repository.upsert_tracks(scope.kept)
+    # Un titre lu lors d'un scan antérieur à l'exclusion est encore en base.
+    repository.remove_tracks([track.video_id for track in scope.removed])
     print(f"{count} titre(s) enregistré(s) depuis {', '.join(config.youtube.sources)}.")
+    if scope.removed:
+        print(f"{len(scope.removed)} titre(s) retiré(s) par {len(excluded)} playlist(s) exclue(s).")
     return 0
 
 
