@@ -273,35 +273,34 @@ def test_a_lookup_needs_both_fields(client):
 # ------------------------------------------------ passe gratuite (Claude.ai)
 
 
-def test_a_packet_is_prepared_with_its_message(client):
-    payload = client.post("/api/chat/packet", json={"size": 1}).json()
+def test_the_library_is_exported_and_each_file_downloadable(client):
+    payload = client.post("/api/chat/export", json={}).json()
 
-    assert payload["packet"]["tracks"] == 1
-    assert payload["remaining"] == 2
-    assert payload["packet"]["id"] in payload["packet"]["message"]
+    assert [f["name"] for f in payload["files"]] == ["titres-1-sur-1.txt"]
+    assert payload["files"][0]["tracks"] == 2
+    download = client.get(payload["files"][0]["url"])
+    assert download.status_code == 200
+    assert "Nirvana | Lithium" in download.text
+
+
+def test_no_other_file_can_be_fetched(client):
+    client.post("/api/chat/export", json={})
+    assert client.get("/api/chat/files/export.json").status_code == 404
+    assert client.get("/api/chat/files/..%2Fverdicts.txt").status_code == 404
 
 
 def test_a_pasted_answer_is_imported_and_sorts_the_library(client, config):
-    import json as _json
-
-    packet = client.post("/api/chat/packet", json={}).json()["packet"]
-    from ytmgc.chat import load_packet
-
-    titles = [s.title for s in load_packet(config.claude.packet_file).subjects]
-    text = "```json\n" + _json.dumps({"paquet": packet["id"], "verdicts": [
-        {"n": n, "titre": title, "genre": "Rock", "style": "Grunge", "mood": "Sombre",
-         "confidence": 0.9, "note": "…"} for n, title in enumerate(titles, 1)
-    ]}) + "\n```"
+    client.post("/api/chat/export", json={})
+    text = "```\nNirvana | Lithium | Rock | Grunge | Énergique | 0.9 | Hymne.\n```"
     result = client.post("/api/chat/import", json={"text": text}).json()
 
-    assert result["accepted"] == 2 and result["remaining"] == 0
-    assert "2 verdict(s) enregistré(s)" in result["line"]
-    assert len(verdicts.load(config.claude.verdicts_file)) == 2
+    assert (result["accepted"], result["judged"], result["total"]) == (1, 1, 2)
+    assert result["files"][0]["judged"] == 1
+    assert len(verdicts.load(config.claude.verdicts_file)) == 1
 
 
 def test_a_wrong_answer_is_refused_with_its_reason(client):
-    client.post("/api/chat/packet", json={})
-    response = client.post("/api/chat/import", json={"text": "pas de JSON ici"})
+    response = client.post("/api/chat/import", json={"text": "pas de lignes ici"})
 
     assert response.status_code == 400
     assert "Copier" in response.json()["detail"]
@@ -311,4 +310,24 @@ def test_the_free_route_needs_no_api_key(repository, config):
     repository.upsert_tracks(LIBRARY)
     client = build(repository, config, None)
 
-    assert client.post("/api/chat/packet", json={}).json()["packet"]["tracks"] == 2
+    assert client.post("/api/chat/export", json={}).json()["files"][0]["tracks"] == 2
+
+
+def test_results_show_where_they_live_and_what_is_left(client, config):
+    verdicts.save(VerdictBook([ANSWERS["Lithium"]]), config.claude.verdicts_file)
+    payload = client.get("/api/verdicts").json()
+
+    assert (payload["total"], payload["judged"], payload["todo"]) == (2, 1, 1)
+    assert payload["file"].endswith("verdicts.txt")
+    lithium = next(row for row in payload["rows"] if row["title"] == "Lithium")
+    assert (lithium["judged"], lithium["genre"], lithium["mood"]) == (True, "Rock", "Énergique")
+
+
+def test_results_can_be_filtered_and_searched(client, config):
+    verdicts.save(VerdictBook([ANSWERS["Lithium"]]), config.claude.verdicts_file)
+
+    todo = client.get("/api/verdicts", params={"show": "todo"}).json()
+    assert [row["title"] for row in todo["rows"]] == ["Something In The Way"]
+    found = client.get("/api/verdicts", params={"q": "lith"}).json()
+    assert [row["title"] for row in found["rows"]] == ["Lithium"]
+    assert client.get("/api/verdicts", params={"show": "n'importe"}).status_code == 400

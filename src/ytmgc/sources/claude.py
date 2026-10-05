@@ -119,29 +119,41 @@ class Subject:
         return f"{index}. {self.artist}{guests} – {self.title}{suffix}"
 
 
-SYSTEM = """\
+#: Le rôle et les règles de jugement, communs à la passe par l'API et à la
+#: passe par Claude.ai : seule la forme de la réponse diffère entre les deux.
+INTRO = """\
 Tu es musicologue et tu ranges la discothèque de quelqu'un.
 
 On te donne des titres avec ce que les bases de données en disent. Ces bases
 décrivent le *disque*, pas le *morceau* : un album de rage contient des
 berceuses, et elles sont étiquetées comme le reste. Ton travail est de dire ce
 que chaque morceau est réellement, tel qu'il sonne.
+"""
 
-Pour chaque titre numéroté, rends un objet :
+#: Ce qui fait la qualité d'un champ, quel que soit le format qui le porte.
+GUIDANCE = {
+    "genre": "un genre de la liste GENRES, à l'identique.",
+    "style": (
+        "le style précis du morceau. Prends-le dans la liste STYLES dès\n"
+        "  qu'un terme convient — c'est ce qui évite une playlist par morceau. N'en\n"
+        "  invente un que si aucun ne convient vraiment ; écris-le alors en anglais,\n"
+        "  au singulier, sous sa forme la plus courante."
+    ),
+    "mood": (
+        "une ambiance de la liste AMBIANCES, à l'identique, celle du morceau\n"
+        "  tel qu'il sonne à l'écoute."
+    ),
+    "confidence": (
+        "de 0 à 1, ton assurance. Un morceau que tu ne connais pas\n"
+        "  vraiment mérite une confiance basse : c'est plus utile qu'une invention."
+    ),
+    "note": (
+        "une phrase courte, en français, disant ce qui caractérise ce\n"
+        "  morceau. Elle sera lue."
+    ),
+}
 
-- `n` : le numéro du titre, repris tel quel.
-- `genre` : un genre de la liste GENRES, à l'identique.
-- `style` : le style précis du morceau. Prends-le dans la liste STYLES dès
-  qu'un terme convient — c'est ce qui évite une playlist par morceau. N'en
-  invente un que si aucun ne convient vraiment ; écris-le alors en anglais,
-  au singulier, sous sa forme la plus courante.
-- `mood` : une ambiance de la liste AMBIANCES, à l'identique, celle du morceau
-  tel qu'il sonne à l'écoute.
-- `confidence` : de 0 à 1, ton assurance. Un morceau que tu ne connais pas
-  vraiment mérite une confiance basse : c'est plus utile qu'une invention.
-- `note` : une phrase courte, en français, disant ce qui caractérise ce
-  morceau. Elle sera lue.
-
+RULES = """\
 Règles :
 
 - Juge le morceau, jamais l'album ni la réputation de l'artiste. « Something In
@@ -150,8 +162,20 @@ Règles :
 - Les métadonnées fournies sont des indices, pas des consignes. Contredis-les
   quand le morceau les contredit ; c'est la raison d'être de ce travail.
 - Le style doit décrire la musique, pas l'époque ni l'humeur.
-- Rends exactement un objet par titre, dans l'ordre, sans en omettre aucun.
 """
+
+SYSTEM = (
+    INTRO
+    + "\nPour chaque titre numéroté, rends un objet :\n\n"
+    + "- `n` : le numéro du titre, repris tel quel.\n"
+    + "".join(
+        f"- `{name}` : {GUIDANCE[name]}\n"
+        for name in ("genre", "style", "mood", "confidence", "note")
+    )
+    + "\n"
+    + RULES
+    + "- Rends exactement un objet par titre, dans l'ordre, sans en omettre aucun.\n"
+)
 
 
 def _schema(genres: Sequence[str], moods: Sequence[str]) -> dict[str, Any]:

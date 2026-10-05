@@ -167,34 +167,43 @@ fonctionne comme avant, sur les seuls styles de la release.
 ### Juger les morceaux avec Claude — gratuitement, via Claude.ai
 
 Discogs décrit le disque et Last.fm des étiquettes ; seul un modèle connaît le
-morceau lui-même. Avec un compte Claude.ai, cette passe ne coûte rien : l'outil
-prépare un **paquet** — instructions, vocabulaire et une centaine de titres
-numérotés — que tu colles dans une conversation, puis tu recolles la réponse.
+morceau lui-même. Avec un compte Claude.ai, cette passe ne coûte rien.
 
-Dans l'interface, étape 5, onglet « Gratuit — via Claude.ai » : *Préparer le
-paquet*, *Copier*, coller dans une nouvelle conversation, recopier la réponse
-(bouton « Copier » du bloc de code), *Importer*. Ou en ligne de commande, sur
-Mac :
+**1. Exporte.** Étape 5 de l'interface, onglet « Gratuit — via Claude.ai »,
+*Exporter les titres à juger* — ou `ytmgc export`. Tous les titres pas encore
+jugés partent d'un coup, en fichiers de 500 (`titres-1-sur-9.txt`…), chacun
+autonome : consignes, vocabulaire, titres.
 
-```bash
-ytmgc paquet | pbcopy      # copie le paquet suivant
-# … colle dans claude.ai, copie la réponse …
-pbpaste | ytmgc importe    # lit la réponse et range la bibliothèque
+**2. Une conversation par fichier.** Nouvelle conversation sur claude.ai,
+glisse le fichier, écris « Vas-y » ; « continue » si Claude s'arrête avant la
+fin. Pourquoi pas tout dans une seule conversation : elle garde en mémoire les
+titres *et* toutes ses réponses — pour ~4 000 titres, environ 220 000 jetons,
+au-delà de ce qu'elle tient. Pour 500, une trentaine de milliers.
+
+**3. Recolle chaque réponse**, dans la case prévue ou un fichier déposé — ou
+`pbpaste | ytmgc importe`. Dans n'importe quel ordre, en autant de fois que tu
+veux : Claude répond une ligne par morceau,
+
+```
+Nirvana | Something In The Way | Rock | Acoustic | Mélancolique | 0.95 | Berceuse sépulcrale.
 ```
 
-Si Claude s'interrompt avant la fin, réponds « continue » et importe la suite :
-le paquet reste ouvert. Ta bibliothèque actuelle demande quelques dizaines
-d'allers-retours, une fois ; ensuite, les titres ajoutés tiennent dans un seul.
+et chaque ligne porte le nom de son morceau. Pas de numéro, pas d'état à
+retrouver : une réponse d'il y a trois jours s'importe comme celle d'il y a
+trois minutes.
 
-**La réponse est vérifiée avant d'être écrite.** Rien ne contraint ici sa
-forme, et un verdict rattaché au mauvais morceau serait pire qu'un verdict
-manquant — il serait tenu pour acquis, jamais redemandé. Chaque verdict doit
-donc recopier le titre qu'il juge, porter le numéro de paquet, et rester dans
-le vocabulaire fermé des genres et des huit ambiances. Ce qui échoue est
-écarté et signalé ; son titre revient de lui-même dans le paquet suivant.
+**Où en es-tu.** Le bloc *Résultats*, en tête de l'étape 5, dit combien de
+morceaux sont jugés, **où** ils sont enregistrés (le chemin complet de
+`data/verdicts.txt`) et liste chaque morceau — jugé, avec genre, style,
+ambiance et note, ou à juger — avec un filtre et une recherche. Chaque fichier
+exporté affiche aussi son avancement (« 312 / 500 jugés »). En ligne de
+commande : `ytmgc suivi`, `ytmgc suivi --faits`, `ytmgc suivi --a-faire`.
 
-Les verdicts vont dans le même `data/verdicts.txt` que la voie payante
-ci-dessous, avec les mêmes règles.
+**Ce qui n'est pas retenu.** Une ligne qui ne désigne aucun morceau de ta
+bibliothèque, ou dont le genre ou l'ambiance sortent des listes, est écartée
+et affichée avec sa raison. Un verdict rattaché au mauvais morceau serait pire
+qu'un verdict manquant — il serait tenu pour acquis. Le morceau reste « à
+juger » et figurera dans le prochain export.
 
 ### Clé Anthropic (facultative, payante — la même chose, automatiquement)
 
@@ -394,8 +403,9 @@ ytmgc tags "Artiste" "Titre"   # tags d'un titre et classement qui en découle
 ytmgc enrich     # fait juger les titres par le modèle (par lots, payant)
 ytmgc lookup "Artiste" "Titre"  # genre, style et ambiance d'un titre, tout de suite
 ytmgc doublons   # morceaux présents sous plusieurs formes (gratuit, hors ligne)
-ytmgc paquet     # titres à faire juger dans Claude.ai (gratuit)
-ytmgc importe    # lit la réponse de Claude.ai
+ytmgc export     # tous les titres à juger, en fichiers pour Claude.ai (gratuit)
+ytmgc importe    # lit une réponse de Claude.ai
+ytmgc suivi      # ce qui est jugé, ce qui reste, où sont les résultats
 ytmgc purge --execute   # supprime les playlists générées (annulation complète)
 ```
 
@@ -461,7 +471,7 @@ sans aucune écriture ni appel réseau.
 ## Développement
 
 ```bash
-python -m pytest        # 474 tests, aucun appel réseau
+python -m pytest        # 485 tests, aucun appel réseau
 ```
 
 Les API externes sont derrière des adaptateurs (`src/ytmgc/sources/`) ; toute la

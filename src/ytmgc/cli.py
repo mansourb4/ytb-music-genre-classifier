@@ -13,8 +13,9 @@ Le pipeline est découpé en étapes reprenables, chacune persistée en base :
     ytmgc enrich     # fait juger la bibliothèque par le modèle (par lots)
     ytmgc lookup     # genre, style et ambiance d'un titre, tout de suite
     ytmgc doublons   # morceaux présents sous plusieurs formes (gratuit)
-    ytmgc paquet     # titres à faire juger dans Claude.ai (gratuit)
-    ytmgc importe    # lit la réponse de Claude.ai
+    ytmgc export     # tous les titres à juger, en fichiers pour Claude.ai
+    ytmgc importe    # lit une réponse de Claude.ai
+    ytmgc suivi      # ce qui est jugé, ce qui reste
     ytmgc purge      # supprime les playlists générées (annulation complète)
     ytmgc web        # interface locale : connexion, aperçu, application
 
@@ -410,37 +411,37 @@ def cmd_doublons(args: argparse.Namespace, config: Config) -> int:
     return 0
 
 
-def cmd_paquet(args: argparse.Namespace, config: Config) -> int:
-    """Prépare le paquet suivant à coller dans une conversation Claude.ai.
+def cmd_export(args: argparse.Namespace, config: Config) -> int:
+    """Exporte tous les titres à juger, en fichiers à glisser dans Claude.ai."""
+    from ytmgc.chat import export_library
 
-    Le texte à coller va sur la sortie standard, les explications sur la
-    sortie d'erreur : `ytmgc paquet | pbcopy` copie ainsi le seul paquet.
-    """
-    from ytmgc.chat import build_message, prepare
-
-    packet, remaining = prepare(
-        _repository(config), config, size=args.taille, only_unsorted=args.only_unsorted
+    files = export_library(
+        _repository(config), config, load_taxonomy(), only_unsorted=args.only_unsorted
     )
-    if packet is None:
-        print("Rien à juger : tous les titres ont déjà un verdict.", file=sys.stderr)
+    if not files:
+        print("Rien à exporter : tous les morceaux ont déjà un verdict.")
         return 0
 
-    print(build_message(packet, load_taxonomy()))
-    rounds = -(-remaining // len(packet.subjects))
+    directory = Path(config.claude.export_dir).resolve()
+    total = sum(len(f.keys) for f in files)
+    print(f"{total} morceau(x) à juger, en {len(files)} fichier(s), dans :\n  {directory}\n")
+    for f in files:
+        print(f"  {f.name}   ({len(f.keys)} titres)")
     print(
-        f"\nPaquet {packet.id} : {len(packet.subjects)} titre(s), sur {remaining} encore "
-        f"à juger (environ {rounds} paquet(s) au total).\n"
-        "1. Colle ce texte dans une nouvelle conversation sur claude.ai.\n"
-        "2. Si Claude s'interrompt, réponds « continue ».\n"
-        "3. Copie sa réponse (bouton « Copier » du bloc de code), puis :\n"
-        "      pbpaste | ytmgc importe",
-        file=sys.stderr,
+        "\nPour chaque fichier :\n"
+        "  1. ouvre une nouvelle conversation sur claude.ai ;\n"
+        "  2. glisse-y le fichier et écris « Vas-y » ;\n"
+        "  3. si Claude s'arrête avant la fin, écris « continue » ;\n"
+        "  4. copie sa réponse (bouton « Copier » du bloc de code), puis :\n"
+        "        pbpaste | ytmgc importe\n"
+        "\nLes réponses s'importent dans n'importe quel ordre. `ytmgc suivi` montre "
+        "où tu en es."
     )
     return 0
 
 
 def cmd_importe(args: argparse.Namespace, config: Config) -> int:
-    """Lit la réponse de Claude.ai, depuis un fichier ou l'entrée standard."""
+    """Lit une réponse de Claude.ai, depuis un fichier ou l'entrée standard."""
     from ytmgc.chat import import_answer
 
     if args.fichier:
@@ -453,15 +454,51 @@ def cmd_importe(args: argparse.Namespace, config: Config) -> int:
     result = import_answer(text, _repository(config), config, load_taxonomy())
     print(result.line())
     for reason in result.rejected:
-        print(f"  écarté — {reason}")
-    if result.left_in_packet:
-        print(f"\n{result.left_in_packet} titre(s) de ce paquet sans verdict. Si Claude n'a pas "
-              "fini, réponds-lui « continue » et importe la suite ; sinon `ytmgc paquet` "
-              "les reproposera.")
-    elif result.remaining:
-        print("\nPaquet complet. `ytmgc paquet` prépare le suivant.")
+        print(f"  écartée — {reason}")
+    print(f"\nRésultats enregistrés dans {Path(config.claude.verdicts_file).resolve()}")
+    if result.remaining:
+        print(f"Reste {result.remaining} morceau(x) à juger — `ytmgc suivi` pour le détail.")
     else:
-        print("\nToute la bibliothèque est jugée.")
+        print("Toute la bibliothèque est jugée.")
+    return 0
+
+
+def cmd_suivi(args: argparse.Namespace, config: Config) -> int:
+    """Ce qui est jugé, ce qui reste, et où sont les résultats."""
+    from ytmgc import progress
+    from ytmgc.chat import export_progress
+
+    tracks = _repository(config).all_tracks()
+    if not tracks:
+        print("Bibliothèque vide : lance d'abord `ytmgc scan`.")
+        return 0
+
+    book = verdicts.load(config.claude.verdicts_file)
+    all_rows = progress.rows(tracks, book)
+    judged = sum(1 for row in all_rows if row.judged)
+    print(f"{judged} morceaux jugés sur {len(all_rows)}.")
+    print(f"Résultats : {Path(config.claude.verdicts_file).resolve()}")
+
+    files = export_progress(config)
+    if files:
+        print("\nFichiers du dernier export :")
+        for f in files:
+            state = "fait" if f.done else f"{f.judged}/{f.tracks}"
+            print(f"  {f.name:<22} {state}")
+
+    # Sans filtre demandé, le bilan suffit ; une recherche, elle, vaut demande
+    # de liste, jugés et à juger confondus.
+    show = args.show if args.show != "none" else ("all" if args.recherche else None)
+    if show is not None:
+        shown = progress.select(all_rows, show=show, query=args.recherche or "")
+        print()
+        for row in shown[: args.limit]:
+            if row.judged:
+                print(f"  ✓ {row.artist} – {row.title}  →  {row.genre} / {row.style} · {row.mood}")
+            else:
+                print(f"  · {row.artist} – {row.title}")
+        if len(shown) > args.limit:
+            print(f"  … et {len(shown) - args.limit} autre(s) (--limit pour en voir plus).")
     return 0
 
 
@@ -641,19 +678,27 @@ def build_parser() -> argparse.ArgumentParser:
     doublons_cmd.add_argument("--tout", action="store_true", help="Tout afficher")
     doublons_cmd.set_defaults(func=cmd_doublons)
 
-    paquet_cmd = subparsers.add_parser(
-        "paquet", help="Préparer des titres à faire juger dans Claude.ai (gratuit)"
+    export_cmd = subparsers.add_parser(
+        "export", help="Exporter les titres à juger, en fichiers pour Claude.ai (gratuit)"
     )
-    paquet_cmd.add_argument("--taille", type=int, default=None,
-                            help="Titres par paquet (défaut : claude.packet_size)")
-    paquet_cmd.add_argument("--only-unsorted", action="store_true",
+    export_cmd.add_argument("--only-unsorted", action="store_true",
                             help="Seulement les titres que Discogs n'a pas su classer")
-    paquet_cmd.set_defaults(func=cmd_paquet)
+    export_cmd.set_defaults(func=cmd_export)
 
-    importe_cmd = subparsers.add_parser("importe", help="Lire la réponse de Claude.ai")
+    importe_cmd = subparsers.add_parser("importe", help="Lire une réponse de Claude.ai")
     importe_cmd.add_argument("fichier", nargs="?", default=None,
                              help="Fichier contenant la réponse (sinon : entrée standard)")
     importe_cmd.set_defaults(func=cmd_importe)
+
+    suivi_cmd = subparsers.add_parser("suivi", help="Ce qui est jugé, ce qui reste")
+    group = suivi_cmd.add_mutually_exclusive_group()
+    group.add_argument("--faits", dest="show", action="store_const", const="done",
+                       help="Lister les morceaux jugés, avec leur verdict")
+    group.add_argument("--a-faire", dest="show", action="store_const", const="todo",
+                       help="Lister les morceaux qui restent à juger")
+    suivi_cmd.add_argument("--recherche", default=None, help="Filtrer par artiste ou titre")
+    suivi_cmd.add_argument("--limit", type=int, default=30)
+    suivi_cmd.set_defaults(func=cmd_suivi, show="none")
 
     purge_cmd = subparsers.add_parser("purge", help="Supprimer les playlists générées par l'outil")
     purge_cmd.add_argument("--execute", action="store_true", help="Supprimer réellement (sinon : à blanc)")

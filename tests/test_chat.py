@@ -1,189 +1,42 @@
-"""La passe gratuite : un paquet collé dans Claude.ai, une réponse recollée.
+"""La passe gratuite : la bibliothèque exportée en fichiers, jugée dans des
+conversations Claude.ai, et les réponses recollées.
 
-Rien ne contraint ici la forme de la réponse. Le danger n'est pas le verdict
-manquant — son titre revient au paquet suivant — mais le verdict mal rattaché,
-écrit sous le titre d'un autre morceau puis tenu pour acquis. Ces tests portent
-surtout là-dessus.
+Rien ne contraint la forme d'une réponse de conversation. Le danger n'est pas
+la ligne manquante — son morceau reste « à juger » et revient au prochain
+export — mais la ligne rattachée au mauvais morceau, tenue ensuite pour
+acquise. Chaque ligne porte donc elle-même l'identité de son morceau.
 """
-
-import json
 
 import pytest
 
 from ytmgc import verdicts
 from ytmgc.chat import (
     ChatError,
-    build_message,
+    build_file,
+    export_library,
+    export_path,
+    export_progress,
     import_answer,
-    load_packet,
-    make_packet,
-    prepare,
     read_answer,
 )
 from ytmgc.models import Track
-from ytmgc.sources.claude import Subject
+from ytmgc.sources.claude import SYSTEM, Subject
 from ytmgc.taxonomy import load_taxonomy
 from ytmgc.verdicts import Verdict, VerdictBook
 
 TAXONOMY = load_taxonomy()
-SUBJECTS = [
-    Subject("Nirvana", "Something In The Way", "Nevermind", 1991),
-    Subject("Daft Punk", "Get Lucky", "RAM", 2013, featuring=("Pharrell Williams",)),
-    Subject("Radiohead", "Creep", "Pablo Honey", 1993),
-]
-PACKET = make_packet(SUBJECTS)
-
-
-def item(n, titre, genre="Rock", style="Grunge", mood="Mélancolique", confidence=0.9, note="…"):
-    return {"n": n, "titre": titre, "genre": genre, "style": style, "mood": mood,
-            "confidence": confidence, "note": note}
-
-
-def answer(*items, paquet=PACKET.id, fenced=True) -> str:
-    body = json.dumps({"paquet": paquet, "verdicts": list(items)}, ensure_ascii=False)
-    return f"Voici :\n```json\n{body}\n```\nBonne écoute." if fenced else body
-
-
-GOOD = [
-    item(1, "Something In The Way", style="Acoustic"),
-    item(2, "Get Lucky", genre="Electronic", style="Disco", mood="Festif"),
-    item(3, "Creep", style="Alternative Rock"),
-]
-
-
-# ------------------------------------------------------------------- paquet
-
-
-def test_a_packet_id_depends_on_its_content_only():
-    """Préparer deux fois le même paquet doit redonner le même identifiant :
-    la réponse obtenue avec la première copie reste importable."""
-    assert make_packet(SUBJECTS).id == PACKET.id
-    assert make_packet(SUBJECTS[:2]).id != PACKET.id
-
-
-def test_the_message_carries_instructions_vocabulary_and_numbered_titles():
-    message = build_message(PACKET, TAXONOMY)
-
-    assert "musicologue" in message
-    assert PACKET.id in message
-    assert "Mélancolique" in message and "Deep House" in message
-    assert "1. Nirvana – Something In The Way" in message
-    assert "3. Radiohead – Creep" in message
-    assert '"titre"' in message  # le titre recopié est exigé dès la consigne
-
-
-# ----------------------------------------------------------------- lecture
-
-
-def test_a_clean_answer_is_read_whole():
-    reading = read_answer(answer(*GOOD), PACKET, TAXONOMY)
-
-    assert [v.title for v in reading.verdicts] == ["Something In The Way", "Get Lucky", "Creep"]
-    assert reading.verdicts[1].mood == "Festif"
-    assert reading.rejected == []
-
-
-def test_a_verdict_is_filed_under_the_main_artist():
-    """Le verdict doit retrouver son titre, invités ou non."""
-    reading = read_answer(answer(*GOOD), PACKET, TAXONOMY)
-    track = Track("v1", "Get Lucky", ("Daft Punk", "Pharrell Williams"))
-
-    assert VerdictBook(reading.verdicts).for_track(track) is not None
-
-
-def test_a_shifted_numbering_is_caught_by_the_echoed_title():
-    """Le cas à proprement parler dangereux : Claude saute un numéro, et le
-    verdict de « Creep » arrive au n°2, celui de « Get Lucky »."""
-    reading = read_answer(answer(GOOD[0], item(2, "Creep")), PACKET, TAXONOMY)
-
-    assert [v.title for v in reading.verdicts] == ["Something In The Way"]
-    assert "numérotation décalée" in reading.rejected[0]
-
-
-def test_a_verdict_without_its_title_cannot_be_checked_and_is_set_aside():
-    bare = dict(GOOD[2])
-    del bare["titre"]
-    reading = read_answer(answer(bare), PACKET, TAXONOMY)
-
-    assert reading.verdicts == []
-    assert "titre non recopié" in reading.rejected[0]
-
-
-def test_an_echoed_title_may_drop_the_editorial_noise():
-    """Claude recopie volontiers le titre sans « (Official Video) » : ce n'est
-    pas un décalage."""
-    packet = make_packet([Subject("Nirvana", "Lithium (Official Music Video)")])
-    text = answer(item(1, "Lithium"), paquet=packet.id)
-
-    assert len(read_answer(text, packet, TAXONOMY).verdicts) == 1
-
-
-def test_a_mood_outside_the_list_is_refused():
-    """Une ambiance inventée ouvrirait une neuvième playlist."""
-    reading = read_answer(answer(item(1, "Something In The Way", mood="Nostalgique")),
-                          PACKET, TAXONOMY)
-
-    assert reading.verdicts == []
-    assert "Nostalgique" in reading.rejected[0]
-
-
-def test_a_genre_outside_the_list_is_refused():
-    reading = read_answer(answer(item(1, "Something In The Way", genre="Grunge")),
-                          PACKET, TAXONOMY)
-    assert reading.verdicts == [] and "genre" in reading.rejected[0]
-
-
-def test_case_and_accents_do_not_cost_a_verdict():
-    reading = read_answer(answer(item(1, "Something In The Way", genre="rock",
-                                      mood="melancolique")), PACKET, TAXONOMY)
-
-    assert (reading.verdicts[0].genre, reading.verdicts[0].mood) == ("Rock", "Mélancolique")
-
-
-def test_an_answer_to_another_packet_is_refused_whole():
-    with pytest.raises(ChatError, match="paquet"):
-        read_answer(answer(*GOOD, paquet="00000000"), PACKET, TAXONOMY)
-
-
-def test_an_answer_split_by_continue_is_read_across_blocks():
-    """Une réponse longue arrive en plusieurs messages, souvent collés d'un coup."""
-    text = answer(GOOD[0]) + "\n\ncontinue\n\n" + answer(GOOD[1], GOOD[2])
-    assert len(read_answer(text, PACKET, TAXONOMY).verdicts) == 3
-
-
-def test_an_answer_without_code_fences_is_still_read():
-    assert len(read_answer(answer(*GOOD, fenced=False), PACKET, TAXONOMY).verdicts) == 3
-
-
-def test_a_bare_list_is_accepted():
-    text = "```json\n" + json.dumps(GOOD, ensure_ascii=False) + "\n```"
-    assert len(read_answer(text, PACKET, TAXONOMY).verdicts) == 3
-
-
-def test_a_number_given_twice_counts_once():
-    reading = read_answer(answer(GOOD[0], item(1, "Something In The Way", style="Folk")),
-                          PACKET, TAXONOMY)
-    assert [v.style for v in reading.verdicts] == ["Acoustic"]
-
-
-def test_a_number_outside_the_packet_is_reported():
-    reading = read_answer(answer(item(9, "Creep")), PACKET, TAXONOMY)
-    assert reading.verdicts == [] and "hors du paquet" in reading.rejected[0]
-
-
-def test_text_without_any_json_explains_how_to_copy():
-    with pytest.raises(ChatError, match="Copier"):
-        read_answer("Bien sûr, voici mon analyse de ces morceaux…", PACKET, TAXONOMY)
-
-
-# -------------------------------------------------------- de bout en bout
-
-
 LIBRARY = [
     Track("g1", "Something In The Way", ("Nirvana",), "Nevermind"),
     Track("g2", "Get Lucky", ("Daft Punk", "Pharrell Williams"), "RAM"),
     Track("g3", "Creep", ("Radiohead",), "Pablo Honey"),
 ]
+
+GOOD = """```
+artiste | titre | genre | style | ambiance | confiance | note
+Nirvana | Something In The Way | Rock | Acoustic | Mélancolique | 0.95 | Berceuse sépulcrale.
+Daft Punk | Get Lucky | Electronic | Disco | Festif | 0.9 | Disco solaire.
+Radiohead | Creep | Rock | Alternative Rock | Mélancolique | 0.9 | Ballade de l'inadapté.
+```"""
 
 
 @pytest.fixture
@@ -192,83 +45,226 @@ def library(repository):
     return repository
 
 
-def prepared(library, config, size=None):
-    packet, _remaining = prepare(library, config, size=size)
-    return packet
+# ------------------------------------------------------------------ export
 
 
-def respond(packet, *titles_and_moods):
-    items = [item(n, title, mood=mood) for n, (title, mood) in enumerate(titles_and_moods, 1)]
-    return answer(*items, paquet=packet.id)
+def test_a_file_carries_instructions_vocabulary_and_titles():
+    text = build_file([Subject("Nirvana", "Something In The Way", "Nevermind", 1991)],
+                      2, 9, TAXONOMY)
+
+    assert text.startswith("FICHIER 2 SUR 9")
+    assert "musicologue" in text
+    assert "artiste | titre | genre | style | ambiance | confiance | note" in text
+    assert "Mélancolique" in text and "Deep House" in text
+    assert "Nirvana | Something In The Way | album « Nevermind » ; 1991" in text
 
 
-def test_a_packet_is_written_down_so_the_answer_can_be_read_later(library, config):
-    packet = prepared(library, config)
-    assert load_packet(config.claude.packet_file).id == packet.id
+def test_guests_are_hints_not_part_of_the_artist_to_copy():
+    """La réponse doit recopier l'artiste principal : les invités vont dans
+    les indices, sans quoi la ligne ne retrouverait pas son morceau."""
+    text = build_file([Subject("Daft Punk", "Get Lucky", featuring=("Pharrell Williams",))],
+                      1, 1, TAXONOMY)
+    assert "Daft Punk | Get Lucky | avec Pharrell Williams" in text
 
 
-def test_the_packet_size_is_respected(library, config):
-    assert len(prepared(library, config, size=2).subjects) == 2
+def test_a_pipe_inside_a_title_cannot_break_the_columns():
+    text = build_file([Subject("Artiste", "Avant | Après")], 1, 1, TAXONOMY)
+    assert "Artiste | Avant / Après |" in text
 
 
-def test_an_import_writes_the_file_and_sorts_the_library(library, config):
-    packet = prepared(library, config)
-    titles = [(s.title, "Calme") for s in packet.subjects]
-    result = import_answer(respond(packet, *titles), library, config, TAXONOMY)
-
-    assert result.accepted == 3
-    assert result.applied == 3
-    assert result.remaining == 0
-    assert len(verdicts.load(config.claude.verdicts_file)) == 3
-    assert all(c.judged and c.mood == "Calme" for c in library.classifications())
+def test_the_judging_rules_are_those_of_the_paid_route():
+    """Mêmes règles des deux côtés, sans quoi les deux voies ne donneraient
+    pas la même précision."""
+    text = build_file([Subject("A", "B")], 1, 1, TAXONOMY)
+    assert "Juge le morceau, jamais l'album" in text
+    assert "Juge le morceau, jamais l'album" in SYSTEM
 
 
-def test_judged_titles_leave_the_next_packet(library, config):
-    """Ce qui a été jugé ne doit pas être recollé : c'est le principe même."""
-    packet = prepared(library, config, size=2)
-    import_answer(respond(packet, *[(s.title, "Calme") for s in packet.subjects]),
-                  library, config, TAXONOMY)
+def test_the_whole_library_is_exported_at_once_in_parts(library, config):
+    config.claude.export_size = 2
+    files = export_library(library, config, TAXONOMY)
 
-    following = prepared(library, config)
-    judged = {s.title for s in packet.subjects}
-    assert [s.title for s in following.subjects] == [
-        t.title for t in LIBRARY if t.title not in judged
-    ]
+    assert [f.name for f in files] == ["titres-1-sur-2.txt", "titres-2-sur-2.txt"]
+    assert sum(len(f.keys) for f in files) == 3
+    assert all(f.path.exists() for f in files)
 
 
-def test_the_rest_of_an_interrupted_answer_can_be_imported_after(library, config):
-    """Claude s'est arrêté au premier titre ; la suite, obtenue par
-    « continue », se colle à son tour sur le même paquet."""
-    packet = prepared(library, config)
-    first = import_answer(respond(packet, (packet.subjects[0].title, "Calme")),
-                          library, config, TAXONOMY)
-    assert first.left_in_packet == 2
+def test_judged_songs_are_left_out_of_the_export(library, config):
+    verdicts.save(VerdictBook([Verdict("Radiohead", "Creep", "Rock", "Grunge", "Sombre", 0.9)]),
+                  config.claude.verdicts_file)
+    files = export_library(library, config, TAXONOMY)
 
-    rest = answer(item(2, packet.subjects[1].title), item(3, packet.subjects[2].title),
-                  paquet=packet.id)
-    second = import_answer(rest, library, config, TAXONOMY)
-    assert second.left_in_packet == 0 and second.remaining == 0
+    assert sum(len(f.keys) for f in files) == 2
+    assert "Creep" not in files[0].path.read_text(encoding="utf-8").split("TITRES À JUGER")[1]
 
 
-def test_a_hand_corrected_line_survives_an_import(library, config):
-    packet = prepared(library, config)
-    mine = verdicts.manual(Verdict("Radiohead", "Creep", "Rock", "Grunge", "Sombre", 1.0))
-    verdicts.save(VerdictBook([mine]), config.claude.verdicts_file)
+def test_a_new_export_replaces_the_previous_files(library, config):
+    config.claude.export_size = 1
+    export_library(library, config, TAXONOMY)
+    config.claude.export_size = 10
+    files = export_library(library, config, TAXONOMY)
 
-    import_answer(respond(packet, *[(s.title, "Calme") for s in packet.subjects]),
-                  library, config, TAXONOMY)
-    kept = verdicts.load(config.claude.verdicts_file).get(mine.key)
-    assert (kept.mood, kept.source) == ("Sombre", "manuel")
-
-
-def test_importing_without_a_packet_says_what_to_do(library, config):
-    with pytest.raises(ChatError, match="prépare"):
-        import_answer(answer(*GOOD), library, config, TAXONOMY)
+    on_disk = sorted(p.name for p in files[0].path.parent.glob("titres-*.txt"))
+    assert on_disk == ["titres-1-sur-1.txt"]
 
 
-def test_a_fully_judged_library_has_no_packet(library, config):
+def test_a_fully_judged_library_exports_nothing(library, config):
     verdicts.save(
         VerdictBook([Verdict(t.artist, t.title, "Rock", "Grunge", "Calme", 0.9) for t in LIBRARY]),
         config.claude.verdicts_file,
     )
-    assert prepare(library, config) == (None, 0)
+    assert export_library(library, config, TAXONOMY) == []
+
+
+def test_only_exported_files_can_be_fetched_by_name(library, config):
+    export_library(library, config, TAXONOMY)
+
+    assert export_path(config, "titres-1-sur-1.txt") is not None
+    assert export_path(config, "../verdicts.txt") is None
+    assert export_path(config, "export.json") is None
+
+
+# ----------------------------------------------------------------- lecture
+
+
+def test_a_clean_answer_is_read_whole():
+    reading = read_answer(GOOD, LIBRARY, TAXONOMY)
+
+    assert [v.title for v in reading.verdicts] == ["Something In The Way", "Get Lucky", "Creep"]
+    assert reading.verdicts[0].note == "Berceuse sépulcrale."
+    assert reading.rejected == []
+
+
+def test_a_line_naming_a_song_outside_the_library_is_set_aside():
+    """Le cas dangereux : une ligne qui ne désigne aucun morceau connu ne doit
+    s'écrire sous aucun."""
+    reading = read_answer("Radiohead | Paranoid Android | Rock | Art Rock | Sombre | 0.9 | x",
+                          LIBRARY, TAXONOMY)
+
+    assert reading.verdicts == []
+    assert "aucun morceau de ce nom" in reading.rejected[0]
+
+
+def test_lines_can_come_in_any_order_and_any_number_of_pastes():
+    """Pas de numéro, pas de paquet : chaque ligne se suffit à elle-même."""
+    first = read_answer("Radiohead | Creep | Rock | Grunge | Sombre | 0.9 | x", LIBRARY, TAXONOMY)
+    second = read_answer("Nirvana | Something In The Way | Rock | Acoustic | Calme | 1 | y",
+                         LIBRARY, TAXONOMY)
+
+    assert first.verdicts[0].title == "Creep"
+    assert second.verdicts[0].title == "Something In The Way"
+
+
+def test_a_guest_added_to_the_artist_does_not_lose_the_line():
+    reading = read_answer("Daft Punk, Pharrell Williams | Get Lucky | Electronic | Disco | Festif",
+                          LIBRARY, TAXONOMY)
+    assert reading.verdicts[0].artist == "Daft Punk"
+
+
+def test_the_library_spelling_is_kept_not_the_answer_one():
+    """C'est sous l'orthographe de la bibliothèque que le verdict sera retrouvé."""
+    reading = read_answer("NIRVANA | something in the way (Official Video) | Rock | Acoustic | Calme",
+                          LIBRARY, TAXONOMY)
+    assert (reading.verdicts[0].artist, reading.verdicts[0].title) == (
+        "Nirvana", "Something In The Way")
+
+
+def test_a_mood_outside_the_list_is_refused():
+    """Une ambiance inventée ouvrirait une neuvième playlist."""
+    reading = read_answer("Radiohead | Creep | Rock | Grunge | Nostalgique | 0.9 | x",
+                          LIBRARY, TAXONOMY)
+    assert reading.verdicts == [] and "Nostalgique" in reading.rejected[0]
+
+
+def test_a_genre_outside_the_list_is_refused():
+    reading = read_answer("Radiohead | Creep | Grunge | Grunge | Sombre", LIBRARY, TAXONOMY)
+    assert reading.verdicts == [] and "genre" in reading.rejected[0]
+
+
+def test_case_and_accents_do_not_cost_a_verdict():
+    reading = read_answer("Radiohead | Creep | rock | Grunge | melancolique", LIBRARY, TAXONOMY)
+    assert (reading.verdicts[0].genre, reading.verdicts[0].mood) == ("Rock", "Mélancolique")
+
+
+def test_confidence_and_note_are_optional():
+    verdict = read_answer("Radiohead | Creep | Rock | Grunge | Sombre", LIBRARY, TAXONOMY).verdicts[0]
+    assert (verdict.confidence, verdict.note) == (0.0, "")
+
+
+def test_a_comma_decimal_is_understood():
+    verdict = read_answer("Radiohead | Creep | Rock | Grunge | Sombre | 0,8", LIBRARY, TAXONOMY)
+    assert verdict.verdicts[0].confidence == 0.8
+
+
+def test_a_markdown_table_is_read_too():
+    text = """| artiste | titre | genre | style | ambiance | confiance | note |
+|---|---|---|---|---|---|---|
+| Radiohead | Creep | Rock | Grunge | Sombre | 0.9 | Ballade. |"""
+    assert read_answer(text, LIBRARY, TAXONOMY).verdicts[0].note == "Ballade."
+
+
+def test_lines_copied_from_the_verdicts_file_are_read_too():
+    """Tabulations : la forme même du fichier de résultats."""
+    line = "Radiohead\tCreep\tRock\tGrunge\tSombre\t0.90\tclaude\tBallade."
+    assert len(read_answer(line, LIBRARY, TAXONOMY).verdicts) == 1
+
+
+def test_several_blocks_from_continue_are_all_read():
+    text = ("```\nNirvana | Something In The Way | Rock | Acoustic | Calme\n```\n\ncontinue\n\n"
+            "```\nRadiohead | Creep | Rock | Grunge | Sombre\n```")
+    assert len(read_answer(text, LIBRARY, TAXONOMY).verdicts) == 2
+
+
+def test_a_song_given_twice_counts_once():
+    text = ("Radiohead | Creep | Rock | Grunge | Sombre\n"
+            "Radiohead | Creep | Rock | Folk | Calme")
+    reading = read_answer(text, LIBRARY, TAXONOMY)
+    assert [v.style for v in reading.verdicts] == ["Grunge"]
+
+
+def test_text_without_any_line_explains_how_to_copy():
+    with pytest.raises(ChatError, match="Copier"):
+        read_answer("Bien sûr, voici mon analyse de ces morceaux…", LIBRARY, TAXONOMY)
+
+
+def test_an_empty_paste_is_refused():
+    with pytest.raises(ChatError):
+        read_answer("   ", LIBRARY, TAXONOMY)
+
+
+# -------------------------------------------------------- de bout en bout
+
+
+def test_an_import_writes_the_file_and_sorts_the_library(library, config):
+    result = import_answer(GOOD, library, config, TAXONOMY)
+
+    assert (result.accepted, result.judged, result.total, result.remaining) == (3, 3, 3, 0)
+    assert len(verdicts.load(config.claude.verdicts_file)) == 3
+    assert all(c.judged for c in library.classifications())
+    assert "3 morceaux jugés sur 3" in result.line()
+
+
+def test_each_file_shows_how_much_of_it_is_judged(library, config):
+    config.claude.export_size = 2
+    files = export_library(library, config, TAXONOMY)
+    first = files[0].path.read_text(encoding="utf-8").split("TITRES À JUGER")[1]
+    titles = [line for line in first.splitlines()[1:] if line.strip()]
+    artist, title = titles[0].split(" | ")[:2]
+
+    import_answer(f"{artist} | {title} | Rock | Grunge | Sombre", library, config, TAXONOMY)
+    progress = {f.name: (f.judged, f.tracks) for f in export_progress(config)}
+
+    assert progress == {"titres-1-sur-2.txt": (1, 2), "titres-2-sur-2.txt": (0, 1)}
+
+
+def test_a_hand_corrected_line_survives_an_import(library, config):
+    mine = verdicts.manual(Verdict("Radiohead", "Creep", "Rock", "Grunge", "Sombre", 1.0))
+    verdicts.save(VerdictBook([mine]), config.claude.verdicts_file)
+
+    import_answer(GOOD, library, config, TAXONOMY)
+    kept = verdicts.load(config.claude.verdicts_file).get(mine.key)
+    assert (kept.mood, kept.source) == ("Sombre", "manuel")
+
+
+def test_no_export_means_no_progress_to_show(config):
+    assert export_progress(config) == []

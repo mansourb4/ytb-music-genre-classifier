@@ -148,9 +148,7 @@ class LookupRequest(BaseModel):
     force: bool = False
 
 
-class PacketRequest(BaseModel):
-    #: Titres par paquet. Absent = celui de la configuration.
-    size: int | None = Field(default=None, ge=1, le=300)
+class ExportRequest(BaseModel):
     only_unsorted: bool = False
 
 
@@ -604,29 +602,42 @@ def create_app(services: Services) -> FastAPI:
 
     # ------------------------------------------- passe gratuite (Claude.ai)
 
-    @app.post("/api/chat/packet")
-    def chat_packet(request: PacketRequest) -> dict:
-        """Prépare le paquet suivant à coller dans une conversation Claude.ai."""
-        from ytmgc.chat import build_message, prepare
+    def _files() -> list[dict]:
+        from ytmgc.chat import export_progress
+
+        return [
+            {"name": f.name, "tracks": f.tracks, "judged": f.judged, "done": f.done,
+             "url": f"/api/chat/files/{f.name}"}
+            for f in export_progress(config)
+        ]
+
+    @app.get("/api/chat/export")
+    def chat_export_state() -> dict:
+        """Le dernier export et son avancement fichier par fichier."""
+        return {"files": _files(), "directory": str(Path(config.claude.export_dir).resolve())}
+
+    @app.post("/api/chat/export")
+    def chat_export(request: ExportRequest) -> dict:
+        """Exporte d'un coup tous les titres à juger, en fichiers pour Claude.ai."""
+        from ytmgc.chat import export_library
         from ytmgc.taxonomy import load_taxonomy
 
-        packet, remaining = prepare(
-            repository, config, size=request.size, only_unsorted=request.only_unsorted
-        )
-        if packet is None:
-            return {"packet": None, "remaining": 0}
-        return {
-            "packet": {
-                "id": packet.id,
-                "tracks": len(packet.subjects),
-                "message": build_message(packet, load_taxonomy()),
-            },
-            "remaining": remaining,
-        }
+        export_library(repository, config, load_taxonomy(), only_unsorted=request.only_unsorted)
+        return chat_export_state()
+
+    @app.get("/api/chat/files/{name}")
+    def chat_file(name: str) -> FileResponse:
+        """Un fichier exporté, à télécharger puis glisser dans Claude.ai."""
+        from ytmgc.chat import export_path
+
+        path = export_path(config, name)
+        if path is None:
+            raise HTTPException(404, "Fichier inconnu : refais l'export.")
+        return FileResponse(path, media_type="text/plain; charset=utf-8", filename=name)
 
     @app.post("/api/chat/import")
     def chat_import(request: ChatImportRequest) -> dict:
-        """Lit la réponse collée, n'en garde que les verdicts vérifiables."""
+        """Lit une réponse collée, n'en garde que les lignes vérifiables."""
         from ytmgc.chat import ChatError, import_answer
         from ytmgc.taxonomy import load_taxonomy
 
@@ -642,9 +653,34 @@ def create_app(services: Services) -> FastAPI:
             "accepted": result.accepted,
             "applied": result.applied,
             "rejected": result.rejected,
-            "left_in_packet": result.left_in_packet,
+            "judged": result.judged,
+            "total": result.total,
             "remaining": result.remaining,
             "line": result.line(),
+            "files": _files(),
+            "directory": str(Path(config.claude.export_dir).resolve()),
+        }
+
+    @app.get("/api/verdicts")
+    def verdict_rows(show: str = "all", q: str = "", offset: int = 0, limit: int = 100) -> dict:
+        """Chaque morceau, jugé ou non, avec son verdict : ce qui est fait, ce
+        qui reste, et à quoi ressemble le résultat."""
+        from ytmgc import progress
+
+        if show not in progress.SHOW:
+            raise HTTPException(400, "show doit valoir all, done ou todo")
+        book = verdict_file.load(config.claude.verdicts_file)
+        all_rows = progress.rows(repository.all_tracks(), book)
+        matching = progress.select(all_rows, show=show, query=q)
+        limit = max(1, min(limit, 500))
+        judged = sum(1 for row in all_rows if row.judged)
+        return {
+            "total": len(all_rows),
+            "judged": judged,
+            "todo": len(all_rows) - judged,
+            "file": str(Path(config.claude.verdicts_file).resolve()),
+            "matching": len(matching),
+            "rows": [progress.to_dict(row) for row in matching[offset: offset + limit]],
         }
 
     # ------------------------------------------------------------- aperçu

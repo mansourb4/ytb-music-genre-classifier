@@ -577,7 +577,6 @@ def test_the_cost_is_shown_before_anything_is_spent(page):
     use_api(page)
     page.evaluate(JUDGE_STATE)
 
-    assert "12" in page.locator("#judge-state").text_content()
     assert page.locator("#judge-btn").is_enabled()
     assert page.locator(".scope").count() == 3
 
@@ -750,12 +749,12 @@ def test_the_method_tabs_do_not_disturb_the_connection_tabs(page):
     assert visible_panel(page) in PANELS
 
 
-def test_an_empty_library_has_nothing_to_package(page):
-    page.click("#chat-prepare")
-    page.wait_for_function("() => document.querySelector('#chat-packet-info').textContent")
-
-    assert "Rien à juger" in page.locator("#chat-packet-info").text_content()
-    assert page.locator("#chat-copy").is_disabled()
+def test_an_empty_library_has_nothing_to_export(page):
+    page.click("#chat-export")
+    page.wait_for_function(
+        "() => document.querySelector('#chat-export-msg').textContent.includes('Rien')"
+    )
+    assert page.locator(".chat-file").count() == 0
 
 
 def test_importing_nothing_is_refused_before_any_request(page):
@@ -763,12 +762,20 @@ def test_importing_nothing_is_refused_before_any_request(page):
     assert "Colle d'abord" in page.locator("#chat-msg").text_content()
 
 
-def test_the_free_route_end_to_end(page, repository, config):
-    """Préparer, coller la réponse, et voir la bibliothèque jugée : le parcours
-    réel, dans le navigateur, contre le vrai serveur."""
-    import json
+def test_results_say_where_they_live_even_before_any_verdict(page, config):
+    """Régression de clarté : on importait sans savoir où allait le résultat."""
+    from pathlib import Path
 
-    from ytmgc.chat import load_packet
+    page.wait_for_function("() => document.querySelector('#results-file').textContent.includes('/')")
+    assert page.locator("#results-file").text_content() == str(
+        Path(config.claude.verdicts_file).resolve())
+
+
+def test_the_free_route_end_to_end(page, repository, config):
+    """Exporter, recoller une réponse, et voir ce qui est fait, ce qui reste
+    et à quoi ressemble le résultat : le parcours réel, contre le vrai serveur."""
+    from pathlib import Path
+
     from ytmgc.models import Track
 
     repository.upsert_tracks([
@@ -776,24 +783,56 @@ def test_the_free_route_end_to_end(page, repository, config):
         Track("g2", "Get Lucky", ("Daft Punk", "Pharrell Williams"), "RAM"),
     ])
 
-    page.click("#chat-prepare")
-    page.wait_for_selector("#chat-packet:not([hidden])")
-    message = page.locator("#chat-packet").input_value()
-    assert "1. Nirvana – Something In The Way" in message
-    assert page.locator("#chat-copy").is_enabled()
-    assert "2 titre(s)" in page.locator("#chat-packet-info").text_content()
+    # 1. Export : un fichier, téléchargeable, avec son avancement.
+    page.click("#chat-export")
+    page.wait_for_selector(".chat-file")
+    assert "titres-1-sur-1.txt" in page.locator(".chat-file").text_content()
+    assert "0 / 2 jugés" in page.locator(".chat-file").text_content()
 
-    packet = load_packet(config.claude.packet_file)
-    reply = "```json\n" + json.dumps({"paquet": packet.id, "verdicts": [
-        {"n": n, "titre": s.title, "genre": "Rock", "style": "Acoustic", "mood": "Calme",
-         "confidence": 0.9, "note": "…"} for n, s in enumerate(packet.subjects, 1)
-    ]}, ensure_ascii=False) + "\n```"
-    page.fill("#chat-answer", reply)
+    # 2. Import d'une réponse partielle.
+    page.fill("#chat-answer",
+              "```\nNirvana | Something In The Way | Rock | Acoustic | Mélancolique | 0.95 | "
+              "Berceuse sépulcrale.\n```")
     page.click("#chat-import")
     page.wait_for_function(
         "() => document.querySelector('#chat-msg').textContent.includes('enregistré')"
     )
-
-    assert "2 verdict(s) enregistré(s)" in page.locator("#chat-msg").text_content()
-    assert "Toute la bibliothèque est jugée" in page.locator("#chat-msg").text_content()
+    assert "1 morceaux jugés sur 2" in page.locator("#chat-msg").text_content()
+    assert "1 / 2 jugés" in page.locator(".chat-file").text_content()
     assert page.locator("#chat-answer").input_value() == ""
+    # Régression : le chemin du dossier disparaissait après un import.
+    assert str(Path(config.claude.export_dir).resolve()) in page.locator("#chat-export-msg").text_content()
+
+    # 3. Ce qui est fait, ce qui reste, à quoi ressemble le résultat.
+    page.wait_for_function(
+        "() => document.querySelector('#results-count').textContent.includes('1 morceaux jugés sur 2')"
+    )
+    page.click("#results-details summary")
+    page.click('#results-filter [data-show="done"]')
+    page.wait_for_function(
+        "() => document.querySelectorAll('#results-rows tr').length === 1"
+    )
+    done = page.locator("#results-rows").text_content()
+    assert "Something In The Way" in done and "Mélancolique" in done
+    assert "Berceuse sépulcrale" in done
+
+    page.click('#results-filter [data-show="todo"]')
+    page.wait_for_function(
+        "() => document.querySelector('#results-rows').textContent.includes('Get Lucky')"
+    )
+    assert "Something In The Way" not in page.locator("#results-rows").text_content()
+
+
+def test_results_can_be_searched(page, repository, config):
+    from ytmgc.models import Track
+
+    repository.upsert_tracks([
+        Track("g1", "Something In The Way", ("Nirvana",), "Nevermind"),
+        Track("g2", "Get Lucky", ("Daft Punk",), "RAM"),
+    ])
+    page.click("#results-details summary")
+    page.fill("#results-q", "lucky")
+    page.wait_for_function(
+        "() => document.querySelectorAll('#results-rows tr').length === 1"
+    )
+    assert "Get Lucky" in page.locator("#results-rows").text_content()

@@ -97,12 +97,13 @@ class ClaudeConfig:
     #: centimes et permet de lire le résultat avant d'engager la passe
     #: complète : la qualité du classement se constate, elle ne se promet pas.
     pilot_size: int = 50
-    #: Passe gratuite par une conversation Claude.ai : titres par paquet. Une
-    #: centaine tient dans une réponse ; au-delà, le modèle doit s'interrompre
-    #: et l'utilisateur multiplier les « continue ».
-    packet_size: int = 100
-    #: Paquet en cours, le temps que sa réponse soit collée.
-    packet_file: str = "data/paquet.json"
+    #: Passe gratuite par Claude.ai : titres par fichier exporté, donc par
+    #: conversation. Une conversation garde en mémoire les titres *et* toutes
+    #: les réponses ; quelques centaines y tiennent largement, quelques
+    #: milliers non.
+    export_size: int = 500
+    #: Dossier des fichiers exportés, à glisser dans Claude.ai.
+    export_dir: str = "data/export"
     #: Confiance en deçà de laquelle le verdict n'écrase pas les métadonnées.
     min_confidence: float = 0.35
     #: Jamais lue depuis le fichier : uniquement depuis l'environnement.
@@ -189,8 +190,8 @@ class Config:
             raise ValueError("claude.batch_size doit être dans [1, 100]")
         if self.claude.max_tokens < 1000:
             raise ValueError("claude.max_tokens doit laisser la place aux verdicts")
-        if not 1 <= self.claude.packet_size <= 300:
-            raise ValueError("claude.packet_size doit être dans [1, 300]")
+        if not 1 <= self.claude.export_size <= 2000:
+            raise ValueError("claude.export_size doit être dans [1, 2000]")
         if self.claude.pilot_size < 1:
             raise ValueError("claude.pilot_size doit valoir au moins 1")
         if not 0 <= self.claude.min_confidence <= 1:

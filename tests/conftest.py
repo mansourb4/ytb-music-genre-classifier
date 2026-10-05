@@ -25,7 +25,7 @@ def config(tmp_path) -> Config:
     config.youtube.oauth_client_file = str(tmp_path / "oauth_client.json")
     config.claude.verdicts_file = str(tmp_path / "verdicts.txt")
     config.claude.pending_file = str(tmp_path / "verdicts.batch.json")
-    config.claude.packet_file = str(tmp_path / "paquet.json")
+    config.claude.export_dir = str(tmp_path / "export")
     config.validate()
     return config
 

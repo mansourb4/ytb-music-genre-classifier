@@ -125,6 +125,34 @@ textarea.mono { width: 100%; box-sizing: border-box; margin-top: .5rem;
 a.button-link { font-size: .86rem; color: var(--accent); text-decoration: none; }
 a.button-link:hover { text-decoration: underline; }
 ul.rejected { margin: .5rem 0 0; padding-left: 1.1rem; font-size: .8rem; color: var(--warn); }
+.results { border: 1px solid var(--border); border-radius: 8px; background: var(--surface);
+  padding: .8rem 1rem; }
+.results-head { display: flex; align-items: center; gap: .9rem; }
+.results-head b { white-space: nowrap; font-weight: 600; }
+.results-head .progress { flex: 1; margin: 0; }
+.results code { font-size: .8rem; word-break: break-all; }
+.results details summary { cursor: pointer; font-size: .88rem; color: var(--accent); margin-top: .3rem; }
+.results-filter { margin: 0; }
+#results-q { flex: 1 1 12rem; min-width: 0; padding: .4rem .6rem; border: 1px solid var(--border);
+  border-radius: 6px; background: var(--surface); color: var(--text); font: inherit; }
+.table-wrap { overflow-x: auto; margin-top: .6rem; }
+.results-table { width: 100%; border-collapse: collapse; font-size: .84rem; }
+.results-table th { text-align: left; font-weight: 500; color: var(--muted); font-size: .76rem;
+  text-transform: uppercase; letter-spacing: .04em; padding: .3rem .5rem; border-bottom: 1px solid var(--border); }
+.results-table td { padding: .4rem .5rem; border-bottom: 1px solid var(--border); vertical-align: top; }
+.results-table td.state { width: 1.2rem; color: var(--ok); }
+.results-table tr.todo td { color: var(--muted); }
+.results-table tr.todo td.state { color: var(--muted); }
+.results-table .album { display: block; color: var(--muted); font-size: .76rem; }
+.results-table .note { color: var(--muted); max-width: 26rem; }
+.chat-files { display: grid; gap: .35rem; margin-top: .6rem; }
+.chat-file { display: flex; align-items: center; gap: .7rem; font-size: .86rem;
+  padding: .4rem .6rem; border: 1px solid var(--border); border-radius: 6px; background: var(--surface); }
+.chat-file.done { opacity: .6; }
+.chat-file .count { margin-left: auto; color: var(--muted); white-space: nowrap; }
+.chat-file.done .count { color: var(--ok); }
+label.file-pick { font-size: .84rem; color: var(--muted); cursor: pointer; }
+label.file-pick input { font-size: .8rem; }
 .scope { display: flex; gap: .6rem; align-items: flex-start; padding: .6rem .8rem;
   border: 1px solid var(--border); border-radius: 8px; background: var(--surface);
   cursor: pointer; }
@@ -375,6 +403,37 @@ select {
 
   <div id="judge-state" class="stats spacer hidden"></div>
 
+  <!-- Toujours visible : où vont les résultats, ce qui est fait, ce qui reste,
+       et à quoi ressemble un verdict. -->
+  <div id="results" class="results spacer">
+    <div class="results-head">
+      <b id="results-count">—</b>
+      <div class="progress"><i id="results-bar"></i></div>
+    </div>
+    <p class="msg">Résultats enregistrés dans <code id="results-file">data/verdicts.txt</code></p>
+    <details id="results-details">
+      <summary>Voir les morceaux, jugés et à juger</summary>
+      <div class="row spacer">
+        <div class="tabs results-filter" id="results-filter">
+          <button class="tab selected" data-show="all">Tous</button>
+          <button class="tab" data-show="done">Jugés</button>
+          <button class="tab" data-show="todo">À juger</button>
+        </div>
+        <input id="results-q" placeholder="Rechercher un artiste, un titre, un album" autocomplete="off">
+      </div>
+      <div class="table-wrap">
+        <table class="results-table">
+          <thead><tr><th></th><th>Morceau</th><th>Genre · style</th><th>Ambiance</th><th>Note</th></tr></thead>
+          <tbody id="results-rows"></tbody>
+        </table>
+      </div>
+      <div class="row spacer">
+        <button id="results-more" hidden>Afficher plus</button>
+        <span class="msg" id="results-shown"></span>
+      </div>
+    </details>
+  </div>
+
   <!-- Classe « tab » pour l'apparence seulement : le gestionnaire des onglets
        de connexion ne lie que les boutons portant data-tab. -->
   <div class="tabs spacer" id="judge-methods">
@@ -383,34 +442,27 @@ select {
   </div>
 
   <div id="method-chat">
-    <p class="hint">Avec ton compte Claude.ai : l'outil prépare un paquet de titres, tu le colles dans une conversation, puis tu recolles la réponse ici. Mêmes instructions et même précision que la version payante — seulement plus de copier-coller.</p>
     <ol class="chat-steps">
       <li>
+        <b>Exporte les titres à juger.</b>
+        <p class="hint">Tous d'un coup, répartis en fichiers de 500 titres. Une conversation Claude.ai garde en mémoire les titres <i>et</i> toutes ses réponses : pour toute une bibliothèque, ça déborde ; pour 500 titres, ça tient largement.</p>
         <div class="row">
-          <span>Prépare un paquet de</span>
-          <select id="chat-size">
-            <option value="50">50</option>
-            <option value="100" selected>100</option>
-            <option value="150">150</option>
-          </select>
-          <span>titres</span>
-          <button class="primary" id="chat-prepare">Préparer le paquet</button>
+          <button class="primary" id="chat-export">Exporter les titres à juger</button>
+          <span class="msg" id="chat-export-msg"></span>
         </div>
-        <p class="msg" id="chat-packet-info"></p>
+        <div id="chat-files" class="chat-files"></div>
       </li>
       <li>
-        <div class="row">
-          <button id="chat-copy" disabled>Copier le paquet</button>
-          <a class="button-link" href="https://claude.ai/new" target="_blank" rel="noopener">Ouvrir une conversation Claude.ai ↗</a>
-        </div>
-        <p class="hint">Colle-le dans une <b>nouvelle</b> conversation. Si Claude s'interrompt avant la fin, réponds « continue ».</p>
-        <textarea id="chat-packet" class="mono" rows="6" readonly hidden></textarea>
+        <b>Pour chaque fichier, une conversation.</b>
+        <p class="hint">Ouvre une <a class="button-link" href="https://claude.ai/new" target="_blank" rel="noopener">nouvelle conversation sur claude.ai ↗</a>, glisses-y le fichier et écris « Vas-y ». Si Claude s'arrête avant la fin, écris « continue ».</p>
       </li>
       <li>
-        <p class="hint">Copie sa réponse avec le bouton « Copier » du bloc de code, et colle-la ici :</p>
-        <textarea id="chat-answer" class="mono" rows="6" placeholder='```json&#10;{"paquet": "…", "verdicts": [ … ]}&#10;```'></textarea>
+        <b>Recolle chaque réponse ici.</b>
+        <p class="hint">Dans n'importe quel ordre, en autant de fois que tu veux : chaque ligne porte le nom de son morceau. Copie avec le bouton « Copier » du bloc de code.</p>
+        <textarea id="chat-answer" class="mono" rows="6" placeholder="artiste | titre | genre | style | ambiance | confiance | note"></textarea>
         <div class="row spacer">
-          <button class="primary" id="chat-import">Importer la réponse</button>
+          <button class="primary" id="chat-import">Importer</button>
+          <label class="file-pick">ou dépose un fichier <input type="file" id="chat-file" accept=".txt,.csv,.tsv,.md,text/plain"></label>
           <span class="msg" id="chat-msg"></span>
         </div>
         <ul id="chat-rejected" class="rejected"></ul>
@@ -435,7 +487,7 @@ select {
   </div>
 
   <h3 class="spacer">Chercher un titre</h3>
-  <p class="hint">Pour un morceau ajouté après coup : sa réponse est écrite dans le même fichier, et la prochaine analyse la reprendra sans rien redemander. Un titre déjà jugé s'affiche gratuitement ; un titre nouveau demande la clé d'API — sans elle, ajoute-le à ta bibliothèque, relance l'analyse et il figurera dans le prochain paquet.</p>
+  <p class="hint">Pour un morceau ajouté après coup : sa réponse est écrite dans le même fichier, et la prochaine analyse la reprendra sans rien redemander. Un titre déjà jugé s'affiche gratuitement ; un titre nouveau demande la clé d'API — sans elle, ajoute-le à ta bibliothèque, relance l'analyse et il figurera dans le prochain export.</p>
   <div class="row spacer">
     <input id="lookup-artist" placeholder="Artiste" autocomplete="off">
     <input id="lookup-title" placeholder="Titre" autocomplete="off">
@@ -607,15 +659,17 @@ function watchJob(jobId) {
 
 function setBusy(busy) {
   ["analyse-btn", "apply-btn", "purge-btn", "preview-btn", "purge-scan",
-   "judge-btn", "lookup-btn", "chat-prepare", "chat-import"].forEach((id) => {
+   "judge-btn", "lookup-btn", "chat-export", "chat-import"].forEach((id) => {
     $(id).disabled = busy;
   });
   if (!busy) {
     $("apply-btn").disabled = !sortMode;
     updatePurgeCount();
     // L'état de la passe modèle a pu changer : un lot récupéré, des titres
-    // jugés. Le bouton se réactive selon ce qui reste réellement à faire.
+    // jugés, une analyse qui a relu la bibliothèque.
     refreshJudgeState();
+    refreshResults();
+    refreshFiles();
   }
 }
 
@@ -1199,11 +1253,6 @@ document.querySelectorAll("#judge-methods [data-method]").forEach((button) => {
 function renderJudgeState(state) {
   judgeState = state;
   if (judgeMethod === null) showMethod(state.available ? "api" : "chat");
-  const box = $("judge-state");
-  box.classList.remove("hidden");
-  box.innerHTML =
-    stat(state.verdicts, "titres déjà jugés") +
-    stat(state.pending_tracks, "restants");
 
   if (!state.available) {
     $("judge-scopes").innerHTML = "";
@@ -1280,79 +1329,134 @@ $("judge-go").addEventListener("click", async () => {
 });
 
 
-// ----------------------------------------------- passe gratuite (Claude.ai)
+// ------------------------------------------------------------- résultats
 
 /**
- * Le paquet se colle dans une conversation, la réponse se recolle ici. Le
- * serveur vérifie chaque verdict avant de l'écrire — numéro, titre recopié,
- * vocabulaire — et rend la liste de ce qu'il a écarté : un verdict refusé
- * n'est pas perdu, son titre revient dans le paquet suivant.
+ * Le bloc Résultats répond aux trois questions qu'on se pose en cours de
+ * route : où vont les résultats, ce qui est fait et ce qui reste, et à quoi
+ * ressemble un verdict. Il sert les deux voies, gratuite comme payante.
  */
+const RESULTS_PAGE = 100;
+let resultsShow = "all";
+let resultsShown = 0;
+let resultsTimer = null;
+
+function resultRow(row) {
+  const guests = row.featuring.length ? ` <span class="album">avec ${escapeHtml(row.featuring.join(", "))}</span>` : "";
+  const album = row.album ? `<span class="album">${escapeHtml(row.album)}</span>` : "";
+  const piece = `<b>${escapeHtml(row.title)}</b><span class="album">${escapeHtml(row.artist)}</span>${guests}${album}`;
+  if (!row.judged) {
+    return `<tr class="todo"><td class="state" title="À juger">·</td><td>${piece}</td><td colspan="3">à juger</td></tr>`;
+  }
+  const manual = row.source === "manuel" ? " (manuel)" : "";
+  return `<tr><td class="state" title="Jugé${manual}">✓</td><td>${piece}</td>
+    <td>${escapeHtml(row.genre)}<span class="album">${escapeHtml(row.style || "")}</span></td>
+    <td>${escapeHtml(row.mood)}</td>
+    <td class="note">${escapeHtml(row.note || "")}</td></tr>`;
+}
+
+async function loadResults(append = false) {
+  const offset = append ? resultsShown : 0;
+  const params = new URLSearchParams({
+    show: resultsShow, q: $("results-q").value.trim(), offset, limit: RESULTS_PAGE,
+  });
+  const data = await api(`/api/verdicts?${params}`);
+  $("results-count").textContent = data.total
+    ? `${data.judged} morceaux jugés sur ${data.total}`
+    : "Aucun morceau : lance d'abord l'analyse";
+  $("results-bar").style.width = data.total ? `${Math.round((data.judged / data.total) * 100)}%` : "0";
+  $("results-file").textContent = data.file;
+
+  const html = data.rows.map(resultRow).join("");
+  $("results-rows").innerHTML = append ? $("results-rows").innerHTML + html : html;
+  resultsShown = offset + data.rows.length;
+  $("results-more").hidden = resultsShown >= data.matching;
+  $("results-shown").textContent = data.matching
+    ? `${resultsShown} sur ${data.matching}`
+    : "Aucun morceau ne correspond.";
+}
+
+async function refreshResults() {
+  try {
+    await loadResults(false);
+  } catch (error) {
+    $("results-count").textContent = error.message;
+  }
+}
+
+document.querySelectorAll("#results-filter [data-show]").forEach((button) => {
+  button.addEventListener("click", () => {
+    resultsShow = button.dataset.show;
+    document.querySelectorAll("#results-filter [data-show]").forEach((other) => {
+      other.classList.toggle("selected", other === button);
+    });
+    refreshResults();
+  });
+});
+
+$("results-q").addEventListener("input", () => {
+  // Une requête par pause de frappe, pas une par lettre.
+  clearTimeout(resultsTimer);
+  resultsTimer = setTimeout(refreshResults, 250);
+});
+
+$("results-more").addEventListener("click", () => loadResults(true));
+
+// ----------------------------------------------- passe gratuite (Claude.ai)
+
 function chatMessage(text, isError) {
   $("chat-msg").textContent = text;
   $("chat-msg").classList.toggle("error", Boolean(isError));
 }
 
-$("chat-prepare").addEventListener("click", async () => {
-  chatMessage("");
-  $("chat-rejected").innerHTML = "";
-  try {
-    const data = await api("/api/chat/packet", { size: Number($("chat-size").value) });
-    if (!data.packet) {
-      $("chat-packet-info").textContent = "Rien à juger : tous les titres ont déjà un verdict.";
-      $("chat-packet").hidden = true;
-      $("chat-copy").disabled = true;
-      return;
-    }
-    const packet = data.packet;
-    $("chat-packet").value = packet.message;
-    $("chat-packet").hidden = false;
-    $("chat-copy").disabled = false;
-    const rounds = Math.ceil(data.remaining / packet.tracks);
-    $("chat-packet-info").textContent =
-      `Paquet ${packet.id} : ${packet.tracks} titre(s), sur ${data.remaining} encore à juger `
-      + `(environ ${rounds} paquet(s) au total).`;
-  } catch (error) {
-    $("chat-packet-info").textContent = error.message;
-  }
-});
+function renderFiles(data) {
+  const files = data.files || [];
+  $("chat-files").innerHTML = files.map((file) => `
+    <div class="chat-file ${file.done ? "done" : ""}">
+      <a class="button-link" href="${escapeHtml(file.url)}" download>${escapeHtml(file.name)}</a>
+      <span class="count">${file.done ? "✓ fait" : `${file.judged} / ${file.tracks} jugés`}</span>
+    </div>`).join("");
+  $("chat-export-msg").textContent = files.length
+    ? `Aussi sur ton disque : ${data.directory}`
+    : "";
+}
 
-$("chat-copy").addEventListener("click", async () => {
-  const text = $("chat-packet").value;
+async function refreshFiles() {
   try {
-    await navigator.clipboard.writeText(text);
+    renderFiles(await api("/api/chat/export"));
   } catch (_error) {
-    // Presse-papiers refusé (page servie hors localhost sans HTTPS) : la
-    // sélection reste copiable à la main, et la copie à l'ancienne marche
-    // encore dans la plupart des navigateurs.
-    $("chat-packet").select();
-    document.execCommand("copy");
+    // Pas d'export encore : rien à montrer.
   }
-  $("chat-copy").textContent = "Copié ✓";
-  setTimeout(() => { $("chat-copy").textContent = "Copier le paquet"; }, 2000);
+}
+
+$("chat-export").addEventListener("click", async () => {
+  $("chat-export-msg").textContent = "Export…";
+  try {
+    const data = await api("/api/chat/export", {});
+    renderFiles(data);
+    if (!data.files.length) {
+      $("chat-export-msg").textContent = "Rien à exporter : tous les morceaux ont déjà un verdict.";
+    }
+  } catch (error) {
+    $("chat-export-msg").textContent = error.message;
+  }
 });
 
-$("chat-import").addEventListener("click", async () => {
-  const text = $("chat-answer").value.trim();
+async function importText(text) {
   $("chat-rejected").innerHTML = "";
-  if (!text) {
-    chatMessage("Colle d'abord la réponse de Claude.", true);
+  if (!text.trim()) {
+    chatMessage("Colle d'abord la réponse de Claude, ou dépose son fichier.", true);
     return;
   }
   chatMessage("Lecture de la réponse…");
   try {
     const result = await api("/api/chat/import", { text });
-    let next;
-    if (result.left_in_packet) {
-      next = ` ${result.left_in_packet} titre(s) de ce paquet sans verdict : si Claude n'a pas `
-        + "fini, réponds-lui « continue » et colle la suite ici.";
-    } else {
-      next = result.remaining ? " Paquet complet : prépare le suivant." : " Toute la bibliothèque est jugée.";
-    }
-    chatMessage(result.line + next);
+    chatMessage(result.line);
     $("chat-rejected").innerHTML = result.rejected
       .map((reason) => `<li>${escapeHtml(reason)}</li>`).join("");
     $("chat-answer").value = "";
+    renderFiles(result);
+    await refreshResults();
     await refreshJudgeState();
     // Les titres reclassés changent le rangement : l'aperçu affiché ne
     // décrirait plus ce qui serait appliqué.
@@ -1360,6 +1464,14 @@ $("chat-import").addEventListener("click", async () => {
   } catch (error) {
     chatMessage(error.message, true);
   }
+}
+
+$("chat-import").addEventListener("click", () => importText($("chat-answer").value));
+
+$("chat-file").addEventListener("change", async (event) => {
+  const file = event.target.files[0];
+  if (file) await importText(await file.text());
+  event.target.value = "";
 });
 
 // ------------------------------------------------------ recherche d'un titre
@@ -1403,6 +1515,7 @@ $("lookup-btn").addEventListener("click", async () => {
       artist, title, album: $("lookup-album").value.trim() || null,
     }));
     await refreshJudgeState();
+    await refreshResults();
   } catch (error) {
     $("lookup-result").innerHTML = "";
     $("lookup-msg").textContent = error.message;
@@ -1532,6 +1645,8 @@ async function boot() {
   const status = await refreshStatus();
   await loadSources();
   await refreshJudgeState();
+  await refreshResults();
+  await refreshFiles();
   if (status.classified) await refreshPreview();
 }
 

@@ -54,7 +54,8 @@ et relancés sans perte, et `plan`/`apply` se rejouent hors ligne.
 | `sources/claude.py` | Jugement d'un titre par un modèle : préambule, schéma de sortie, dépôt et relecture d'un lot, estimation du coût. |
 | `verdicts.py` | Le fichier texte des verdicts : format, lecture tolérante, écriture atomique, préséance de la décision humaine. |
 | `duplicates.py` | Ce que l'outil tient pour un même morceau : doublons fusionnés, versions proches gardées à part. Diagnostic, sans réseau. |
-| `chat.py` | Passe gratuite : paquet à coller dans Claude.ai, lecture défiante de la réponse recollée. |
+| `chat.py` | Passe gratuite : bibliothèque exportée en fichiers pour Claude.ai, lecture défiante des réponses recollées. |
+| `progress.py` | Ce qui est jugé, ce qui reste, et le verdict de chaque morceau. |
 | `enrich.py` | La passe modèle de bout en bout : ce qui reste à juger, dépôt, attente, récupération, report en base. |
 | `preview.py` | Assemble plan, état distant et titres en un aperçu sérialisable — pochettes et taxonomie comprises. Ni HTTP ni terminal. |
 | `web/` | Application FastAPI et son interface (page unique, sans build), contrôle d'accès et construction des liens. |
@@ -477,45 +478,58 @@ pas une panne, et il ne sert à rien de le redemander.
 | YouTube Music : API interne, non officielle | Toute la dépendance est isolée dans un seul adaptateur, importé paresseusement. |
 | YouTube Music : session par cookies de navigateur | Le fichier d'authentification expire au bout de quelques semaines et se renouvelle depuis l'interface. Une session utilisée depuis une IP de centre de données déclenche plus facilement un contrôle Google : le Codespace convient à un usage ponctuel, moins à un service permanent. |
 
-### 18. La même passe, sans API : un paquet à coller
+### 18. La même passe, sans API : la bibliothèque exportée pour Claude.ai
 
 La passe modèle n'a pas besoin de l'API pour exister : seul son transport en
-dépend. `chat.py` prépare un paquet — les mêmes instructions, le même
-vocabulaire, les mêmes lignes d'indices — à coller dans une conversation
-Claude.ai, et relit la réponse recollée. Le fichier de verdicts, la clé de
-morceau, la préséance de la décision humaine et le report en base sont ceux de
-la passe payante, sans un mot de différence.
+dépend. `chat.py` exporte tous les titres à juger, d'un coup, en fichiers
+autonomes — consignes, vocabulaire, titres — que l'utilisateur glisse chacun
+dans une conversation Claude.ai, puis relit les réponses recollées. Les règles
+de jugement sont *les mêmes chaînes* que celles de la passe payante (`INTRO`,
+`GUIDANCE`, `RULES`), et le fichier de verdicts, la clé de morceau et la
+préséance de la décision humaine sont partagés.
 
-Ce transport perd une garantie : rien n'y contraint la forme de la réponse.
-L'API imposait un schéma ; une conversation rend ce qu'elle veut. Or le pire
-défaut possible n'est pas le verdict manquant — son titre revient au paquet
-suivant — mais le verdict **décalé** : un numéro sauté, et chaque verdict
-suivant s'écrit sous le titre d'un autre morceau, puis n'est plus jamais
-redemandé. La lecture est donc défiante, sur trois plans :
+**Plusieurs fichiers, pas un.** Une conversation garde en mémoire les titres
+et toutes ses réponses. Pour ~4 000 titres, environ 220 000 jetons : au-delà
+de ce qu'elle tient. Des fichiers de 500 (`claude.export_size`) restent vers
+30 000.
 
-* le paquet porte un identifiant tiré de son *contenu*, que la réponse doit
-  reprendre — une réponse collée face au mauvais paquet est refusée en bloc,
-  et préparer deux fois le même paquet redonne le même identifiant ;
-* chaque verdict recopie le titre qu'il juge, et un titre qui ne désigne pas
-  le morceau de ce numéro fait écarter ce verdict. Le titre recopié est
-  exigé, pas seulement contrôlé quand il est présent : sans lui, un décalage
-  passerait inaperçu. La comparaison passe par `song_key`, assez tolérante
-  pour accepter « Lithium » face à « Lithium (Official Music Video) » ;
+**Une première version, par paquets numérotés, s'est révélée illisible à
+l'usage** : on ne savait ni où allait le résultat, ni ce qui était fait, ni à
+quoi il ressemblait, et la réponse devait être recollée face au bon paquet. La
+version actuelle supprime tout état côté conversation. Claude répond une ligne
+par morceau au format même du fichier de verdicts — `artiste | titre | genre |
+style | ambiance | confiance | note` — et **c'est la ligne qui porte l'identité
+de son morceau**. Une réponse se recolle dans n'importe quel ordre, en autant
+de fois qu'on veut, des jours plus tard.
+
+**La lecture reste défiante**, car rien ne contraint la forme d'une réponse de
+conversation et le pire défaut n'est pas le verdict manquant mais le verdict
+mal rattaché, tenu ensuite pour acquis :
+
+* une ligne doit désigner un morceau de la bibliothèque, via `song_key` —
+  tolérante sur la forme (casse, bruit éditorial du titre, invité ajouté à
+  l'artiste), jamais sur le fond : un autre morceau ne correspond pas ;
 * genre et ambiance doivent appartenir au vocabulaire fermé, à la casse et
-  aux accents près — une ambiance inventée ouvrirait une neuvième playlist.
+  aux accents près — une ambiance inventée ouvrirait une neuvième playlist ;
+* le verdict est écrit sous l'orthographe *de la bibliothèque*, non de la
+  réponse, pour être retrouvé.
 
-Une réponse longue arrive en plusieurs messages (« continue ») : chaque bloc
-de code est lu, et le paquet reste ouvert après un import pour que la suite
-s'y colle. Côté terminal, le paquet va sur la sortie standard et les
-explications sur la sortie d'erreur, de sorte que `ytmgc paquet | pbcopy` ne
-copie que le texte utile.
+Ce qui est écarté s'affiche avec sa raison ; le morceau reste à juger et
+revient au prochain export.
+
+**Le suivi est visible en permanence.** `progress.py` sert le bloc *Résultats*
+de l'interface et `ytmgc suivi` : nombre de morceaux jugés, chemin complet du
+fichier de verdicts, et chaque morceau avec son verdict ou son absence. Le
+manifeste de l'export (`export.json`) donne l'avancement de chaque fichier.
+Les fichiers exportés ne sont servis que par leur nom, validé contre leur
+motif : aucun autre fichier du disque n'est atteignable par l'interface.
 
 ## Tests
 
-474 tests, aucun appel réseau, y compris l'API web complète (aperçu,
+485 tests, aucun appel réseau, y compris l'API web complète (aperçu,
 application, annulation), son contrôle d'accès et les quatre voies de connexion.
 
-Cinquante et un d’entre eux chargent l’interface dans un vrai navigateur (`tests/test_ui.py`).
+Cinquante-trois d’entre eux chargent l’interface dans un vrai navigateur (`tests/test_ui.py`).
 Le câblage du DOM échappe aux tests Python : deux défauts d'onglets sont passés
 au travers de la suite avant d'être vus à l'écran. Ces tests sont ignorés
 lorsque Playwright ou son navigateur sont absents, pour que la suite reste

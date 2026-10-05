@@ -4,6 +4,8 @@ C'est de là que l'utilisateur lancera la passe : le garde-fou doit tenir ici
 aussi, pas seulement dans l'interface web.
 """
 
+from pathlib import Path
+
 import pytest
 from fakes import FakeJudge
 
@@ -167,29 +169,49 @@ def test_the_estimate_says_how_many_duplicates_were_left_out(judged, config, cap
     assert "2 titre(s) à juger" in out
 
 
-def test_paquet_prints_only_the_message_on_stdout(judged, capsys):
-    """`ytmgc paquet | pbcopy` ne doit copier que le texte à coller."""
-    assert run("paquet") == 0
-    captured = capsys.readouterr()
+def test_export_writes_files_and_says_where(judged, config, capsys):
+    assert run("export") == 0
+    out = capsys.readouterr().out
 
-    assert captured.out.startswith("Tu es musicologue")
-    assert "pbpaste | ytmgc importe" in captured.err
+    assert "2 morceau(x) à juger, en 1 fichier(s)" in out
+    assert "titres-1-sur-1.txt" in out
+    assert "pbpaste | ytmgc importe" in out
     assert judged.submitted == []
 
 
-def test_importe_reads_an_answer_from_a_file(judged, config, capsys, tmp_path):
-    import json as _json
-
-    from ytmgc.chat import load_packet
-
-    run("paquet")
-    capsys.readouterr()
-    packet = load_packet(config.claude.packet_file)
+def test_importe_reads_an_answer_and_says_where_it_went(judged, config, capsys, tmp_path):
     reply = tmp_path / "reponse.txt"
-    reply.write_text("```json\n" + _json.dumps({"paquet": packet.id, "verdicts": [
-        {"n": n, "titre": s.title, "genre": "Rock", "style": "Grunge", "mood": "Sombre",
-         "confidence": 0.9, "note": "…"} for n, s in enumerate(packet.subjects, 1)
-    ]}) + "\n```", encoding="utf-8")
-
+    reply.write_text(
+        "```\nNirvana | Lithium | Rock | Grunge | Énergique | 0.9 | Hymne.\n```", encoding="utf-8"
+    )
     assert run("importe", str(reply)) == 0
-    assert "Toute la bibliothèque est jugée" in capsys.readouterr().out
+    out = capsys.readouterr().out
+
+    assert "1 verdict(s) enregistré(s)" in out
+    assert "1 morceaux jugés sur 2" in out
+    assert str(Path(config.claude.verdicts_file).resolve()) in out
+    assert "Reste 1 morceau(x) à juger" in out
+
+
+def test_suivi_lists_what_is_done_and_what_is_left(judged, config, capsys, tmp_path):
+    verdicts.save(VerdictBook([ANSWERS["Lithium"]]), config.claude.verdicts_file)
+
+    assert run("suivi", "--faits") == 0
+    done = capsys.readouterr().out
+    assert "1 morceaux jugés sur 2" in done
+    assert "✓ Nirvana – Lithium  →  Rock / Grunge · Énergique" in done
+    assert "Something In The Way" not in done
+
+    assert run("suivi", "--a-faire") == 0
+    todo = capsys.readouterr().out
+    assert "· Nirvana – Something In The Way" in todo
+    assert "Lithium" not in todo.split("\n\n", 1)[1]
+
+
+def test_suivi_shows_the_progress_of_each_exported_file(judged, config, capsys):
+    run("export")
+    verdicts.save(VerdictBook([ANSWERS["Lithium"]]), config.claude.verdicts_file)
+    capsys.readouterr()
+
+    assert run("suivi") == 0
+    assert "titres-1-sur-1.txt     1/2" in capsys.readouterr().out

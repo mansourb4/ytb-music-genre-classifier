@@ -1,132 +1,220 @@
-"""Passe gratuite : faire juger les titres dans une conversation Claude.ai.
+"""Passe gratuite : la bibliothèque jugée dans des conversations Claude.ai.
 
-Les mêmes instructions que la passe par l'API, le même vocabulaire, le même
-fichier de verdicts — seul le transport change. L'outil prépare un *paquet*
-(instructions, vocabulaire, une centaine de titres numérotés) que l'utilisateur
-colle dans une conversation ; il recopie la réponse, et l'outil la lit.
+L'outil exporte d'un coup tous les titres pas encore jugés, en quelques
+fichiers texte autonomes : consignes, vocabulaire, puis quelques centaines de
+titres. Chaque fichier se glisse dans sa propre conversation Claude.ai, et la
+réponse se recolle dans l'outil.
 
-Ce transport a un défaut que l'API n'a pas : rien n'y contraint la forme de la
-réponse. Un modèle qui saute un numéro décalerait tous les suivants, et chaque
-verdict décalé serait écrit sous le titre d'un autre morceau — puis tenu pour
-acquis, jamais redemandé. La lecture est donc défiante :
+Pourquoi plusieurs fichiers plutôt qu'un seul : une conversation garde en
+mémoire à la fois les titres *et* toutes les réponses. Pour quelques milliers
+de titres, l'ensemble dépasse ce qu'elle peut tenir ; quelques centaines par
+conversation y tiennent largement.
 
-  * le paquet porte un identifiant, que la réponse doit reprendre : une réponse
-    collée face au mauvais paquet est refusée en bloc ;
-  * chaque verdict reprend le titre qu'il juge, et un titre qui ne correspond
-    pas à son numéro fait écarter ce verdict ;
-  * genre et ambiance doivent appartenir au vocabulaire fermé — une ambiance
-    inventée ouvrirait une neuvième playlist.
+La réponse est une ligne par titre, au format même du fichier de verdicts :
 
-Ce qui est écarté n'est pas perdu : le titre reste sans verdict, et revient
-de lui-même dans le paquet suivant.
+    artiste | titre | genre | style | ambiance | confiance | note
+
+Chaque ligne porte donc l'identité du morceau qu'elle juge. Il n'y a ni numéro
+à suivre ni paquet à retrouver : une réponse se recolle dans n'importe quel
+ordre, en autant de morceaux qu'on veut, des jours plus tard. Une ligne se
+rattache à un morceau de la bibliothèque, ou n'est pas retenue — un verdict
+écrit sous le mauvais titre serait tenu pour acquis et jamais redemandé.
+
+Ce qui n'est pas retenu n'est pas perdu : le titre reste « à juger » et
+figurera dans le prochain export.
 """
 
 from __future__ import annotations
 
-import hashlib
 import json
 import re
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Any
 
-from ytmgc.matching.normalize import fold, song_key
-from ytmgc.sources.claude import SYSTEM, Subject, build_reference
+from ytmgc.matching.normalize import fold
+from ytmgc.models import Track
+from ytmgc.sources.claude import GUIDANCE, INTRO, RULES, Subject, build_reference, chunk
 from ytmgc.taxonomy import Taxonomy
-from ytmgc.verdicts import MODEL, Verdict
+from ytmgc.verdicts import MODEL, Verdict, entry_key, main_artist, track_key
+
+#: Nom des fichiers exportés : « titres-3-sur-9.txt » dit à lui seul où l'on en est.
+FILE_RE = re.compile(r"^titres-\d+-sur-\d+\.txt$")
+MANIFEST = "export.json"
+
+COLUMNS = "artiste | titre | genre | style | ambiance | confiance | note"
 
 
 class ChatError(ValueError):
     """Réponse inutilisable telle quelle, avec ce qu'il faut faire."""
 
 
-@dataclass(frozen=True, slots=True)
-class Packet:
-    """Un lot de titres à faire juger dans une conversation."""
-
-    id: str
-    subjects: list[Subject]
-
-    def to_dict(self) -> dict[str, Any]:
-        return {"id": self.id, "subjects": [subject.to_dict() for subject in self.subjects]}
-
-    @classmethod
-    def from_dict(cls, data: dict[str, Any]) -> "Packet":
-        return cls(
-            id=data["id"],
-            subjects=[Subject.from_dict(item) for item in data.get("subjects", [])],
-        )
+# ------------------------------------------------------------------ export
 
 
-def packet_id(subjects: list[Subject]) -> str:
-    """Identifiant tiré du contenu du paquet, pas du moment où il est préparé.
-
-    Préparer deux fois le même paquet — parce qu'on a fermé l'onglet, perdu le
-    texte — donne le même identifiant : la réponse obtenue avec la première
-    copie reste importable.
-    """
-    keys = "\n".join(song_key(subject.artist, subject.title) for subject in subjects)
-    return hashlib.sha1(keys.encode("utf-8")).hexdigest()[:8]
-
-
-def make_packet(subjects: list[Subject]) -> Packet:
-    return Packet(id=packet_id(subjects), subjects=list(subjects))
-
-
-FORMAT = """\
-FORMAT DE LA RÉPONSE
-
-Réponds uniquement par un bloc de code JSON, sans rien avant ni après :
-
-```json
-{{"paquet": "{id}", "verdicts": [
-  {{"n": 1, "titre": "titre tel que listé", "genre": "…", "style": "…", "mood": "…", "confidence": 0.9, "note": "…"}}
-]}}
-```
-
-- `paquet` : reprends exactement « {id} ».
-- `titre` : recopie le titre tel qu'il figure dans la liste, pour chaque numéro.
-- Les {count} titres, dans l'ordre, un objet chacun.
-- Si la réponse ne tient pas en un message, arrête-toi après un objet complet
-  et ferme le bloc. On te dira « continue » : reprends alors au numéro suivant,
-  dans un nouveau bloc complet du même format, avec le même `paquet`.
-"""
-
-
-def build_message(packet: Packet, taxonomy: Taxonomy) -> str:
-    """Le texte à coller dans la conversation, d'un seul tenant."""
-    listing = "\n".join(
-        subject.line(index) for index, subject in enumerate(packet.subjects, start=1)
+def _instructions() -> str:
+    fields = {
+        "artiste, titre": (
+            "recopiés exactement depuis la liste. C'est ce qui rattache ta\n"
+            "  ligne au bon morceau : une ligne qui ne correspond à aucun titre est\n"
+            "  ignorée."
+        ),
+        "genre": GUIDANCE["genre"],
+        "style": GUIDANCE["style"],
+        "ambiance": GUIDANCE["mood"],
+        "confiance": GUIDANCE["confidence"],
+        "note": GUIDANCE["note"],
+    }
+    return (
+        INTRO
+        + f"\nPour chaque titre de la liste, écris une ligne :\n\n    {COLUMNS}\n\n"
+        + "".join(f"- {name} : {text}\n" for name, text in fields.items())
+        + "\n"
+        + RULES
+        + "- Une ligne par titre, tous les titres, dans l'ordre de la liste.\n"
+        + "- N'écris jamais le caractère « | » à l'intérieur d'un champ.\n"
+        + "\nFORMAT DE LA RÉPONSE\n\n"
+        + "Réponds uniquement par un bloc de code contenant les lignes, sans phrase\n"
+        + "avant ni après. Si ta réponse ne tient pas en un message, arrête-toi à la\n"
+        + "fin d'une ligne et ferme le bloc : on t'écrira « continue », et tu\n"
+        + "reprendras au titre suivant, dans un nouveau bloc.\n"
     )
-    return "\n\n".join(
+
+
+def _listing_line(subject: Subject) -> str:
+    """« artiste | titre | indices » : les deux premières colonnes sont celles
+    que la réponse doit recopier, le reste n'est qu'aide au jugement."""
+    hints = []
+    if subject.featuring:
+        hints.append(f"avec {', '.join(subject.featuring)}")
+    if subject.album:
+        hints.append(f"album « {subject.album} »")
+    if subject.year:
+        hints.append(str(subject.year))
+    if subject.genres or subject.styles:
+        hints.append("Discogs : " + " / ".join((*subject.genres, *subject.styles)))
+    if subject.tags:
+        hints.append("Last.fm : " + ", ".join(subject.tags[:8]))
+    # « | » sépare les colonnes : il ne peut pas figurer dans un champ.
+    fields = (subject.artist, subject.title, " ; ".join(hints))
+    return " | ".join(text.replace("|", "/") for text in fields)
+
+
+def build_file(subjects: list[Subject], part: int, parts: int, taxonomy: Taxonomy) -> str:
+    """Le contenu d'un fichier exporté, autonome : consignes comprises."""
+    listing = "\n".join(_listing_line(subject) for subject in subjects)
+    return "\n".join(
         (
-            SYSTEM.strip(),
-            FORMAT.format(id=packet.id, count=len(packet.subjects)).strip(),
+            f"FICHIER {part} SUR {parts} — {len(subjects)} titres à juger",
+            "",
+            _instructions(),
             build_reference(taxonomy),
-            f"TITRES À JUGER — paquet {packet.id} ({len(packet.subjects)} titres)\n\n{listing}",
+            "",
+            "TITRES À JUGER (artiste | titre | indices)",
+            "",
+            listing,
+            "",
         )
     )
 
 
-def save_packet(packet: Packet, path: str | Path) -> None:
-    file = Path(path)
-    file.parent.mkdir(parents=True, exist_ok=True)
-    file.write_text(json.dumps(packet.to_dict(), ensure_ascii=False, indent=1), encoding="utf-8")
+@dataclass(frozen=True, slots=True)
+class ExportFile:
+    name: str
+    path: Path
+    #: Clés des morceaux du fichier, pour suivre ce qui en a été jugé.
+    keys: tuple[str, ...]
 
 
-def load_packet(path: str | Path) -> Packet | None:
-    file = Path(path)
-    if not file.exists():
-        return None
+def export_library(
+    repository, config, taxonomy: Taxonomy, *, only_unsorted: bool = False
+) -> list[ExportFile]:
+    """Écrit tous les titres à juger, répartis en fichiers, d'un coup.
+
+    Les fichiers d'un export précédent sont remplacés : ils contenaient des
+    titres jugés depuis, et les garder ferait rejuger pour rien.
+    """
+    from ytmgc.enrich import pending_subjects
+    from ytmgc.verdicts import load
+
+    directory = Path(config.claude.export_dir)
+    directory.mkdir(parents=True, exist_ok=True)
+    for old in directory.iterdir():
+        if FILE_RE.match(old.name) or old.name == MANIFEST:
+            old.unlink()
+
+    book = load(config.claude.verdicts_file)
+    subjects = pending_subjects(repository, book, only_unsorted=only_unsorted)
+    parts = chunk(subjects, config.claude.export_size)
+
+    files: list[ExportFile] = []
+    for number, part in enumerate(parts, start=1):
+        name = f"titres-{number}-sur-{len(parts)}.txt"
+        path = directory / name
+        path.write_text(build_file(part, number, len(parts), taxonomy), encoding="utf-8")
+        files.append(ExportFile(
+            name=name, path=path,
+            keys=tuple(entry_key(subject.artist, subject.title) for subject in part),
+        ))
+
+    (directory / MANIFEST).write_text(
+        json.dumps({"files": [{"name": f.name, "keys": list(f.keys)} for f in files]},
+                   ensure_ascii=False, indent=1),
+        encoding="utf-8",
+    )
+    return files
+
+
+@dataclass(frozen=True, slots=True)
+class FileProgress:
+    name: str
+    tracks: int
+    judged: int
+
+    @property
+    def done(self) -> bool:
+        return self.judged >= self.tracks
+
+
+def export_progress(config) -> list[FileProgress]:
+    """Avancement de chaque fichier du dernier export : ce qui en a été jugé."""
+    from ytmgc.verdicts import load
+
+    manifest = Path(config.claude.export_dir) / MANIFEST
+    if not manifest.exists():
+        return []
     try:
-        return Packet.from_dict(json.loads(file.read_text(encoding="utf-8")))
-    except (json.JSONDecodeError, KeyError, TypeError):
+        data = json.loads(manifest.read_text(encoding="utf-8"))
+    except json.JSONDecodeError:
+        return []
+    book = load(config.claude.verdicts_file)
+    return [
+        FileProgress(
+            name=item["name"],
+            tracks=len(item["keys"]),
+            judged=sum(1 for key in item["keys"] if key in book),
+        )
+        for item in data.get("files", [])
+        if FILE_RE.match(str(item.get("name", "")))
+    ]
+
+
+def export_path(config, name: str) -> Path | None:
+    """Chemin d'un fichier exporté, ou None si le nom n'en désigne pas un.
+
+    Le nom vient d'une URL : il est validé contre le motif des fichiers
+    exportés, de sorte qu'aucun autre fichier du disque ne soit atteignable.
+    """
+    if not FILE_RE.match(name):
         return None
+    path = Path(config.claude.export_dir) / name
+    return path if path.is_file() else None
 
 
 # ---------------------------------------------------------------- lecture
 
-_FENCE_RE = re.compile(r"```(?:json)?\s*(.*?)```", re.DOTALL | re.IGNORECASE)
+_FENCE_RE = re.compile(r"```[^\n]*\n(.*?)```", re.DOTALL)
+_SEPARATOR_RE = re.compile(r"^[\s|:\-–—]*$")
+_FIRST_ARTIST_RE = re.compile(r"\s*(?:,|&|\bfeat\.?|\bft\.?|\bfeaturing\b|\bavec\b)\s*", re.I)
 
 
 @dataclass(slots=True)
@@ -137,24 +225,27 @@ class Reading:
     rejected: list[str] = field(default_factory=list)
 
 
-def _blocks(text: str) -> list[Any]:
-    """Les objets JSON d'une réponse collée, avec ou sans bloc de code.
+def _lines(text: str) -> list[str]:
+    """Les lignes utiles d'une réponse collée.
 
-    Une réponse longue arrive en plusieurs messages — « continue » — et
-    l'utilisateur colle souvent le tout d'un coup : chaque bloc est lu.
+    Une réponse longue arrive en plusieurs messages, souvent collés d'un coup :
+    tous les blocs de code sont lus. Sans bloc, le texte entier l'est.
     """
-    candidates = [match.group(1) for match in _FENCE_RE.finditer(text)]
-    if not candidates:
-        start, end = text.find("{"), text.rfind("}")
-        candidates = [text[start:end + 1]] if 0 <= start < end else []
+    blocks = _FENCE_RE.findall(text)
+    body = "\n".join(blocks) if blocks else text
+    return [line.strip() for line in body.splitlines() if line.strip()]
 
-    blocks: list[Any] = []
-    for candidate in candidates:
-        try:
-            blocks.append(json.loads(candidate))
-        except json.JSONDecodeError:
-            continue
-    return blocks
+
+def _fields(line: str) -> list[str] | None:
+    if line.startswith("```") or _SEPARATOR_RE.match(line):
+        return None
+    # Tabulations si la réponse a été recopiée depuis le fichier de verdicts,
+    # barres sinon ; une éventuelle mise en tableau Markdown est défaite.
+    parts = line.split("\t") if "\t" in line else line.strip("|").split("|")
+    fields = [part.strip() for part in parts]
+    if len(fields) < 5 or fold(fields[0]) == "artiste":
+        return None
+    return fields
 
 
 def _vocabulary(values: list[str]) -> dict[str, str]:
@@ -163,111 +254,79 @@ def _vocabulary(values: list[str]) -> dict[str, str]:
     return {fold(value): value for value in values}
 
 
-def _same_song(subject: Subject, echoed: str) -> bool:
-    """Le titre recopié désigne-t-il bien le morceau de ce numéro ?
+def _find(index: dict[str, Track], artist: str, title: str) -> Track | None:
+    """Le morceau que désigne une ligne, ou None.
 
-    Tolérant sur la forme — le modèle recopie volontiers « Teen Spirit » sans
-    « (Official Video) » — mais pas sur le fond : un autre morceau, et c'est
-    le signe d'un décalage de numérotation.
+    Tolérant sur la forme — le bruit éditorial du titre, les invités ajoutés à
+    l'artiste — jamais sur le fond : un autre morceau ne correspond pas.
     """
-    expected = song_key(subject.artist, subject.title).partition("::")[2]
-    given = song_key(subject.artist, echoed).partition("::")[2]
-    if not expected or not given:
-        return False
-    return expected == given or expected.startswith(given + " ") or given.startswith(expected + " ")
+    track = index.get(entry_key(artist, title))
+    if track is None:
+        first = _FIRST_ARTIST_RE.split(artist, maxsplit=1)[0]
+        if first != artist:
+            track = index.get(entry_key(first, title))
+    return track
 
 
-def read_answer(text: str, packet: Packet, taxonomy: Taxonomy) -> Reading:
-    """Lit une réponse collée, en n'acceptant que ce qui est vérifiable."""
-    blocks = _blocks(text)
-    if not blocks:
-        raise ChatError(
-            "Aucun JSON lisible dans ce texte. Copie la réponse avec le bouton "
-            "« Copier » du bloc de code, plutôt qu'en sélectionnant à la main."
-        )
+def read_answer(text: str, tracks: list[Track], taxonomy: Taxonomy) -> Reading:
+    """Lit une réponse collée, en ne gardant que les lignes vérifiables."""
+    lines = _lines(text)
+    if not lines:
+        raise ChatError("Rien à lire : colle la réponse de Claude, ou dépose son fichier.")
 
+    index = {track_key(track): track for track in tracks}
     genres = _vocabulary(taxonomy.genres())
     moods = _vocabulary(taxonomy.moods())
     reading = Reading()
-    seen: set[int] = set()
+    seen: set[str] = set()
+    readable = 0
 
-    for block in blocks:
-        if isinstance(block, list):
-            block = {"verdicts": block}
-        if not isinstance(block, dict):
+    for line in lines:
+        fields = _fields(line)
+        if fields is None:
             continue
-        answered = str(block.get("paquet") or "").strip()
-        if answered and answered != packet.id:
-            raise ChatError(
-                f"Cette réponse est celle du paquet {answered}, or le paquet en cours "
-                f"est {packet.id}. Colle la réponse au paquet affiché, ou prépare-le à "
-                "nouveau : un même lot de titres redonne toujours le même paquet."
-            )
+        readable += 1
+        artist, title, genre, style, mood = fields[:5]
+        label = f"{artist} – {title}"
 
-        for item in block.get("verdicts") or []:
-            verdict = _read_item(item, packet, genres, moods, seen, reading.rejected)
-            if verdict is not None:
-                reading.verdicts.append(verdict)
+        track = _find(index, artist, title)
+        if track is None:
+            reading.rejected.append(f"{label} : aucun morceau de ce nom dans la bibliothèque")
+            continue
+        key = track_key(track)
+        if key in seen:
+            continue
+        if fold(genre) not in genres:
+            reading.rejected.append(f"{label} : genre « {genre} » hors de la liste")
+            continue
+        if fold(mood) not in moods:
+            reading.rejected.append(f"{label} : ambiance « {mood} » hors de la liste")
+            continue
+
+        try:
+            confidence = max(0.0, min(1.0, float(fields[5].replace(",", "."))))
+        except (IndexError, ValueError):
+            confidence = 0.0
+        seen.add(key)
+        reading.verdicts.append(Verdict(
+            # L'orthographe de la bibliothèque, pas celle de la réponse : c'est
+            # sous elle que le verdict sera retrouvé.
+            artist=main_artist(track),
+            title=track.title,
+            genre=genres[fold(genre)],
+            style=style,
+            mood=moods[fold(mood)],
+            confidence=confidence,
+            source=MODEL,
+            note=" | ".join(fields[6:]).strip(),
+        ))
+
+    if not readable:
+        raise ChatError(
+            "Aucune ligne au format « artiste | titre | genre | style | ambiance | … » "
+            "dans ce texte. Copie la réponse avec le bouton « Copier » du bloc de code."
+        )
     return reading
-
-
-def _read_item(
-    item: Any,
-    packet: Packet,
-    genres: dict[str, str],
-    moods: dict[str, str],
-    seen: set[int],
-    rejected: list[str],
-) -> Verdict | None:
-    if not isinstance(item, dict):
-        return None
-    try:
-        number = int(item.get("n"))
-    except (TypeError, ValueError):
-        rejected.append(f"objet sans numéro lisible : {str(item)[:60]}")
-        return None
-    if not 1 <= number <= len(packet.subjects):
-        rejected.append(f"n°{number} : hors du paquet")
-        return None
-    if number in seen:
-        return None
-    subject = packet.subjects[number - 1]
-    label = f"n°{number} {subject.artist} – {subject.title}"
-
-    # Le titre recopié est exigé, pas seulement vérifié quand il est là : sans
-    # lui, un décalage de numérotation passerait inaperçu.
-    echoed = str(item.get("titre") or "").strip()
-    if not echoed:
-        rejected.append(f"{label} : titre non recopié, impossible de vérifier le numéro")
-        return None
-    if not _same_song(subject, echoed):
-        rejected.append(f"{label} : la réponse parle de « {echoed} » (numérotation décalée ?)")
-        return None
-    genre = genres.get(fold(str(item.get("genre") or "")))
-    if genre is None:
-        rejected.append(f"{label} : genre « {item.get('genre')} » hors de la liste")
-        return None
-    mood = moods.get(fold(str(item.get("mood") or "")))
-    if mood is None:
-        rejected.append(f"{label} : ambiance « {item.get('mood')} » hors de la liste")
-        return None
-
-    try:
-        confidence = max(0.0, min(1.0, float(item.get("confidence", 0))))
-    except (TypeError, ValueError):
-        confidence = 0.0
-
-    seen.add(number)
-    return Verdict(
-        artist=subject.artist,
-        title=subject.title,
-        genre=genre,
-        style=str(item.get("style") or "").strip(),
-        mood=mood,
-        confidence=confidence,
-        source=MODEL,
-        note=str(item.get("note") or "").strip(),
-    )
 
 
 # --------------------------------------------------------- de bout en bout
@@ -280,71 +339,38 @@ class Imported:
     accepted: int
     applied: int
     rejected: list[str]
-    #: Titres du paquet encore sans verdict : la réponse était partielle, ou
-    #: certains objets ont été écartés.
-    left_in_packet: int
-    #: Titres de la bibliothèque encore sans verdict, ce paquet compris.
-    remaining: int
+    judged: int
+    total: int
+
+    @property
+    def remaining(self) -> int:
+        return self.total - self.judged
 
     def line(self) -> str:
-        parts = [f"{self.accepted} verdict(s) enregistré(s)"]
-        if self.applied:
-            parts.append(f"{self.applied} titre(s) reclassé(s)")
+        line = f"{self.accepted} verdict(s) enregistré(s)"
         if self.rejected:
-            parts.append(f"{len(self.rejected)} écarté(s)")
-        return ", ".join(parts) + f". Reste {self.remaining} titre(s) à juger."
-
-
-def prepare(
-    repository, config, *, size: int | None = None, only_unsorted: bool = False
-) -> tuple[Packet | None, int]:
-    """Prépare le paquet suivant et le note sur le disque.
-
-    Renvoie aussi le nombre total de titres encore à juger : c'est ce qui dit
-    combien d'allers-retours il reste.
-    """
-    from ytmgc.enrich import pending_subjects
-    from ytmgc.verdicts import load
-
-    book = load(config.claude.verdicts_file)
-    remaining = len(pending_subjects(repository, book, only_unsorted=only_unsorted))
-    subjects = pending_subjects(
-        repository, book, limit=size or config.claude.packet_size, only_unsorted=only_unsorted
-    )
-    if not subjects:
-        return None, 0
-    packet = make_packet(subjects)
-    save_packet(packet, config.claude.packet_file)
-    return packet, remaining
+            line += f", {len(self.rejected)} ligne(s) écartée(s)"
+        return line + f". {self.judged} morceaux jugés sur {self.total}."
 
 
 def import_answer(text: str, repository, config, taxonomy: Taxonomy) -> Imported:
-    """Lit une réponse, écrit les verdicts acceptés, et range la bibliothèque.
+    """Lit une réponse, écrit les verdicts retenus, et range la bibliothèque."""
+    from ytmgc.enrich import apply_verdicts
+    from ytmgc.verdicts import load, save
 
-    Le paquet n'est pas oublié après l'import : si Claude a répondu en
-    plusieurs messages, la suite doit pouvoir être collée à son tour.
-    """
-    from ytmgc.enrich import apply_verdicts, pending_subjects
-    from ytmgc.verdicts import entry_key, load, save
-
-    packet = load_packet(config.claude.packet_file)
-    if packet is None:
-        raise ChatError("Aucun paquet en cours : prépare d'abord un paquet à coller dans Claude.ai.")
-
-    reading = read_answer(text, packet, taxonomy)
+    tracks = repository.all_tracks()
+    reading = read_answer(text, tracks, taxonomy)
     book = load(config.claude.verdicts_file)
     for verdict in reading.verdicts:
         book.add(verdict)
     if reading.verdicts:
         save(book, config.claude.verdicts_file)
 
+    keys = {track_key(track) for track in tracks}
     return Imported(
         accepted=len(reading.verdicts),
         applied=apply_verdicts(repository, book, taxonomy, config),
         rejected=reading.rejected,
-        left_in_packet=sum(
-            1 for subject in packet.subjects
-            if book.get(entry_key(subject.artist, subject.title)) is None
-        ),
-        remaining=len(pending_subjects(repository, book)),
+        judged=sum(1 for key in keys if key in book),
+        total=len(keys),
     )
