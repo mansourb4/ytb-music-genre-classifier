@@ -743,15 +743,19 @@ qu'aucune règle sur le genre ne capture.
   introuvable ou une playlist hors du plan sont écartés avec leur raison. Les
   noms de playlist sont tolérés sans accents ni casse, ou sans la famille
   quand le nom est unique.
+* **« Tout valider » clôt la vérification titre par titre.** Un verdict peu
+  sûr que la relecture a vu dans sa playlist sans le signaler n'a plus de
+  raison d'être vérifié seul ; le bouton les valide tous, après une
+  confirmation explicite, sauf ceux qu'une proposition attend encore.
 * **Le fichier répondu est noté** grâce à la ligne `FICHIER n SUR m` que la
   réponse recopie ; `RIEN` est une réponse valide.
 
 ## Tests
 
-705 tests, aucun appel réseau, y compris l'API web complète (aperçu,
+707 tests, aucun appel réseau, y compris l'API web complète (aperçu,
 application, annulation), son contrôle d'accès et les quatre voies de connexion.
 
-Quatre-vingt-neuf d’entre eux chargent l’interface dans un vrai navigateur (`tests/test_ui.py`).
+Quatre-vingt-onze d’entre eux chargent l’interface dans un vrai navigateur (`tests/test_ui.py`).
 Le câblage du DOM échappe aux tests Python : deux défauts d'onglets sont passés
 au travers de la suite avant d'être vus à l'écran. Ces tests sont ignorés
 lorsque Playwright ou son navigateur sont absents, pour que la suite reste

@@ -1391,6 +1391,42 @@ def test_confirming_an_artist_takes_it_out_of_the_review(page, repository, confi
     assert "1 titre(s) à vérifier" in page.locator("#review summary").text_content()
 
 
+def test_everything_left_can_be_validated_at_once(page, repository, config, tmp_path):
+    """« Tout valider » confirme les verdicts restants, après une confirmation,
+    sauf ceux qu'une proposition de la relecture attend."""
+    from ytmgc import playlist_review, verdicts
+    from ytmgc.playlist_review import Proposal, ProposalBook
+
+    seed_unsure(repository, config, tmp_path)
+    playlist_review.save(ProposalBook([Proposal("Herbie Hancock", "Chameleon", "Jazz · Fusion")]),
+                         config.taxonomy.proposals_file)
+    asked = []
+    page.on("dialog", lambda d: (asked.append(d.message), d.accept()))
+    open_review(page)
+    button = page.locator("#review-all")
+    assert "Tout valider (2)" in button.text_content()
+    button.click()
+    page.wait_for_function(
+        "() => document.querySelector('#preview-msg').textContent.includes('2 verdict(s) validé(s)')")
+
+    assert asked and "2 verdicts" in asked[0]
+    sources = {v.title: v.source for v in verdicts.load(config.claude.verdicts_file)}
+    assert sources["Chameleon"] != verdicts.MANUAL
+    assert sources["Watermelon Man"] == verdicts.MANUAL
+    assert page.locator("#review .review-group").count() == 1
+
+
+def test_validating_everything_can_be_cancelled(page, repository, config, tmp_path):
+    from ytmgc import verdicts
+
+    seed_unsure(repository, config, tmp_path)
+    page.on("dialog", lambda d: d.dismiss())
+    open_review(page)
+    page.click("#review-all")
+    assert all(v.source != verdicts.MANUAL for v in verdicts.load(config.claude.verdicts_file))
+    assert not page.locator("#review-all").is_disabled()
+
+
 def test_an_artist_can_be_moved_in_one_go(page, repository, config, tmp_path):
     from ytmgc import placements
 

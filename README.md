@@ -487,6 +487,11 @@ celle de ton choix, « Garder ici » le laisse et valide son verdict, « Tout ac
 déjà déplacé ou validé n'est jamais proposé. Les propositions en attente sont
 dans `data/propositions.txt`.
 
+Une fois la relecture faite, le panneau « titres à vérifier » propose
+**« Tout valider »** : les verdicts peu sûrs que Claude a relus dans leur
+playlist sans rien signaler passent en « manuel » d'un coup, après
+confirmation. Ceux qu'une proposition attend restent en dehors.
+
 **Créer une playlist.** Un titre qui n'a sa place nulle part : « ＋ Nouvelle
 playlist… » après « Déplacer » — ou tape son nom dans la recherche, puis
 « Créer la playlist » — (ou le bouton « ＋ Nouvelle

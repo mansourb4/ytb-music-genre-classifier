@@ -305,6 +305,8 @@ button.keep { flex: 0 0 auto; font-size: .8rem; padding: .35rem .75rem; border-r
   background: var(--surface-2); border-radius: 999px; padding: .05rem .5rem; }
 .review-group > .row { gap: .5rem; margin-bottom: .3rem; }
 #review-more { margin-top: .3rem; }
+.review-all { gap: .7rem; margin: 0 0 1rem; align-items: center; }
+.review-all .msg { flex: 1 1 16rem; }
 
 /* --------------------------------------------------------------- non rangés */
 .reasons { list-style: none; margin: 0 0 .9rem; padding: 0; display: flex; flex-wrap: wrap; gap: .4rem; font-size: .82rem; }
@@ -1175,6 +1177,16 @@ function renderReview(p) {
     </div>`;
   }).join("");
   const rest = ordered.length - shown.length;
+  // Les titres que la relecture par Claude a laissés en place : ceux qu'elle
+  // signale attendent leur décision dans les propositions.
+  const proposed = new Set((p.proposals || []).map((x) => x.video_id));
+  const settled = rows.map((r) => r.track.video_id).filter((v) => !proposed.has(v));
+  const all = settled.length ? `<div class="row review-all">
+        <button class="confirm" id="review-all" data-videos="${escapeHtml(settled.join(","))}"
+          data-ask="Valider les ${settled.length} verdicts restants ? Ils passeront en « manuel » et ne seront plus à vérifier.">✓ Tout valider (${settled.length})</button>
+        <span class="msg">La relecture par Claude les a relus dans leur playlist sans rien signaler${
+          proposed.size ? ` ; les ${rows.length - settled.length} qu'elle signale restent dans les propositions` : ""}.</span>
+      </div>` : "";
 
   box.innerHTML = `<details class="pl review">
     <summary>
@@ -1185,6 +1197,7 @@ function renderReview(p) {
     <div class="body">
       <p class="hint">Verdicts peu sûrs : Claude ne connaissait pas ces morceaux. Écoute (▶), puis valide
         (✓) ou déplace. Un titre validé ou déplacé sort de la liste, et le reste à chaque analyse.</p>
+      ${all}
       ${html}
       ${rest > 0 ? `<button id="review-more">Afficher ${Math.min(rest, REVIEW_STEP)} artiste(s) de plus (${rest} restant(s))</button>` : ""}
     </div>
@@ -1732,6 +1745,7 @@ document.addEventListener("click", async (event) => {
     document.querySelector("#review details").open = true;
     return;
   }
+  if (button.dataset.ask && !window.confirm(button.dataset.ask)) return;
   button.disabled = true;
   try {
     const ids = new Set(button.dataset.videos.split(","));
