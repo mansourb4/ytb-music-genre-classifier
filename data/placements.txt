@@ -7,7 +7,15 @@
 # après chaque analyse. La playlist est désignée par son nom, tel qu'écrit
 # dans le plan ; « (aucune) » tient le morceau hors de toute playlist.
 # Supprime une ligne pour rendre le morceau aux règles.
+B.B. Jacques	Bleu Cristal	Rap · FR sombre
+B.B. Jacques	Déchirée	Rap · FR sombre
+B.B. Jacques	HARMONIE	Rap · FR mélancolique
+B.B. Jacques	Odyssée	Rap · FR sombre
+Free is in Da House	Bass Toast  -  Each One Teach One	Électro · Deep house groovy
 Josman	Yacht & Champagne (Skit)	Rap · FR énergique
+Masayoshi Takanaka	Bamboo Vender	Pop · City pop & disco
 Masayoshi Takanaka	Good (Bad?) Old Days	Jazz · Fusion planante
+Masayoshi Takanaka	Penguin Dancer	Pop · City pop & disco
+Masayoshi Takanaka	Plumed Bird	Jazz · Fusion énergique
 Masayoshi Takanaka	空ド白ソ - Sorado Shiraso	Jazz · Fusion énergique
 S R	Barbie Beauty Boutique Soundtrack - Track 4	Électro · House

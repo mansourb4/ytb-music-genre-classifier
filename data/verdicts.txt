@@ -285,14 +285,14 @@ Azymuth	Seems Like This	Jazz	Fusion	Planant	0.35	claude	Samba-jazz aux claviers 
 Azymuth	Villa Mariana (De Tarde)	Jazz	Jazz-Funk	Calme	0.40	claude	Jazz-funk apaisé.
 Azymuth	Vôo sobre o horizonte	Jazz	Fusion	Calme	0.60	claude	Fusion brésilienne rêveuse, Fender Rhodes et voix sans paroles.
 Azymuth	Zé e Paraná	Jazz	Jazz-Funk	Groovy	0.45	claude	Jazz-funk brésilien.
-B.B. Jacques	Bérénice	Hip Hop	Boom Bap	Mélancolique	0.30	claude	Rap poétique sur boucle douce.
+B.B. Jacques	Bérénice	Hip Hop	Boom Bap	Mélancolique	0.30	manuel	Rap poétique sur boucle douce.
 B.B. Jacques	Bleu Cristal	Hip Hop	Boom Bap	Calme	0.20	claude	Titre peu documenté, classement incertain.
 B.B. Jacques	Déchirée	Hip Hop	Boom Bap	Mélancolique	0.30	claude	Rap posé et sombre de la scène parisienne.
 B.B. Jacques	En deuil	Hip Hop	Boom Bap	Mélancolique	0.45	claude	Rap de deuil sur boucle sobre, texte au premier plan.
 B.B. Jacques	En écoutant du Brahms	Hip Hop	Boom Bap	Mélancolique	0.40	claude	Rap posé et littéraire.
 B.B. Jacques	HARMONIE	Hip Hop	Jazzy Hip-Hop	Calme	0.30	claude	Rap posé sur samples jazz.
 B.B. Jacques	INTÉRIEUR SCANDINAVE	Hip Hop	Jazzy Hip-Hop	Calme	0.35	claude	Rap tranquille sur boucle jazzy.
-B.B. Jacques	INTERLUDE	Hip Hop	Jazzy Hip-Hop	Calme	0.30	claude	Courte transition instrumentale jazzy.
+B.B. Jacques	INTERLUDE	Hip Hop	Jazzy Hip-Hop	Calme	0.30	manuel	Courte transition instrumentale jazzy.
 B.B. Jacques	Mégot sur trottoir	Hip Hop	Boom Bap	Mélancolique	0.35	claude	Instrumental boom bap à l'ambiance de rue, boucle sobre et grain poussiéreux.
 B.B. Jacques	Odyssée	Hip Hop	Boom Bap	Mélancolique	0.30	claude	Rap à texte sur boucle mélancolique.
 B.B. Jacques	Opium	Hip Hop	Boom Bap	Mélancolique	0.35	claude	Rap à texte sur boucle boom bap feutrée.
@@ -1178,8 +1178,8 @@ Free is in Da House	Aaron-Carl  -  Sky (Tommi White Billsticker mix)	Electronic	
 Free is in Da House	All Good Funk Alliance  -  The Makes	Electronic	Breakbeat	Groovy	0.25	claude	Breaks funky du duo All Good Funk Alliance.
 Free is in Da House	Bass Toast  -  Each One Teach One	Reggae	Dub	Groovy	0.20	claude	Morceau mal identifié, a priori du toasting sur une basse dub de sound system.
 Free is in Da House	Blueless  -  Are You Pleased?	Electronic	Deep House	Groovy	0.30	claude	Deep house, classement incertain.
-Free is in Da House	Boobjazz  -  Leave Me	Electronic	Deep House	Groovy	0.25	claude	House jazzy peu documentée.
-Free is in Da House	Derrick White  -  Soul 2 Let Go	Electronic	Deep House	Groovy	0.30	claude	House soulful vocale.
+Free is in Da House	Boobjazz  -  Leave Me	Electronic	Deep House	Groovy	0.25	manuel	House jazzy peu documentée.
+Free is in Da House	Derrick White  -  Soul 2 Let Go	Electronic	Deep House	Groovy	0.30	manuel	House soulful vocale.
 Free is in Da House	Freil  -  West of Motebe	Electronic	House	Groovy	0.15	claude	Titre inconnu, probablement une house à coloration africaine.
 Free is in Da House	Plus  -  Triple Journey (Idjut Boys re-touch)	Electronic	Nu-Disco	Groovy	0.35	claude	Retouche disco-dub des Idjut Boys, lente et chaloupée.
 Free is in Da House	Spiro Projecto feat. Josefina Sanner  -  Bluesless (Fredrik Stark Remix)	Electronic	Deep House	Groovy	0.40	claude	Remix deep house à voix.
@@ -1188,7 +1188,7 @@ Free is in Da House	Street Corner Symphony  -  Street Corner Symphony	Funk & Sou
 Free is in Da House	Street Corner Symphony  -  Symphomaniac (House Mix)	Electronic	House	Groovy	0.30	claude	Remix house d'un titre peu documenté.
 Free is in Da House	Ten City  -  All Loved Out (Love Serenade)	Electronic	Garage House	Groovy	0.50	claude	House de Chicago chantée en falsetto, chaleur soul.
 Free is in Da House	The Persuader  -  Djurgårdsbron	Electronic	Tech House	Groovy	0.40	claude	Tech house suédoise.
-Free is in Da House	West Bridgford Connection  -  Deep St. (Bluehouse Flava)	Electronic	Deep House	Groovy	0.30	claude	Deep house soulful d'un upload de compilation, peu documentée.
+Free is in Da House	West Bridgford Connection  -  Deep St. (Bluehouse Flava)	Electronic	Deep House	Groovy	0.30	manuel	Deep house soulful d'un upload de compilation, peu documentée.
 Free is in Da House	West Bridgford Connection  -  Up 'n' Down	Electronic	House	Festif	0.20	claude	Morceau que je ne connais pas ; classement prudent.
 The Free Music	Law Yom Saalak Had	Funk & Soul	Funk	Groovy	0.50	claude	Funk libyen des années 70, orgue et chant arabe sur une rythmique chaloupée.
 Free Nationals	Eternal Light	Reggae	Roots Reggae	Calme	0.50	claude	Soul-reggae avec Chronixx.
@@ -2346,7 +2346,7 @@ Masayoshi Takanaka	Mambo Magic	Latin	Mambo	Festif	0.35	claude	Fusion aux rythmes
 Masayoshi Takanaka	Mambo No. 5	Jazz	Latin Jazz	Festif	0.50	claude	Mambo de Prado en fusion.
 Masayoshi Takanaka	Mambo No. 6	Jazz	Fusion	Festif	0.35	claude	Fusion latine dansante.
 Masayoshi Takanaka	Manifestation	Jazz	Fusion	Énergique	0.35	claude	Fusion guitare brillante, peu connue de moi.
-Masayoshi Takanaka	Medley	Jazz	Fusion	Énergique	0.30	claude	Medley fusion, probablement live.
+Masayoshi Takanaka	Medley	Jazz	Fusion	Énergique	0.30	manuel	Medley fusion, probablement live.
 Masayoshi Takanaka	My Secret Beach	Jazz	Fusion	Groovy	0.50	claude	Fusion estivale à la guitare, légère et ensoleillée.
 Masayoshi Takanaka	New York Strut	Jazz	Fusion	Groovy	0.45	claude	Fusion japonaise à la guitare chantante.
 Masayoshi Takanaka	Nights	Jazz	Fusion	Calme	0.35	claude	Pièce nocturne et apaisée.
@@ -2372,7 +2372,7 @@ Masayoshi Takanaka	Saudade	Jazz	Fusion	Mélancolique	0.40	claude	Guitare chantan
 Masayoshi Takanaka	Seven Goblins	Jazz	Fusion	Énergique	0.40	claude	Pièce de l'album-concept, fusion vive à la guitare.
 Masayoshi Takanaka	Sexy Dance	Jazz	Jazz-Funk	Groovy	0.50	claude	Fusion funky pour la danse, guitare en tête.
 Masayoshi Takanaka	SHE’S RAIN - She's Rain	Jazz	Fusion	Calme	0.40	claude	Ballade fusion douce.
-Masayoshi Takanaka	Soon	Jazz	Fusion	Calme	0.30	claude	Pièce de l'album concept, douce supposée.
+Masayoshi Takanaka	Soon	Jazz	Fusion	Calme	0.30	manuel	Pièce de l'album concept, douce supposée.
 Masayoshi Takanaka	Space Wagon	Jazz	Fusion	Énergique	0.50	claude	Fusion pétillante à la guitare, tempo vif et thème accrocheur.
 Masayoshi Takanaka	Speed Of Love	Jazz	Fusion	Énergique	0.35	claude	Fusion rapide à la guitare.
 Masayoshi Takanaka	Star Wars Samba	Jazz	Latin Jazz	Festif	0.55	claude	Thème de Star Wars en samba.
