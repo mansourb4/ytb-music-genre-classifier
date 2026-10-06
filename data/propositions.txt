@@ -1,0 +1,69 @@
+# Propositions de la relecture par playlist — en attente de ta décision.
+#
+# Une ligne par titre, colonnes séparées par des tabulations :
+#   artiste  |  titre  |  playlist proposée  |  raison
+#
+# Écrites par l'import d'une réponse de Claude.ai, retirées quand tu acceptes
+# (le titre est déplacé) ou refuses (il reste où il est). « (aucune) » propose
+# de ne ranger le titre nulle part.
+Amadou & Mariam	Sabali	Pop · Indie & synth-pop douce	synth-pop planante produite par Damon Albarn, rien d'acoustique
+Amy Winehouse	Just Friends	Caraïbes · Reggae, dub & dancehall	rocksteady lent et mélancolique, rien de disco
+CA7RIEL & Paco Amoroso	Ca7riel & Paco Amoroso: Tiny Desk Concert	Funk · Funk, boogie & disco	funk-rock argentin, rien de reggaeton ni de cumbia
+Chassol	Birds, Pt. I	Jazz · Contemporain	ultrascore de Chassol, avec Birds Pt. II
+Chassol	Carnaval, Pt. II (Motor & Vuvuzuela)	Jazz · Contemporain	ultrascore de Chassol, détonne à côté du smooth jazz
+Chassol	Carnaval, Pt. III (Percussions harmoniques)	Jazz · Contemporain	ultrascore de Chassol, avec Carnaval Pt. I
+Chassol	Carnaval, Pt. IV (Keupons)	Jazz · Contemporain	ultrascore de Chassol, avec Carnaval Pt. I
+Chassol	Générique	Jazz · Contemporain	ultrascore de Chassol, avec ses autres titres
+Chassol	Générique Big Sun	Jazz · Contemporain	ultrascore de Chassol, avec le reste de Big Sun
+Chassol	Haré Rama, Haré Krishna	Jazz · Contemporain	ultrascore de Chassol, avec ses trente autres titres
+Chassol	Reich & Darwin	Jazz · Contemporain	ultrascore de Chassol, rien d'un jazz d'ambiance
+Chassol	The Big Sun (Introïde)	Jazz · Contemporain	ultrascore de Chassol, avec le reste de Big Sun
+Chilly Gonzales	Rap Piano Medley	Classique · Moderne contemplatif	piano solo de Gonzales, avec ses autres medleys
+Dalida	Helwa Ya Baladi	Orient · Fairouz, tarab & chanson	chanson arabe nostalgique, avec Fairouz et Warda
+Eugen Cicero	Prélude in E Minor, Op. 28 No. 4	Jazz · Bop & cool nocturne	Chopin en trio jazz lent, de fin de soirée
+Fabrizio Chiovetta	Piano Sonata No. 32 in C Minor, Op. 111: II. Arietta. Adagio molto semplice e cantabile	Classique · Romantique tendre	adagio méditatif de Beethoven, rien d'allègre
+Fatima Yamaha	Only Of The Universe	Électro · Nu-disco & synth	synthés lents et rêveurs, rien de rapide ni de nerveux
+Fatima Yamaha	What's a Girl to Do	Électro · Nu-disco & synth	synth-pop électronique lente, pas du breakbeat
+Ferqet El Masryeen	El Shawarea Hawadet	Funk · Funk arabe des années 70	funk égyptien des années 70, le répertoire Habibi Funk
+Floating Points	Movement 4	Jazz · Spiritual jazz	mouvement de Promises, avec les autres mouvements
+Floating Points	Movement 7	Jazz · Spiritual jazz	mouvement de Promises, avec les autres mouvements
+Floating Points	Movement 9	Jazz · Spiritual jazz	dernier mouvement de Promises, avec les autres mouvements
+Frank Sinatra	That's Life (2008 Remastered)	Jazz · Swing & big band	crooner swing, pas de la pop rock
+George Benson	Nature Boy	Jazz · Vocal & ballades	ballade chantée et douce, loin de Chassol
+Guillermo Portabales	Yo Te Canto Puerto Rico	Latino · Boléro, tango & ballades	guajira douce, pas de cuivres ni de fête
+Hamid El Shaeri - حميد الشاعري	Git Ya Sheta	Orient · Pop arabe	al jeel de Hamid El Shaeri, avec ses autres titres
+Hesham Nour	Oyoun Habibi	Orient · Fairouz, tarab & chanson	ballade arabe, avec la chanson arabe
+Jacques Loussier	Partita N 1 BWV 825 En Si Bémol Majeur-Sarabande	Jazz · Bop & cool nocturne	Play Bach calme, avec ses autres préludes lents
+Jacques Loussier	Prélude N 6 En Ré Mineur Clavier Bien Tempere Livre I BWV 851	Jazz · Bop qui swingue	Play Bach enlevé, avec ses autres préludes vifs
+Jacques Loussier Trio	Gnossienne No. 1	Jazz · Bop & cool nocturne	trio feutré et lent, rien de spirituel
+Joe Armon-Jones	Midnite Oil (Sparkzzz)	Électro · Broken beat & nu jazz	nu jazz londonien rythmé, pas du jazz d'ambiance
+Kokoroko	Abusey Junction	Afrique · Folk, blues & mandingue	ballade highlife à la guitare, calme, loin de la transe de Fela
+Laura Itandehui	Yo no Necesito de Mucho	Latino · Boléro, tango & ballades	chanson calme, loin de la salsa
+LCD Soundsystem	You Wanted a Hit	Électro · Nu-disco & synth	dance-punk qui groove, pour la piste plutôt que l'IDM
+London Philharmonic Orchestra	Les noces de figaro	Classique · Baroque vif	ouverture de Mozart, classique et allègre plutôt que romantique
+Madd	N	Rap · FR sombre	rappeur parisien, cloud rap sombre comme le reste de Rap · FR sombre
+Maximilian Schairer	Piano Sonatina in C Major, op.55, No.1: I. Allegro	Classique · Baroque vif	sonatine allègre
+Poirier	Café Com Leite	Brésil · Samba & groove	bass tropicale brésilienne et festive, rien d'expérimental
+Polo & Pan	Canopée	Électro · Nu-disco & synth	électro-pop française rêveuse, pas de la house de club
+Precipotato	Wolfgang Amadeus Mozart - Piano Concerto No. 20 in D minor, K. 466	Classique · Baroque vif	concerto dramatique et vif, pas un adagio
+Quincy Jones	Let The Good Times Roll (feat. Stevie Wonder, Ray Charles & Bono)	Jazz · Swing & big band	big band swing, pas du boogie
+Ragheb Alama	Nasini El Donya	Orient · Fairouz, tarab & chanson	ballade libanaise, avec la chanson arabe
+Rubén González	Melodía del Río	Latino · Boléro, tango & ballades	piano cubain lent, détonne parmi la salsa
+Sade	Clean Heart	Soul · Soul groovy	chanson soul groovy, avec le reste de Sade
+Sade	Every Word	Soul · Soul ballades	ballade de Sade, avec ses autres ballades
+Sade	Flow	Soul · Soul ballades	ballade de Sade, avec ses autres ballades
+Sade	Is It a Crime (Live)	Soul · Soul ballades	ballade soul lente, pas du jazz-funk
+Sade	Love Is Stronger Than Pride	Soul · Soul ballades	ballade langoureuse, aucun groove jazz-funk
+Sade	Mermaid	Jazz · Lounge & jazz d'ambiance	instrumental planant et feutré, détonne au milieu du disco
+Sade	Sally	Soul · Soul ballades	ballade feutrée, avec les autres ballades de Sade
+Sade	Slave Song	Soul · Soul ballades	ballade lente de Sade, avec ses autres ballades, détonne à côté du dancehall
+Sade	Smooth Operator (Single Version)	Soul · Soul groovy	avec la version live et le reste de Sade groovy, pas du disco
+Saint Levant	WAIN MAADY WAIN / وين معدي وين	Orient · Pop arabe	pop arabe d'aujourd'hui, pas de la grande chanson des années 60
+Sal Davis	Quaboos	Funk · Funk arabe des années 70	funk du Golfe des années 70, même univers que Fakroun
+Sherine	Sabry Aalil	Orient · Fairouz, tarab & chanson	ballade égyptienne, plus proche de Warda que de Sting
+The Free Music	Law Yom Saalak Had	Funk · Funk arabe des années 70	groupe libyen des années 70, réédité par Habibi Funk
+The Temptations	Papa Was A Rollin' Stone (Single Version)	Soul · Soul groovy	long groove soul psychédélique, pas un slow
+TRAUM	Frédéric Chopin: Étude Op. 10, No. 9 in F Minor (Allegro molto agitato)	Classique · Romantique passionné	étude agitée, pas intime
+Vulax	LAO (Participation au concours d'Avner) VULAX	Classique · Moderne contemplatif	pièce pour piano, avec son autre composition
+YUNDI	Piano Sonata No. 14 in C Minor, K. 457: I. Molto allegro	Classique · Baroque vif	allegro orageux, rien d'un mouvement lent
+YUNDI	Piano Sonata No. 14 in C Minor, K. 457: III. Allegro assai	Classique · Baroque vif	allegro assai rapide et tendu
