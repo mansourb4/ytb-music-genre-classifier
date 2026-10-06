@@ -1,0 +1,384 @@
+PLAYLISTS
+Brésil · Bossa nova | Bossa nova, qu'elle vienne du Brésil, du jazz ou d'une musique de film.
+Brésil · Samba & groove | Samba, MPB qui danse et groove brésilien des années 70-80.
+Brésil · MPB douce | Musique populaire brésilienne calme ou mélancolique : la saudade.
+Maghreb · Gnawa | Transe gnaoua : guembri, qraqeb et chants responsoriaux, du rituel à la fusion.
+Funk · Funk arabe des années 70 | Funk, orgue et synthés du Maghreb et du Liban des années 70-80.
+Maghreb · Raï & chaâbi | Raï, chaâbi, chanson kabyle et chansons de fête.
+Maghreb · Traditions | Chants et percussions des oasis marocaines, folk berbère.
+Orient · Oud & taqsim | Oud et improvisations sur les maqâms : musique savante instrumentale.
+Orient · Pop arabe | Al jeel et pop arabe dansante.
+Orient · Fairouz, tarab & chanson | Fairouz et les Rahbani, Warda, Marcel Khalife : la grande chanson arabe, tendre et nostalgique.
+Jazz · Ethio-jazz | Le jazz éthiopien de Mulatu Astatke et de l'âge d'or d'Addis-Abeba.
+Afrique · Folk, blues & mandingue | Guitares mandingues, blues touareg, morna, semba : l'Afrique acoustique.
+Funk · Afrobeat | Afrobeat et highlife : cuivres, polyrythmies et transe funk, de Fela à Kokoroko.
+Afrique · Afrobeats & amapiano | Afrobeats, afroswing et amapiano : la pop africaine d'aujourd'hui.
+Caraïbes · Reggae, dub & dancehall | Roots reggae, dub, lovers rock, dancehall, ragga et le zouk des Antilles.
+Jazz · Latin jazz | Jazz afro-cubain et latin, quel que soit le genre donné par le verdict.
+Soul · R&B & neo soul groovy | R&B contemporain et neo soul qui groovent.
+Soul · R&B & neo soul posés | R&B et neo soul calmes, langoureux ou mélancoliques.
+Pop · Variété française | Chanson et variété françaises.
+Jazz · Jazz-funk & groove | Jazz-funk, soul-jazz, acid jazz, et la fusion quand elle groove.
+Rock · Psyché & prog nerveux | Rock psychédélique et progressif qui pousse : riffs, tension, groove lourd.
+Rock · Psyché & prog rêveur | Rock psychédélique et progressif planant, contemplatif ou mélancolique.
+Rap · FR énergique | Rap francophone qui cogne : trap, drill et boom bap énergiques, sons de fête.
+Rap · FR sombre | Rap francophone sombre : trap et drill menaçantes, boom bap noir.
+Rap · FR groovy | Rap francophone décontracté et chaloupé, pour hocher la tête.
+Rap · FR posé | Rap francophone jazzy, lo-fi et contemplatif.
+Rap · FR introspectif | Rap à texte sur le sens de la vie, la famille, le doute.
+Rap · FR cloud & spleen | Cloud rap francophone vaporeux, ambiances nocturnes et autotune.
+Rap · US | Rap américain et canadien.
+Rap · UK | Rap britannique et irlandais : grime, drill UK, rap londonien.
+Rap · Maghreb | Rap marocain, algérien et tunisien.
+Rap · Ailleurs | Rap d'Italie, d'Allemagne, d'Espagne, du Japon, du Mexique…
+Rap · Pays à préciser | Rap dont l'artiste n'a pas encore de pays.
+Électro · Deep house vocale | Deep house new-yorkaise et soulful, chantée et chaleureuse.
+Électro · Deep house instrumentale | Deep house brute, jazzy ou lo-fi, centrée sur le groove.
+Électro · Deep house planante | Deep house rêveuse, calme ou nocturne.
+Électro · House | House classique, garage et afro house.
+Électro · Techno percutante | Techno, tech house et progressive qui frappent : pour la piste.
+Électro · Techno hypnotique | Techno mélodique, minimale et dub techno : boucles qui planent.
+Électro · Nu-disco & synth | Nu-disco, italo, synth-pop et synthwave.
+Électro · Broken beat & nu jazz | Broken beat, nu jazz et UK garage : rythmes cassés et chaleur jazz-soul.
+Électro · Breaks & drum'n'bass | Breakbeat, electro, jungle, drum & bass et footwork : rapide et nerveux.
+Électro · Ambient & nappes | Ambient, drone et downtempo planants : nappes, espace, apesanteur.
+Électro · Downtempo chill | Downtempo, trip hop et lounge : calme, mélancolique ou doucement groovy.
+Électro · Expérimental & IDM | IDM, glitch, leftfield et électronique expérimentale.
+Jazz · Fusion énergique | Jazz électrique et jazz-rock virtuoses : ça joue vite et fort.
+Jazz · Fusion planante | Fusion aérienne : claviers, nappes et grooves lents.
+Jazz · Bop qui swingue | Bebop, hard bop et post-bop énergiques.
+Jazz · Bop & cool nocturne | Cool jazz, modal et bop lents : le jazz de fin de soirée.
+Jazz · Spiritual jazz | Jazz spirituel, third stream et jazz aventureux.
+Jazz · Smooth & groovy | Smooth jazz et jazz contemporain qui groovent.
+Jazz · Contemporain | Jazz d'aujourd'hui exigeant, mélancolique ou intense.
+Jazz · Vocal & ballades | Voix et ballades jazz, swing compris quand il ralentit.
+Jazz · Swing & big band | Swing, big band, dixieland et voix qui swinguent.
+
+RENOMMAGES
+Rap · FR groovy & posé -> Rap · FR groovy
+Rap · FR mélancolique -> Rap · FR introspectif
+Électro · Deep house groovy -> Électro · Deep house vocale
+
+DEPLACEMENTS
+T0228 | Orient · Fairouz, tarab & chanson
+T0304 | (aucune)
+T0315 | Rap · Maghreb
+T0327 | Rap · FR énergique
+T0372 | Rap · FR groovy
+T0378 | Rap · FR groovy
+T0394 | Rap · US
+T0395 | Rap · US
+T0400 | Rap · FR groovy
+T0402 | Rap · US
+T0409 | Rap · US
+T0410 | Rap · US
+T0418 | Rap · FR groovy
+T0419 | Rap · FR groovy
+T0425 | Rap · US
+T0427 | Rap · FR posé
+T0429 | Rap · FR introspectif
+T0430 | Rap · FR introspectif
+T0431 | Rap · FR introspectif
+T0432 | Rap · FR introspectif
+T0433 | Rap · US
+T0435 | Rap · FR introspectif
+T0436 | Rap · FR introspectif
+T0456 | Rap · US
+T0458 | Rap · US
+T0459 | Rap · US
+T0460 | Rap · US
+T0461 | Rap · US
+T0462 | Rap · US
+T0464 | Rap · FR posé
+T0644 | Électro · Techno percutante
+T0672 | Électro · Ambient & nappes
+T0863 | Rap · UK
+T0948 | Rap · FR posé
+T0949 | Rap · FR posé
+T0950 | Rap · FR posé
+T0951 | Rap · FR posé
+T0956 | Rap · FR posé
+T0958 | Rap · FR posé
+T0960 | Rap · FR posé
+T0961 | Rap · FR posé
+T0962 | Rap · FR posé
+T0963 | Rap · FR posé
+T0965 | Rap · FR posé
+T0967 | Rap · FR posé
+T0968 | Rap · FR posé
+T0971 | Rap · FR posé
+T0972 | Rap · FR posé
+T0978 | Rap · FR posé
+T0980 | Rap · FR posé
+T0981 | Rap · FR posé
+T0986 | Rap · FR posé
+T0990 | Rap · FR posé
+T0991 | Rap · FR posé
+T0996 | Rap · FR posé
+T1001 | Rap · FR posé
+T1004 | Rap · FR posé
+T1005 | Rap · FR posé
+T1009 | Rap · FR posé
+T1011 | Rap · FR posé
+T1012 | Rap · FR posé
+T1014 | Rap · FR posé
+T1015 | Rap · FR posé
+T1019 | Rap · FR posé
+T1022 | Rap · FR posé
+T1025 | Rap · FR posé
+T1026 | Rap · FR posé
+T1028 | Rap · FR posé
+T1029 | Rap · FR posé
+T1030 | Rap · FR posé
+T1032 | Rap · FR posé
+T1037 | Rap · FR posé
+T1039 | Rap · FR posé
+T1040 | Rap · FR posé
+T1041 | Rap · FR posé
+T1043 | Rap · FR posé
+T1044 | Rap · FR posé
+T1045 | Rap · FR posé
+T1046 | Rap · FR posé
+T1047 | Rap · FR posé
+T1050 | Rap · FR posé
+T1051 | Rap · FR posé
+T1053 | Rap · FR posé
+T1061 | Rap · UK
+T1062 | Rap · UK
+T1063 | Rap · FR posé
+T1072 | Rap · FR posé
+T1074 | Rap · FR posé
+T1076 | Rap · FR posé
+T1077 | Rap · FR posé
+T1078 | Rap · FR posé
+T1082 | Rap · FR posé
+T1086 | Rap · UK
+T1087 | Rap · UK
+T1088 | Rap · FR posé
+T1089 | Rap · FR posé
+T1091 | Rap · FR posé
+T1093 | Rap · FR posé
+T1094 | Rap · FR posé
+T1100 | Rap · FR posé
+T1101 | Rap · FR posé
+T1104 | Rap · FR cloud & spleen
+T1117 | Rap · FR cloud & spleen
+T1118 | Rap · FR cloud & spleen
+T1119 | Rap · FR cloud & spleen
+T1120 | Rap · FR cloud & spleen
+T1142 | Rap · FR cloud & spleen
+T1143 | Rap · FR cloud & spleen
+T1144 | Rap · FR cloud & spleen
+T1150 | Rap · FR cloud & spleen
+T1151 | Rap · FR cloud & spleen
+T1153 | Rap · FR cloud & spleen
+T1155 | Rap · FR cloud & spleen
+T1158 | Rap · FR cloud & spleen
+T1160 | Rap · FR cloud & spleen
+T1163 | Rap · FR cloud & spleen
+T1166 | Rap · FR cloud & spleen
+T1167 | Rap · FR cloud & spleen
+T1171 | Rap · FR cloud & spleen
+T1178 | Rap · FR cloud & spleen
+T1179 | Rap · FR cloud & spleen
+T1181 | Rap · FR cloud & spleen
+T1182 | Rap · FR cloud & spleen
+T1183 | Rap · FR cloud & spleen
+T1185 | Rap · FR cloud & spleen
+T1186 | Rap · FR cloud & spleen
+T1187 | Rap · FR cloud & spleen
+T1192 | Rap · FR cloud & spleen
+T1193 | Rap · FR cloud & spleen
+T1194 | Rap · FR cloud & spleen
+T1197 | Rap · FR cloud & spleen
+T1198 | Rap · FR cloud & spleen
+T1199 | Rap · FR cloud & spleen
+T1225 | Rap · FR cloud & spleen
+T1235 | Rap · FR cloud & spleen
+T1243 | Rap · FR cloud & spleen
+T1252 | Rap · FR cloud & spleen
+T1253 | Rap · FR cloud & spleen
+T1254 | Rap · FR cloud & spleen
+T1255 | Rap · FR cloud & spleen
+T1256 | Rap · FR cloud & spleen
+T1257 | Rap · FR cloud & spleen
+T1258 | Rap · FR cloud & spleen
+T1259 | Rap · FR cloud & spleen
+T1260 | Rap · FR cloud & spleen
+T1261 | Rap · FR cloud & spleen
+T1262 | Rap · FR cloud & spleen
+T1263 | Rap · FR cloud & spleen
+T1264 | Rap · FR cloud & spleen
+T1265 | Rap · FR cloud & spleen
+T1274 | Rap · FR cloud & spleen
+T1278 | Rap · FR cloud & spleen
+T1284 | Rap · FR cloud & spleen
+T1293 | Rap · FR cloud & spleen
+T1426 | Rap · Ailleurs
+T1503 | Rap · UK
+T1521 | Électro · Deep house instrumentale
+T1524 | Électro · Deep house instrumentale
+T1525 | Électro · Deep house instrumentale
+T1533 | Électro · Deep house instrumentale
+T1534 | Électro · Deep house instrumentale
+T1535 | Électro · Deep house instrumentale
+T1536 | Électro · Deep house instrumentale
+T1537 | Électro · Deep house instrumentale
+T1538 | Électro · Deep house instrumentale
+T1541 | Électro · Deep house instrumentale
+T1550 | Électro · Deep house instrumentale
+T1553 | Électro · Deep house instrumentale
+T1554 | Électro · Deep house instrumentale
+T1555 | Électro · Deep house instrumentale
+T1557 | Électro · Deep house instrumentale
+T1558 | Électro · Deep house instrumentale
+T1560 | Électro · Deep house instrumentale
+T1561 | Électro · Deep house instrumentale
+T1563 | Électro · Deep house instrumentale
+T1564 | Électro · Deep house instrumentale
+T1565 | Électro · Deep house instrumentale
+T1566 | Électro · Deep house instrumentale
+T1567 | Électro · Deep house instrumentale
+T1568 | Électro · Deep house instrumentale
+T1569 | Électro · Deep house instrumentale
+T1570 | Électro · Deep house instrumentale
+T1571 | Électro · Deep house instrumentale
+T1572 | Électro · Deep house instrumentale
+T1573 | Électro · Deep house instrumentale
+T1574 | Électro · Deep house instrumentale
+T1575 | Électro · Deep house instrumentale
+T1576 | Électro · Deep house instrumentale
+T1577 | Électro · Deep house instrumentale
+T1581 | Électro · Deep house instrumentale
+T1582 | Électro · Deep house instrumentale
+T1586 | Électro · Deep house instrumentale
+T1588 | Électro · Deep house instrumentale
+T1590 | Électro · Deep house instrumentale
+T1593 | Électro · Deep house instrumentale
+T1596 | Électro · Deep house instrumentale
+T1597 | Électro · Deep house instrumentale
+T1600 | Électro · Deep house instrumentale
+T1601 | Électro · Deep house instrumentale
+T1602 | Électro · Deep house instrumentale
+T1603 | Électro · Deep house instrumentale
+T1604 | Électro · Deep house instrumentale
+T1606 | Électro · Deep house instrumentale
+T1608 | Électro · Deep house instrumentale
+T1609 | Électro · Deep house instrumentale
+T1611 | Électro · Deep house instrumentale
+T1616 | Électro · Deep house instrumentale
+T1617 | Électro · Deep house instrumentale
+T1619 | Électro · Deep house instrumentale
+T1620 | Électro · Deep house instrumentale
+T1622 | Électro · Deep house instrumentale
+T1624 | Électro · Deep house instrumentale
+T1627 | Électro · Deep house instrumentale
+T1631 | Électro · Deep house instrumentale
+T1632 | Électro · Deep house instrumentale
+T1633 | Électro · Deep house instrumentale
+T1634 | Électro · Deep house instrumentale
+T1635 | Électro · Deep house instrumentale
+T1636 | Électro · Deep house instrumentale
+T1637 | Électro · Deep house instrumentale
+T1639 | Électro · Deep house instrumentale
+T1641 | Électro · Deep house instrumentale
+T1642 | Électro · Deep house instrumentale
+T1646 | Électro · Deep house instrumentale
+T1647 | Électro · Deep house instrumentale
+T1649 | Électro · Deep house instrumentale
+T1651 | Électro · Deep house instrumentale
+T1654 | Électro · Deep house instrumentale
+T1656 | Électro · Deep house instrumentale
+T1658 | Électro · Deep house instrumentale
+T1659 | Électro · Deep house instrumentale
+T1663 | Électro · Deep house instrumentale
+T1666 | Électro · Deep house instrumentale
+T1668 | Électro · Deep house instrumentale
+T1670 | Électro · Deep house instrumentale
+T1676 | Électro · Deep house instrumentale
+T1677 | Électro · Deep house instrumentale
+T1681 | Électro · Deep house instrumentale
+T1682 | Électro · Deep house instrumentale
+T1686 | Électro · Deep house instrumentale
+T1687 | Électro · Deep house instrumentale
+T1688 | Électro · Deep house instrumentale
+T1689 | Électro · Deep house instrumentale
+T1694 | Électro · Deep house instrumentale
+T1695 | Électro · Deep house instrumentale
+T1696 | Électro · Deep house instrumentale
+T1697 | Électro · Deep house instrumentale
+T1698 | Électro · Deep house instrumentale
+T1699 | Électro · Deep house instrumentale
+T1700 | Électro · Deep house instrumentale
+T1701 | Électro · Deep house instrumentale
+T1702 | Électro · Deep house instrumentale
+T1703 | Électro · Deep house instrumentale
+T1704 | Électro · Deep house instrumentale
+T1705 | Électro · Deep house instrumentale
+T1706 | Électro · Deep house instrumentale
+T1707 | Électro · Deep house instrumentale
+T1708 | Électro · Deep house instrumentale
+T1709 | Électro · Deep house instrumentale
+T1710 | Électro · Deep house instrumentale
+T1711 | Électro · Deep house instrumentale
+T1712 | Électro · Deep house instrumentale
+T1713 | Électro · Deep house instrumentale
+T1714 | Électro · Deep house instrumentale
+T1715 | Électro · Deep house instrumentale
+T1716 | Électro · Deep house instrumentale
+T1717 | Électro · Deep house instrumentale
+T1718 | Électro · Deep house instrumentale
+T1719 | Électro · Deep house instrumentale
+T1720 | Électro · Deep house instrumentale
+T1721 | Électro · Deep house instrumentale
+T1722 | Électro · Deep house instrumentale
+T1723 | Électro · Deep house instrumentale
+T1724 | Électro · Deep house instrumentale
+T1725 | Électro · Deep house instrumentale
+T1726 | Électro · Deep house instrumentale
+T1727 | Électro · Deep house instrumentale
+T1728 | Électro · Deep house instrumentale
+T1734 | Électro · Deep house instrumentale
+T1736 | Électro · Deep house instrumentale
+T1737 | Électro · Deep house instrumentale
+T1750 | Électro · Deep house instrumentale
+T1751 | Électro · Deep house instrumentale
+T1753 | Électro · Deep house instrumentale
+T1755 | Électro · Deep house instrumentale
+T1756 | Électro · Deep house instrumentale
+T1757 | Électro · Deep house instrumentale
+T1758 | Électro · Deep house instrumentale
+T1759 | Électro · Deep house instrumentale
+T1760 | Électro · Deep house instrumentale
+T1761 | Électro · Deep house instrumentale
+T1762 | Électro · Deep house instrumentale
+T1763 | Électro · Deep house instrumentale
+T1764 | Électro · Deep house instrumentale
+T1765 | Électro · Deep house instrumentale
+T1766 | Électro · Deep house instrumentale
+T1767 | Électro · Deep house instrumentale
+T1768 | Électro · Deep house instrumentale
+T1769 | Électro · Deep house instrumentale
+T1770 | Électro · Deep house instrumentale
+T1772 | Électro · Deep house instrumentale
+T1773 | Électro · Deep house instrumentale
+T1774 | Électro · Deep house instrumentale
+T1775 | Électro · Deep house instrumentale
+T1776 | Électro · Deep house instrumentale
+T1777 | Électro · Deep house instrumentale
+T1783 | Électro · Deep house instrumentale
+T1784 | Électro · Deep house instrumentale
+T1785 | Électro · Deep house instrumentale
+T1786 | Électro · Deep house instrumentale
+T1787 | Électro · Deep house instrumentale
+T1788 | Électro · Deep house instrumentale
+T1790 | Électro · Deep house instrumentale
+T1793 | Électro · Deep house instrumentale
+T1794 | Électro · Deep house instrumentale
+T1795 | Électro · Deep house instrumentale
+T1797 | Électro · Deep house instrumentale
+T1798 | Électro · Deep house instrumentale
+T1800 | Électro · Deep house instrumentale
+T1801 | Électro · Deep house instrumentale
+T1803 | Électro · Deep house instrumentale
+FIN
