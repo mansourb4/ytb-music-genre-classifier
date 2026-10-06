@@ -617,3 +617,18 @@ manuelle = true
 nom = "Électro · Deep house instrumentale"
 description = "Deep house brute, jazzy ou lo-fi, centrée sur le groove."
 manuelle = true
+
+[[playlist]]
+nom = "Rock · Symphonic rock"
+description = "Rock aux cordes et à l'orchestre : mellotron, envolées symphoniques."
+manuelle = true
+
+[[playlist]]
+nom = "Funk · Latin funk"
+description = "Funk aux couleurs latines : congas, cuivres et basses rondes, du latin soul new-yorkais au groove brésilien des années 70."
+manuelle = true
+
+[[playlist]]
+nom = "Rock · Yacht rock"
+description = "Des grooves funk sophistiqués, des mélodies pop accrocheuses et une orchestration lisse (strings, cuivres, synths). Relax mais refiné. ✨"
+manuelle = true
