@@ -6,15 +6,8 @@
 # Écrites par l'import d'une réponse de Claude.ai, retirées quand tu acceptes
 # (le titre est déplacé) ou refuses (il reste où il est). « (aucune) » propose
 # de ne ranger le titre nulle part.
-4th Sign	Deep Dip	Électro · Downtempo chill	beat lo-fi jazzy instrumental, sans rap
-4th Sign	The Movement	Électro · Downtempo chill	beat lo-fi jazzy instrumental, sans rap
-Al Nather	Mtaktak	Rap · Ailleurs	rap palestinien, pas maghrébin
-Alina Simpson	what falling in love feels like | piano cover	Classique · Moderne contemplatif	piano solo sentimental, avec les autres pièces de piano
 Amadou & Mariam	Sabali	Pop · Indie & synth-pop douce	synth-pop planante produite par Damon Albarn, rien d'acoustique
 Amy Winehouse	Just Friends	Caraïbes · Reggae, dub & dancehall	rocksteady lent et mélancolique, rien de disco
-Andrew Ashong	Low Ceilings	Électro · Broken beat & nu jazz	soul voilée sur rythmique brisée de Kaidi Tatham, pas du disco
-antn42	[FREE] KENDRICK LAMAR X RADIOHEAD TYPE BEAT "WORDS NEVER SPOKEN"	Électro · Downtempo chill	instrumental atmosphérique sans rappeur
-Billie Eilish	Not My Responsibility	Électro · Ambient & nappes	texte parlé sur nappe synthétique inquiète, rien d'une ballade pop
 CA7RIEL & Paco Amoroso	Ca7riel & Paco Amoroso: Tiny Desk Concert	Funk · Funk, boogie & disco	funk-rock argentin, rien de reggaeton ni de cumbia
 Chassol	Birds, Pt. I	Jazz · Contemporain	ultrascore de Chassol, avec Birds Pt. II
 Chassol	Carnaval, Pt. II (Motor & Vuvuzuela)	Jazz · Contemporain	ultrascore de Chassol, détonne à côté du smooth jazz
@@ -25,7 +18,6 @@ Chassol	Générique Big Sun	Jazz · Contemporain	ultrascore de Chassol, avec le 
 Chassol	Haré Rama, Haré Krishna	Jazz · Contemporain	ultrascore de Chassol, avec ses trente autres titres
 Chassol	Reich & Darwin	Jazz · Contemporain	ultrascore de Chassol, rien d'un jazz d'ambiance
 Chassol	The Big Sun (Introïde)	Jazz · Contemporain	ultrascore de Chassol, avec le reste de Big Sun
-Chilly Gonzales	Old Money (Chilly Gonzales Version)	Classique · Moderne contemplatif	piano solo de Gonzales, avec ses autres relectures
 Chilly Gonzales	Rap Piano Medley	Classique · Moderne contemplatif	piano solo de Gonzales, avec ses autres medleys
 Dalida	Helwa Ya Baladi	Orient · Fairouz, tarab & chanson	chanson arabe nostalgique, avec Fairouz et Warda
 Eugen Cicero	Prélude in E Minor, Op. 28 No. 4	Jazz · Bop & cool nocturne	Chopin en trio jazz lent, de fin de soirée
@@ -37,86 +29,41 @@ Floating Points	Movement 4	Jazz · Spiritual jazz	mouvement de Promises, avec le
 Floating Points	Movement 7	Jazz · Spiritual jazz	mouvement de Promises, avec les autres mouvements
 Floating Points	Movement 9	Jazz · Spiritual jazz	dernier mouvement de Promises, avec les autres mouvements
 Frank Sinatra	That's Life (2008 Remastered)	Jazz · Swing & big band	crooner swing, pas de la pop rock
-French The Kid	Thrill	Rap · UK	drill londonienne, pas du rap français
 George Benson	Nature Boy	Jazz · Vocal & ballades	ballade chantée et douce, loin de Chassol
 Guillermo Portabales	Yo Te Canto Puerto Rico	Latino · Boléro, tango & ballades	guajira douce, pas de cuivres ni de fête
-Halba x Foldino	Frisk (feat. Masamasa)	Rap · Ailleurs	rap italien
 Hamid El Shaeri - حميد الشاعري	Git Ya Sheta	Orient · Pop arabe	al jeel de Hamid El Shaeri, avec ses autres titres
-Herbie Hancock	Ostinato (Suite for Angela)	Jazz · Spiritual jazz	ère Mwandishi, aventureux plutôt que virtuose, avec Rain Dance
-Herbie Hancock	Quasar	Jazz · Spiritual jazz	fusion spatiale de l'ère Mwandishi, longues improvisations
-Herbie Hancock	Sleeping Giant	Jazz · Spiritual jazz	suite fleuve de l'ère Mwandishi
-Herbie Hancock	Wandering Spirit Song	Jazz · Spiritual jazz	dérive collective de l'ère Mwandishi, avec les autres titres de cette période
-Herbie Hancock	Water Torture	Jazz · Spiritual jazz	jazz électrique spacieux de l'ère Mwandishi
-Herbie Hancock	You'll Know When You Get There	Jazz · Spiritual jazz	pièce éthérée de l'ère Mwandishi, avec les autres titres de cette période
 Hesham Nour	Oyoun Habibi	Orient · Fairouz, tarab & chanson	ballade arabe, avec la chanson arabe
-Jacques Loussier	Fugue No.1 en ut majeur, BWV 846	Jazz · Bop qui swingue	fugue de Bach swinguée, avec ses autres fugues en trio
-Jacques Loussier	Partita N 1 BWV 825 En Si Bémol Majeur-Allemande	Jazz · Bop qui swingue	Play Bach enlevé, avec ses autres pièces vives
 Jacques Loussier	Partita N 1 BWV 825 En Si Bémol Majeur-Sarabande	Jazz · Bop & cool nocturne	Play Bach calme, avec ses autres préludes lents
 Jacques Loussier	Prélude N 6 En Ré Mineur Clavier Bien Tempere Livre I BWV 851	Jazz · Bop qui swingue	Play Bach enlevé, avec ses autres préludes vifs
-Jacques Loussier	Sonate Pour Flute Et Clavecin En Mi Bemol Majeur BWV 1031 (Sicilienne En Sol Mineur)	Jazz · Bop & cool nocturne	Play Bach feutré, avec ses autres pièces lentes
 Jacques Loussier Trio	Gnossienne No. 1	Jazz · Bop & cool nocturne	trio feutré et lent, rien de spirituel
-Jacques Loussier Trio	Goldberg Variations: Variation 3	Jazz · Bop & cool nocturne	Play Bach calme, avec ses autres pièces lentes
 Joe Armon-Jones	Midnite Oil (Sparkzzz)	Électro · Broken beat & nu jazz	nu jazz londonien rythmé, pas du jazz d'ambiance
-John McDuffy "Brother Jack McDuff"	The Shadow of Your Smile	Jazz · Vocal & ballades	ballade langoureuse à l'orgue, pas du jazz-funk
 Kokoroko	Abusey Junction	Afrique · Folk, blues & mandingue	ballade highlife à la guitare, calme, loin de la transe de Fela
 Laura Itandehui	Yo no Necesito de Mucho	Latino · Boléro, tango & ballades	chanson calme, loin de la salsa
-LAUSSE THE CAT	Belle Bouteille	Rap · UK	rappeur londonien, rap jazzy anglophone
-LAUSSE THE CAT	Coco Channel (feat. B-Ahwe)	Rap · UK	rappeur londonien, rap jazzy anglophone
-LAUSSE THE CAT	Drink With The Leaves (feat. The Young Wizard)	Rap · UK	rappeur londonien, rap jazzy anglophone
-LAUSSE THE CAT	Fuccboi Lullaby (feat. B-Ahwe)	Rap · UK	rappeur londonien, rap jazzy anglophone
-LAUSSE THE CAT	Motor City	Rap · UK	rappeur londonien, rap jazzy anglophone
-LAUSSE THE CAT	Redstripe Rhapsody	Rap · UK	rappeur londonien, rap jazzy anglophone
-LAUSSE THE CAT	Toy's Story	Rap · UK	rappeur londonien, rap jazzy anglophone
 LCD Soundsystem	You Wanted a Hit	Électro · Nu-disco & synth	dance-punk qui groove, pour la piste plutôt que l'IDM
 London Philharmonic Orchestra	Les noces de figaro	Classique · Baroque vif	ouverture de Mozart, classique et allègre plutôt que romantique
-Lonnie Liston Smith	Summer Nights	Jazz · Spiritual jazz	jazz cosmique flottant, avec ses autres titres
-Maceo Plex	Gravy Train (Nicolas Jaar Remix)	Électro · Techno hypnotique	remix minimal lent de Jaar, pas pour la piste
 Madd	N	Rap · FR sombre	rappeur parisien, cloud rap sombre comme le reste de Rap · FR sombre
-Masayoshi Takanaka	Mambo Magic	Jazz · Latin jazz	fusion latine de Takanaka, avec ses autres titres latins
 Maximilian Schairer	Piano Sonatina in C Major, op.55, No.1: I. Allegro	Classique · Baroque vif	sonatine allègre
-Melodiesinfonie	AO Longo Do Rio	Électro · Downtempo chill	instrumental lo-fi jazzy sans rap, avec son autre titre
-Melodiesinfonie	Tropicololo	Électro · Downtempo chill	instrumental lo-fi jazzy sans rap, avec son autre titre
-Melodiesinfonie	Words (feat. Junes)	Électro · Downtempo chill	beat lo-fi jazzy, avec son autre titre
-Nicolas Jaar	And I Say	Électro · Techno hypnotique	minimale lente et feutrée, rien de percutant
-Nicolas Jaar	Divorce	Électro · Ambient & nappes	pièce ambient lente, avec ses autres pièces ambient
-Nicolas Jaar	Killing Time	Électro · Ambient & nappes	piano épars et silences, avec ses autres pièces ambient
-Nicolas Jaar	Mistress	Électro · Ambient & nappes	longue pièce brumeuse, avec ses autres pièces ambient
-Nicolas Jaar	Why Didn't You Save Me	Électro · Techno hypnotique	pulsation minimale nocturne, avec ses autres titres hypnotiques
-O'Donel Levy	Love Story (2024 Remastered Version)	Jazz · Lounge & jazz d'ambiance	thème de film calme à la guitare, aucun groove
-p-rallel	Vibes (feat. Sam Wise & Venna)	Rap · UK	rap londonien avec Sam Wise et Venna
-Pinty	City Limits	Rap · UK	rap londonien sur garage
-Pinty	Honey	Rap · UK	rap britannique sur garage
 Poirier	Café Com Leite	Brésil · Samba & groove	bass tropicale brésilienne et festive, rien d'expérimental
 Polo & Pan	Canopée	Électro · Nu-disco & synth	électro-pop française rêveuse, pas de la house de club
 Precipotato	Wolfgang Amadeus Mozart - Piano Concerto No. 20 in D minor, K. 466	Classique · Baroque vif	concerto dramatique et vif, pas un adagio
 Quincy Jones	Let The Good Times Roll (feat. Stevie Wonder, Ray Charles & Bono)	Jazz · Swing & big band	big band swing, pas du boogie
-Quincy Jones	Love Theme From "The Getaway" (Faraway Forever) (Instrumental)	Jazz · Lounge & jazz d'ambiance	thème de film tendre, harmonica et cordes
 Ragheb Alama	Nasini El Donya	Orient · Fairouz, tarab & chanson	ballade libanaise, avec la chanson arabe
-Rioleval	Teebee03	Électro · Downtempo chill	beat lo-fi instrumental, sans rap
 Rubén González	Melodía del Río	Latino · Boléro, tango & ballades	piano cubain lent, détonne parmi la salsa
 Sade	Clean Heart	Soul · Soul groovy	chanson soul groovy, avec le reste de Sade
 Sade	Every Word	Soul · Soul ballades	ballade de Sade, avec ses autres ballades
 Sade	Flow	Soul · Soul ballades	ballade de Sade, avec ses autres ballades
 Sade	Is It a Crime (Live)	Soul · Soul ballades	ballade soul lente, pas du jazz-funk
-Sade	Kiss of Life	Soul · Soul groovy	groove léger et lumineux, avec sa version live dans Soul groovy
 Sade	Love Is Stronger Than Pride	Soul · Soul ballades	ballade langoureuse, aucun groove jazz-funk
 Sade	Mermaid	Jazz · Lounge & jazz d'ambiance	instrumental planant et feutré, détonne au milieu du disco
 Sade	Sally	Soul · Soul ballades	ballade feutrée, avec les autres ballades de Sade
 Sade	Slave Song	Soul · Soul ballades	ballade lente de Sade, avec ses autres ballades, détonne à côté du dancehall
 Sade	Smooth Operator (Single Version)	Soul · Soul groovy	avec la version live et le reste de Sade groovy, pas du disco
 Saint Levant	WAIN MAADY WAIN / وين معدي وين	Orient · Pop arabe	pop arabe d'aujourd'hui, pas de la grande chanson des années 60
-Sainte	Compare - A COLORS SHOW	Rap · UK	rappeur britannique, avec ses autres titres dans Rap · UK
-Sainté	03'	Rap · UK	rappeur britannique, avec ses autres titres dans Rap · UK
 Sal Davis	Quaboos	Funk · Funk arabe des années 70	funk du Golfe des années 70, même univers que Fakroun
-Serane	S9	Rap · US	plugg de la scène Surf Gang, rap américain
-Sheet Music Boss	guess who's back	Classique · Moderne tendu	piano solo virtuose, pas de la pop rock
 Sherine	Sabry Aalil	Orient · Fairouz, tarab & chanson	ballade égyptienne, plus proche de Warda que de Sting
-Shigeru Suzuki	Passion Flower	Pop · City pop & disco	instrumental city pop, avec ses autres titres
 The Free Music	Law Yom Saalak Had	Funk · Funk arabe des années 70	groupe libyen des années 70, réédité par Habibi Funk
 The Temptations	Papa Was A Rollin' Stone (Single Version)	Soul · Soul groovy	long groove soul psychédélique, pas un slow
 TRAUM	Frédéric Chopin: Étude Op. 10, No. 9 in F Minor (Allegro molto agitato)	Classique · Romantique passionné	étude agitée, pas intime
 Vulax	LAO (Participation au concours d'Avner) VULAX	Classique · Moderne contemplatif	pièce pour piano, avec son autre composition
-WAR	The World is a Ghetto	Soul · Soul ballades	longue soul lente et désabusée, avec la reprise de Will Downing
 YUNDI	Piano Sonata No. 14 in C Minor, K. 457: I. Molto allegro	Classique · Baroque vif	allegro orageux, rien d'un mouvement lent
 YUNDI	Piano Sonata No. 14 in C Minor, K. 457: III. Allegro assai	Classique · Baroque vif	allegro assai rapide et tendu
-Zuukou Mayzie	Vincent	Rap · FR énergique	rappeur parisien, cloud rap énergique
