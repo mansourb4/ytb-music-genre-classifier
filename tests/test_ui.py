@@ -1223,3 +1223,70 @@ def test_the_review_offers_suggestions_too(page, repository, config, tmp_path):
     open_review(page)
     row = page.locator("#review li.track", has_text="Birdland")
     assert row.locator(".suggest button.go").all_text_contents() == ["Jazz · Jazz-funk"]
+
+
+# ------------------------------------------------------------ ordre figé
+
+
+def seed_two_artists(repository, config, tmp_path):
+    """Zed a trois titres peu sûrs, Abe deux : Zed passe en premier."""
+    from ytmgc import verdicts
+    from ytmgc.classifier import classify_tracks
+    from ytmgc.models import Track
+    from ytmgc.verdicts import Verdict, VerdictBook
+
+    plan = tmp_path / "playlists.toml"
+    plan.write_text(MOVE_PLAN, encoding="utf-8")
+    config.taxonomy.playlists_file = str(plan)
+    songs = [("z1", "Zed", "Un"), ("z2", "Zed", "Deux"), ("z3", "Zed", "Trois"),
+             ("a1", "Abe", "Quatre"), ("a2", "Abe", "Cinq")]
+    tracks = [Track(v, title, (artist,)) for v, artist, title in songs]
+    repository.upsert_tracks(tracks)
+    classify_tracks(tracks, repository, FakeDiscogs({}), config)
+    verdicts.save(VerdictBook([
+        Verdict(artist, title, "Jazz", "Fusion", "Calme", 0.2) for _, artist, title in songs
+    ]), config.claude.verdicts_file)
+
+
+def review_artists(page):
+    return [h.split()[0] for h in page.locator("#review .review-group h4").all_text_contents()]
+
+
+def test_the_review_order_does_not_move_while_validating(page, repository, config, tmp_path):
+    """Régression : valider deux titres de Zed le faisait passer derrière Abe,
+    et la liste bougeait sous les yeux."""
+    seed_two_artists(repository, config, tmp_path)
+    open_review(page)
+    assert review_artists(page) == ["Zed", "Abe"]
+
+    for _ in range(2):
+        before = page.locator("#review li.track").count()
+        zed = page.locator("#review .review-group", has=page.locator("h4", has_text="Zed"))
+        zed.locator("li.track button.confirm").first.click()
+        page.wait_for_function(
+            f"() => document.querySelectorAll('#review li.track').length === {before - 1}"
+        )
+
+    assert review_artists(page) == ["Zed", "Abe"]
+
+    # L'ordre tient aussi après un rechargement de la page.
+    page.reload(wait_until="networkidle")
+    open_review(page)
+    assert review_artists(page) == ["Zed", "Abe"]
+
+
+def test_each_mood_is_shown_as_a_coloured_chip(page, repository, config, tmp_path):
+    seed_jazz(repository, config, tmp_path)
+    page.click("#preview-btn")
+    fusion = page.locator('#preview-list details.pl[data-key="plan/jazz-fusion"]')
+    fusion.wait_for()
+    fusion.locator("summary .name").click()
+    chip = fusion.locator(".mood").first
+    assert chip.get_attribute("data-mood") == "Groovy"
+
+
+def test_the_step_bar_links_to_every_step(page):
+    targets = page.locator(".stepnav a").evaluate_all("links => links.map(a => a.hash)")
+    assert len(targets) == 7
+    for target in targets:
+        assert page.locator(target).count() == 1, target
