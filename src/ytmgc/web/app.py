@@ -21,6 +21,7 @@ from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field
 
+from ytmgc import playlist_review
 from ytmgc import verdicts as verdict_file
 from ytmgc.classifier import classify_tracks
 from ytmgc.config import Config, load_config
@@ -141,6 +142,11 @@ class NewPlaylistRequest(BaseModel):
 
 class ConfirmRequest(BaseModel):
     video_ids: list[str] = Field(default_factory=list)
+
+
+class ReviewImportRequest(BaseModel):
+    #: Réponse de Claude.ai à un fichier de la relecture par playlist.
+    text: str = Field(min_length=1)
 
 
 class PreviewRequest(BaseModel):
@@ -791,6 +797,8 @@ def create_app(services: Services) -> FastAPI:
             else:
                 book.put(track, name)
         placements.save(book, path)
+        # Déplacer à la main tranche aussi une proposition de la relecture.
+        playlist_review.discard(config.taxonomy.proposals_file, tracks)
         return {
             # Où chaque titre se trouve désormais, et comment l'afficher : la
             # page se met à jour sur place, sans redemander l'aperçu entier —
@@ -830,6 +838,7 @@ def create_app(services: Services) -> FastAPI:
             for track in tracks:
                 book.put(track, playlist.name)
             placements.save(book, config.taxonomy.placements_file)
+            playlist_review.discard(config.taxonomy.proposals_file, tracks)
         return {
             "target": {"key": playlist.key, "name": playlist.name},
             "placed": _placed([t.video_id for t in tracks]) if tracks else {},
@@ -837,10 +846,7 @@ def create_app(services: Services) -> FastAPI:
             "file": str(Path(config.taxonomy.playlists_file).resolve()),
         }
 
-    @app.post("/api/verdicts/confirm")
-    def confirm(request: ConfirmRequest) -> dict:
-        """« C'est bon » : le verdict, relu, devient une décision. Il passe en
-        source « manuel » — jamais réécrit par le modèle, plus jamais à vérifier."""
+    def _confirm(video_ids: list[str]) -> int:
         from ytmgc import verdicts
         from ytmgc.verdicts import track_key
 
@@ -848,16 +854,128 @@ def create_app(services: Services) -> FastAPI:
         path = config.claude.verdicts_file
         book = verdicts.load(path)
         confirmed = 0
-        for video_id in dict.fromkeys(request.video_ids):
-            track = by_id.get(video_id)
-            verdict = book.get(track_key(track)) if track else None
+        tracks = [by_id[v] for v in dict.fromkeys(video_ids) if v in by_id]
+        for track in tracks:
+            verdict = book.get(track_key(track))
             if verdict is None or verdict.source == verdicts.MANUAL:
                 continue
             book.add(verdicts.manual(verdict))
             confirmed += 1
         if confirmed:
             verdicts.save(book, path)
-        return {"confirmed": confirmed, "file": str(Path(path).resolve())}
+        playlist_review.discard(config.taxonomy.proposals_file, tracks)
+        return confirmed
+
+    @app.post("/api/verdicts/confirm")
+    def confirm(request: ConfirmRequest) -> dict:
+        """« C'est bon » : le verdict, relu, devient une décision. Il passe en
+        source « manuel » — jamais réécrit par le modèle, plus jamais à vérifier."""
+        confirmed = _confirm(request.video_ids)
+        return {"confirmed": confirmed, "file": str(Path(config.claude.verdicts_file).resolve())}
+
+    # ---------------------------------------------- relecture par playlist
+
+    def _review_state() -> dict:
+        return {
+            "files": [{**f, "url": f"/api/review/files/{f['name']}"}
+                      for f in playlist_review.export_state(config)],
+            "directory": str(playlist_review.directory(config).resolve()),
+        }
+
+    def _review_context():
+        """L'aperçu « Par famille » et ce que la relecture en tire : où est
+        chaque morceau, et lesquels ont été décidés à la main."""
+        from ytmgc import placements, verdicts
+        from ytmgc.playlist_plan import PlanError, load_plan
+        from ytmgc.taxonomy import load_taxonomy
+
+        scoped = _scoped("familles")
+        try:
+            summary, plans, _ = build_preview(repository, scoped, sort_mode="familles")
+            plan = load_plan(config.taxonomy.playlists_file, load_taxonomy())
+        except PlanError as exc:
+            raise HTTPException(400, str(exc)) from exc
+        tracks = {t.video_id: t for t in repository.all_tracks()}
+        fixed = playlist_review.fixed_keys(
+            verdicts.load(config.claude.verdicts_file),
+            placements.load(config.taxonomy.placements_file),
+        )
+        return summary, plan, tracks, playlist_review.located(plans, tracks), fixed
+
+    @app.get("/api/review/export")
+    def review_export_state() -> dict:
+        return _review_state()
+
+    @app.post("/api/review/export")
+    def review_export() -> dict:
+        """Écrit les playlists du plan en fichiers pour Claude.ai."""
+        summary, plan, _, _, fixed = _review_context()
+        if not any(p.tracks for p in summary.playlists):
+            raise HTTPException(400, "Aucune playlist à relire : lance d'abord l'analyse.")
+        playlist_review.export_review(summary, plan, config, fixed)
+        return _review_state()
+
+    @app.get("/api/review/files/{name}")
+    def review_file(name: str) -> FileResponse:
+        path = playlist_review.export_path(config, name)
+        if path is None:
+            raise HTTPException(404, "Fichier inconnu : refais l'export.")
+        return FileResponse(path, media_type="text/plain; charset=utf-8", filename=name)
+
+    @app.post("/api/review/import")
+    def review_import(request: ReviewImportRequest) -> dict:
+        """Lit une réponse de Claude.ai : ses intrus deviennent des propositions."""
+        from ytmgc.chat import ChatError
+
+        _, plan, tracks, where, fixed = _review_context()
+        try:
+            reading = playlist_review.import_answer(
+                request.text, list(tracks.values()), plan, where, fixed, config
+            )
+        except ChatError as exc:
+            raise HTTPException(400, str(exc)) from exc
+        # Les propositions en attente, à jour : la page les affiche sans
+        # recalculer l'aperçu ni relire le compte YouTube Music.
+        summary, _, _ = build_preview(repository, _scoped("familles"), sort_mode="familles")
+        return {
+            "proposals": summary.proposals,
+            "proposed": len(reading.proposals),
+            "in_place": reading.in_place,
+            "rejected": reading.rejected,
+            "part": reading.part,
+            **_review_state(),
+        }
+
+    @app.post("/api/review/accept")
+    def review_accept(request: ConfirmRequest) -> dict:
+        """Accepter : chaque titre part dans la playlist proposée pour lui."""
+        from ytmgc import placements
+        from ytmgc.verdicts import track_key
+
+        by_id = {t.video_id: t for t in repository.all_tracks()}
+        pending = playlist_review.load(config.taxonomy.proposals_file)
+        book = placements.load(config.taxonomy.placements_file)
+        moved = []
+        for video_id in dict.fromkeys(request.video_ids):
+            track = by_id.get(video_id)
+            proposal = pending.get(track_key(track)) if track else None
+            if proposal is None:
+                continue
+            book.put(track, proposal.playlist)
+            pending.discard(proposal.key)
+            moved.append(track)
+        if not moved:
+            raise HTTPException(404, "Plus de proposition pour ces titres : recalcule l'aperçu.")
+        placements.save(book, config.taxonomy.placements_file)
+        playlist_review.save(pending, config.taxonomy.proposals_file)
+        return {"placed": _placed([t.video_id for t in moved]), "count": len(moved)}
+
+    @app.post("/api/review/refuse")
+    def review_refuse(request: ConfirmRequest) -> dict:
+        """Refuser : le titre reste où il est, et son verdict est validé — il
+        ne sera plus proposé ni à vérifier."""
+        _confirm(request.video_ids)
+        return {"placed": _placed(request.video_ids), "count": len(request.video_ids)}
 
     # -------------------------------------------------------- application
 

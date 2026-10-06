@@ -50,6 +50,7 @@ et relancés sans perte, et `plan`/`apply` se rejouent hors ligne.
 | `classifier.py` | Orchestration titre → candidats → classification. |
 | `planner.py` | Classifications → ensemble de playlists souhaité. Hors ligne. |
 | `origins.py` | Pays d'origine des artistes (`data/pays.txt`), pour les règles `pays` du plan. |
+| `playlist_review.py` | Relecture par playlist : playlists exportées en fichiers pour Claude.ai, lecture des intrus signalés, propositions en attente (`data/propositions.txt`). |
 | `placements.py` | Déplacements faits à la main dans l'aperçu : fichier `data/placements.txt`, résolution par morceau, priorité sur les règles. |
 | `playlist_plan.py` | Tri « Par famille » : lecture et vérification de `config/playlists.toml`, affectation de chaque morceau à la première playlist dont une règle l'accepte. |
 | `sync.py` | Diff état souhaité / état distant, puis application. |
@@ -712,12 +713,44 @@ publications.
   la playlist en cours de relecture. Le gestionnaire est lié une seule fois,
   l'aperçu étant reconstruit à chaque calcul.
 
+### 21. Relire des playlists plutôt que des titres
+
+Vérifier un par un les ~800 titres au verdict peu sûr s'est révélé
+intenable : des heures de clics, dont la moitié confirmait un titre déjà bien
+rangé (sur les 24 premières décisions, 12 validations pour 12
+déplacements). Et la question posée était la mauvaise : un titre jugé seul ne
+dit pas s'il garde la vibe de sa playlist.
+
+La relecture exporte donc les *playlists* entières — nom, description, tous
+les titres — en quelques fichiers pour Claude.ai, chacun avec la liste de
+toutes les playlists du plan et leur description. Claude ne répond que pour
+les intrus : `artiste | titre | playlist proposée | raison`. Repérer ce qui
+détonne dans une liste est exactement ce qu'un modèle fait bien, et ce
+qu'aucune règle sur le genre ne capture.
+
+* **Une proposition n'est qu'un avis.** Elle attend dans
+  `data/propositions.txt` ; « Accepter » en fait un déplacement, « Garder
+  ici » valide le verdict du titre. Rien ne bouge sans un clic.
+* **Ce qui a été décidé à la main n'est jamais proposé** — titre déplacé ou
+  verdict validé. Il figure dans les fichiers, marqué `[validé]`, parce qu'il
+  dit ce qu'est la playlist. Un déplacement fait à la main tranche aussi la
+  proposition du titre.
+* **Les familles voyagent ensemble.** Les fichiers (600 titres au plus) ne
+  coupent jamais une playlist et regroupent les playlists d'une même famille :
+  Claude juge mieux « Jazz · Bop » quand « Jazz · Fusion » est sous ses yeux.
+* **La réponse est lue avec défiance**, comme celle des verdicts : un titre
+  introuvable ou une playlist hors du plan sont écartés avec leur raison. Les
+  noms de playlist sont tolérés sans accents ni casse, ou sans la famille
+  quand le nom est unique.
+* **Le fichier répondu est noté** grâce à la ligne `FICHIER n SUR m` que la
+  réponse recopie ; `RIEN` est une réponse valide.
+
 ## Tests
 
-682 tests, aucun appel réseau, y compris l'API web complète (aperçu,
+704 tests, aucun appel réseau, y compris l'API web complète (aperçu,
 application, annulation), son contrôle d'accès et les quatre voies de connexion.
 
-Quatre-vingt-cinq d’entre eux chargent l’interface dans un vrai navigateur (`tests/test_ui.py`).
+Quatre-vingt-huit d’entre eux chargent l’interface dans un vrai navigateur (`tests/test_ui.py`).
 Le câblage du DOM échappe aux tests Python : deux défauts d'onglets sont passés
 au travers de la suite avant d'être vus à l'écran. Ces tests sont ignorés
 lorsque Playwright ou son navigateur sont absents, pour que la suite reste

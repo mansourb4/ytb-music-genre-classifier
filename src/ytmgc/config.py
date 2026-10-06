@@ -144,6 +144,8 @@ class TaxonomyConfig:
     placements_file: str = "data/placements.txt"
     #: Pays d'origine des artistes, pour les règles « pays » du plan.
     origins_file: str = "data/pays.txt"
+    #: Propositions de la relecture par playlist, en attente de décision.
+    proposals_file: str = "data/propositions.txt"
 
 
 @dataclass(slots=True)

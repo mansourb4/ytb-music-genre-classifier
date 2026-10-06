@@ -258,7 +258,7 @@ def test_preview_rows_expand_to_show_track_details(page):
     des milliers de lignes inutiles."""
     render_sample_preview(page)
 
-    row = page.locator("details.pl").first
+    row = page.locator("#preview-list details.pl").first
     assert row.locator("img.pl-cover").count() == 1
     assert page.locator("li.track").count() == 0, "Les titres ne doivent pas être construits repliés"
 
@@ -277,7 +277,7 @@ def test_preview_rows_expand_to_show_track_details(page):
 
 def test_a_track_without_artwork_keeps_its_row_aligned(page):
     render_sample_preview(page)
-    page.locator("details.pl").first.click()
+    page.locator("#preview-list details.pl").first.click()
     page.wait_for_selector("li.track")
     assert page.locator("li.track .cover.empty").count() == 1
 
@@ -285,7 +285,7 @@ def test_a_track_without_artwork_keeps_its_row_aligned(page):
 def test_playlists_and_tracks_can_be_unchecked(page):
     """La sélection de l'aperçu commande ce qui sera réellement appliqué."""
     render_sample_preview(page)
-    row = page.locator("details.pl").first
+    row = page.locator("#preview-list details.pl").first
     row.click()
     page.wait_for_selector("li.track")
 
@@ -301,7 +301,7 @@ def test_playlists_and_tracks_can_be_unchecked(page):
 
 def test_unchecking_a_playlist_unchecks_its_tracks(page):
     render_sample_preview(page)
-    row = page.locator("details.pl").first
+    row = page.locator("#preview-list details.pl").first
     row.click()
     page.wait_for_selector("li.track")
 
@@ -315,7 +315,7 @@ def test_unchecking_a_playlist_unchecks_its_tracks(page):
 
 def test_the_selection_total_is_shown(page):
     render_sample_preview(page)
-    page.locator("details.pl").first.click()
+    page.locator("#preview-list details.pl").first.click()
     page.wait_for_selector("li.track")
     assert "2" in page.locator("#preview-selection").text_content()
 
@@ -497,7 +497,7 @@ def test_track_tags_are_shown_to_explain_the_placement(page):
         },
       });
     }""")
-    page.locator("details.pl").first.click()
+    page.locator("#preview-list details.pl").first.click()
     page.wait_for_selector("li.track")
 
     tags = page.locator(".track-tags").text_content()
@@ -1221,12 +1221,82 @@ def test_a_track_can_be_removed_from_every_playlist(page, repository, config, tm
     assert "Rendre aux règles" in picker_specials(page)
 
 
+# ------------------------------------------------- relecture par Claude
+
+REVIEW_ANSWER = """```
+FICHIER 1 SUR 1
+Herbie Hancock | Chameleon | Jazz · Fusion | longue jam électrique
+Herbie Hancock | Watermelon Man | Jazz · Fusion | même énergie que Birdland
+```"""
+
+
+def import_review(page, repository, config, tmp_path):
+    seed_jazz(repository, config, tmp_path)
+    page.click("#preview-btn")
+    page.locator("#claude-review summary").wait_for()
+    page.click("#claude-review summary")
+    page.fill("#cr-answer", REVIEW_ANSWER)
+    page.click("#cr-import")
+    page.locator("#proposals li.proposal").first.wait_for()
+
+
+def test_claude_proposals_are_listed_by_playlist(page, repository, config, tmp_path):
+    previews = []
+    page.on("request", lambda r: previews.append(r.url) if "/api/preview" in r.url else None)
+    import_review(page, repository, config, tmp_path)
+
+    assert "2 proposition(s) ajoutée(s)" in page.text_content("#cr-msg")
+    group = page.locator("#proposals .proposal-group")
+    assert group.count() == 1
+    assert "Jazz · Jazz-funk" in group.locator("h4").text_content()
+    chameleon = group.locator("li.proposal", has_text="Chameleon")
+    assert "Jazz · Fusion" in chameleon.locator(".proposal-to").text_content()
+    assert "longue jam électrique" in chameleon.text_content()
+    assert "2 proposition(s) à trancher" in page.text_content("#cr-count")
+    # L'import n'a pas recalculé l'aperçu : une seule requête, celle du bouton.
+    assert len(previews) == 1
+
+
+def test_accepting_moves_and_keeping_validates(page, repository, config, tmp_path):
+    from ytmgc import placements, verdicts
+    from ytmgc.models import Track
+
+    import_review(page, repository, config, tmp_path)
+    row = page.locator("#proposals li.proposal", has_text="Chameleon")
+    row.locator("button.accept").click()
+    page.wait_for_function(
+        "() => document.querySelector('#preview-msg').textContent.includes('déplacé')")
+    assert [p.playlist for p in placements.load(config.taxonomy.placements_file)] == ["Jazz · Fusion"]
+    assert "2 titres" in page.locator(
+        '#preview-list details.pl[data-key="plan/jazz-fusion"] .count').text_content()
+
+    page.locator("#proposals li.proposal", has_text="Watermelon").locator("button.keep").click()
+    page.wait_for_function("() => !document.querySelector('#proposals li.proposal')")
+    verdict = verdicts.load(config.claude.verdicts_file).for_track(
+        Track("j2", "Watermelon Man", ("Herbie Hancock",)))
+    assert verdict.source == verdicts.MANUAL
+    assert len(placements.load(config.taxonomy.placements_file)) == 1
+
+
+def test_the_review_files_can_be_prepared_and_downloaded(page, repository, config, tmp_path):
+    seed_jazz(repository, config, tmp_path)
+    page.click("#preview-btn")
+    page.locator("#claude-review summary").wait_for()
+    page.click("#claude-review summary")
+    page.click("#cr-export")
+    link = page.locator("#cr-files a")
+    link.wait_for()
+    assert link.text_content() == "playlists-1-sur-1.txt"
+    assert "0 réponse(s) importée(s) sur 1" in page.text_content("#cr-export-msg")
+
+
 def test_no_move_menu_outside_the_family_sort(page):
     render_sample_preview(page)
-    page.locator("details.pl").first.click()
+    page.locator("#preview-list details.pl").first.click()
     page.wait_for_selector("li.track")
     assert page.locator("button.move").count() == 0
     assert page.locator("button.drop").count() == 0
+    assert page.locator("#claude-review").is_hidden()
 
 
 # --------------------------------------------------------------- relecture

@@ -476,6 +476,17 @@ versionné comme les verdicts et modifiable à la main. Toutes les publications
 d'un même morceau suivent le déplacement. Si la playlist visée disparaît du
 plan, l'aperçu le signale et le titre suit les règles en attendant.
 
+**Relecture par Claude — plutôt que de vérifier chaque titre.** Dans l'étape
+6, « Relecture par Claude » exporte toutes tes playlists en quelques fichiers
+(`data/export/relecture/`). Glisse chacun dans une nouvelle conversation
+claude.ai, écris « Vas-y », et recolle la réponse : Claude relit chaque
+playlist en entier et ne signale que les titres qui en cassent la vibe, avec
+la playlist où ils iraient mieux. Ses propositions s'affichent, groupées par
+playlist : « Accepter » déplace le titre, « Garder ici » le laisse et valide
+son verdict, « Tout accepter » tranche une playlist d'un coup. Ce que tu as
+déjà déplacé ou validé n'est jamais proposé. Les propositions en attente sont
+dans `data/propositions.txt`.
+
 **Créer une playlist.** Un titre qui n'a sa place nulle part : « ＋ Nouvelle
 playlist… » après « Déplacer » — ou tape son nom dans la recherche, puis
 « Créer la playlist » — (ou le bouton « ＋ Nouvelle

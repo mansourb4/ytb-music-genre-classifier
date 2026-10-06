@@ -137,6 +137,9 @@ class LibraryPreview:
     to_review: int = 0
     #: Artistes nommés par le plan sans titre dans la bibliothèque.
     unknown_artists: list[str] = field(default_factory=list)
+    #: Relecture par playlist : les déplacements proposés par Claude.ai, en
+    #: attente de décision.
+    proposals: list[dict] = field(default_factory=list)
 
     def to_dict(self) -> dict:
         return asdict(self)
@@ -397,6 +400,34 @@ def _image(video_ids: tuple[str, ...], tracks: dict[str, Track]) -> str | None:
     return None
 
 
+def _proposals(plans, tracks, book, wished, plan, config) -> list[dict]:
+    """Les propositions de la relecture par playlist, prêtes à afficher."""
+    from ytmgc import playlist_review
+    from ytmgc.verdicts import track_key
+
+    where = playlist_review.located(plans, tracks)
+    fixed = (playlist_review.fixed_keys(book, [])
+             | {track_key(tracks[v]) for v in wished if v in tracks})
+    names = {p.key: p.name for p in plan.playlists}
+    rows = []
+    for track, proposal in playlist_review.pending(
+        config.taxonomy.proposals_file, tracks, where, fixed, plan
+    ):
+        current = where.get(track_key(track))
+        rows.append({
+            "video_id": track.video_id,
+            "title": track.title,
+            "artist": ", ".join(track.artists),
+            "thumbnail": track.thumbnail,
+            "from_key": current,
+            "from_name": names.get(current) if current else None,
+            "to_key": proposal.target,
+            "to_name": proposal.playlist,
+            "reason": proposal.reason,
+        })
+    return rows
+
+
 def build_preview(
     repository: Repository,
     config: Config,
@@ -521,6 +552,8 @@ def build_preview(
             )
         )
 
+    proposals = _proposals(plans, tracks, book, wished, plan, config) if plan else []
+
     placed = {video_id for item in plans for video_id in item.video_ids}
     unsorted = _unsorted(tracks, by_video, placed, config,
                          kept_out={v for v, p in honoured.items() if p.nowhere})
@@ -556,6 +589,7 @@ def build_preview(
         unknown_artists=(
             plan.unknown_artists([track.artists for track in tracks.values()]) if plan else []
         ),
+        proposals=proposals,
         created=sum(1 for p in previews if p.change == "création"),
         updated=sum(1 for p in previews if p.change == "mise à jour"),
         unchanged=sum(1 for p in previews if p.change == "inchangée"),

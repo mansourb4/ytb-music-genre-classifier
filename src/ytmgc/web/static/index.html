@@ -274,9 +274,24 @@ a.play:hover { background: var(--accent); color: #fff; transform: scale(1.06); }
 .suggest button.go::before { content: "→ "; opacity: .6; }
 .suggest button.go:hover:not(:disabled) { background: var(--accent); color: #fff; border-color: var(--accent); }
 
-button.confirm { flex: 0 0 auto; font-size: .8rem; padding: .35rem .75rem; border-radius: 999px;
+button.confirm, button.accept { flex: 0 0 auto; font-size: .8rem; padding: .35rem .75rem; border-radius: 999px;
   color: var(--ok); background: var(--ok-soft); border: 1px solid transparent; }
-button.confirm:hover:not(:disabled) { background: var(--ok); color: #fff; border-color: var(--ok); }
+button.confirm:hover:not(:disabled), button.accept:hover:not(:disabled) { background: var(--ok); color: #fff; border-color: var(--ok); }
+button.keep { flex: 0 0 auto; font-size: .8rem; padding: .35rem .75rem; border-radius: 999px; }
+
+/* Relecture par Claude : ses propositions, à accepter ou refuser. */
+#claude-review .body > .hint:first-child { margin-top: .2rem; }
+.cover.spark { display: grid; place-items: center; color: var(--accent); font-size: 1.1rem; background: var(--accent-soft); }
+.proposal-group { margin: 0 0 1rem; padding: .8rem .9rem; border: 1px solid var(--border);
+  border-radius: var(--radius-sm); background: var(--surface); }
+.proposal-group > h4 { display: flex; flex-wrap: wrap; align-items: center; gap: .5rem; margin: 0 0 .4rem; font-size: .98rem; }
+.proposal-group > h4 .n { color: var(--muted); font-weight: 500; font-size: .8rem;
+  background: var(--surface-2); border-radius: 999px; padding: .05rem .5rem; }
+.proposal-group > h4 .row { margin-left: auto; gap: .4rem; }
+.proposal-to { display: inline-block; margin-top: .25rem; font-size: .8rem; font-weight: 600; color: var(--accent-strong);
+  background: var(--accent-soft); border-radius: 999px; padding: .1rem .6rem; }
+.proposal-to::before { content: "→ "; opacity: .6; }
+.proposal-to.nowhere { color: var(--danger); background: var(--danger-soft); }
 
 /* --------------------------------------------------------------- relecture */
 #review details.review { border-color: color-mix(in srgb, var(--warn) 40%, var(--border));
@@ -438,7 +453,7 @@ dialog#move-picker::backdrop { background: rgba(20, 16, 34, .45); backdrop-filte
   .track { flex-wrap: wrap; align-items: flex-start; }
   .track .cover { display: none; }
   .track-main { flex-basis: calc(100% - 4.6rem); }
-  .track button.move { margin-left: auto; }
+  .track button.move, .track button.accept { margin-left: auto; }
   .tabs { border-radius: 14px; }
 }
 </style>
@@ -711,6 +726,48 @@ dialog#move-picker::backdrop { background: rgba(20, 16, 34, .45); backdrop-filte
   <p class="hint spacer">Ce que deviendra ton compte avec le tri choisi. Coche ou décoche des playlists et des titres avant d'appliquer.</p>
   <div id="preview-summary" class="stats spacer hidden"></div>
   <div id="preview-msg" class="msg spacer"></div>
+  <details id="claude-review" class="pl spacer" hidden>
+    <summary>
+      <span class="cover spark" aria-hidden="true">✦</span>
+      <span class="name">Relecture par Claude</span>
+      <span class="count" id="cr-count"></span>
+    </summary>
+    <div class="body">
+      <p class="hint">Plutôt que de vérifier chaque titre : Claude relit chaque playlist en entier et ne
+        signale que les titres qui en cassent la vibe, avec la playlist où ils iraient mieux. Tu n'as plus
+        qu'à accepter ou refuser ses propositions. Ce que tu as déjà déplacé ou validé n'est jamais proposé.</p>
+      <ol class="chat-steps">
+        <li>
+          <b>Prépare les fichiers.</b>
+          <p class="hint">Toutes les playlists, réparties en quelques fichiers, chacun avec la liste des
+            playlists où Claude peut proposer de ranger un titre.</p>
+          <div class="row">
+            <button class="primary" id="cr-export">Préparer les fichiers</button>
+            <span class="msg" id="cr-export-msg"></span>
+          </div>
+          <div id="cr-files" class="chat-files"></div>
+        </li>
+        <li>
+          <b>Un fichier par conversation.</b>
+          <p class="hint">Ouvre une <a class="button-link" href="https://claude.ai/new" target="_blank" rel="noopener">nouvelle
+            conversation sur claude.ai ↗</a>, glisses-y le fichier et écris « Vas-y ».</p>
+        </li>
+        <li>
+          <b>Recolle chaque réponse ici.</b>
+          <p class="hint">Copie avec le bouton « Copier » du bloc de code. Les propositions s'affichent
+            juste en dessous.</p>
+          <textarea id="cr-answer" class="mono" rows="5" placeholder="artiste | titre | playlist proposée | raison"></textarea>
+          <div class="row spacer">
+            <button class="primary" id="cr-import">Importer</button>
+            <label class="file-pick">ou dépose un fichier <input type="file" id="cr-file" accept=".txt,.md,text/plain"></label>
+            <span class="msg" id="cr-msg"></span>
+          </div>
+          <ul id="cr-rejected" class="rejected"></ul>
+        </li>
+      </ol>
+    </div>
+  </details>
+  <div id="proposals" class="spacer"></div>
   <div id="review" class="spacer"></div>
   <p id="preview-selection" class="total spacer"></p>
   <div id="preview-list" class="spacer"></div>
@@ -1274,6 +1331,8 @@ function renderPreview(data) {
     (p.to_review ? stat(p.to_review, "à vérifier") : "");
 
   renderUnsorted(p);
+  $("claude-review").hidden = !previewTargets.length;
+  renderProposals(p);
   renderReview(p);
 
   if (!p.playlists.length) {
@@ -1639,6 +1698,7 @@ function applyPlaced(placed) {
   const ids = new Set(Object.keys(placed));
   p.playlists.forEach((pl) => { pl.tracks = pl.tracks.filter((t) => !ids.has(t.video_id)); });
   p.unsorted = (p.unsorted || []).filter((u) => !ids.has(u.video_id));
+  p.proposals = (p.proposals || []).filter((x) => !ids.has(x.video_id));
   Object.values(placed).forEach((info) => {
     if (info.playlist) {
       let pl = p.playlists.find((x) => x.key === info.playlist);
@@ -1678,6 +1738,7 @@ document.addEventListener("click", async (event) => {
     lastPreview.playlists.forEach((pl) => pl.tracks.forEach((t) => {
       if (ids.has(t.video_id)) t.unsure = false;
     }));
+    lastPreview.proposals = (lastPreview.proposals || []).filter((x) => !ids.has(x.video_id));
     recount(lastPreview);
     redraw();
     $("preview-msg").innerHTML = `${done.confirmed} verdict(s) validé(s), notés « manuel » dans <code>${escapeHtml(done.file)}</code>.`;
@@ -2322,6 +2383,168 @@ $("chat-file").addEventListener("change", async (event) => {
   event.target.value = "";
 });
 
+// ------------------------------------------------- relecture par Claude
+
+function renderReviewFiles(data) {
+  const files = data.files || [];
+  const answered = files.filter((f) => f.answered).length;
+  $("cr-files").innerHTML = files.map((file) => `
+    <div class="chat-file ${file.answered ? "done" : ""}">
+      <a class="button-link" href="${escapeHtml(file.url)}" download>${escapeHtml(file.name)}</a>
+      <span class="count">${file.answered ? "✓ réponse importée"
+        : `${file.playlists} playlists · ${file.tracks} titres`}</span>
+    </div>`).join("");
+  $("cr-export-msg").textContent = files.length
+    ? `${answered} réponse(s) importée(s) sur ${files.length}. Fichiers aussi sur ton disque : ${data.directory}`
+    : "";
+}
+
+async function refreshReviewFiles() {
+  try {
+    renderReviewFiles(await api("/api/review/export"));
+  } catch (_error) {
+    // Pas encore de relecture : rien à montrer.
+  }
+}
+
+$("cr-export").addEventListener("click", async () => {
+  $("cr-export-msg").textContent = "Préparation…";
+  try {
+    renderReviewFiles(await api("/api/review/export", {}));
+  } catch (error) {
+    $("cr-export-msg").textContent = error.message;
+  }
+});
+
+function reviewMessage(text, isError) {
+  $("cr-msg").textContent = text;
+  $("cr-msg").classList.toggle("error", Boolean(isError));
+}
+
+async function importReview(text) {
+  $("cr-rejected").innerHTML = "";
+  if (!text.trim()) {
+    reviewMessage("Colle d'abord la réponse de Claude, ou dépose son fichier.", true);
+    return;
+  }
+  reviewMessage("Lecture de la réponse…");
+  try {
+    const result = await api("/api/review/import", { text });
+    const parts = [`${result.proposed} proposition(s) ajoutée(s)`];
+    if (result.part) parts.unshift(`Fichier ${result.part}`);
+    if (result.in_place) parts.push(`${result.in_place} titre(s) déjà à la bonne place`);
+    if (result.rejected.length) parts.push(`${result.rejected.length} ligne(s) écartée(s)`);
+    reviewMessage(parts.join(" · ") + ".");
+    $("cr-rejected").innerHTML = result.rejected.map((r) => `<li>${escapeHtml(r)}</li>`).join("");
+    $("cr-answer").value = "";
+    renderReviewFiles(result);
+    if (lastPreview) {
+      lastPreview.proposals = result.proposals;
+      redraw();
+    }
+  } catch (error) {
+    reviewMessage(error.message, true);
+  }
+}
+
+$("cr-import").addEventListener("click", () => importReview($("cr-answer").value));
+$("cr-file").addEventListener("change", async (event) => {
+  const file = event.target.files[0];
+  if (file) await importReview(await file.text());
+  event.target.value = "";
+});
+
+/**
+ * Les propositions de Claude, regroupées par playlist d'origine : c'est en
+ * parcourant une playlist qu'on juge ce qui en sort.
+ */
+function renderProposals(p) {
+  const box = $("proposals");
+  const rows = p.proposals || [];
+  $("cr-count").textContent = rows.length ? `${rows.length} proposition(s) à trancher` : "";
+  if (!rows.length) {
+    box.innerHTML = "";
+    return;
+  }
+  const known = new Map();
+  (p.playlists || []).forEach((pl) => pl.tracks.forEach((t) => known.set(t.video_id, t)));
+  const groups = new Map();
+  rows.forEach((row) => {
+    const from = row.from_name || "Non rangés";
+    if (!groups.has(from)) groups.set(from, []);
+    groups.get(from).push(row);
+  });
+  const ordered = [...groups.entries()].sort((a, b) => a[0].localeCompare(b[0], "fr"));
+  const html = ordered.map(([from, items]) => {
+    const ids = items.map((r) => r.video_id).join(",");
+    const list = items.map((row) => {
+      const track = known.get(row.video_id);
+      const facts = track
+        ? [track.styles.length ? escapeHtml(track.styles.join(" · ")) : "", track.mood ? moodChip(track.mood) : ""]
+          .filter(Boolean).join(" · ")
+        : "";
+      return `<li class="track proposal">
+        ${playLink(row.video_id)}
+        <div class="track-main">
+          <span class="track-text"><b>${escapeHtml(row.title)}</b>
+            <span class="track-artist">${escapeHtml(row.artist)}</span>
+            ${facts ? `<span class="track-facts">${facts}</span>` : ""}
+            ${row.reason ? `<span class="track-note">${escapeHtml(row.reason)}</span>` : ""}
+          </span>
+          <span><span class="proposal-to ${row.to_key ? "" : "nowhere"}">${
+            row.to_key ? escapeHtml(row.to_name) : "Nulle part"}</span></span>
+        </div>
+        <button class="accept" data-videos="${escapeHtml(row.video_id)}">✓ Accepter</button>
+        <button class="keep" data-videos="${escapeHtml(row.video_id)}" title="Le titre reste dans « ${
+          escapeHtml(from)} », et son verdict est validé">Garder ici</button>
+      </li>`;
+    }).join("");
+    return `<div class="proposal-group">
+      <h4>${escapeHtml(from)} <span class="n">${items.length}</span>
+        ${items.length > 1 ? `<span class="row">
+          <button class="accept" data-videos="${escapeHtml(ids)}">✓ Tout accepter</button>
+          <button class="keep" data-videos="${escapeHtml(ids)}">Tout garder</button></span>` : ""}
+      </h4>
+      <ul class="tracks">${list}</ul>
+    </div>`;
+  }).join("");
+  box.innerHTML = `<details class="pl review" open>
+    <summary>
+      <span class="cover spark" aria-hidden="true">✦</span>
+      <span class="name">${rows.length} déplacement(s) proposé(s) par Claude</span>
+      <span class="count">${ordered.length} playlist(s)</span>
+    </summary>
+    <div class="body">
+      <p class="hint">Écoute en cas de doute (▶). « Accepter » range le titre dans la playlist proposée ;
+        « Garder ici » le laisse où il est et valide son verdict. Dans les deux cas, il ne sera plus proposé.</p>
+      ${html}
+    </div>
+  </details>`;
+}
+
+document.addEventListener("click", async (event) => {
+  const button = event.target.closest("button.accept, button.keep");
+  if (!button) return;
+  event.preventDefault();
+  const ids = button.dataset.videos.split(",");
+  const accept = button.classList.contains("accept");
+  button.disabled = true;
+  try {
+    const done = await api(accept ? "/api/review/accept" : "/api/review/refuse", { video_ids: ids });
+    const gone = new Set(ids);
+    lastPreview.proposals = (lastPreview.proposals || []).filter((x) => !gone.has(x.video_id));
+    applyPlaced(done.placed || {});
+    $("preview-msg").classList.remove("error");
+    $("preview-msg").textContent = accept
+      ? `${done.count} titre(s) déplacé(s) comme proposé.`
+      : `${done.count} titre(s) gardé(s) à leur place.`;
+  } catch (error) {
+    $("preview-msg").textContent = error.message;
+    $("preview-msg").classList.add("error");
+    button.disabled = false;
+  }
+});
+
 // ------------------------------------------------------ recherche d'un titre
 
 function renderVerdict(payload) {
@@ -2495,6 +2718,7 @@ async function boot() {
   await refreshJudgeState();
   await refreshResults();
   await refreshFiles();
+  await refreshReviewFiles();
   if (status.classified) await refreshPreview();
 }
 
