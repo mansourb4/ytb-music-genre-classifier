@@ -150,11 +150,24 @@ Règles du format :
 """
 
 
-def build(summary, plan, tracks: dict, fixed_keys: set[str]) -> tuple[str, list[Row]]:
-    """Le prompt complet, et la table des numéros de titres.
+PARTIAL = """\
+CETTE FOIS, UNE PARTIE SEULEMENT
+
+La bibliothèque est revue en plusieurs fois. Ne révise que les playlists dont
+les titres sont listés ci-dessous. Les autres sont seulement nommées, avec
+leur description : tu peux y déplacer des titres, les renommer, mais pas les
+supprimer. Recopie quand même toutes les playlists dans la section PLAYLISTS.
+"""
+
+
+def build(summary, plan, tracks: dict, fixed_keys: set[str], *,
+          only: set[str] | None = None, start: int = 1) -> tuple[str, list[Row]]:
+    """Le prompt, et la table des numéros de titres.
 
     `summary` est l'aperçu « Par famille » ; `tracks` : identifiant vidéo ->
-    Track, pour retrouver artiste et titre des non rangés.
+    Track, pour retrouver artiste et titre des non rangés. Avec `only`, seules
+    ces playlists listent leurs titres : les autres ne sont que nommées, et
+    la numérotation commence à `start`.
     """
     written = plan.by_key()
     rows: list[Row] = []
@@ -166,11 +179,18 @@ def build(summary, plan, tracks: dict, fixed_keys: set[str]) -> tuple[str, list[
         if key in seen:
             return None
         seen.add(key)
-        row = Row(f"T{len(rows) + 1:04d}", artist, title, playlist)
+        row = Row(f"T{len(rows) + start:04d}", artist, title, playlist)
         rows.append(row)
         return row
 
     for playlist in summary.playlists:
+        rules = written.get(playlist.key)
+        if only is not None and playlist.name not in only:
+            head = [f"## {playlist.name} — {len(playlist.tracks)} titres (déjà revue, titres non listés)"]
+            if rules and rules.description:
+                head.append(f"Description : {rules.description}")
+            blocks.append("\n".join(head))
+            continue
         lines = []
         for track in playlist.tracks:
             artist = track.main_artist or track.artist
@@ -183,7 +203,6 @@ def build(summary, plan, tracks: dict, fixed_keys: set[str]) -> tuple[str, list[
             fixed = " " + FIXED if (track.moved or row.key in fixed_keys) else ""
             lines.append(" | ".join([row.id, _clean(artist), _clean(track.title), what,
                                      _clean(track.note)]) + fixed)
-        rules = written.get(playlist.key)
         head = [f"## {playlist.name} — {len(lines)} titres"]
         if rules and rules.description:
             head.append(f"Description : {rules.description}")
@@ -193,7 +212,7 @@ def build(summary, plan, tracks: dict, fixed_keys: set[str]) -> tuple[str, list[
         blocks.append("\n".join([*head, "", *lines]))
 
     loose = []
-    for entry in summary.unsorted:
+    for entry in (summary.unsorted if only is None else []):
         if entry.get("reason") == "kept_out":
             continue
         track = tracks.get(entry["video_id"])
@@ -214,7 +233,8 @@ def build(summary, plan, tracks: dict, fixed_keys: set[str]) -> tuple[str, list[
         f"BIBLIOTHÈQUE : {len(rows)} titres, {len(summary.playlists)} playlists.\n"
         + (f"Playlists du plan encore vides : {', '.join(names)}.\n" if names else "")
     )
-    prompt = "\n".join([INTRO, FORMAT, header, "PLAYLISTS ACTUELLES ET LEURS TITRES", "",
+    intro = INTRO + ("\n" + PARTIAL if only is not None else "")
+    prompt = "\n".join([intro, FORMAT, header, "PLAYLISTS ACTUELLES ET LEURS TITRES", "",
                         "\n\n".join(blocks), "", FORMAT])
     return prompt, rows
 
@@ -360,6 +380,20 @@ def plan_changes(answer: Answer, rows: dict[str, Row], current: list[str],
                       if resolve_current(n) is None and n not in after]
     change.described = {n: d for n, d in answer.playlists if d and n in after}
 
+    # Une playlist absente n'est supprimée que si tous ses titres ont une
+    # nouvelle place : une réponse coupée ou distraite oublie des playlists
+    # entières, et les supprimer jetterait leurs titres hors de tout rangement.
+    members: dict[str, list[str]] = {}
+    for row in rows.values():
+        members.setdefault(row.playlist, []).append(row.id)
+    forgotten = [n for n in change.deleted
+                 if any(i not in answer.moves for i in members.get(n, []))]
+    if forgotten:
+        change.deleted = [n for n in change.deleted if n not in forgotten]
+        change.problems.append(
+            f"{len(forgotten)} playlist(s) absente(s) de la liste mais dont des titres n'ont pas "
+            f"de nouvelle place, gardée(s) : {', '.join(forgotten)}"
+        )
     deleted = set(change.deleted)
     for track, wanted in answer.moves.items():
         row = rows.get(track)
@@ -367,6 +401,8 @@ def plan_changes(answer: Answer, rows: dict[str, Row], current: list[str],
             change.problems.append(f"{track} : numéro inconnu")
             continue
         target = resolve_final(wanted)
+        if target is None and resolve_current(wanted) in forgotten:
+            target = resolve_current(wanted)
         if target is None:
             change.problems.append(f"{track} : playlist « {wanted} » absente de la liste finale")
             continue

@@ -775,10 +775,20 @@ compris sur la liste des playlists elles-mêmes.
   hors de la liste finale, renommage d'une playlist inexistante).
 * **Les décisions de l'utilisateur tiennent** : un titre déplacé ou validé à
   la main n'est déplacé que si sa playlist disparaît.
+* **Une playlist n'est supprimée que si tous ses titres ont une nouvelle
+  place.** La première réponse réelle s'est arrêtée à mi-chemin (titre
+  T1803 sur 4062) tout en déclarant FIN : 24 playlists manquaient à la liste
+  finale, sans qu'aucun de leurs 998 titres soit replacé. Prise au pied de la
+  lettre, elle aurait vidé la moitié de la bibliothèque. Une playlist absente
+  dont des titres restent sans place est donc gardée, et signalée.
+* **Plusieurs prompts plutôt qu'un** : même avec un million de jetons en
+  entrée, la réponse s'essouffle. `build(only=…)` ne liste les titres que de
+  certaines playlists — les autres sont nommées, pour rester des cibles — et
+  une même table de numéros sert à toutes les parties.
 
 ## Tests
 
-719 tests, aucun appel réseau, y compris l'API web complète (aperçu,
+721 tests, aucun appel réseau, y compris l'API web complète (aperçu,
 application, annulation), son contrôle d'accès et les quatre voies de connexion.
 
 Quatre-vingt-onze d’entre eux chargent l’interface dans un vrai navigateur (`tests/test_ui.py`).

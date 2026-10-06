@@ -84,7 +84,7 @@ styles = ["Gnawa"]
 
 [[playlist]]
 nom = "Funk · Funk arabe des années 70"
-description = "Funk, orgue et synthés du Maghreb et du Liban des années 70-80 : le répertoire réédité par Habibi Funk."
+description = "Funk, orgue et synthés du Maghreb et du Liban des années 70-80."
 artistes = ["Abdou El Omari", "Carthago", "Najib Alhoush", "Ahmed Fakroun", "Douaa", "Ahmed Malek", "Ziad Rahbani"]
 styles = ["Funk", "Jazz-Funk", "Instrumental", "Synth-Pop", "Disco"]
 
@@ -154,14 +154,14 @@ styles = ["Afrobeat", "Highlife"]
 
 [[playlist]]
 nom = "Afrique · Afrobeats & amapiano"
-description = "Afrobeats, afroswing et amapiano : la pop africaine d'aujourd'hui, et ses échos dans le rap."
+description = "Afrobeats, afroswing et amapiano : la pop africaine d'aujourd'hui."
 styles = ["Afrobeats", "Afroswing", "Amapiano"]
 
 # --------------------------------------------------------------- caraïbes
 
 [[playlist]]
 nom = "Caraïbes · Reggae, dub & dancehall"
-description = "Roots reggae, dub, lovers rock, dancehall, ragga — et le zouk des Antilles."
+description = "Roots reggae, dub, lovers rock, dancehall, ragga et le zouk des Antilles."
 genres = ["Reggae"]
 
 [[playlist]]
@@ -182,7 +182,7 @@ styles = ["Latin Jazz"]
 
 [[playlist]]
 nom = "Soul · R&B & neo soul groovy"
-description = "R&B contemporain et neo soul qui groovent, que le morceau penche côté rap ou côté soul."
+description = "R&B contemporain et neo soul qui groovent."
 styles = ["Neo Soul", "Contemporary R&B"]
 ambiances = ["Groovy", "Festif", "Énergique"]
 
@@ -242,15 +242,15 @@ pays = ["FR", "BE", "CH", "LU"]
 ambiances = ["Sombre"]
 
 [[playlist]]
-nom = "Rap · FR groovy & posé"
-description = "Rap francophone qui hoche la tête : boom bap groovy, rap jazzy, lo-fi posé."
+nom = "Rap · FR groovy"
+description = "Rap francophone décontracté et chaloupé, pour hocher la tête."
 genres = ["Hip Hop"]
 pays = ["FR", "BE", "CH", "LU"]
 ambiances = ["Groovy", "Calme", "Planant"]
 
 [[playlist]]
-nom = "Rap · FR mélancolique"
-description = "Rap francophone mélancolique : cloud rap, rap introspectif, trap triste."
+nom = "Rap · FR introspectif"
+description = "Rap à texte sur le sens de la vie, la famille, le doute."
 genres = ["Hip Hop"]
 pays = ["FR", "BE", "CH", "LU"]
 
@@ -280,7 +280,7 @@ pays = ["IT", "DE", "AT", "ES", "PT", "NL", "DK", "NO", "SE", "FI", "PL", "CZ", 
 
 [[playlist]]
 nom = "Rap · Pays à préciser"
-description = "Rap dont l'artiste n'a pas encore de pays dans data/pays.txt."
+description = "Rap dont l'artiste n'a pas encore de pays."
 genres = ["Hip Hop"]
 pays = ["?"]
 
@@ -288,8 +288,8 @@ pays = ["?"]
 # ================================================================== électro
 
 [[playlist]]
-nom = "Électro · Deep house groovy"
-description = "Deep house chaleureuse, pour bouger."
+nom = "Électro · Deep house vocale"
+description = "Deep house new-yorkaise et soulful, chantée et chaleureuse."
 genres = ["Electronic"]
 styles = ["Deep House"]
 ambiances = ["Groovy", "Festif", "Énergique"]
@@ -599,3 +599,21 @@ styles = ["Reggaeton", "Cumbia", "Corrido Tumbado", "Dembow", "Funk"]
 nom = "Latino · Boléro, tango & ballades"
 description = "Boléros, rancheras, tango et ballades latines."
 genres = ["Latin"]
+
+
+# ============================================== créées depuis l'aperçu
+
+[[playlist]]
+nom = "Rap · FR posé"
+description = "Rap francophone jazzy, lo-fi et contemplatif."
+manuelle = true
+
+[[playlist]]
+nom = "Rap · FR cloud & spleen"
+description = "Cloud rap francophone vaporeux, ambiances nocturnes et autotune."
+manuelle = true
+
+[[playlist]]
+nom = "Électro · Deep house instrumentale"
+description = "Deep house brute, jazzy ou lo-fi, centrée sur le groove."
+manuelle = true

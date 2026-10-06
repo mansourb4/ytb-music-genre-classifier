@@ -1,0 +1,1355 @@
+Tu es musicologue. Tu vas réorganiser la discothèque de quelqu'un en
+playlists, et tu as les mains libres.
+
+CE QUE LA PERSONNE VEUT
+
+1. Comprendre ce qu'elle écoute : chaque playlist porte un nom qui dit ce
+   qu'on y entend, rangé par famille musicale (« Jazz · Fusion planante »,
+   « Rap · FR sombre »). Pas de fourre-tout du type « Monde » ou « Divers ».
+2. Ne jamais être surprise quand elle lance une playlist : du premier au
+   dernier titre, la même vibe — même énergie, même tempo, même univers
+   sonore. Un titre qui détonne est mal rangé, même si son genre est le bon.
+
+Choix déjà faits par la personne, à respecter :
+- Le rap se range d'abord par pays (FR, US, UK, Maghreb, Ailleurs), puis le
+  rap français par ambiance.
+- La variété et la chanson françaises ont leur playlist.
+- Les musiques de film vont dans le genre de leur musique, pas dans une
+  playlist « BO ».
+- Une playlist tient entre 5 et 150 titres environ ; plus petite, elle doit
+  vraiment se justifier, plus grande, elle mérite d'être coupée en deux
+  ambiances.
+
+CE QUI A ÉTÉ FAIT JUSQU'ICI
+
+Chaque titre a reçu un genre, un style, une ambiance et une courte note, puis
+des règles l'ont versé dans une playlist. Les règles se trompent souvent sur
+la vibe. Ci-dessous, chaque playlist actuelle avec sa description, sa règle
+et tous ses titres, au format :
+
+    numéro | artiste | titre | genre / style · ambiance | note
+
+Les titres marqués [fixé] ont été placés à la main par la personne : ne les
+déplace jamais, sauf si tu supprimes leur playlist (donne-leur alors une
+nouvelle place).
+
+TON TRAVAIL
+
+Révise tout. N'hésite pas à :
+- déplacer les titres qui cassent la vibe de leur playlist ;
+- renommer une playlist dont le nom ne dit pas ce qu'on y entend ;
+- supprimer une playlist (ses titres doivent alors tous être déplacés) ;
+- en fusionner deux trop proches, ou en couper une trop large ;
+- en créer de nouvelles quand un ensemble de titres le mérite.
+Mieux vaut peu de changements justes que beaucoup d'hésitants : chaque
+playlist doit sonner juste de bout en bout.
+
+CETTE FOIS, UNE PARTIE SEULEMENT
+
+La bibliothèque est revue en plusieurs fois. Ne révise que les playlists dont
+les titres sont listés ci-dessous. Les autres sont seulement nommées, avec
+leur description : tu peux y déplacer des titres, les renommer, mais pas les
+supprimer. Recopie quand même toutes les playlists dans la section PLAYLISTS.
+
+FORMAT DE LA RÉPONSE — À RESPECTER À LA LETTRE
+
+D'abord, en quelques lignes de texte libre, ce que tu as changé et pourquoi.
+
+Puis un seul bloc de code contenant exactement ces sections, dans cet ordre :
+
+```
+PLAYLISTS
+Famille · Nom | description en une phrase de ce qu'on y entend
+(la liste FINALE et COMPLÈTE des playlists, y compris celles que tu ne
+changes pas ; toute playlist actuelle absente de cette liste et non renommée
+sera supprimée)
+
+RENOMMAGES
+Ancien nom exact -> Nouveau nom exact
+(une ligne par playlist renommée ; ses titres la suivent sans être listés)
+
+DEPLACEMENTS
+T0042 | Nom exact d'une playlist de la liste finale
+(une ligne par titre qui change de playlist, et seulement ceux-là ; pour ne
+ranger un titre nulle part, écris « (aucune) » comme playlist)
+
+FIN
+```
+
+Règles du format :
+- Recopie les noms à l'identique, accents et « · » compris.
+- Un titre d'une playlist supprimée doit figurer dans DEPLACEMENTS.
+- N'écris jamais « | » dans un nom ou une description.
+- Si ta réponse ne tient pas en un message, arrête-toi à la fin d'une ligne :
+  on t'écrira « continue » et tu reprendras à la ligne suivante, dans un
+  nouveau bloc, sans répéter ce qui est déjà écrit.
+
+BIBLIOTHÈQUE : 953 titres, 78 playlists.
+
+PLAYLISTS ACTUELLES ET LEURS TITRES
+
+## Brésil · Bossa nova — 62 titres (déjà revue, titres non listés)
+Description : Bossa nova, qu'elle vienne du Brésil, du jazz ou d'une musique de film.
+
+## Brésil · Samba & groove — 45 titres (déjà revue, titres non listés)
+Description : Samba, MPB qui danse et groove brésilien des années 70-80.
+
+## Brésil · MPB douce — 47 titres (déjà revue, titres non listés)
+Description : Musique populaire brésilienne calme ou mélancolique : la saudade.
+
+## Maghreb · Gnawa — 29 titres (déjà revue, titres non listés)
+Description : Transe gnaoua : guembri, qraqeb et chants responsoriaux, du rituel à la fusion.
+
+## Funk · Funk arabe des années 70 — 20 titres (déjà revue, titres non listés)
+Description : Funk, orgue et synthés du Maghreb et du Liban des années 70-80.
+
+## Maghreb · Raï & chaâbi — 14 titres (déjà revue, titres non listés)
+Description : Raï, chaâbi, chanson kabyle et chansons de fête.
+
+## Maghreb · Traditions — 9 titres (déjà revue, titres non listés)
+Description : Chants et percussions des oasis marocaines, folk berbère.
+
+## Orient · Oud & taqsim — 6 titres (déjà revue, titres non listés)
+Description : Oud et improvisations sur les maqâms : musique savante instrumentale.
+
+## Orient · Pop arabe — 13 titres (déjà revue, titres non listés)
+Description : Al jeel et pop arabe dansante.
+
+## Orient · Fairouz, tarab & chanson — 35 titres (déjà revue, titres non listés)
+Description : Fairouz et les Rahbani, Warda, Marcel Khalife : la grande chanson arabe, tendre et nostalgique.
+
+## Jazz · Ethio-jazz — 14 titres (déjà revue, titres non listés)
+Description : Le jazz éthiopien de Mulatu Astatke et de l'âge d'or d'Addis-Abeba.
+
+## Afrique · Folk, blues & mandingue — 12 titres (déjà revue, titres non listés)
+Description : Guitares mandingues, blues touareg, morna, semba : l'Afrique acoustique.
+
+## Funk · Afrobeat — 7 titres (déjà revue, titres non listés)
+Description : Afrobeat et highlife : cuivres, polyrythmies et transe funk, de Fela à Kokoroko.
+
+## Afrique · Afrobeats & amapiano — 11 titres (déjà revue, titres non listés)
+Description : Afrobeats, afroswing et amapiano : la pop africaine d'aujourd'hui.
+
+## Caraïbes · Reggae, dub & dancehall — 8 titres (déjà revue, titres non listés)
+Description : Roots reggae, dub, lovers rock, dancehall, ragga et le zouk des Antilles.
+
+## Jazz · Latin jazz — 21 titres (déjà revue, titres non listés)
+Description : Jazz afro-cubain et latin, quel que soit le genre donné par le verdict.
+
+## Soul · R&B & neo soul groovy — 37 titres (déjà revue, titres non listés)
+Description : R&B contemporain et neo soul qui groovent.
+
+## Soul · R&B & neo soul posés — 45 titres (déjà revue, titres non listés)
+Description : R&B et neo soul calmes, langoureux ou mélancoliques.
+
+## Pop · Variété française — 34 titres (déjà revue, titres non listés)
+Description : Chanson et variété françaises.
+
+## Jazz · Jazz-funk & groove — 141 titres (déjà revue, titres non listés)
+Description : Jazz-funk, soul-jazz, acid jazz, et la fusion quand elle groove.
+
+## Rock · Psyché & prog nerveux — 28 titres (déjà revue, titres non listés)
+Description : Rock psychédélique et progressif qui pousse : riffs, tension, groove lourd.
+
+## Rock · Psyché & prog rêveur — 41 titres (déjà revue, titres non listés)
+Description : Rock psychédélique et progressif planant, contemplatif ou mélancolique.
+
+## Rap · FR énergique — 126 titres (déjà revue, titres non listés)
+Description : Rap francophone qui cogne : trap, drill et boom bap énergiques, sons de fête.
+
+## Rap · FR sombre — 109 titres (déjà revue, titres non listés)
+Description : Rap francophone sombre : trap et drill menaçantes, boom bap noir.
+
+## Rap · FR groovy — 112 titres (déjà revue, titres non listés)
+Description : Rap francophone décontracté et chaloupé, pour hocher la tête.
+
+## Rap · FR introspectif — 156 titres (déjà revue, titres non listés)
+Description : Rap à texte sur le sens de la vie, la famille, le doute.
+
+## Rap · US — 120 titres (déjà revue, titres non listés)
+Description : Rap américain et canadien.
+
+## Rap · UK — 29 titres (déjà revue, titres non listés)
+Description : Rap britannique et irlandais : grime, drill UK, rap londonien.
+
+## Rap · Maghreb — 28 titres (déjà revue, titres non listés)
+Description : Rap marocain, algérien et tunisien.
+
+## Rap · Ailleurs — 23 titres (déjà revue, titres non listés)
+Description : Rap d'Italie, d'Allemagne, d'Espagne, du Japon, du Mexique…
+
+## Rap · Pays à préciser — 40 titres (déjà revue, titres non listés)
+Description : Rap dont l'artiste n'a pas encore de pays.
+
+## Électro · Deep house vocale — 139 titres (déjà revue, titres non listés)
+Description : Deep house new-yorkaise et soulful, chantée et chaleureuse.
+
+## Électro · Deep house planante — 111 titres (déjà revue, titres non listés)
+Description : Deep house rêveuse, calme ou nocturne.
+
+## Électro · House — 143 titres (déjà revue, titres non listés)
+Description : House classique, garage et afro house.
+
+## Électro · Techno percutante — 77 titres (déjà revue, titres non listés)
+Description : Techno, tech house et progressive qui frappent : pour la piste.
+
+## Électro · Techno hypnotique — 78 titres (déjà revue, titres non listés)
+Description : Techno mélodique, minimale et dub techno : boucles qui planent.
+
+## Électro · Nu-disco & synth — 81 titres (déjà revue, titres non listés)
+Description : Nu-disco, italo, synth-pop et synthwave.
+
+## Électro · Broken beat & nu jazz — 23 titres (déjà revue, titres non listés)
+Description : Broken beat, nu jazz et UK garage : rythmes cassés et chaleur jazz-soul.
+
+## Électro · Breaks & drum'n'bass — 24 titres (déjà revue, titres non listés)
+Description : Breakbeat, electro, jungle, drum & bass et footwork : rapide et nerveux.
+
+## Électro · Ambient & nappes — 84 titres (déjà revue, titres non listés)
+Description : Ambient, drone et downtempo planants : nappes, espace, apesanteur.
+
+## Électro · Downtempo chill — 74 titres (déjà revue, titres non listés)
+Description : Downtempo, trip hop et lounge : calme, mélancolique ou doucement groovy.
+
+## Électro · Expérimental & IDM — 12 titres (déjà revue, titres non listés)
+Description : IDM, glitch, leftfield et électronique expérimentale.
+
+## Jazz · Fusion énergique — 70 titres (déjà revue, titres non listés)
+Description : Jazz électrique et jazz-rock virtuoses : ça joue vite et fort.
+
+## Jazz · Fusion planante — 60 titres (déjà revue, titres non listés)
+Description : Fusion aérienne : claviers, nappes et grooves lents.
+
+## Jazz · Bop qui swingue — 95 titres (déjà revue, titres non listés)
+Description : Bebop, hard bop et post-bop énergiques.
+
+## Jazz · Bop & cool nocturne — 62 titres (déjà revue, titres non listés)
+Description : Cool jazz, modal et bop lents : le jazz de fin de soirée.
+
+## Jazz · Spiritual jazz — 40 titres (déjà revue, titres non listés)
+Description : Jazz spirituel, third stream et jazz aventureux.
+
+## Jazz · Smooth & groovy — 24 titres (déjà revue, titres non listés)
+Description : Smooth jazz et jazz contemporain qui groovent.
+
+## Jazz · Contemporain — 52 titres (déjà revue, titres non listés)
+Description : Jazz d'aujourd'hui exigeant, mélancolique ou intense.
+
+## Jazz · Vocal & ballades — 77 titres (déjà revue, titres non listés)
+Description : Voix et ballades jazz, swing compris quand il ralentit.
+
+## Jazz · Swing & big band — 72 titres (déjà revue, titres non listés)
+Description : Swing, big band, dixieland et voix qui swinguent.
+
+## Jazz · Lounge & jazz d'ambiance — 45 titres (déjà revue, titres non listés)
+Description : Lounge, smooth jazz calme, musiques d'illustration : le jazz d'ambiance.
+
+## Soul · Soul groovy — 70 titres
+Description : Soul qui groove : Motown, Stax, soul psychédélique.
+Règle : genre Funk & Soul ; style Soul, Psychedelic Soul, Modern Soul, Rhythm & Blues, Gospel, Ballad, Vocal ; ambiance Groovy, Festif, Énergique
+
+T1305 | Ace Specturm | I Don't Want to Play Around | Funk & Soul / Soul · Groovy | Soul des années 70.
+T1306 | Al Green | Tired of Being Alone | Funk & Soul / Soul · Groovy | Soul de Memphis, falsetto caressant sur groove souple.
+T1307 | Amy Winehouse | Addicted | Funk & Soul / Soul · Groovy | Soul rétro cuivrée.
+T1308 | Amy Winehouse | Fuck Me Pumps | Funk & Soul / Soul · Groovy | Soul jazzy et moqueuse, cuivres légers et contrebasse sautillante.
+T1309 | Amy Winehouse | He Can Only Hold Her | Funk & Soul / Soul · Groovy | Soul rétro à la Motown, texte désabusé.
+T1310 | Amy Winehouse | Me & Mr Jones | Funk & Soul / Soul · Groovy | Soul rétro à la Ronettes, balancement doo-wop et voix rageuse.
+T1311 | Amy Winehouse | Rehab | Funk & Soul / Soul · Groovy | Soul rétro à la Motown, cuivres et refrain frondeur.
+T1312 | Amy Winehouse | Tears Dry On Their Own | Funk & Soul / Soul · Groovy | Rythmique Motown entraînante sous un texte de rupture amer.
+T1313 | Amy Winehouse | You Know I'm No Good | Funk & Soul / Soul · Groovy | Soul rétro à la basse lourde et aux cuivres, aveu d'infidélité sans remords.
+T1314 | Barry White | Never, Never Gonna Give Ya Up | Funk & Soul / Soul · Groovy | Soul lente et sensuelle, basse insistante et voix de velours.
+T1315 | Barry White | Playing Your Game, Baby | Funk & Soul / Soul · Groovy | Soul orchestrale sensuelle et voix de basse.
+T1316 | Bill Withers | Lovely Day | Funk & Soul / Soul · Groovy | Soul lumineuse au groove tranquille et note tenue légendaire.
+T1317 | Bill Withers | The Same Love That Made Me Laugh | Funk & Soul / Soul · Groovy | Soul funky sur l'amour qui fait aussi pleurer.
+T1318 | Bobby Caldwell | What You Won't Do for Love | Funk & Soul / Soul · Groovy | Soul smooth culte, cuivres feutrés.
+T1319 | Bobby Hebb | Sunny | Funk & Soul / Soul · Groovy | Soul en mineur, chaleureuse.
+T1320 | Brenton Wood | Great Big Bundle Of Love | Funk & Soul / Soul · Groovy | Soul sixties légère et dansante.
+T1321 | Cassiano | Onda | Funk & Soul / Soul · Groovy | Soul brésilienne douce et balancée, loin du latin que suggère l'étiquette.
+T1322 | Childish Gambino | Redbone | Funk & Soul / Psychedelic Soul · Groovy | Slow jam funk rétro, falsetto tendu sur une basse ronde héritée de Bootsy Collins.
+T1323 | Curtis Mayfield | Give Me Your Love (Love Song) | Funk & Soul / Psychedelic Soul · Groovy | Soul sensuelle, cordes et wah-wah enlacés.
+T1324 | Delegation | Oh Honey | Funk & Soul / Soul · Groovy | Soul douce et sucrée.
+T1325 | Gene Lawrence | Feel Like Making Love | Funk & Soul / Soul · Groovy | Reprise soul du standard.
+T1326 | Jitwam | I'm a Rock | Funk & Soul / Psychedelic Soul · Groovy | Soul psyché lo-fi.
+T1327 | JMSN | Talk Is Cheap | Funk & Soul / Soul · Groovy | Soul jouée par un vrai groupe, falsetto.
+T1328 | Joe Bataan | Call My Name | Funk & Soul / Soul · Groovy | Soul latine rétro.
+T1329 | Jungle | I've Been In Love (feat. Channel Tres) | Funk & Soul / Modern Soul · Groovy | Soul-disco au falsetto feutré.
+T1330 | Lil Bob & The Lollipops | You Know It Ain't Right | Funk & Soul / Rhythm & Blues · Groovy | Swamp pop louisianais.
+T1331 | Little Beaver | Groove On | Funk & Soul / Soul · Groovy | Soul de Miami, guitare délicate.
+T1332 | The Love Unlimited Orchestra | I'm Falling In Love With You | Funk & Soul / Soul · Groovy | Soul orchestrale à cordes luxuriantes.
+T1333 | Marvin Gaye | Inner City Blues (Make Me Wanna Holler) | Funk & Soul / Soul · Groovy | Soul sociale, basse ronde et percussions feutrées.
+T1334 | Milton Wright | Get No Lovin' Tonight | Funk & Soul / Soul · Groovy | Soul de Miami chaleureuse.
+T1335 | The O'Jays | Back Stabbers | Funk & Soul / Soul · Groovy | Philly soul aux cordes et piano, méfiance envers les faux amis.
+T1336 | OFF Productions | OFF STUDIO - Bernhoft & Nekfeu "Wind You Up" | Funk & Soul / Soul · Groovy | Session live soul de Bernhoft avec Nekfeu.
+T1337 | Peven Everett | Sweetness Is | Funk & Soul / Soul · Groovy | Soul house chaleureuse.
+T1338 | Prince | Cold Coffee & Cocaine (Piano & A Microphone 1983 Version) | Funk & Soul / Soul · Groovy | Piano-voix improvisé et rugueux.
+T1339 | Quincy Jones | Body Heat | Funk & Soul / Soul · Groovy | Slow sensuel et moite.
+T1340 | Quincy Jones | If I Ever Lose This Heaven | Funk & Soul / Soul · Groovy | Soul-funk feutrée, voix croisées de Leon Ware et Minnie Riperton.
+T1341 | Sade | Bullet Proof Soul | Funk & Soul / Soul · Groovy | Soul feutrée sur ligne de basse ronde et cuivres discrets.
+T1342 | Sade | Cherry Pie | Funk & Soul / Soul · Groovy | Soul aux accents funk, basse ronde et voix détachée de Sade.
+T1343 | Sade | Clean Heart | Funk & Soul / Soul-Jazz · Groovy | Groove feutré et basse ronde, voix grave et posée. [fixé]
+T1344 | Sade | Feel No Pain | Funk & Soul / Soul · Groovy | Soul ample au groove souple, propos social.
+T1345 | Sade | Give It Up | Funk & Soul / Soul · Groovy | Sade sur un tempo dansant, basse en avant.
+T1346 | Sade | Hang on to Your Love | Funk & Soul / Soul · Groovy | Premier single, groove souple, sax et basse en avant.
+T1347 | Sade | Hang On to Your Love (Long Version) | Funk & Soul / Soul · Groovy | Soul jazzy à la basse souple, voix de velours.
+T1348 | Sade | Keep Looking | Funk & Soul / Soul · Groovy | Soul rythmée.
+T1349 | Sade | Kiss of Life (Live) | Funk & Soul / Soul · Groovy | Soul chaloupée et lumineuse en concert.
+T1350 | Sade | Maureen | Funk & Soul / Soul · Groovy | Hommage à une amie disparue sur un groove sophisti-pop lumineux.
+T1351 | Sade | Mr Wrong | Funk & Soul / Soul · Groovy | Sade sur un tempo plus enlevé, saxophone et basse ronde.
+T1352 | Sade | Never as Good as the First Time | Funk & Soul / Soul · Groovy | Soul-pop chaloupée et légère.
+T1353 | Sade | Nothing Can Come Between Us | Funk & Soul / Soul · Groovy | Soul pop de Sade au groove optimiste, basse chaloupée.
+T1354 | Sade | Paradise | Funk & Soul / Soul · Groovy | Basse chaloupée et voix sereine, bonheur tranquille.
+T1355 | Sade | Paradise (Live) | Funk & Soul / Soul · Groovy | Ligne de basse souple et voix feutrée, version scène plus ample que le studio.
+T1356 | Sade | Paradise / Nothing Can Come Between Us (Live 2011) | Funk & Soul / Soul · Groovy | Enchaînement live sur basse ronde et chaloupée.
+T1357 | Sade | Siempre Hay Esperanza | Funk & Soul / Soul · Groovy | Groove jazzy et latin, sax en avant et voix posée.
+T1358 | Sade | Smooth Operator (Single Version) | Funk & Soul / Smooth Jazz · Groovy | Sophisti-pop jazzy, saxophone et basse hypnotique. [fixé]
+T1359 | Sade | Smooth Operator (Live) | Funk & Soul / Soul · Groovy | Sax et groove feutré en live.
+T1360 | Sade | Tar Baby | Funk & Soul / Soul · Groovy | Soul jazzy chaloupée.
+T1361 | Sade | The Sweetest Taboo | Funk & Soul / Soul · Groovy | Percussions légères et basse ronde, sensualité tranquille.
+T1362 | Sade | The Sweetest Taboo (Live) | Funk & Soul / Soul · Groovy | Soul ondoyante en live, percussions légères.
+T1363 | Sade | Turn My Back On You | Funk & Soul / Soul · Groovy | Soul pop de Sade plus vive, basse insistante.
+T1364 | Sade | When Am I Going to Make a Living | Funk & Soul / Soul · Groovy | Soul feutrée au sax et à la basse souple, frustration sociale.
+T1365 | Sade | Why Can't We Live Together | Funk & Soul / Soul · Groovy | Reprise jazzy de Timmy Thomas, longue plage instrumentale.
+T1366 | SAULT | Son Shine | Funk & Soul / Soul · Groovy | Soul minimaliste et chaleureuse, basse et percussions au premier plan.
+T1367 | Sharon Revoal | Reaching for Our Star | Funk & Soul / Modern Soul · Groovy | Soul rare, classement incertain.
+T1368 | Sly, Slick & Wicked | Sho' Nuff | Funk & Soul / Soul · Groovy | Soul vocale de groupe des années 70.
+T1369 | Stevie Wonder | Don't You Worry 'Bout A Thing | Funk & Soul / Soul · Groovy | Piano latin et groove sautillant, optimisme contagieux.
+T1370 | Stevie Wonder | Ebony Eyes | Funk & Soul / Soul · Groovy | Chanson pleine d'entrain, cuivres et chœurs.
+T1371 | Stevie Wonder | Part-Time Lover | Funk & Soul / Soul · Festif | Soul synthétique rapide à la ligne de basse bondissante, taillée pour danser.
+T1372 | The Temptations | Papa Was A Rollin' Stone (Single Version) | Funk & Soul / Psychedelic Soul · Sombre | Basse obsédante et cordes tendues, récit amer d'un père absent. [fixé]
+T1373 | Timmy Thomas | Why Can't We Live Together | Funk & Soul / Soul · Groovy | Orgue et boîte à rythmes minimalistes, plaidoyer pour la paix.
+T1374 | Toto | Georgy Porgy | Funk & Soul / Soul · Groovy | Groove R&B feutré avec Cheryl Lynn.
+
+## Soul · Soul ballades — 82 titres
+Description : Ballades soul, voix déchirantes et slows.
+Règle : genre Funk & Soul ; style Soul, Psychedelic Soul, Modern Soul, Rhythm & Blues, Gospel, Ballad, Vocal
+
+T1375 | Al Green | How Can You Mend a Broken Heart | Funk & Soul / Soul · Mélancolique | Soul lente de Memphis, cœur brisé.
+T1376 | Amy Winehouse | Back To Black | Funk & Soul / Soul · Mélancolique | Soul funèbre façon girl group.
+T1377 | Amy Winehouse | Love Is A Losing Game | Funk & Soul / Soul · Mélancolique | Ballade soul désenchantée, l'un des sommets de l'album.
+T1378 | Amy Winehouse | Some Unholy War | Funk & Soul / Soul · Mélancolique | Courte soul lente, loyauté amoureuse chantée à vif.
+T1379 | Amy Winehouse | Wake Up Alone | Funk & Soul / Soul · Mélancolique | Soul lente sur la solitude.
+T1380 | André Navarro II | THE MONTCLAIRS - Ease the pain | Funk & Soul / Soul · Mélancolique | Soul vocale des années 70, plaintive.
+T1381 | Aretha Franklin | Day Dreaming | Funk & Soul / Soul · Calme | Soul rêveuse et soyeuse, flûte et Rhodes enveloppants.
+T1382 | Bill Withers | Ain't No Sunshine | Funk & Soul / Soul · Mélancolique | Complainte de l'absence, guitare et cordes dépouillées.
+T1383 | Bill Withers | Can We Pretend | Funk & Soul / Soul · Calme | Soul acoustique tendre.
+T1384 | Billy Paul | Your Song | Funk & Soul / Soul · Calme | Reprise soul d'Elton John.
+T1385 | Celeste | Both Sides Of The Moon | Funk & Soul / Soul · Calme | Soul rétro intime, voix voilée et production chaude.
+T1386 | Commodores | Zoom (International Single) | Funk & Soul / Soul · Calme | Longue ballade soul aérienne, rêve d'évasion en falsetto.
+T1387 | Common Saints | Summer Sun | Funk & Soul / Psychedelic Soul · Calme | Soul psychédélique douce et ensoleillée.
+T1388 | Drake | Yebba’s Heartbreak | Funk & Soul / Ballad · Mélancolique | Interlude piano-voix chanté par Yebba, chagrin à nu.
+T1389 | The Dramatics | In The Rain | Funk & Soul / Soul · Mélancolique | Ballade soul sous bruit de pluie, falsetto chargé de peine.
+T1390 | Etta James | A Sunday Kind Of Love | Funk & Soul / Ballad · Calme | Ballade tendre et romantique portée par une voix ample.
+T1391 | Four Tracks | You Mean Everything to Me | Funk & Soul / Soul · Mélancolique | Soul rare ; classement prudent.
+T1392 | HoraceIsaac SoWhatSessions | Gil Scott Heron - We almost Lost Detroit | Funk & Soul / Soul · Mélancolique | Reprise du titre de Gil Scott-Heron, complainte soul-jazz sur la menace nucléaire.
+T1393 | Jackson 5 | Who's Lovin' You | Funk & Soul / Soul · Mélancolique | Ballade soul déchirante du jeune Michael.
+T1394 | Jamiroquai | Talullah | Funk & Soul / Soul · Calme | Ballade soul acoustique et tendre.
+T1395 | Khruangbin | Mariella | Funk & Soul / Soul · Calme | Soul country tendre.
+T1396 | Khruangbin | Texas Sun | Funk & Soul / Soul · Calme | Soul country au ralenti, guitare réverbérée et voix chaude.
+T1397 | Kool & The Gang | Winter Sadness | Funk & Soul / Soul · Mélancolique | Ballade soul lente et douce-amère.
+T1398 | Kool & The Gang | You Don't Have To Change | Funk & Soul / Soul · Calme | Soul plus lente et chaleureuse que le funk habituel du groupe.
+T1399 | Leon Ware | French Waltz | Funk & Soul / Soul · Calme | Valse soul sensuelle.
+T1400 | Maze | I Need You | Funk & Soul / Soul · Calme | Ballade soul tendre et chaleureuse.
+T1401 | Michael Jackson | I Can't Help It | Funk & Soul / Soul · Calme | Soul jazzy et veloutée signée Stevie Wonder.
+T1402 | Michael Kiwanuka | Cold Little Heart | Funk & Soul / Psychedelic Soul · Mélancolique | Longue introduction orchestrale et guitare plaintive avant une soul ample.
+T1403 | Patrice Rushen | Settle for My Love (Remastered Version) | Funk & Soul / Ballad · Mélancolique | Ballade soul lente et retenue.
+T1404 | Patrice Rushen | Where There Is Love | Funk & Soul / Ballad · Calme | Ballade soul tendre, Rhodes et voix légère.
+T1405 | Quincy Jones | At The End Of The Day (Grace) (feat. Toots Thielemans, Barry White & Mervyn Warren) | Funk & Soul / Gospel · Calme | Final gospel apaisé, voix parlée de Barry White.
+T1406 | Quincy Jones | Everything Must Change (Reprise) | Funk & Soul / Ballad · Mélancolique | Brève reprise d'une ballade.
+T1407 | Quincy Jones | I'm Gonna Miss You In The Morning | Funk & Soul / Ballad · Mélancolique | Ballade soul en duo.
+T1408 | Quincy Jones | Just A Man | Funk & Soul / Soul · Calme | Soul vocale feutrée dans l'esthétique soyeuse de Body Heat. [fixé]
+T1409 | Quincy Jones | Just Once | Funk & Soul / Ballad · Mélancolique | Ballade soul où James Ingram supplie un amour qui s'éteint.
+T1410 | Quincy Jones | Love Me By Name (feat. Patti Austin) | Funk & Soul / Ballad · Mélancolique | Ballade soul déchirante de Patti Austin.
+T1411 | Quincy Jones | One Hundred Ways | Funk & Soul / Ballad · Calme | Ballade soul de James Ingram, douce et soyeuse.
+T1412 | Quincy Jones | Superwoman (Where Were You When I Needed You) (feat. Patti Austin) | Funk & Soul / Soul · Mélancolique | Reprise soul en ballade.
+T1413 | Quincy Jones | You Put A Move On My Heart (feat. Tamia) | Funk & Soul / Ballad · Calme | Ballade R&B portée par la voix de Tamia.
+T1414 | René & Angela | I Love You More | Funk & Soul / Soul · Calme | Duo soul romantique au tempo modéré.
+T1415 | Rose Royce | Love Don't Live Here Anymore | Funk & Soul / Soul · Mélancolique | Ballade soul de rupture.
+T1416 | Sade | All About Our Love | Funk & Soul / Ballad · Calme | Ballade douce et sereine.
+T1417 | Sade | By Your Side | Funk & Soul / Soul · Calme | Ballade tendre et rassurante, guitare et voix chaude.
+T1418 | Sade | Cherish the Day | Funk & Soul / Soul · Calme | Soul feutrée et sensuelle, basse profonde.
+T1419 | Sade | Cherish the Day (Live) | Funk & Soul / Soul · Calme | Version live sensuelle.
+T1420 | Sade | Every Word | Funk & Soul / Contemporary R&B · Calme | Chanson apaisée et dépouillée, voix intime. [fixé]
+T1421 | Sade | Fear | Funk & Soul / Soul · Mélancolique | Ballade dramatique aux couleurs espagnoles.
+T1422 | Sade | Flow | Funk & Soul / Contemporary R&B · Calme | Ballade dépouillée et tendre, voix posée sur guitare et basse. [fixé]
+T1423 | Sade | Frankie's First Affair | Funk & Soul / Soul · Calme | Soul jazzy et feutrée.
+T1424 | Sade | Haunt Me | Funk & Soul / Ballad · Calme | Berceuse acoustique et chuchotée.
+T1425 | Sade | I Couldn't Love You More | Funk & Soul / Soul · Calme | Soul langoureuse au groove souple, voix de velours.
+T1426 | Sade | I Never Thought I'd See the Day | Funk & Soul / Soul · Mélancolique | Ballade soul feutrée.
+T1427 | Sade | I Will Be Your Friend | Funk & Soul / Soul · Calme | Soul douce et rassurante, saxo discret.
+T1428 | Sade | Immigrant | Funk & Soul / Soul · Mélancolique | Ballade sobre sur l'exil et le rejet.
+T1429 | Sade | Is It a Crime | Funk & Soul / Soul · Mélancolique | Torch song lente et intense.
+T1430 | Sade | Is It a Crime (Live) | Funk & Soul / Soul-Jazz · Mélancolique | Version live étirée d'une ballade blues de Sade, sax déchirant. [fixé]
+T1431 | Sade | It's Only Love That Gets You Through | Funk & Soul / Soul · Calme | Soul douce et réconfortante.
+T1432 | Sade | Jezebel | Funk & Soul / Soul · Mélancolique | Ballade jazzy sur une femme qui s'élève.
+T1433 | Sade | Jezebel (Live) | Funk & Soul / Soul · Mélancolique | Ballade lente sur une femme déterminée, voix sobre et saxophone voilé.
+T1434 | Sade | King of Sorrow | Funk & Soul / Soul · Mélancolique | Plainte lente et digne sur groove feutré.
+T1435 | Sade | Kiss of Life | Funk & Soul / Soul · Calme | Soul douce et lumineuse, groove léger et chant tendre.
+T1436 | Sade | Like a Tattoo | Funk & Soul / Soul · Mélancolique | Ballade acoustique sombre sur la guerre.
+T1437 | Sade | Like a Tattoo (Live Video from San Diego) | Funk & Soul / Ballad · Mélancolique | Récit sombre à la guitare acoustique.
+T1438 | Sade | Love Is Stronger Than Pride | Funk & Soul / Soul-Jazz · Mélancolique | Ballade dépouillée et lancinante, voix retenue. [fixé]
+T1439 | Sade | Lovers Rock | Funk & Soul / Soul · Calme | Soul minimaliste et intime, malgré son titre pas reggae.
+T1440 | Sade | No Ordinary Love | Funk & Soul / Soul · Mélancolique | Basse lourde et lente, voix blessée, atmosphère brumeuse.
+T1441 | Sade | No Ordinary Love (Live) | Funk & Soul / Soul · Mélancolique | Version live lente et intense, basse lourde et voix blessée.
+T1442 | Sade | Pearls | Funk & Soul / Ballad · Mélancolique | Voix nue et cordes, complainte sur la misère.
+T1443 | Sade | Please Send Me Someone to Love | Funk & Soul / Soul · Mélancolique | Reprise de blues ballade, voix de Sade dépouillée.
+T1444 | Sade | Sally | Funk & Soul / Soul-Jazz · Mélancolique | Soul lente et bluesy, saxo nocturne. [fixé]
+T1445 | Sade | Skin (Live 2011) | Funk & Soul / Soul · Calme | Ballade soul feutrée, voix suave sur groove lent, en live.
+T1446 | Sade | Somebody Already Broke My Heart | Funk & Soul / Ballad · Mélancolique | Ballade lente et nue, cœur qu'on a déjà brisé.
+T1447 | Sade | The Sweetest Gift | Funk & Soul / Ballad · Calme | Berceuse à son enfant, voix murmurée.
+T1448 | Sade | War of the Hearts | Funk & Soul / Soul · Mélancolique | Percussions latines et atmosphère dramatique.
+T1449 | Sade | You're Not the Man | Funk & Soul / Soul · Mélancolique | Ballade de rupture lente et voilée.
+T1450 | Sade | Your Love Is King | Funk & Soul / Soul · Calme | Ballade sensuelle et lente, saxophone langoureux.
+T1451 | Sade | Your Love Is King (Live at Live Aid, Wembley Stadium, 13th July 1985) | Funk & Soul / Soul · Calme | Soul feutrée au saxophone.
+T1452 | Sam Cooke | A Change Is Gonna Come | Funk & Soul / Soul · Mélancolique | Hymne des droits civiques, cordes solennelles et voix pleine d'espoir blessé.
+T1453 | Stevie Wonder | Summer Soft | Funk & Soul / Soul · Mélancolique | Soul qui monte en puissance sur des saisons trompeuses.
+T1454 | Thee Sacred Souls | Will I See You Again? | Funk & Soul / Soul · Mélancolique | Sweet soul rétro, falsetto et chagrin amoureux.
+T1455 | Tyrone Davis | Ain't Nothing I Can Do | Funk & Soul / Soul · Mélancolique | Soul de Chicago sur un amour impuissant.
+T1456 | Will Downing | The World Is A Ghetto | Funk & Soul / Soul · Calme | Reprise soul jazzy et veloutée.
+
+## Funk · Funk, boogie & disco — 114 titres
+Description : Funk, boogie et disco.
+Règle : genre Funk & Soul
+
+T1457 | A Taste Of Honey | Boogie Oogie Oogie (Single Version 2 / Remastered 1999) | Funk & Soul / Disco · Festif | Disco à la basse slappée, appel direct à la piste.
+T1458 | Alexandre WATELET - DJ TOBAGO | Masao Kusakari « The Theme » japanese disco-break | Funk & Soul / Disco · Groovy | Disco japonaise rare, break funky.
+T1459 | Andrew Ashong | Low Ceilings | Funk & Soul / Broken Beat · Groovy | Soul voilée sur rythmique brisée et claviers de Kaidi Tatham.
+T1460 | Banda Black Rio | Louis Lane (feat. Seu Jorge & Mano Brown) | Funk & Soul / Funk · Groovy | Funk brésilien.
+T1461 | Banda Black Rio | Mistérios Da Raça | Funk & Soul / Funk · Groovy | Samba-funk cuivré de Rio.
+T1462 | Bar-Kays | Fightin' Fire With Fire | Funk & Soul / Funk · Groovy | Funk électrique du début des années 80, basse appuyée et cuivres secs.
+T1463 | Barry White | You're The First, The Last, My Everything | Funk & Soul / Disco · Festif | Disco orchestrale, voix de basse amoureuse.
+T1464 | Barry White | You're The First, The Last, My Everything (Edit) | Funk & Soul / Disco · Festif | Disco-soul euphorique.
+T1465 | Barry White | You're The One I Need | Funk & Soul / Disco · Groovy | Soul disco.
+T1466 | Barry White | Your Love -- So Good I Can Taste It | Funk & Soul / Disco · Groovy | Soul disco orchestrale, voix de basse caressante.
+T1467 | Book Club Radio | Groovy Disco and R&B Mix at a New York Basement Party / Tinzo | Funk & Soul / Disco · Festif | Mix DJ disco et R&B enregistré en soirée.
+T1468 | Brylho | Se você for a salvador | Funk & Soul / Boogie · Groovy | Boogie brésilien ensoleillé.
+T1469 | CA7RIEL & Paco Amoroso | Ca7riel & Paco Amoroso: Tiny Desk Concert | Latin / Funk · Festif | Live déjanté mêlant funk, rap et rock argentin. [fixé]
+T1470 | Cameo | Candy | Funk & Soul / Funk · Groovy | Funk synthétique sec, basse slappée.
+T1471 | Captain Sky | Hero (12" Mix) | Funk & Soul / Boogie · Groovy | Funk boogie de la fin des 70s en version longue pour le dancefloor.
+T1472 | Captain Sky | Moonchild (Peter Lewicki Disco Mix) | Funk & Soul / Boogie · Groovy | Funk-disco étiré en version club.
+T1473 | Central Line | Walking Into Sunshine (Original Larry Levan 12" Mix) | Funk & Soul / Boogie · Groovy | Boogie britannique remixé par Larry Levan, basse ronde et espaces dub.
+T1474 | Chaka Khan | Fate | Funk & Soul / Funk · Énergique | Funk rapide et jazzy, voix puissante.
+T1475 | CHIC | I Want Your Love (Dimitri From Paris Remix) | Funk & Soul / Disco · Festif | Disco classique allongée et lustrée pour le dancefloor, cordes et cloches intactes.
+T1476 | Chic | Le Freak | Funk & Soul / Disco · Festif | Disco iconique à la guitare de Rodgers.
+T1477 | Chic | Open Up | Funk & Soul / Disco · Groovy | Disco-funk de Chic, guitare rythmique de Nile Rodgers en avant.
+T1478 | Chic | São Paulo | Funk & Soul / Disco · Calme | Instrumental à cordes, plus contemplatif que dansant.
+T1479 | Chic | Savoir Faire | Funk & Soul / Disco · Groovy | Instrumental lent et élégant, guitare de Nile Rodgers en vedette.
+T1480 | Chic | Soup for One | Funk & Soul / Disco · Festif | Disco élégante portée par la guitare rythmique.
+T1481 | Christy Essien Igbokwe | You Can't Change a Man | Funk & Soul / Disco · Festif | Afro-disco nigériane faite pour danser.
+T1482 | Curtis Mayfield | Pusherman | Funk & Soul / Funk · Groovy | Funk percussive et basse lancinante sur le dealer.
+T1483 | Cymande | Dove | Funk & Soul / Funk · Planant | Long jam spirituel aux percussions répétitives.
+T1484 | Dabeull | Don't Forget It | Funk & Soul / Boogie · Groovy | Boogie funk français au talkbox.
+T1485 | Dabeull | DX7 [Indastudio 10] | Funk & Soul / Boogie · Groovy | Boogie au synthé DX7.
+T1486 | Dabeull | Let's Play | Funk & Soul / Boogie · Groovy | Boogie à talkbox et synthés 80s.
+T1487 | Dabeull | Messages from the Stars | Funk & Soul / Boogie · Groovy | Boogie funk au talkbox.
+T1488 | Daft Punk | Get Lucky (feat. Pharrell Williams and Nile Rodgers) | Funk & Soul / Disco · Groovy | Disco-funk, guitare rythmique de Nile Rodgers et voix de Pharrell.
+T1489 | Dizzy K | Sweet Music | Funk & Soul / Boogie · Festif | Boogie nigérian des 80s, synthés et basse dansante.
+T1490 | Donna Summer | On The Radio | Funk & Soul / Disco · Festif | Ouverture en ballade puis montée disco irrésistible.
+T1491 | Frank Jade | Young Free and Single | Funk & Soul / Boogie · Groovy | Titre peu identifié, boogie supposé.
+T1492 | Frankie Smith | Double Dutch Bus | Funk & Soul / Funk · Festif | Funk ludique et parlé, hymne de cour de récréation.
+T1493 | Free is in Da House | Street Corner Symphony - Street Corner Symphony | Funk & Soul / Disco · Groovy | Titre peu identifié ; disco-funk supposé. [fixé]
+T1494 | The Free Music | Law Yom Saalak Had | Funk & Soul / Funk · Groovy | Funk libyen des années 70, orgue et chant arabe sur une rythmique chaloupée.
+T1495 | George Benson | Give Me the Night | Funk & Soul / Boogie · Groovy | Disco-funk élégant, guitare et scat à l'unisson.
+T1496 | George Benson | Love X Love | Funk & Soul / Boogie · Groovy | Boogie produit par Quincy Jones.
+T1497 | George Benson | Midnight Love Affair | Funk & Soul / Boogie · Groovy | Soul-jazz feutrée.
+T1498 | George Benson | What's on Your Mind | Funk & Soul / Boogie · Groovy | Boogie léger.
+T1499 | George McCrae | You Can Have It All | Funk & Soul / Disco · Groovy | Disco de Miami douce et chaloupée, voix en falsetto.
+T1500 | Golden Hands | Take Me Back | Funk & Soul / Funk · Groovy | Funk ; classement prudent.
+T1501 | Goldie Alexander | Show You My Love | Funk & Soul / Boogie · Groovy | Boogie électronique du début des 80s, basse synthé et claps.
+T1502 | Goody Goody | It Looks Like Love | Funk & Soul / Disco · Festif | Disco de Philadelphie enjouée, cordes et chœurs féminins.
+T1503 | Isaac Hayes | Theme From "Shaft" (Remastered 1991 Album Version) | Funk & Soul / Funk · Groovy | Charleston en doubles croches, guitare wah-wah et cordes : le groove cinématographique par excellence.
+T1504 | Jamiroquai | Alright | Funk & Soul / Funk · Groovy | Funk acid jazz, basse élastique et chant léger.
+T1505 | Jamiroquai | Cosmic Girl | Funk & Soul / Disco · Festif | Disco-funk à quatre temps et basse galopante.
+T1506 | Jamiroquai | Little L | Funk & Soul / Disco · Groovy | Disco-funk à basse rebondissante et cordes, rupture amoureuse dansante.
+T1507 | Jamiroquai | Seven Days in Sunny June | Funk & Soul / Funk · Groovy | Soul-funk ensoleillée et légère.
+T1508 | Jamiroquai | You Give Me Something | Funk & Soul / Disco · Groovy | Disco-funk orchestral, cordes et basse sautillante.
+T1509 | Jocelyn Brown | Somebody Else's Guy | Funk & Soul / Boogie · Groovy | Boogie post-disco, basse synthé et voix gospel.
+T1510 | Jungle | Candle Flame | Funk & Soul / Funk · Groovy | Funk feutré aux chœurs en falsetto, couplet rappé d'Erick the Architect.
+T1511 | Keni Burke | Risin' to the Top | Funk & Soul / Boogie · Groovy | Boogie funk à la basse irrésistible.
+T1512 | Keziah Jones | Rhythm Is Love | Funk & Soul / Funk · Groovy | Guitare acoustique slappée et percussive, le « blufunk » à l'état pur.
+T1513 | Kool & The Gang | Fruitman | Funk & Soul / Funk · Groovy | Funk cuivré.
+T1514 | Kool & The Gang | Give It Up | Funk & Soul / Funk · Groovy | Funk instrumental des débuts.
+T1515 | Kool & The Gang | Higher Plane | Funk & Soul / Funk · Groovy | Funk spirituel et chaloupé.
+T1516 | Kool & The Gang | Rhyme-Tyme People | Funk & Soul / Funk · Groovy | Funk cuivré et tendu, riff de basse insistant.
+T1517 | Kool & The Gang | Street Corner Symphony | Funk & Soul / Funk · Groovy | Funk cuivré à tempo moyen, basse en avant.
+T1518 | Kool & The Gang | Wild And Peaceful | Funk & Soul / Funk · Groovy | Funk instrumental étiré et jammé, cuivres et percussions en avant.
+T1519 | Letta Mbulu | Nomalizo | Funk & Soul / Funk · Groovy | Funk sud-africain chaleureux, chant en langue zouloue.
+T1520 | Luther Vandross | Never Too Much | Funk & Soul / Boogie · Groovy | Boogie élégant à la basse bondissante.
+T1521 | Mano Brown | Dance, Dance, Dance (feat. Don Pixote & Seu Jorge) | Funk & Soul / Boogie · Groovy | Boogie brésilien.
+T1522 | Marc Rebillet | JAMMING WITH REGGIE WATTS! | Funk & Soul / Funk · Festif | Impro à base de boucles vocales, funk absurde et drôle.
+T1523 | Marc Rebillet | rainy sunday | Funk & Soul / Funk · Calme | Improvisation en boucles, version paresseuse.
+T1524 | Marc Rebillet | Your New Morning Alarm | Funk & Soul / Funk · Énergique | Funk improvisé en boucle, chant absurde et hurlé.
+T1525 | Marvin Gaye | Funk Me | Funk & Soul / Funk · Groovy | Funk lent et sensuel de fin de carrière.
+T1526 | Mendes & Mendes | Mitamiyo | Funk & Soul / Boogie · Groovy | Boogie africain.
+T1527 | Michael Jackson | P.Y.T. (Pretty Young Thing) | Funk & Soul / Boogie · Groovy | Boogie synthétique et sautillant, basse élastique.
+T1528 | Michael Jackson | Rock with You (Single Version) | Funk & Soul / Disco · Groovy | Disco soyeuse, groove léger et chaleureux.
+T1529 | MillyBeats | [FREE] Groovy 80s Type Beat - "boogie" | Funk & Soul / Boogie · Groovy | Instrumental boogie 80s de beatmaker.
+T1530 | Music for empty rooms | Shotgun - Stone Women [US] Soul, Funk (1979) | Funk & Soul / Funk · Groovy | Funk américain de 1979 publié sur une chaîne de raretés.
+T1531 | Nu Genea | Marechià (feat. Célia Kameni) | Funk & Soul / Boogie · Groovy | Disco napolitaine ensoleillée.
+T1532 | Nu Genea | Praja Magia | Funk & Soul / Disco · Groovy | Disco-funk napolitaine solaire.
+T1533 | Odetto | BONHEUR SAMPLER | Funk & Soul / Disco · Festif | Disco samplée, peu documentée.
+T1534 | Oliver Cheatham | Get Down Saturday Night (Extended Radio Version - Remastered) | Funk & Soul / Boogie · Festif | Boogie de dancefloor pour le samedi soir.
+T1535 | ONZE RAYONS | DISCO FUNK (CHAPTER 1) - FULL VINYL DJ SET BY CAMELEON | Funk & Soul / Disco · Festif | DJ set vinyle de disco et funk taillé pour danser.
+T1536 | Patrice Rushen | Heartache Heartbreak | Funk & Soul / Boogie · Groovy | Funk synthétique du milieu des années 80, basse claquée et claviers brillants.
+T1537 | Patrice Rushen | Remind Me | Funk & Soul / Boogie · Groovy | Boogie soyeux, basse et Rhodes enlacés.
+T1538 | Patrice Rushen | To Each His Own | Funk & Soul / Boogie · Groovy | R&B des années 80.
+T1539 | Pino D'Angiò | Ma quale idea | Funk & Soul / Disco · Groovy | Disco parlée sur basse culte.
+T1540 | Pino D'Angiò | Una notte da impazzire | Funk & Soul / Disco · Groovy | Disco italienne parlée.
+T1541 | Quincy Jones | Ai No Corrida (feat. Dune) | Funk & Soul / Disco · Festif | Disco-funk irrésistible, cuivres et voix fait pour la piste.
+T1542 | Quincy Jones | Betcha Wouldn't Hurt Me | Funk & Soul / Boogie · Groovy | Boogie léché chanté par Patti Austin.
+T1543 | Quincy Jones | Betcha Wouldn't Hurt Me (Extended Version) | Funk & Soul / Boogie · Groovy | Boogie élégant chanté par Patti Austin.
+T1544 | Quincy Jones | Jook Joint Reprise (feat. Ray Charles & Funkmaster Flex) | Funk & Soul / Funk · Groovy | Reprise de fin d'album ; classement prudent. [fixé]
+T1545 | Quincy Jones | Razzamatazz | Funk & Soul / Boogie · Groovy | Boogie léché chanté par Patti Austin.
+T1546 | Quincy Jones | "Sanford & Son Theme" - NBC-TV (The Streetbeater) | Funk & Soul / Funk · Groovy | Générique funk à l'harmonica et basse sautillante.
+T1547 | Quincy Jones | Something Special | Funk & Soul / Boogie · Groovy | R&B soyeux porté par Patti Austin, groove mid-tempo très produit.
+T1548 | Quincy Jones | Stomp (feat. Coolio, Yo-Yo, Shaquille O'Neal & Luniz) | Funk & Soul / Funk · Festif | Reprise funk des Brothers Johnson, couplets rap.
+T1549 | Quincy Jones | Stuff Like That (feat. Nickolas Ashford, Valerie Simpson & Chaka Khan) | Funk & Soul / Funk · Groovy | Funk-disco luxueux, basse slappée et chœurs soul.
+T1550 | Quincy Jones | Takin It To The Streets (feat. Gwen Guthrie & Luther Vandross) | Funk & Soul / Funk · Groovy | Reprise funk soul des Doobie Brothers, chœurs luxueux et groove serré.
+T1551 | Quincy Jones | The Dude | Funk & Soul / Boogie · Groovy | Funk vocodé et syncopé.
+T1552 | Quincy Jones | Turn On The Action | Funk & Soul / Boogie · Groovy | Boogie funk de Quincy Jones, basse slappée.
+T1553 | Ric Wilson | Everyone Moves To LA (feat. Felicia Douglass) | Funk & Soul / Funk · Groovy | Funk électro de Chromeo, basse sautillante.
+T1554 | Rick James | Mary Jane | Funk & Soul / Funk · Groovy | Funk lent et lascif, ode détournée.
+T1555 | Robson Jorge | Eva | Funk & Soul / Boogie · Groovy | Boogie brésilien.
+T1556 | Robson Jorge | Ginga | Funk & Soul / Boogie · Groovy | Boogie brésilien aux synthés.
+T1557 | Roy Ayers | Ooh | Funk & Soul / Boogie · Groovy | Boogie funky ; classement prudent.
+T1558 | The S.O.S. Band | Groovin' (That's What We're Doin') | Funk & Soul / Boogie · Groovy | Boogie funk du début des années 80, basse synthé et chœurs.
+T1559 | Sly & The Family Stone | If You Want Me to Stay | Funk & Soul / Funk · Groovy | Basse sinueuse et voix nonchalante.
+T1560 | The Soul Searchers | Ashley's Roachclip | Funk & Soul / Funk · Groovy | Funk de Washington au break de batterie légendaire, maintes fois samplé.
+T1561 | Sparkle | What About | Funk & Soul / Disco · Festif | Disco-soul de 1979, cordes et chœurs pour la piste.
+T1562 | Stevie Wonder | Skeletons | Funk & Soul / Funk · Groovy | Funk synthétique nerveux sur les secrets qu'on cache.
+T1563 | Stevie Wonder | Too High | Funk & Soul / Funk · Groovy | Funk jazzy aux chœurs scattés et harmonies chromatiques.
+T1564 | The System | You Are in My System | Funk & Soul / Boogie · Groovy | Électro-funk synthétique et sensuelle.
+T1565 | Thundercat | Them Changes | Funk & Soul / Funk · Groovy | Basse funky sur la batterie de Isley, chagrin léger.
+T1566 | Twilight | Give Love a Try | Funk & Soul / Boogie · Groovy | Funk-soul supposé, inconnu de moi.
+T1567 | Vulfpeck | Back Pocket (feat. Theo Katzman, Christine Hucal & Mark Dover) | Funk & Soul / Funk · Groovy | Funk minimaliste au groove imparable.
+T1568 | WAR | The World is a Ghetto | Funk & Soul / Funk · Mélancolique | Longue soul lente et désabusée.
+T1569 | Wildcookie | Serious Drug | Funk & Soul / Boogie · Groovy | Boogie moderne au son eighties, basse synthé et voix soul d'Anthony Mills.
+T1570 | XL Middleton | Fake The Funk | Funk & Soul / Boogie · Groovy | Modern funk aux synthés et talkbox.
+
+## Classique · Baroque vif — 82 titres
+Description : Baroque et classique allègres : allegros, fugues, concertos.
+Règle : genre Classical ; style Baroque, Classical Period, Classical, Choral ; ambiance Énergique, Cérébral, Groovy, Festif
+
+T1571 | Alicia de Larrocha | Piano Sonata in F Major, R. 89 | Classical / Baroque · Cérébral | Sonate ibérique vive et ornée.
+T1572 | Ana-Marija Markovina | Keyboard Sonata in A Major, Wq. 54/6, H. 207: I. Allegro di molto | Classical / Baroque · Énergique | Allegro vif et nerveux, contrastes brusques typiques de C.P.E. Bach.
+T1573 | Jane | CPE Bach Solfeggietto in C minor, H 220, Wq. 117/2 Piano Tutorial | Classical / Baroque · Énergique | Vidéo tutorielle du Solfeggietto, traits rapides en doubles croches à la main alternée.
+T1574 | Julia Cload | Goldberg-Variationen, BWV 988: II. Var. I | Classical / Baroque · Énergique | Variation enjouée à deux voix.
+T1575 | Julia Cload | Goldberg-Variationen, BWV 988: IV. Var. III | Classical / Baroque · Cérébral | Canon à l'unisson, deux voix qui se poursuivent sur une basse.
+T1576 | Julia Cload | Goldberg-Variationen, BWV 988: IX. Var. VIII | Classical / Baroque · Cérébral | Variation à mains croisées.
+T1577 | Julia Cload | Goldberg-Variationen, BWV 988: V. Var. IV | Classical / Baroque · Cérébral | Variation en imitation serrée, carrée et dense.
+T1578 | Julia Cload | Goldberg-Variationen, BWV 988: VI. Var. V | Classical / Baroque · Énergique | Variation vive à mains croisées, toccata légère et pétillante.
+T1579 | Julia Cload | Goldberg-Variationen, BWV 988: X. Var. IX | Classical / Baroque · Cérébral | Canon à la tierce, écriture serrée et tendre.
+T1580 | Julia Cload | Goldberg-Variationen, BWV 988: XI. Var. X | Classical / Baroque · Cérébral | Fughetta à quatre voix.
+T1581 | Julia Cload | Goldberg-Variationen, BWV 988: XII. Var. XI | Classical / Baroque · Cérébral | Variation fluide en doubles croches.
+T1582 | Julia Cload | Goldberg-Variationen, BWV 988: XIII. Var. XII | Classical / Baroque · Cérébral | Canon à la quarte.
+T1583 | Julia Cload | Goldberg-Variationen, BWV 988: XIX. Var. XVIII | Classical / Baroque · Cérébral | Canon à la sixte, écriture serrée et mouvement régulier.
+T1584 | Julia Cload | Goldberg-Variationen, BWV 988: XV. Var. XIV | Classical / Baroque · Cérébral | Variation virtuose à croisements de mains, nerveuse et brillante.
+T1585 | Julia Cload | Goldberg-Variationen, BWV 988: XVII. Var. XVI | Classical / Baroque · Énergique | L'ouverture à la française qui coupe les Goldberg en deux, majestueuse puis fuguée.
+T1586 | Julia Cload | Goldberg-Variationen, BWV 988: XVIII. Var. XVII | Classical / Baroque · Cérébral | Variation virtuose en tierces et sixtes.
+T1587 | Julia Cload | Goldberg-Variationen, BWV 988: XXI. Var. XX | Classical / Baroque · Cérébral | Variation virtuose aux croisements de mains, jeu d'écriture.
+T1588 | Julia Cload | Goldberg-Variationen, BWV 988: XXIII. Var. XXII | Classical / Baroque · Cérébral | Variation alla breve en style ancien, contrepoint dense et posé.
+T1589 | Julia Cload | Goldberg-Variationen, BWV 988: XXIV. Var. XXIII | Classical / Baroque · Cérébral | Variation virtuose aux mains croisées.
+T1590 | Julia Cload | Goldberg-Variationen, BWV 988: XXIX. Var. XXVIII | Classical / Baroque · Cérébral | Variation aux trilles continus, scintillante et virtuose.
+T1591 | Julia Cload | Goldberg-Variationen, BWV 988: XXVII. Var. XVI | Classical / Baroque · Énergique | Ouverture à la française, rythmes pointés solennels.
+T1592 | Julia Cload | Goldberg-Variationen, BWV 988: XXVIII. Var. XXVII | Classical / Baroque · Cérébral | Canon à la neuvième à deux voix seulement, vif et transparent.
+T1593 | Julia Cload | Goldberg-Variationen, BWV 988: XXX. Var. XXIX | Classical / Baroque · Énergique | Variation pleine d'accords et de trilles, la plus brillante.
+T1594 | Julia Cload | Prelude and Fugue in A-Flat Major, BWV 862: Fugue | Classical / Baroque · Cérébral | Fugue sereine.
+T1595 | Julia Cload | Prelude and Fugue in A Major, BWV 864: Fugue | Classical / Baroque · Cérébral | Fugue sautillante à trois voix.
+T1596 | Julia Cload | Prelude and Fugue in A Major, BWV 864: Prelude | Classical / Baroque · Cérébral | Prélude en invention à trois voix, clair et articulé.
+T1597 | Julia Cload | Prelude and Fugue in A Minor, BWV 865: Fugue | Classical / Baroque · Cérébral | Longue fugue à quatre voix au sujet anguleux, jeu de contrepoint dense et rigoureux.
+T1598 | Julia Cload | Prelude and Fugue in A Minor, BWV 865: Prelude | Classical / Baroque · Cérébral | Arpèges serrés en la mineur, tension continue sur pédale.
+T1599 | Julia Cload | Prelude and Fugue in B-Flat Major, BWV 866: Fugue | Classical / Baroque · Cérébral | Fugue vive et pétillante à trois voix.
+T1600 | Julia Cload | Prelude and Fugue in B-Flat Major, BWV 866: Prelude | Classical / Baroque · Énergique | Prélude en toccata.
+T1601 | Julia Cload | Prelude and Fugue in B Major, BWV 868: Fugue | Classical / Baroque · Cérébral | Fugue sereine et lumineuse à quatre voix.
+T1602 | Julia Cload | Prelude and Fugue in B Minor, BWV 869: Fugue | Classical / Baroque · Cérébral | Fugue chromatique et douloureuse qui clôt le premier livre.
+T1603 | Julia Cload | Prelude and Fugue in C Major, BWV 846: Fugue | Classical / Baroque · Cérébral | Fugue à quatre voix, entrées serrées du sujet.
+T1604 | Julia Cload | Prelude and Fugue in C Minor, BWV 847: Fugue | Classical / Baroque · Cérébral | Fugue à trois voix vive et nerveuse au piano.
+T1605 | Julia Cload | Prelude and Fugue in C Minor, BWV 847: Prelude | Classical / Baroque · Énergique | Moto perpetuo haletant en doubles croches.
+T1606 | Julia Cload | Prelude and Fugue in C-Sharp Major, BWV 848: Fugue | Classical / Baroque · Cérébral | Fugue lumineuse à trois voix, contrepoint dansant.
+T1607 | Julia Cload | Prelude and Fugue in C-Sharp Major, BWV 848: Prelude | Classical / Baroque · Énergique | Prélude fluide et vif.
+T1608 | Julia Cload | Prelude and Fugue in C-Sharp Minor, BWV 849: Fugue | Classical / Baroque · Cérébral | Fugue à cinq voix grave et dense.
+T1609 | Julia Cload | Prelude and Fugue in D Major, BWV 850: Fugue | Classical / Baroque · Cérébral | Fugue en rythmes pointés d'ouverture française.
+T1610 | Julia Cload | Prelude and Fugue in D Major, BWV 850: Prelude | Classical / Baroque · Énergique | Doubles croches continues, élan lumineux.
+T1611 | Julia Cload | Prelude and Fugue in D Minor, BWV 851: Fugue | Classical / Baroque · Cérébral | Fugue à trois voix, contrepoint serré.
+T1612 | Julia Cload | Prelude and Fugue in D Minor, BWV 851: Prelude | Classical / Baroque · Énergique | Prélude en mouvement perpétuel.
+T1613 | Julia Cload | Prelude and Fugue in E-Flat Major, BWV 852: Fugue | Classical / Baroque · Cérébral | Fugue à trois voix, contrepoint limpide.
+T1614 | Julia Cload | Prelude and Fugue in E-Flat Major, BWV 852: Prelude | Classical / Baroque · Cérébral | Long prélude qui se mue en double fugue.
+T1615 | Julia Cload | Prelude and Fugue in E Major, BWV 854: Fugue | Classical / Baroque · Cérébral | Courte fugue lumineuse au piano, écriture contrapuntique serrée.
+T1616 | Julia Cload | Prelude and Fugue in E Minor, BWV 855: Fugue | Classical / Baroque · Énergique | Fugue à deux voix rapide et anguleuse.
+T1617 | Julia Cload | Prelude and Fugue in F Major, BWV 856: Fugue | Classical / Baroque · Cérébral | Fugue légère à trois voix.
+T1618 | Julia Cload | Prelude and Fugue in F Major, BWV 856: Prelude | Classical / Baroque · Cérébral | Prélude vif et ornementé, écriture limpide à suivre de près.
+T1619 | Julia Cload | Prelude and Fugue in F-Sharp Major, BWV 858: Fugue | Classical / Baroque · Cérébral | Fugue tranquille et limpide, contrepoint à trois voix.
+T1620 | Julia Cload | Prelude and Fugue in F-Sharp Minor, BWV 859: Fugue | Classical / Baroque · Cérébral | Fugue à quatre voix, chromatique et recueillie.
+T1621 | Julia Cload | Prelude and Fugue in G Major, BWV 860: Fugue | Classical / Baroque · Cérébral | Fugue enjouée en sol majeur.
+T1622 | Julia Cload | Prelude and Fugue in G Major, BWV 860: Prelude | Classical / Baroque · Énergique | Prélude virtuose en traits rapides.
+T1623 | Julia Cload | Prelude and Fugue in G Minor, BWV 861: Fugue | Classical / Baroque · Cérébral | Fugue grave en sol mineur.
+T1624 | Julia Cload | Prelude and Fugue in G-Sharp Minor, BWV 863: Fugue | Classical / Baroque · Cérébral | Fugue mineure dense et sérieuse.
+T1625 | Julia Cload | Preludes and Fugues: I. Fugue in C Minor, BWV 847 | Classical / Baroque · Cérébral | Fugue à trois voix au sujet dansant et resserré.
+T1626 | Julia Cload | Preludes and Fugues: II. Prelude in D Minor, BWV 851 | Classical / Baroque · Cérébral | Prélude en triolets continus, mouvement perpétuel.
+T1627 | Julia Cload | Preludes and Fugues: III. Fugue in D Minor, BWV 851 | Classical / Baroque · Cérébral | Fugue à trois voix vive et nette.
+T1628 | Julia Cload | Preludes and Fugues: IX. Fugue in F Major, BWV 856 | Classical / Baroque · Cérébral | Fugue vive et légère au piano, contrepoint limpide.
+T1629 | Julia Cload | Preludes and Fugues: V. Fugue in E Minor, BWV 855 | Classical / Baroque · Cérébral | Fugue à deux voix rapide et anguleuse.
+T1630 | Julia Cload | Preludes and Fugues: VI. Prelude in A Minor, BWV 865 | Classical / Baroque · Cérébral | Prélude en mineur aux motifs serrés.
+T1631 | Julia Cload | Preludes and Fugues: VII. Fugue in A Minor, BWV 865 | Classical / Baroque · Cérébral | Grande fugue à quatre voix, dense et architecturée.
+T1632 | Julia Cload | Preludes and Fugues: VIII. Prelude in F Major, BWV 856 | Classical / Baroque · Énergique | Prélude vif en trilles et traits brillants.
+T1633 | Julia Cload | Preludes and Fugues: X. Prelude in G Major, BWV 860 | Classical / Baroque · Énergique | Prélude vif.
+T1634 | Julia Cload | Preludes and Fugues: XI. Fugue in G Major, BWV 860 | Classical / Baroque · Cérébral | Fugue à trois voix vive et claire du Clavier bien tempéré.
+T1635 | Kassia | Passacaglia / Handel/Halvorsen (Piano Solo) | Classical / Baroque · Énergique | Variations virtuoses sur basse obstinée.
+T1636 | London Philharmonic Orchestra | Les noces de figaro | Classical / Opera · Énergique | Ouverture vive et pétillante. [fixé]
+T1637 | Manuele Cid | Vivaldi 4 Seasons, Summer 3 - Presto | Classical / Baroque · Énergique | L'orage de l'Été transcrit au piano, traits rapides et furieux.
+T1638 | Maximilian Schairer | 3. Presto agitato | Classical / Classical · Énergique | Finale orageux en arpèges furieux.
+T1639 | Maximilian Schairer | Piano Sonatina in C Major, op.55, No.1: I. Allegro | Classical / Classical · Calme | Sonatine de Kuhlau, claire et légère, pièce d'étude. [fixé]
+T1640 | Microtonal Guitar - Tolgahan Çoğulu | Bach's Presto on Microtonal Guitar in Werckmeister III Tuning - Burak Akan | Classical / Baroque · Cérébral | Presto de Bach à la guitare en tempérament historique.
+T1641 | Precipotato | Wolfgang Amadeus Mozart - Piano Concerto No. 20 in D minor, K. 466 | Classical / Classical · Sombre | Concerto en ré mineur orageux et dramatique, le plus sombre des concertos de Mozart. [fixé]
+T1642 | Rousseau | Rondo Alla Turca - Turkish March (Mozart) | Classical / Classical Period · Énergique | Marche turque brillante.
+T1643 | Rousseau | Summer - The Four Seasons (Vivaldi) | Classical / Baroque · Énergique | Été de Vivaldi au piano, orage en cascades.
+T1644 | Rousseau | Winter - The Four Seasons (Vivaldi) | Classical / Baroque · Énergique | L'Hiver de Vivaldi transcrit pour piano.
+T1645 | Tzvi Erez | Solfeggietto in C Minor (Live) | Classical / Baroque · Énergique | Arpèges rapides de C.P.E. Bach en ut mineur.
+T1646 | Varyk | C.P.E. Bach - Solfeggio in C minor | Classical / Baroque · Énergique | Perpetuum mobile en arpèges rapides, ut mineur nerveux.
+T1647 | Víkingur Ólafsson | J.S. Bach: Prelude & Fugue in C Minor (Well-Tempered Clavier, Book I, No. 2), BWV 847: I. Prelude | Classical / Baroque · Cérébral | Mouvement perpétuel en doubles croches, joué avec une précision nerveuse et un relief très net.
+T1648 | YUNDI | Fantasia No. 4 in C Minor, K. 475 | Classical / Classical Period · Cérébral | Fantaisie sombre et contrastée, modulations audacieuses.
+T1649 | YUNDI | Piano Sonata No. 11 in A Major, K. 331 "Alla turca": I. (g) Variation VI | Classical / Classical · Énergique | Dernière variation, vive et brillante.
+T1650 | YUNDI | Piano Sonata No. 11 in A Major, K. 331 "Alla turca": III. Alla turca. Allegretto | Classical / Classical Period · Énergique | Marche turque brillante.
+T1651 | YUNDI | Piano Sonata No. 14 in C Minor, K. 457: I. Molto allegro | Classical / Classical Period · Sombre | Mozart orageux en ut mineur, contrastes brusques. [fixé]
+T1652 | YUNDI | Piano Sonata No. 14 in C Minor, K. 457: III. Allegro assai | Classical / Classical · Sombre | Finale agité en ut mineur, Mozart tourmenté et pressant. [fixé]
+
+## Classique · Baroque lent — 57 titres
+Description : Baroque et classique lents : adagios, airs, largos.
+Règle : genre Classical ; style Baroque, Classical Period, Classical, Choral
+
+T1653 | András Schiff | Mozart: Fantasia in C Minor, K. 475: III. Andantino | Classical / Classical · Calme | Épisode lyrique et apaisé au cœur d'une fantaisie dramatique.
+T1654 | Budapest Strings | String Quintet in E Major, Op. 11, No. 5, G. 275: III. Minuetto | Classical / Classical · Calme | Menuet célèbre et gracieux.
+T1655 | Cyprien Katsaris | Fantasia for Piano in D Minor, K. 397 | Classical / Classical · Mélancolique | Arpèges sombres et récitatifs hésitants avant un dénouement lumineux.
+T1656 | Daniela Santos | Mozart: Lacrimosa from Requiem in D Minor (Arr. For Piano and Voice Quartet) | Classical / Choral · Mélancolique | Le Lacrimosa réduit au piano et quatre voix.
+T1657 | Ezgi Tanriverdi - Classical Piano | Bach - BWV 999, Little Prelude C minor / Ezgi Tanriverdi 🎹 | Classical / Baroque · Mélancolique | Petit prélude en arpèges continus en do mineur.
+T1658 | Georg Kallweit | Violin Sonata in C Major, Wq. 73, H. 504: III. Allegretto | Classical / Baroque · Calme | Sonate galante de C.P.E. Bach.
+T1659 | Grégoire Blanc | Mozart / Lacrimosa from Requiem in D minor / Theremin choir and piano | Classical / Classical · Mélancolique | Lacrimosa transposé au thérémine, spectral et funèbre.
+T1660 | J. S. Bach | Cello Suite No. 2 in D minor, BWV 1008 | Classical / Baroque · Mélancolique | Violoncelle seul en ré mineur, grave et méditatif.
+T1661 | Jacob's Piano | G Minor Bach (From "Piano Tiles 2") | Classical / Baroque · Mélancolique | Pièce de Bach en sol mineur jouée au piano.
+T1662 | Johann Sebastian Bach | Prelude in C minor BWV 999 | Classical / Baroque · Mélancolique | Arpèges en mineur au luth.
+T1663 | Julia Cload | Goldberg-Variationen, BWV 988: I. Aria | Classical / Baroque · Calme | Aria ornementée et recueillie, en apesanteur.
+T1664 | Julia Cload | Goldberg-Variationen, BWV 988: III. Var. II | Classical / Baroque · Calme | Variation fluide à trois voix.
+T1665 | Julia Cload | Goldberg-Variationen, BWV 988: VII. Var. VI | Classical / Baroque · Calme | Canon à la seconde.
+T1666 | Julia Cload | Goldberg-Variationen, BWV 988: VIII. Var. VII | Classical / Baroque · Calme | Variation en rythme de gigue douce, légère et pastorale au piano.
+T1667 | Julia Cload | Goldberg-Variationen, BWV 988: XIV. Var. XIII | Classical / Baroque · Calme | Mélodie ornée et chantante.
+T1668 | Julia Cload | Goldberg-Variationen, BWV 988: XVI. Var. XV | Classical / Baroque · Mélancolique | Canon à la quinte en mineur, lent et douloureux.
+T1669 | Julia Cload | Goldberg-Variationen, BWV 988: XX. Var. XIX | Classical / Baroque · Calme | Variation dansante et légère.
+T1670 | Julia Cload | Goldberg-Variationen, BWV 988: XXII. Var. XXI | Classical / Baroque · Mélancolique | Canon à la septième en sol mineur, chromatique et douloureux.
+T1671 | Julia Cload | Goldberg-Variationen, BWV 988: XXV. Var. XXIV | Classical / Baroque · Calme | Canon à l'octave en 9/8, balancement pastoral.
+T1672 | Julia Cload | Goldberg-Variationen, BWV 988: XXVI. Var. XXV | Classical / Baroque · Mélancolique | Variation « perle noire », chromatisme douloureux en mineur.
+T1673 | Julia Cload | Goldberg-Variationen, BWV 988: XXXI. Var. XXX | Classical / Baroque · Calme | Quodlibet chaleureux mêlant chansons populaires.
+T1674 | Julia Cload | Goldberg-Variationen, BWV 988: XXXII. Aria da Capo | Classical / Baroque · Calme | Retour de l'aria, sarabande sereine qui referme le cycle.
+T1675 | Julia Cload | Prelude and Fugue in A-Flat Major, BWV 862: Prelude | Classical / Baroque · Calme | Prélude lumineux et dansant du Clavier bien tempéré.
+T1676 | Julia Cload | Prelude and Fugue in B-Flat Minor, BWV 867: Fugue | Classical / Baroque · Mélancolique | Fugue à cinq voix grave et austère.
+T1677 | Julia Cload | Prelude and Fugue in B-Flat Minor, BWV 867: Prelude | Classical / Baroque · Mélancolique | Prélude lent et douloureux, presque funèbre.
+T1678 | Julia Cload | Prelude and Fugue in B Major, BWV 868: Prelude | Classical / Baroque · Calme | Prélude paisible en si majeur.
+T1679 | Julia Cload | Prelude and Fugue in B Minor, BWV 869: Prelude | Classical / Baroque · Mélancolique | Basse marchante et dialogue grave en si mineur.
+T1680 | Julia Cload | Prelude and Fugue in C Major, BWV 846: Prelude | Classical / Baroque · Calme | Arpèges égaux et lumineux, le prélude le plus célèbre de Bach.
+T1681 | Julia Cload | Prelude and Fugue in C-Sharp Minor, BWV 849: Prelude | Classical / Baroque · Mélancolique | Prélude grave et méditatif, une des pages les plus sombres du Clavier.
+T1682 | Julia Cload | Prelude and Fugue in E-Flat Minor, BWV 853: Fugue | Classical / Baroque · Mélancolique | Fugue grave en style ancien, sujet ample et progression méditative.
+T1683 | Julia Cload | Prelude and Fugue in E-Flat Minor, BWV 853: Prelude | Classical / Baroque · Mélancolique | Sarabande grave et douloureuse sur accords arpégés.
+T1684 | Julia Cload | Prelude and Fugue in E Major, BWV 854: Prelude | Classical / Baroque · Calme | Prélude pastoral et lumineux.
+T1685 | Julia Cload | Prelude and Fugue in E Minor, BWV 855: Prelude | Classical / Baroque · Mélancolique | Mélodie plaintive sur accompagnement continu, puis presto tourbillonnant.
+T1686 | Julia Cload | Prelude and Fugue in F Minor, BWV 857: Fugue | Classical / Baroque · Mélancolique | Fugue chromatique grave.
+T1687 | Julia Cload | Prelude and Fugue in F Minor, BWV 857: Prelude | Classical / Baroque · Mélancolique | Prélude grave et douloureux en fa mineur.
+T1688 | Julia Cload | Prelude and Fugue in F-Sharp Major, BWV 858: Prelude | Classical / Baroque · Calme | Prélude léger et chantant.
+T1689 | Julia Cload | Prelude and Fugue in F-Sharp Minor, BWV 859: Prelude | Classical / Baroque · Calme | Prélude en mineur, écriture à deux voix pensive.
+T1690 | Julia Cload | Prelude and Fugue in G Minor, BWV 861: Prelude | Classical / Baroque · Mélancolique | Prélude en trilles et mélodie plaintive.
+T1691 | Julia Cload | Prelude and Fugue in G-Sharp Minor, BWV 863: Prelude | Classical / Baroque · Mélancolique | Prélude grave en sol dièse mineur, lignes chantantes et retenues.
+T1692 | Julia Cload | Preludes and Fugues: IV. Prelude in E Minor, BWV 855 | Classical / Baroque · Mélancolique | Plainte sur accords battus, puis presto agité.
+T1693 | Kassia | Mozart: Fantasia in D minor, K. 397 | Classical / Classical · Mélancolique | Fantaisie sombre puis lumineuse.
+T1694 | Khatia Buniatishvili | Suite in B-Flat Major, HWV 434: IV. Menuet | Classical / Baroque · Mélancolique | Menuet lent en mineur, joué avec une gravité recueillie.
+T1695 | Mirana Faiz | Mirana Faiz - Bach G minor arranged by Luo Ni | Classical / Baroque · Mélancolique | Arrangement d'une pièce de Bach en sol mineur, interprétation non identifiée.
+T1696 | Rousseau | Moonlight Sonata - 2nd Movement (Beethoven) | Classical / Classical Period · Calme | Allegretto léger et dansant, répit entre deux mouvements sombres.
+T1697 | Rousseau | Prelude in C major (Bach) | Classical / Baroque · Calme | Arpèges paisibles du premier prélude du Clavier.
+T1698 | Stefan Schilli | Oboe Concerto in C Major, RV 452: II. Adagio | Classical / Baroque · Calme | Mouvement lent où le hautbois chante sur un accompagnement de cordes discret.
+T1699 | Traum Piano | Beethoven Piano Sonata "Pathétique" No.8 in C minor, Op.13 | Classical / Classical Period · Mélancolique | Sonate dramatique, mouvement exact incertain.
+T1700 | Traum Piano | Beethoven's Most Favorite Piano Sonata Op.78 "à Thérèse" | Classical / Classical Period · Calme | Sonate lyrique et intime.
+T1701 | Wolfgang Müller Steinbach | 11 Bagatelles, Op. 119: No. 1 in G Minor | Classical / Classical · Mélancolique | Bagatelle tardive de Beethoven, délicate et pensive.
+T1702 | YUNDI | Piano Sonata No. 11 in A Major, K. 331 "Alla turca": I. (a) Tema con variazioni | Classical / Classical Period · Calme | Thème en sicilienne tendre et chantant, simplicité mozartienne.
+T1703 | YUNDI | Piano Sonata No. 11 in A Major, K. 331 "Alla turca": I. (b) Variation I | Classical / Classical Period · Calme | Variation légère de Mozart.
+T1704 | YUNDI | Piano Sonata No. 11 in A Major, K. 331 "Alla turca": I. (c) Variation II | Classical / Classical Period · Calme | Variation aux triolets et ornements délicats, toujours gracieuse.
+T1705 | YUNDI | Piano Sonata No. 11 in A Major, K. 331 "Alla turca": I. (d) Variation III | Classical / Classical · Mélancolique | Variation en mineur, sombre parenthèse au milieu du thème lumineux.
+T1706 | YUNDI | Piano Sonata No. 11 in A Major, K. 331 "Alla turca": I. (e) Variation IV | Classical / Classical Period · Calme | Variation à croisements de mains, gracieuse.
+T1707 | YUNDI | Piano Sonata No. 11 in A Major, K. 331 "Alla turca": I. (f) Variation V | Classical / Classical · Calme | Variation Adagio ornée et méditative.
+T1708 | YUNDI | Piano Sonata No. 11 in A Major, K. 331 "Alla turca": II. Menuetto | Classical / Classical Period · Calme | Menuet gracieux de Mozart.
+T1709 | YUNDI | Piano Sonata No. 14 in C Minor, K. 457: II. Adagio | Classical / Classical · Calme | Adagio chantant et grave au cœur d'une sonate dramatique.
+
+## Classique · Romantique passionné — 53 titres
+Description : Romantisme tumultueux : virtuosité, orages, élans.
+Règle : genre Classical ; style Romantic, Waltz, Opera ; ambiance Énergique, Sombre, Cérébral, Festif
+
+T1710 | Andreas Staier | Fantasie in F Minor, D. 940, Op. 103: II. Largo | Classical / Romantic · Sombre | Largo dramatique aux rythmes pointés, gravité théâtrale.
+T1711 | Andreas Staier | Fantasie in F Minor, D. 940, Op. 103: III. Allegro vivace - Con delicatezza | Classical / Romantic · Énergique | Scherzo vif à quatre mains, trio plus délicat au centre.
+T1712 | Andreas Staier | Marche Caractéristique in C Major, D. 886: I. Allegro Vivace | Classical / Romantic · Énergique | Marche vive à quatre mains.
+T1713 | Andreas Staier | Variations on an Original Theme in A-Flat Major, D. 813, Op. 35: III. Variation II | Classical / Romantic · Cérébral | Variation à quatre mains sur pianoforte, dialogue serré.
+T1714 | Andreas Staier | Variations on an Original Theme in A-Flat Major, D. 813, Op. 35: IX. Variation VIII. Finale. Allegro moderato | Classical / Romantic · Cérébral | Finale de variations schubertiennes à quatre mains, dense et chantant.
+T1715 | Andreas Staier | Variations on an Original Theme in A-Flat Major, D. 813, Op. 35: VII. Variation VI. Maestoso | Classical / Romantic · Cérébral | Variation solennelle à quatre mains.
+T1716 | Berliner Philharmoniker | Tchaikovsky: 大序曲《1812年》 作品49 - Tchaikovsky: 1812 Overture, Op. 49, TH 49 | Classical / Romantic · Énergique | Ouverture triomphale, cloches et canons.
+T1717 | Daniil Trifonov | Chopin: Fantaisie-Impromptu in C-Sharp Minor, Op. 66 | Classical / Romantic · Énergique | Tourbillon virtuose encadrant un thème central chantant.
+T1718 | Fabrizio Chiovetta | Piano Sonata No. 32 in C Minor, Op. 111: I. Maestoso. Allegro con brio ed appassionato | Classical / Romantic · Sombre | Introduction dramatique puis allegro orageux en ut mineur, Beethoven dans sa violence ultime.
+T1719 | Helge Antoni | Rustle of Spring, Op. 32, No. 3 | Classical / Romantic · Énergique | Pièce de salon tout en arpèges bouillonnants.
+T1720 | Kassia | Beethoven: Sonata No. 23 Appassionata 3rd Movement | Classical / Romantic · Sombre | Finale tempétueux en fa mineur, doubles croches implacables.
+T1721 | Kassia | Czardas / Monti | Classical / Romantic · Énergique | Csardas : introduction lente puis accélération endiablée.
+T1722 | Kassia | Saint-Saëns: Danse Macabre | Classical / Romantic · Sombre | Valse de la mort.
+T1723 | Koray Kolbaşı | Czerny Op.299 No.1 | Classical / Romantic · Énergique | Étude de vélocité pour piano.
+T1724 | Krystian Zimerman | Chopin: Ballade No. 1 in G Minor, Op. 23 | Classical / Romantic · Cérébral | Récit dramatique jusqu'à une coda furieuse.
+T1725 | Leif Ove Andsnes | 12 Études, Op. 25: No. 11 in A Minor "Winter Wind" | Classical / Romantic · Sombre | Tempête de traits chromatiques sur thème martelé.
+T1726 | Maurizio Pollini | Chopin: Polonaise-Fantaisie in A-Flat Major, Op. 61 | Classical / Romantic · Cérébral | Forme libre et changeante du Chopin tardif.
+T1727 | Nikolai Rimsky-Korsakov | The Flight Of The Bumblebee | Classical / Romantic · Énergique | Interlude virtuose en chromatismes rapides imitant le bourdon.
+T1728 | Peter Jablonski | Chopin: Waltz No. 6 in D flat, Op. 64 No. 1 -"Minute" | Classical / Romantic · Énergique | Valse virevoltante, tourbillon léger de la main droite.
+T1729 | Red | Little bit of Liszt at the end 🫣 | Classical / Romantic · Cérébral | Vidéo de piano, classement incertain.
+T1730 | Reuel | REUEL "Tchaikovsky's Piano Concerto No. 1 in B-flat Minor" (Official Video) | Classical / Romantic · Énergique | Concerto aux accords d'ouverture monumentaux et élans virtuoses.
+T1731 | Rousseau | Etude Op. 10 No. 4 - Torrent (Chopin) | Classical / Romantic · Énergique | Étude torrentielle, doubles croches sans répit.
+T1732 | Rousseau | Heroic Polonaise - Op. 53 in A Flat Major (Chopin) | Classical / Romantic · Énergique | Polonaise héroïque de Chopin, martiale et éclatante.
+T1733 | Rousseau | La Campanella (Liszt) | Classical / Romantic · Énergique | Étude virtuose aux sauts cristallins.
+T1734 | Rousseau | Moonlight Sonata - 3rd Movement (Beethoven) | Classical / Romantic · Énergique | Presto agitato en arpèges tempétueux.
+T1735 | Rousseau | Prelude in C Sharp Minor - Op. 3 No. 2 (Rachmaninoff) | Classical / Romantic · Sombre | Accords de cloches massifs et tragiques.
+T1736 | TRAUM | Frédéric Chopin: Étude Op. 10, No. 1 in C Major (Allegro) | Classical / Romantic · Énergique | Arpèges immenses balayant le clavier.
+T1737 | TRAUM | Frédéric Chopin: Étude Op. 10, No. 10 in A-Flat Major (Vivace assai) | Classical / Romantic · Cérébral | Étude de déplacements et d'accentuations, brillante et fluide.
+T1738 | TRAUM | Frédéric Chopin: Étude Op. 10, No. 12 in C Minor (Allegro con fuoco) | Classical / Romantic · Énergique | Étude « Révolutionnaire », main gauche torrentielle sous un thème héroïque.
+T1739 | TRAUM | Frédéric Chopin: Étude Op. 10, No. 2 in A Minor (Allegro) | Classical / Romantic · Énergique | Étude chromatique légère.
+T1740 | TRAUM | Frédéric Chopin: Étude Op. 10, No. 4 in C-Sharp Minor (Presto) | Classical / Romantic · Énergique | Étude Presto en ut dièse mineur, torrent de doubles croches.
+T1741 | TRAUM | Frédéric Chopin: Étude Op. 10, No. 5 in G-Flat Major (Vivace) | Classical / Romantic · Énergique | Étude « touches noires », pétillante et virtuose.
+T1742 | TRAUM | Frédéric Chopin: Étude Op. 10, No. 7 in C Major (Vivace) | Classical / Romantic · Énergique | Doubles notes pétillantes.
+T1743 | TRAUM | Frédéric Chopin: Étude Op. 10, No. 8 in F Major (Allegro) | Classical / Romantic · Énergique | Étude virtuose, cascades brillantes de la main droite.
+T1744 | TRAUM | Frédéric Chopin: Étude Op. 10, No. 9 in F Minor (Allegro molto agitato) | Classical / Romantic · Mélancolique | Étude agitée, inquiète et haletante. [fixé]
+T1745 | TRAUM | Grandes études de Paganini, S. 141: No. 1 in G Minor (Preludio, Andante; Etude – Non troppo lento) | Classical / Romantic · Cérébral | Étude de virtuosité lisztienne en sol mineur, trémolos et traits dramatiques d'une grande exigence.
+T1746 | TRAUM | Grandes études de Paganini, S. 141: No. 2 in E-Flat Major (Andante capriccioso) | Classical / Romantic · Énergique | Étude de Liszt en octaves et traits fulgurants, virtuosité démonstrative.
+T1747 | TRAUM | Grandes études de Paganini, S. 141: No. 3 in G-Sharp Minor (Allegretto) "La campanella" | Classical / Romantic · Énergique | La Campanella, sauts périlleux dans l'aigu et clochette scintillante.
+T1748 | TRAUM | Grandes études de Paganini, S. 141: No. 4 in E Major (Vivo) | Classical / Romantic · Énergique | Arpèges virtuoses imitant le violon de Paganini.
+T1749 | TRAUM | Grandes études de Paganini, S. 141: No. 5 in E Major (Allegretto) | Classical / Romantic · Énergique | « La chasse » : appels de cor légers et virtuoses.
+T1750 | TRAUM | Grandes études de Paganini, S. 141: No. 6 in A minor "Theme and Variations" (Quasi presto, a capriccio) | Classical / Romantic · Cérébral | Variations virtuoses sur le Caprice 24 de Paganini.
+T1751 | Traum Piano | Most Horrifying Piano Music - Liszt "Der Doppelgänger" | Classical / Romantic · Sombre | Transcription lisztienne du lied de Schubert, lente et glaçante, accords graves obsédants.
+T1752 | Vladimir Horowitz | Hungarian Rhapsody No. 2 in C-Sharp Minor, S. 244/2 | Classical / Romantic · Énergique | Lassan grave puis friska endiablée et virtuose.
+T1753 | Vladimir Horowitz | Polonaise in A-Flat Major, Op. 53 "Heroic" | Classical / Romantic · Énergique | Polonaise héroïque, puissance et octaves martelées.
+T1754 | Voltaire | Chopin - Waltz in E Minor (Op. Posth. B. 56) | Classical / Romantic · Énergique | Valse brillante et fougueuse.
+T1755 | YUNDI | 12 Études, Op. 10: No. 12 in C Minor "Revolutionary" (Live) | Classical / Romantic · Énergique | Main gauche en tempête, colère héroïque.
+T1756 | YUNDI | Mazurka No. 23 in D Major, Op. 33 No. 2 (Live) | Classical / Romantic · Énergique | Mazurka vive et dansante.
+T1757 | YUNDI | Piano Concerto No. 2 in F Minor, Op. 21: III. Allegro vivace | Classical / Romantic · Énergique | Finale aux rythmes de mazurka.
+T1758 | YUNDI | Piano Sonata No. 2 in B-Flat Minor, Op. 35 "Funeral March": I. Grave - Doppio movimento (Live) | Classical / Romantic · Sombre | Mouvement orageux et haletant, tension romantique sans répit.
+T1759 | YUNDI | Piano Sonata No. 2 in B-Flat Minor, Op. 35 "Funeral March": II. Scherzo (Live) | Classical / Romantic · Énergique | Scherzo tempétueux en accords martelés, trio central plus apaisé.
+T1760 | YUNDI | Piano Sonata No. 2 in B-Flat Minor, Op. 35 "Funeral March": IV. Finale. Presto (Live) | Classical / Romantic · Sombre | Finale fantomatique d'une minute, unisson des deux mains en mouvement perpétuel.
+T1761 | YUNDI | Polonaise in A-Flat Major, Op. 53 "Heroic" (Live) | Classical / Romantic · Énergique | Polonaise héroïque aux octaves martiales et virtuoses.
+T1762 | Zubaran1977 | Carl Czerny - Etude Op.299, No.21 | Classical / Romantic · Énergique | Étude de vélocité, traits rapides et réguliers.
+
+## Classique · Romantique tendre — 73 titres
+Description : Romantisme intime : nocturnes, romances, mélancolie.
+Règle : genre Classical ; style Romantic, Waltz, Opera
+
+T1763 | André Rieu | Second Waltz | Classical / Waltz · Mélancolique | Valse de Chostakovitch, ample et nostalgique.
+T1764 | Andreas Staier | 4 Ländler, D. 814 | Classical / Romantic · Calme | Petites danses de Schubert à quatre mains, gracieuses.
+T1765 | Andreas Staier | 6 Grandes Marches in B Minor, D. 819, Op. 40: III. Allegretto | Classical / Romantic · Mélancolique | Marche à quatre mains en mineur, pianoforte grave.
+T1766 | Andreas Staier | Fantasie in F Minor, D. 940, Op. 103: I. Allegro molto moderato | Classical / Romantic · Mélancolique | Thème plaintif à quatre mains en fa mineur.
+T1767 | Andreas Staier | Fantasie in F Minor, D. 940, Op. 103: IV. Finale. Tempo primo | Classical / Romantic · Mélancolique | Retour du thème poignant à quatre mains, fugue qui se brise sur l'accord final.
+T1768 | Andreas Staier | Polonaise in D Minor, D. 824, No. 1, Op. 61 | Classical / Romantic · Mélancolique | Polonaise à quatre mains, fière et assombrie.
+T1769 | Andreas Staier | Rondo in A Major, D. 951, Op. 107: Allegretto quasi andantino | Classical / Romantic · Calme | Rondo à quatre mains, chantant et paisible.
+T1770 | Andreas Staier | Variations on an Original Theme in A-Flat Major, D. 813, Op. 35: I. Thema. Allegretto | Classical / Romantic · Calme | Thème simple et chantant à quatre mains.
+T1771 | Andreas Staier | Variations on an Original Theme in A-Flat Major, D. 813, Op. 35: II. Variation I | Classical / Romantic · Calme | Variation à quatre mains, douce et chantante.
+T1772 | Andreas Staier | Variations on an Original Theme in A-Flat Major, D. 813, Op. 35: IV. Variation III. Un poco piu lento | Classical / Romantic · Calme | Variation plus lente à quatre mains.
+T1773 | Andreas Staier | Variations on an Original Theme in A-Flat Major, D. 813, Op. 35: V. Variation IV. Tempo I | Classical / Romantic · Calme | Variation pour piano à quatre mains, intime.
+T1774 | Andreas Staier | Variations on an Original Theme in A-Flat Major, D. 813, Op. 35: VI. Variation V | Classical / Romantic · Calme | Variation de Schubert à quatre mains.
+T1775 | Andreas Staier | Variations on an Original Theme in A-Flat Major, D. 813, Op. 35: VIII. Variation VII. Più lento | Classical / Romantic · Mélancolique | Variation lente à quatre mains.
+T1776 | Anne Queffélec | Fantasia for Piano Four-Hands in F Minor, Op. Posth. 103, D. 940: I. Allegro molto moderato (feat. Imogen Cooper) | Classical / Romantic · Mélancolique | Thème plaintif en fa mineur repris obstinément, l'une des pages les plus déchirantes de Schubert.
+T1777 | Arthur Rubinstein | Nocturnes, Op. 55: No. 1 in F Minor | Classical / Romantic · Mélancolique | Nocturne en fa mineur, chant las et retenu.
+T1778 | Benjamin Grosvenor | Chopin: Nocturne No. 19 in E Minor, Op. 72 No. 1 | Classical / Romantic · Mélancolique | Plainte en mi mineur sur arpèges larges.
+T1779 | Brigitte Engerer | Nocturne in C-Sharp Minor, B. 49 | Classical / Romantic · Mélancolique | Nocturne posthume, chant désolé au-dessus d'un accompagnement doux.
+T1780 | Christian Kohn | III. Un poco allegretto | Classical / Romantic · Calme | Mouvement à quatre mains de Brahms, tendre et retenu.
+T1781 | Daniel Barenboim | Liszt: Consolations, S. 172: No. 3 in D-Flat Major. Lento, placido | Classical / Romantic · Calme | Consolation paisible au chant ample.
+T1782 | Daniel Barenboim | Symphony No. 5 in C-Sharp Minor: IV. Adagietto. Sehr langsam | Classical / Romantic · Mélancolique | Cordes et harpe seules, lent et chargé d'une tendresse douloureuse.
+T1783 | Elan Marinho | playlist para estudar como nietzsche sobre o abismo em uma corda bamba entre o animal e o übermensch | Classical / Romantic · Mélancolique | Compilation YouTube d'ambiance studieuse et dramatique, contenu incertain.
+T1784 | Fabrizio Chiovetta | Piano Sonata No. 32 in C Minor, Op. 111: II. Arietta. Adagio molto semplice e cantabile | Classical / Classical · Cérébral | Variations transcendantes du dernier Beethoven. [fixé]
+T1785 | fireb0rn | Frédéric Chopin - Waltz no. 19 op. posth. in A Minor | Classical / Romantic · Mélancolique | Petite valse mineure au piano, nostalgique et simple.
+T1786 | Frédéric Chopin | Étude Op. 25 - No.1 | Classical / Romantic · Calme | « Harpe éolienne », mélodie flottant sur des arpèges.
+T1787 | HDA Pianomusic | Chopin - Prelude Op.28 No.20 in C Minor | Classical / Romantic · Mélancolique | Le prélude-choral funèbre, accords lourds qui s'éteignent.
+T1788 | İdil Biret | Piano Sonata No. 1 in D Minor, Op. 28: II. Lento | Classical / Romantic · Mélancolique | Mouvement lent de Rachmaninov, lyrique et douloureux.
+T1789 | Igor Levit | Klavierstück in B Minor | Classical / Romantic · Mélancolique | Pièce pour piano en si mineur, identification incertaine.
+T1790 | Jenő Jandó | Liebesträume, S. 541: No. 3: Nocturne in A-Flat Major | Classical / Romantic · Calme | Rêve d'amour tendre et passionné.
+T1791 | Kassia | Schubert: Fantasy in F minor D. 940 | Classical / Romantic · Mélancolique | Thème schubertien poignant, alternance de douleur et d'élan.
+T1792 | Kassia | The Best of Chopin Nocturnes | Classical / Romantic · Calme | Compilation de nocturnes, piano rêveur.
+T1793 | Khatia Buniatishvili | Lied ohne Worte in F-Sharp Minor, Op. 67/2 | Classical / Romantic · Mélancolique | Romance sans paroles fébrile en fa dièse mineur.
+T1794 | Khatia Buniatishvili | Ständchen, S. 560 (Trans. from Schwanengesang No. 4, D. 957) | Classical / Romantic · Mélancolique | Sérénade de Schubert transcrite par Liszt.
+T1795 | Khatia Buniatishvili | Waltz in C-sharp minor, Op. 64 No. 2 | Classical / Romantic · Mélancolique | Valse nostalgique et tourbillonnante.
+T1796 | Lord Vinheteiro | Ballade No. 1 in G Minor, Op. 23 | Classical / Romantic · Mélancolique | Grande ballade dramatique jusqu'à la coda tempétueuse.
+T1797 | Mariinsky Orchestra | Khachaturian: Spartacus: Adagio of Spartacus and Phrygia | Classical / Romantic · Mélancolique | Grand adagio de ballet, cordes en vagues lyriques jusqu'au paroxysme.
+T1798 | Nikolai Lugansky | 24 Preludes, Op. 28: No. 15 in D-Flat Major "Raindrop" | Classical / Romantic · Mélancolique | Note répétée comme une pluie, section centrale sombre et grave.
+T1799 | PianoTips | Czerny op.599 nr.62 Piano Tutorial / Practical Method for Beginners | Classical / Romantic · Calme | Petite pièce pédagogique de Czerny, en tutoriel.
+T1800 | Radu Lupu | Schubert: 4 Impromptus, D. 899 (Op. 90): No. 4 in A-Flat Major. Allegretto | Classical / Romantic · Mélancolique | Cascades d'arpèges en mineur qui s'éclaircissent en majeur, toucher velouté.
+T1801 | Rousseau | Beethoven - Moonlight Sonata (Full) | Classical / Romantic · Mélancolique | Les trois mouvements, de l'adagio funèbre au presto agité.
+T1802 | Rousseau | Chopin - Etude Op. 10 No. 3 (Tristesse) | Classical / Romantic · Mélancolique | Mélodie tendre et douloureuse.
+T1803 | Rousseau | Für Elise (Beethoven) | Classical / Romantic · Mélancolique | La bagatelle de Beethoven, motif tendre et rêveur.
+T1804 | Rousseau | Liebesleid - Love's Sorrow (Kreisler) | Classical / Romantic · Mélancolique | Valse de Kreisler au piano, tendre et nostalgique.
+T1805 | Rousseau | Liebestraum No. 3 - Love Dream (Liszt) | Classical / Romantic · Calme | Nocturne lyrique et tendre.
+T1806 | Rousseau | Liszt - Consolation No. 3 | Classical / Romantic · Calme | Nocturne serein, mélodie chantante sur arpèges.
+T1807 | Rousseau | Liszt - Un Sospiro | Classical / Romantic · Calme | Arpèges croisés et mélodie lyrique, version tutoriel.
+T1808 | Rousseau | Moonlight Sonata - 1st Movement (Beethoven) | Classical / Romantic · Mélancolique | Triolets lents et funèbres en ut dièse mineur.
+T1809 | Rousseau | Nocturne in E Flat Major - Op. 9 No. 2 (Chopin) | Classical / Romantic · Calme | Mélodie chantante ornée sur balancement de valse lente.
+T1810 | Rousseau | Prelude in E Minor - Op. 28 No. 4 (Chopin) | Classical / Romantic · Mélancolique | Accords qui glissent sous une mélodie résignée.
+T1811 | Rousseau | The Most Beautiful & Relaxing Piano Pieces (Vol. 1) | Classical / Romantic · Calme | Compilation de pièces pour piano apaisantes.
+T1812 | TRAUM | Frédéric Chopin: Étude Op. 10, No. 11 in E-Flat Major (Allegretto) | Classical / Romantic · Calme | Étude de Chopin aux arpèges légers et chantants.
+T1813 | TRAUM | Frédéric Chopin: Étude Op. 10, No. 3 in E Major (Lento ma non troppo) | Classical / Romantic · Mélancolique | L'étude « Tristesse » : mélodie chantante et nostalgique, avec un milieu plus tourmenté.
+T1814 | TRAUM | Frédéric Chopin: Étude Op. 10, No. 6 in E-Flat Minor (Andante) | Classical / Romantic · Mélancolique | Étude lente et douloureuse, chromatisme sombre.
+T1815 | Traum Piano | 19 Most Romantic Waltzes - Chopin Complete Waltzes | Classical / Romantic · Calme | Compilation des valses de Chopin au piano.
+T1816 | Traum Piano | Chopin - 5 Most Beautiful Waltzes | Classical / Romantic · Mélancolique | Recueil de valses de Chopin.
+T1817 | Traum Piano | Mozart / Liszt - Ave verum corpus | Classical / Romantic · Calme | Transcription pour piano par Liszt du motet de Mozart, recueillie et lente.
+T1818 | Varyk | Rachmaninoff - Nocturne No.2 in F Major | Classical / Romantic · Calme | Nocturne de jeunesse de Rachmaninov.
+T1819 | Wonders of Classical Music | Chopin Nocturnes | Classical / Romantic · Calme | Nocturnes pour piano seul, chant lyrique et accompagnement en arpèges.
+T1820 | yaoikan1981 | Theremin - Clara Rockmore play "The Swan" (Saint-Saëns) | Classical / Romantic · Mélancolique | Le Cygne au thérémine.
+T1821 | YUNDI | Mazurka No. 22 in G-Sharp Minor, Op. 33 No. 1 (Live) | Classical / Romantic · Mélancolique | Courte mazurka mineure, intime et nostalgique.
+T1822 | YUNDI | Mazurka No. 24 in C Major, Op. 33 No. 3 (Live) | Classical / Romantic · Calme | Mazurka simple et chantante.
+T1823 | YUNDI | Mazurka No. 25 in B Minor, Op. 33 No. 4 (Live) | Classical / Romantic · Mélancolique | Mazurka en si mineur, élégie dansée aux rubatos nostalgiques.
+T1824 | YUNDI | Nocturne No. 1 in B-Flat Minor, Op. 9 No. 1 | Classical / Romantic · Mélancolique | Nocturne mineur et rêveur.
+T1825 | YUNDI | Nocturne No. 10 in A-Flat Major, Op. 32 No. 2 | Classical / Romantic · Calme | Nocturne serein à épisode central agité.
+T1826 | YUNDI | Nocturne No. 16 in E-Flat Major, Op. 55 No. 2 | Classical / Romantic · Calme | Nocturne tardif, ligne chantante sur accompagnement fluide.
+T1827 | YUNDI | Nocturne No. 17 in B Major, Op. 62 No. 1 | Classical / Romantic · Calme | Nocturne tardif et méditatif.
+T1828 | YUNDI | Nocturne No. 2 in E-Flat Major, Op. 9 No. 2 (Live) | Classical / Romantic · Calme | Mélodie chantante richement ornée.
+T1829 | YUNDI | Nocturne No. 21 in C Minor, Op. Posth. | Classical / Romantic · Mélancolique | Nocturne posthume, court et douloureux.
+T1830 | YUNDI | Nocturne No. 4 in F Major, Op. 15 No. 1 | Classical / Romantic · Calme | Nocturne serein interrompu par un épisode central orageux.
+T1831 | YUNDI | Nocturne No. 5 in F-Sharp Major, Op. 15 No. 2 | Classical / Romantic · Calme | Nocturne orné et rêveur.
+T1832 | YUNDI | Nocturne No. 9 in B Major, Op. 32 No. 1 | Classical / Romantic · Mélancolique | Nocturne doux qui s'achève en récitatif tragique.
+T1833 | YUNDI | Piano Concerto No. 2 in F Minor, Op. 21: I. Maestoso | Classical / Romantic · Mélancolique | Premier mouvement dramatique et lyrique.
+T1834 | YUNDI | Piano Concerto No. 2 in F Minor, Op. 21: II. Larghetto | Classical / Romantic · Calme | Mouvement lent rêveur, cantilène belcantiste au piano.
+T1835 | YUNDI | Piano Sonata No. 2 in B-Flat Minor, Op. 35 "Funeral March": III. Marche funèbre. Lento (Live) | Classical / Romantic · Mélancolique | La marche funèbre de Chopin, lourde avec un trio consolant.
+
+## Classique · Moderne tendu — 37 titres
+Description : Modernes et contemporains : tension, recherche, rythmes.
+Règle : genre Classical ; ambiance Cérébral, Énergique, Sombre, Groovy, Festif
+
+T1836 | Catherine Gordeladze | 24 Preludes, Op. 53: Prelude No. 1 in C Major | Classical / Contemporary · Groovy | Prélude de Kapustin en swing écrit.
+T1837 | Catherine Gordeladze | 24 Preludes, Op. 53: Prelude No. 10 in C-Sharp Minor | Classical / Contemporary · Cérébral | Prélude de Kapustin mêlant écriture classique et harmonies jazz.
+T1838 | Catherine Gordeladze | 24 Preludes, Op. 53: Prelude No. 11 in B Major | Classical / Modern Classical · Cérébral | Prélude de Kapustin qui écrit le jazz au piano classique, syncopes et harmonies swing entièrement notées.
+T1839 | Catherine Gordeladze | 24 Preludes, Op. 53: Prelude No. 12 in G-Sharp Minor | Classical / Modern Classical · Cérébral | Prélude jazz écrit, harmonie dense.
+T1840 | Catherine Gordeladze | 24 Preludes, Op. 53: Prelude No. 13 in G-Flat Major | Classical / Contemporary · Cérébral | Prélude de Kapustin, lyrisme jazz écrit.
+T1841 | Catherine Gordeladze | 24 Preludes, Op. 53: Prelude No. 14 in E-Flat Minor | Classical / Contemporary · Cérébral | Prélude de Kapustin aux harmonies jazz.
+T1842 | Catherine Gordeladze | 24 Preludes, Op. 53: Prelude No. 15 in D-Flat Major | Classical / Contemporary · Groovy | Prélude jazzy de Kapustin.
+T1843 | Catherine Gordeladze | 24 Preludes, Op. 53: Prelude No. 16 in B-Flat Minor | Classical / Modern Classical · Énergique | Prélude jazzy et rythmique.
+T1844 | Catherine Gordeladze | 24 Preludes, Op. 53: Prelude No. 17 in A-Flat Major | Classical / Modern Classical · Cérébral | Prélude de Kapustin mêlant écriture classique et harmonie jazz.
+T1845 | Catherine Gordeladze | 24 Preludes, Op. 53: Prelude No. 18 in F Minor | Classical / Modern Classical · Cérébral | Prélude de Kapustin fondant harmonies jazz et écriture pianistique classique.
+T1846 | Catherine Gordeladze | 24 Preludes, Op. 53: Prelude No. 19 in E-Flat Major | Classical / Contemporary · Cérébral | Prélude jazzy virtuose d'écriture serrée.
+T1847 | Catherine Gordeladze | 24 Preludes, Op. 53: Prelude No. 2 in A Minor | Classical / Contemporary · Énergique | Prélude de Kapustin, piano classique écrit dans la langue du jazz.
+T1848 | Catherine Gordeladze | 24 Preludes, Op. 53: Prelude No. 20 in C Minor | Classical / Modern Classical · Cérébral | Prélude jazzy et tendu de Kapustin.
+T1849 | Catherine Gordeladze | 24 Preludes, Op. 53: Prelude No. 21 in B-Flat Major | Classical / Modern Classical · Groovy | Prélude de Kapustin écrit comme du jazz, swing pianistique noté.
+T1850 | Catherine Gordeladze | 24 Preludes, Op. 53: Prelude No. 22 in G Minor | Classical / Contemporary · Cérébral | Prélude de Kapustin à l'harmonie jazz écrite note à note.
+T1851 | Catherine Gordeladze | 24 Preludes, Op. 53: Prelude No. 23 in F Major | Classical / Modern Classical · Cérébral | Prélude de Kapustin écrit comme du jazz.
+T1852 | Catherine Gordeladze | 24 Preludes, Op. 53: Prelude No. 24 in D Minor | Classical / Modern Classical · Énergique | Final de cycle virtuose mêlant jazz et écriture classique.
+T1853 | Catherine Gordeladze | 24 Preludes, Op. 53: Prelude No. 3 in G Major | Classical / Contemporary · Groovy | Piano classique écrit en langage jazz qui swingue.
+T1854 | Catherine Gordeladze | 24 Preludes, Op. 53: Prelude No. 5 in D Major | Classical / Modern Classical · Énergique | Prélude de Kapustin, écriture classique au langage jazz.
+T1855 | Catherine Gordeladze | 24 Preludes, Op. 53: Prelude No. 6 in B Minor | Classical / Modern Classical · Cérébral | Prélude jazzé de Kapustin, écriture serrée.
+T1856 | Catherine Gordeladze | 24 Preludes, Op. 53: Prelude No. 7 in A Major | Classical / Contemporary · Cérébral | Prélude de Kapustin à l'écriture jazzy.
+T1857 | Catherine Gordeladze | 24 Preludes, Op. 53: Prelude No. 8 in F-Sharp Minor | Classical / Contemporary · Cérébral | Kapustin : écriture classique et harmonies jazz, virtuosité serrée.
+T1858 | Catherine Gordeladze | 24 Preludes, Op. 53: Prelude No. 9 in E Major | Classical / Contemporary · Groovy | Prélude de Kapustin aux harmonies jazz.
+T1859 | Catherine Gordeladze | 8 Concert Etudes, Op. 40: No. 1. Prelude | Classical / Modern Classical · Énergique | Étude virtuose au langage jazz, moteur rythmique implacable.
+T1860 | Catherine Gordeladze | 8 Concert Etudes, Op. 40: No. 3. Toccatina | Classical / Contemporary · Énergique | Toccatina de Kapustin, virtuosité classique nourrie de jazz.
+T1861 | Catherine Gordeladze | 8 Concert Etudes, Op. 40: No. 5. Shuitka (Raillery) | Classical / Contemporary · Cérébral | Étude virtuose de Kapustin, écriture classique et langage jazz espiègle.
+T1862 | Catherine Gordeladze | 8 Concert Etudes, Op. 40: No. 7. Intermezzo | Classical / Modern Classical · Groovy | Étude jazzy de Kapustin.
+T1863 | Catherine Gordeladze | 8 Concert Etudes, Op. 40: No. 8. Finale | Classical / Contemporary · Énergique | Finale virtuose et motorique de Kapustin.
+T1864 | Chopin University Press | Mazurka | Classical / Neo-Classical · Cérébral | Mazurka d'un compositeur polonais du XXe siècle, mal connue.
+T1865 | Ivan Yanakov | Eight Concert Etudes, Op. 40: Finale | Classical / Contemporary · Énergique | Finale virtuose de Kapustin, écriture classique en langage stride et jazz.
+T1866 | Kaleidoscope Orchestra | Daft Punk Orchestra Medley | Classical / Neo-Classical · Énergique | Pot-pourri de Daft Punk arrangé pour orchestre.
+T1867 | NeedToWant - Piano | Left hand go brrrrr X2 | Classical / Instrumental · Énergique | Démonstration pianistique de main gauche, à vérifier.
+T1868 | Nu Deco Ensemble | Nu Deco Ensemble - Humans vs Robots (Daft Punk Suite) | Classical / Contemporary · Énergique | Suite orchestrale sur des thèmes de Daft Punk.
+T1869 | Peter Rösel | Doctor Gradus ad Parnassum | Classical / Impressionist · Énergique | Exercice étincelant qui raille les études, doigts en cascade.
+T1870 | Varyk | Debussy - Doctor Gradus ad Parnassum | Classical / Impressionist · Cérébral | Étude espiègle en arpèges.
+T1871 | Varyk | Kabalevsky - Etude Op. 27 No. 3 | Classical / Modern Classical · Énergique | Étude rapide et rythmique.
+T1872 | Varyk | Ravel - Jeux d'eau | Classical / Impressionist · Cérébral | Ruissellement pianistique, harmonies scintillantes.
+
+## Classique · Moderne contemplatif — 76 titres
+Description : Impressionnisme, minimalisme et néo-classique contemplatifs : piano, nappes, Zimmer et Hisaishi.
+Règle : genre Classical
+
+T1873 | Adagietto | Debussy plays Debussy / Clair de Lune (1913) | Classical / Impressionist · Calme | Enregistrement historique sur rouleau de piano.
+T1874 | Alain Planès | Le Fils des étoiles: Prélude du premier acte | Classical / Impressionist · Calme | Accords de quartes immobiles de Satie, rituels et suspendus.
+T1875 | Alena Cherny | Gnossienne No. 1 | Classical / Impressionist · Mélancolique | Mélodie modale lente et énigmatique de Satie.
+T1876 | Alexandre Tharaud | Gnossienne No. 2 | Classical / Impressionist · Calme | Satie : mélodie errante et suspendue.
+T1877 | Alexandre Tharaud | Gnossienne No. 3 | Classical / Impressionist · Mélancolique | Mélodie orientalisante de Satie, sans mesure et rêveuse.
+T1878 | Alexei Lubimov | Le Fils des Étoiles: Acte I: La Vocation | Classical / Impressionist · Planant | Accords de quartes immobiles, Satie hiératique.
+T1879 | Alina Yanovna | A Secret Within | Classical / Modern Classical · Calme | Morceau mal identifié, probablement piano néo-classique.
+T1880 | AngryParkRanger | Sweden | Classical / Neo-Classical · Calme | Reprise du thème de Minecraft, piano contemplatif.
+T1881 | ARTE Concert | Sofiane Pamart au Piano Day - @arteconcert's Piano Day | Classical / Neo-Classical · Calme | Piano solo néoclassique, mélodies limpides et lyriques en live.
+T1882 | Austin Farwell | New Home (Piano & Cello) | Classical / Modern Classical · Calme | Piano et violoncelle doux et cinématographiques.
+T1883 | Avner | Ma première composition - Moment Musical n°1 - Avner Piano | Classical / Neo-Classical · Calme | Pièce pour piano seul d'un jeune compositeur.
+T1884 | Boopala Rajendran | Interstellar_HANS ZIMMER (RELAXING MUSIC FOR WORKING ) | Classical / Minimalism · Planant | Orgue de Zimmer en boucle.
+T1885 | Box of Music | Interstellar Main Theme | Classical / Modern Classical · Calme | Thème de Zimmer en boîte à musique.
+T1886 | Carolina Eyck | Ennio Morricone - The Ecstasy of Gold - Theremin & Voice | Classical / Contemporary · Planant | Morricone au thérémine et voix en boucle.
+T1887 | Catherine Gordeladze | 24 Preludes, Op. 53: Prelude No. 4 in E Minor | Classical / Modern Classical · Mélancolique | Prélude mineur de Kapustin.
+T1888 | Catherine Gordeladze | 8 Concert Etudes, Op. 40: No. 2. Reverie | Classical / Modern Classical · Calme | Étude rêveuse aux harmonies jazz.
+T1889 | Catherine Gordeladze | 8 Concert Etudes, Op. 40: No. 4. Reminiscence | Classical / Contemporary · Mélancolique | Étude lyrique de Kapustin aux harmonies jazz.
+T1890 | Catherine Gordeladze | 8 Concert Etudes, Op. 40: No. 6. Pastoral | Classical / Modern Classical · Calme | Étude de Kapustin douce et lumineuse.
+T1891 | Chilly Gonzales | 10:37 She's So Lovely Medley | Classical / Modern Classical · Calme | Piano solo qui revisite des airs pop avec tendresse.
+T1892 | Chilly Gonzales | Chico | Classical / Neo-Classical · Calme | Pièce brève pour piano seul.
+T1893 | Chilly Gonzales | Daft Punk Medley | Classical / Neo-Classical · Calme | Thèmes de Daft Punk au piano seul.
+T1894 | Chilly Gonzales | Damage In Your Heart (Chilly Gonzales Version) | Classical / Modern Classical · Mélancolique | Relecture au piano intimiste et douce-amère.
+T1895 | Chilly Gonzales | Drake Medley | Classical / Modern Classical · Calme | Mélodies de Drake réarrangées en piano solo intimiste.
+T1896 | Chilly Gonzales | Gogol | Classical / Neo-Classical · Mélancolique | Piano seul en mineur.
+T1897 | Chilly Gonzales | Lana Del Rey Medley | Classical / Modern Classical · Mélancolique | Piano solo qui enchaîne les mélodies de Lana Del Rey en relisant leur spleen de manière intimiste.
+T1898 | Chilly Gonzales | Manifesto | Classical / Modern Classical · Calme | Courte pièce pour piano solo, simple et mélodique.
+T1899 | Chilly Gonzales | Prelude In C Sharp Major | Classical / Modern Classical · Calme | Piano solo intimiste, mélodie simple et tendre.
+T1900 | Chilly Gonzales | Rap Piano Medley | Pop / Instrumental · Groovy | Tubes rap réinventés au piano solo. [fixé]
+T1901 | Chilly Gonzales | Something About Us (Chilly Gonzales Version) | Classical / Modern Classical · Calme | Daft Punk réduit au piano solo, intime.
+T1902 | Chilly Gonzales | Take Care Medley | Classical / Neo-Classical · Calme | Drake réarrangé au piano.
+T1903 | Chilly Gonzales | The Traveller (Chilly Gonzales version) | Classical / Modern Classical · Calme | Relecture au piano solo, intime et dépouillée.
+T1904 | Chilly Gonzales | Weezer Medley | Classical / Modern Classical · Calme | Pots-pourris de Weezer réharmonisés au piano solo.
+T1905 | Cinémavore | Interstellar Main Theme - Extra Extended - Soundtrack by Hans Zimmer | Classical / Minimalism · Planant | Orgue répétitif de Zimmer, prolongé et vertigineux.
+T1906 | Daft Punk | Too Long (Gonzales Version) | Classical / Modern Classical · Calme | Relecture au piano solo par Chilly Gonzales, intime et dépouillée.
+T1907 | Daniel Kruglov | Emotions | Electronic / Downtempo · Calme | Titre inconnu, choix très incertain. [fixé]
+T1908 | Daniel Kruglov | Fountain | Classical / Modern Classical · Calme | Pièce peu documentée, probablement pianistique et posée. [fixé]
+T1909 | Dustin O'Halloran | An Ending, A Beginning | Classical / Modern Classical · Mélancolique | Piano seul retenu et douloureux.
+T1910 | Elijah Fox | Wyoming | Classical / Neo-Classical · Calme | Piano seul contemplatif aux harmonies jazz.
+T1911 | Ennio Morricone | Chi Maï | Classical / Modern Classical · Mélancolique | Thème aux cordes poignant.
+T1912 | Franco Micalizzi | Sadness Theme | Classical / Modern Classical · Mélancolique | Thème de film lent et triste.
+T1913 | Franco Micalizzi | Voices for Sadness Theme | Classical / Modern Classical · Mélancolique | Thème de film triste.
+T1914 | Gabriel Yared | Betty et Zorg | Classical / Modern Classical · Mélancolique | Thème de film tendre et fragile.
+T1915 | Geek Music | Interstellar Main Theme (From "Interstellar") | Classical / Minimalism · Planant | Orgue répétitif qui enfle, minimalisme de Zimmer.
+T1916 | George Winston | Spanish Caravan | Classical / New Age · Mélancolique | Piano solo sur thème des Doors, couleurs espagnoles.
+T1917 | Glass Duo | Karol Szymanowski played on the Theremin & the Glass Harp | Classical / Modern Classical · Planant | Timbres irréels du thérémine et de l'harmonica de verre.
+T1918 | Grégoire Blanc | Schindler's List Theme / Theremin & Piano | Classical / Modern Classical · Mélancolique | Thème de Williams au thérémine, voix fantomatique.
+T1919 | Hayato Sumino | [Melodica × Grand Piano] Howl's Moving Castle - Merry Go Round of Life (Joe Hisaishi) | Classical / Neo-Classical · Mélancolique | Valse d'Hisaishi en duo mélodica et piano, intime et nostalgique.
+T1920 | Jacob's Piano | Mariage d'Amour | Classical / Neo-Classical · Mélancolique | Mélodie de piano romantique et larmoyante.
+T1921 | Jean-Yves Thibaudet | Debussy: Rêverie, CD 76 | Classical / Impressionist · Calme | Pièce pour piano rêveuse aux harmonies flottantes.
+T1922 | Jean-Yves Thibaudet | Satie: Gymnopédie No. 1. Lent et douloureux | Classical / Impressionist · Mélancolique | Valse lente et dépouillée, accords suspendus.
+T1923 | Joe Hisaishi | Merry-Go-Round of Life (from 'Howl's Moving Castle') | Classical / Neo-Classical · Mélancolique | Valse de film au piano, nostalgie tournoyante.
+T1924 | Joep Beving | Morpheus' Dream | Classical / Neo-Classical · Calme | Piano feutré et rêveur.
+T1925 | Lang Lang | Debussy: Clair de lune, CD 82 No. 3 | Classical / Impressionist · Calme | Le clair de lune de Debussy, arpèges suspendus et lumière tamisée.
+T1926 | Lang Lang | Richter: The Departure | Classical / Modern Classical · Mélancolique | Piano minimaliste et poignant de Max Richter.
+T1927 | Lympstyle _short | Piano improvisation | Classical / Neo-Classical · Calme | Courte improvisation au piano.
+T1928 | Mar 3, 2017 | Interstellar: The Ultimate Space Experience / Hans Zimmer | Classical / Minimalism · Planant | Orgue et nappes répétitives de Zimmer qui s'étirent jusqu'à l'immensité.
+T1929 | Moondog | High On A Rocky Ledge | Classical / Minimalism · Calme | Chanson épurée en canon, pulsation tranquille.
+T1930 | Nicolas Horvath | Gnossienne No. 4 | Classical / Impressionist · Mélancolique | Arpèges roulants et mélodie orientalisante, rêverie triste de Satie.
+T1931 | Rousseau | Clair de Lune [Ver. 1] (Debussy) | Classical / Impressionist · Calme | Le clair de lune de Debussy, interprétation YouTube.
+T1932 | Rousseau | Comptine d'un autre ete (Yann Tiersen) | Classical / Modern Classical · Mélancolique | Piano répétitif et nostalgique, motif obstiné.
+T1933 | Rousseau | Debussy - Clair de Lune | Classical / Impressionist · Calme | Pièce de piano lunaire et suspendue.
+T1934 | Rousseau | Gymnopédie No. 1 (Satie) | Classical / Impressionist · Calme | Valse lente de Satie, dépouillée et suspendue.
+T1935 | Rousseau | Reflets dans l'eau - Images (Debussy) | Classical / Impressionist · Calme | Arpèges miroitants, lumière sur l'eau.
+T1936 | Rousseau | Una Mattina (Ludovico Einaudi) | Classical / Modern Classical · Calme | Piano minimaliste.
+T1937 | Shiro SAGISU | Nothing Can Be Explained (inst ver.) - Nothing Can Be Explained (Instumental Version) | Classical / Modern Classical · Mélancolique | Instrumental de la BO de Bleach.
+T1938 | Sofiane Pamart | FOREVER | Classical / Neo-Classical · Mélancolique | Piano solo romantique et dramatique.
+T1939 | Sofiane Pamart | Medellin | Classical / Modern Classical · Mélancolique | Piano solo romantique, lignes amples.
+T1940 | Sofiane Pamart | SOLITUDE | Classical / Neo-Classical · Mélancolique | Piano seul lyrique.
+T1941 | Sofiane Pamart | They Said I Was « Just A Musician » | Classical / Neo-Classical · Mélancolique | Piano solo lyrique et ample, mélodie appuyée.
+T1942 | Stanislav Stanchev | Concert - Harp and Piano / Sofia City Art Gallery | Classical / Contemporary · Calme | Captation de concert harpe et piano.
+T1943 | Terry Johns | All the Way (Arr. for Horn & Piano by Anonymous) | Classical / Ballad · Calme | Standard joué au cor et au piano.
+T1944 | Tom Peters & Claude Debussy | Arabesque No.1 | Classical / Impressionist · Calme | Arpèges fluides et tendres, l'une des pages les plus sereines de Debussy.
+T1945 | Toshiro Konno | The Pokemon Piano MEDLEY | Classical / Neo-Classical · Calme | Medley de thèmes Pokémon au piano.
+T1946 | Vulax | Ami - Concours composition Avner (piano) | Classical / Modern Classical · Calme | Composition pour piano présentée à un concours, morceau inconnu.
+T1947 | Vulax | LAO (Participation au concours d'Avner) VULAX | Hip Hop / Instrumental · Groovy | Prod amateur pour un concours de beatmaking, contenu inconnu. [fixé]
+T1948 | 照井順政 | 一緒なら | Classical / Neo-Classical · Calme | Pièce d'anime douce et intime.
+
+## Pop · Indie & synth-pop dansante — 23 titres
+Description : Pop indépendante, synth-pop et new wave qui bougent.
+Règle : genre Pop ou Rock ; style Indie Pop, Synth-Pop, Dream Pop, New Wave ; ambiance Groovy, Festif, Énergique
+
+T1949 | Amadou & Mariam | Sabali | Pop / Synth-Pop · Planant | Voix de Mariam sur synthés minimalistes. [fixé]
+T1950 | Angèle | Victime des réseaux | Pop / Indie Pop · Groovy | Pop ironique sur les réseaux sociaux.
+T1951 | Bajm | Nie ma wody na pustyni | Rock / New Wave · Énergique | Rock polonais new wave des années 80.
+T1952 | Chagrin d'amour | Chacun Fait (C'Qui Lui Plait) | Pop / New Wave · Festif | Tube parlé-chanté en duo, ancêtre du rap français sur pop new wave.
+T1953 | Daði Freyr | Think About Things | Pop / Synth-Pop · Groovy | Synth-pop à basse disco bondissante et chant falsetto naïf.
+T1954 | Donny Benét | Beneath The Sheets | Pop / Synth-Pop · Groovy | Synth-pop rétro et sensuelle, crooner kitsch.
+T1955 | Frankie Goes To Hollywood | bang… | Pop / Synth-Pop · Énergique | Courte transition instrumentale de l'album.
+T1956 | Frankie Goes To Hollywood | Krisco Kisses | Pop / Synth-Pop · Festif | Synth-pop dansante.
+T1957 | Frankie Goes To Hollywood | Relax (Come Fighting) | Pop / Synth-Pop · Festif | Hymne synth-pop provocateur.
+T1958 | Frankie Goes To Hollywood | (Tag) | Pop / Synth-Pop · Énergique | Bref fragment de clôture de l'album, quelques secondes à peine.
+T1959 | Frankie Goes To Hollywood | Two Tribes | Pop / Synth-Pop · Énergique | Synth-pop martiale et urgente.
+T1960 | Frankie Goes To Hollywood | Welcome To The Pleasuredome | Pop / Synth-Pop · Énergique | Épopée synth-pop de près de quinze minutes.
+T1961 | Frankie Goes To Hollywood | Wish (The Lads Were Here) | Pop / Synth-Pop · Énergique | Titre d'album nerveux aux synthés et basses saillants.
+T1962 | Gérard Blanc | Une autre histoire | Pop / Synth-Pop · Festif | Tube pop des années 80 aux synthés rebondissants.
+T1963 | Indochine | L'aventurier | Rock / New Wave · Énergique | Hymne new wave nerveux, guitares et synthés vifs, refrain en chœur.
+T1964 | Kainalu | Queen of Wands | Pop / Indie Pop · Groovy | Pop psyché funky.
+T1965 | Kylie Minogue | Can't Get You out of My Head | Pop / Synth-Pop · Festif | Synth-pop hypnotique à refrain obsédant.
+T1966 | Metronomy | The Look | Pop / Indie Pop · Groovy | Orgue sautillant et basse rebondissante, pop balnéaire.
+T1967 | The Police | Masoko Tanga | Rock / New Wave · Groovy | Jam hypnotique teintée de reggae, paroles inventées.
+T1968 | Voyou | Malika (feat. Ladaniva) | Pop / Indie Pop · Festif | Pop légère et dansante, voix aux couleurs arméniennes.
+T1969 | Whilk & Misky | Clap Your Hands | Pop / Indie Pop · Groovy | Folk électronique entraînant, frappes de mains.
+T1970 | The Whitest Boy Alive | Burning | Rock / Indie Pop · Groovy | Indie pop minimaliste, basse et guitare entrelacées, chant posé.
+T1971 | The Whitest Boy Alive | Serious | Pop / Indie Pop · Groovy | Indie pop minimaliste, guitare claire et basse dansante au groove sec.
+
+## Pop · Indie & synth-pop douce — 43 titres
+Description : Pop indépendante, dream pop et synth-pop douces ou mélancoliques.
+Règle : genre Pop ou Rock ; style Indie Pop, Synth-Pop, Dream Pop, New Wave
+
+T1972 | Apanhador Só | Linda, Louca e Livre (feat. Alexandre Kumpinski) | Pop / Indie Pop · Calme | Pop brésilienne lo-fi.
+T1973 | Bakar | Hell N Back | Pop / Indie Pop · Calme | Indie nonchalant, guitare légère et voix détachée, bien plus détendu que l'étiquette trap.
+T1974 | Benny Sings | Sunny Afternoon | Pop / Indie Pop · Calme | Pop soft ensoleillée, piano et voix légère.
+T1975 | Bianca Costa | Belle âme | Pop / Indie Pop · Calme | Duo pop doux, guitare et voix, à vérifier.
+T1976 | Blood Orange | Champagne Coast | Pop / Synth-Pop · Mélancolique | Synthés 80s cotonneux et voix fragile, langueur rêveuse.
+T1977 | Cigarettes After Sex | Cry | Pop / Dream Pop · Mélancolique | Ballade lente et brumeuse.
+T1978 | Cigarettes After Sex | K. | Rock / Dream Pop · Mélancolique | Slowcore éthéré, voix murmurée et guitares réverbérées.
+T1979 | Daft Punk | Instant Crush (feat. Julian Casablancas) | Pop / Synth-Pop · Mélancolique | Ballade pop-rock au vocoder sur un amour manqué.
+T1980 | Femme Falafel | Depressão | Pop / Indie Pop · Mélancolique | Morceau mal connu, jugé surtout d'après son titre.
+T1981 | Frankie Goes To Hollywood | San Jose (The Way) | Pop / Synth-Pop · Calme | Reprise légère de Bacharach, détente au milieu de l'album.
+T1982 | Frankie Goes To Hollywood | The World Is My Oyster (Including Well / Snatch Of Fury) | Pop / Synth-Pop · Cérébral | Collage d'ouverture, chœurs et fragments.
+T1983 | GeeJay | Ordinary Girl | Pop / Indie Pop · Calme | Titre inconnu, supposé pop douce.
+T1984 | illi | Escale | Pop / Indie Pop · Calme | Titre inconnu, classement à vérifier.
+T1985 | Isaac Delusion | couleur menthe à l'eau | Pop / Indie Pop · Calme | Reprise douce d'Eddy Mitchell.
+T1986 | Jackson Homer | IDEA OF US | Pop / Indie Pop · Calme | Titre inconnu, classement par défaut.
+T1987 | Jake Antonio | wants and needs | Pop / Indie Pop · Calme | Morceau mal identifié.
+T1988 | KAFFKIEZ | Nie Allein | Pop / Indie Pop · Mélancolique | Pop indé allemande chantée sur la solitude.
+T1989 | Kazy Lambist | On You | Pop / Synth-Pop · Calme | Électro-pop douce et estivale.
+T1990 | Mac DeMarco | Chamber Of Reflection | Pop / Indie Pop · Mélancolique | Synthés vaporeux et voix lasse sur un tempo lent : une ballade de solitude plus qu'un morceau rock.
+T1991 | Mar Malade | Cabriolet | Pop / Indie Pop · Calme | Indie pop légère et vintage.
+T1992 | Marine Neuilly | Confetti (Preview) | Pop / Indie Pop · Calme | Extrait peu documenté.
+T1993 | Marlon Funaki | when sunday comes around | Rock / Indie Pop · Calme | Pop de chambre douce et lo-fi.
+T1994 | Mathilda Homer | Ready When You Are | Pop / Indie Pop · Calme | Titre peu documenté, classement incertain.
+T1995 | Men I Trust | Morse Code (feat. Odile & Geoffroy) | Pop / Dream Pop · Calme | Dream pop vaporeuse et nonchalante.
+T1996 | Men I Trust | Show Me How | Pop / Dream Pop · Calme | Dream pop feutrée, basse ronde et voix murmurée.
+T1997 | Men I Trust | Show Me How (Garage Session) | Pop / Dream Pop · Calme | Dream pop feutrée, voix chuchotée et basse ronde.
+T1998 | Minuit 10 | Mansour | Pop / Indie Pop · Mélancolique | Morceau mal identifié.
+T1999 | Mk.gee | Anabell | Pop / Indie Pop · Calme | Pop guitare ouatée ; classement prudent.
+T2000 | Mou | Sous ma couverture | Pop / Indie Pop · Calme | Pop française douce ; classement prudent.
+T2001 | Muddy Monk | En Lea | Pop / Synth-Pop · Planant | Synth-pop vaporeuse et nonchalante.
+T2002 | Narciss | Tall People | Pop / Indie Pop · Calme | Titre inconnu ; classement très incertain.
+T2003 | Notre Dame | Eldorado | Pop / Indie Pop · Calme | Morceau que je ne connais pas ; classement prudent.
+T2004 | nour | Wana | Pop / Indie Pop · Mélancolique | Titre mal identifié.
+T2005 | Revers Gagnant | Paradis bleu | Pop / Indie Pop · Calme | Titre que je ne connais pas ; classement très incertain.
+T2006 | Shawn Cartier | Lemon | Pop / Indie Pop · Calme | Morceau très peu documenté.
+T2007 | Talos | Oh Girl (feat. Poppy Ajudha) | Pop / Indie Pop · Mélancolique | Pop électronique feutrée.
+T2008 | Tianmi | Soulager | Pop / Indie Pop · Mélancolique | Morceau peu documenté, ton intimiste.
+T2009 | Vendredi sur Mer | La femme à la peau bleue | Pop / Synth-Pop · Planant | Voix parlée-chantée sur synthés aquatiques et vaporeux.
+T2010 | Vendredi sur Mer | Les filles désir | Pop / Synth-Pop · Calme | Synth-pop langoureuse au chant parlé, parfum années 80.
+T2011 | Videoclub | Amour plastique | Pop / Synth-Pop · Mélancolique | Duo synth-pop rêveur sur un amour qui se défait.
+T2012 | WILLIS | I Think I Like When It Rains | Rock / Indie Pop · Calme | Pop-rock douce, classement indicatif.
+T2013 | WonderBag | Candy Eyes | Pop / Indie Pop · Calme | Morceau très peu documenté.
+T2014 | Дурной Вкус | Пластинки | Pop / Synth-Pop · Mélancolique | Synth-pop russe froide aux accents post-punk.
+
+## Pop · City pop & disco — 44 titres
+Description : City pop japonaise, AOR et pop disco.
+Règle : style City Pop, AOR ; ou genre Pop ; style Disco, Nu-Disco, Italo-Disco, Boogie, Funk
+
+T2015 | Alan Sorrenti | Figli Delle Stelle | Pop / Disco · Festif | Disco italienne en falsetto.
+T2016 | Alex Rossi | Tutto va bene quando facciamo l'amore (feat. Jo Wedin) | Pop / Italo-Disco · Groovy | Duo italo-pop rétro aux synthés ronds, ici en version remixée.
+T2017 | Anri | Last Summer Whisper | Pop / City Pop · Mélancolique | City pop au tempo moyen, nostalgie d'un été fini portée par une voix douce et des cuivres légers.
+T2018 | Corine | Pourquoi pourquoi | Pop / Nu-Disco · Festif | Disco-pop française rétro et pétillante.
+T2019 | Ed Motta | 1978 | Pop / AOR · Groovy | AOR brésilien soyeux et funky.
+T2020 | Electric Light Orchestra | Last Train to London | Pop / Disco · Groovy | Pop-disco orchestrale au rythme de train.
+T2021 | Goro Noguchi | ボトル・レタア - Bottled Letter | Pop / City Pop · Calme | Pop japonaise enregistrée à Los Angeles.
+T2022 | Goro Noguchi | 北回帰線 - The Tropic Of Cancer | Pop / City Pop · Calme | AOR japonais.
+T2023 | Goro Noguchi | 少女よ - Little Girl | Pop / City Pop · Calme | Pop japonaise enregistrée à Los Angeles, douce et soignée.
+T2024 | Goro Noguchi | 新宿午前四時 - Shinjuku 4:00 A.M. | Pop / City Pop · Mélancolique | Ballade urbaine nocturne japonaise, sax et cordes.
+T2025 | Goro Noguchi | 汚さずにいられない - I Can't Stop Lovin' You | Pop / City Pop · Groovy | AOR japonais.
+T2026 | Goro Noguchi | 狂った地球 - A Crazy Fruit | Pop / City Pop · Groovy | AOR japonais enregistré à Los Angeles.
+T2027 | Hi-Fi Set | スカイレストラン - Sky Restaurant | Pop / City Pop · Mélancolique | Ballade de Yumi Arai, nostalgique et feutrée.
+T2028 | Johnny Heyward | 「もし君が･････」 草刈正雄 | Pop / City Pop · Calme | Morceau mal identifié, probablement une chanson pop japonaise des années 70-80 interprétée par Masao Kusakari.
+T2029 | Jordi Roblox1 | Solid Slider - Tatsuro yamashita | Pop / City Pop · Groovy | City pop funky, basse slap et cuivres.
+T2030 | Kingo Hamada | 街のドルフィン - Machi No Dorufin | Pop / City Pop · Groovy | City pop lumineuse, basse slappée et refrain solaire.
+T2031 | L'Impératrice | Everything Eventually Ends | Pop / Nu-Disco · Groovy | Disco pop avec Rejjie Snow.
+T2032 | L'Impératrice | Peur des filles | Pop / Nu-Disco · Groovy | Disco-pop française élégante.
+T2033 | L'Impératrice | Souffle au coeur | Pop / Nu-Disco · Groovy | Disco-pop française aérienne.
+T2034 | Lamp | Yume Utsutsu | Pop / City Pop · Calme | Pop japonaise douce, teintée de bossa.
+T2035 | Makoto Matsushit | September Rain (2020 Remaster) - September Rain (2020 Remastered) | Pop / City Pop · Mélancolique | City pop AOR douce-amère.
+T2036 | Makoto Matsushita | Love Was Really Gone | Pop / City Pop · Groovy | City pop élégante.
+T2037 | Makoto Matsushita | One Hot Love | Pop / City Pop · Groovy | City pop aux accents AOR, groove souple.
+T2038 | Makoto Matsushita | Sunset | Pop / City Pop · Calme | City pop douce et soyeuse de fin de journée.
+T2039 | Marco Castello | Porci | Pop / Funk · Groovy | Cantautore italien aux couleurs jazz-funk, basse souple et ton ironique.
+T2040 | Masayoshi Takanaka | Bamboo Vender | Jazz / Fusion · Groovy | Fusion légère ; classement prudent. [fixé]
+T2041 | Masayoshi Takanaka | Penguin Dancer | Jazz / Fusion · Groovy | Fusion guitare ; classement prudent. [fixé]
+T2042 | Masayoshi Takanaka | Sail On Fire | Pop / City Pop · Groovy | City pop chantée aux synthés.
+T2043 | Miel De Montagne | Pourquoi pas | Pop / Nu-Disco · Groovy | Pop disco douce ; classement prudent.
+T2044 | Miki Matsubara | Jazzy Night | Pop / City Pop · Groovy | City pop jazzy.
+T2045 | Miki Matsubara | 真夜中のドア〜stay with me - Mayonaka no Door~stay with me | Pop / City Pop · Groovy | City pop douce-amère au refrain emblématique.
+T2046 | Pages | If I Saw You Again (2024 Remaster) | Pop / AOR · Mélancolique | AOR soyeux aux harmonies sophistiquées, regret amoureux.
+T2047 | Pino D'Angiò | Lezione d'amore | Pop / Italo-Disco · Groovy | Funk italien parlé et ironique.
+T2048 | Pino D'Angiò | Okay Okay | Pop / Italo-Disco · Groovy | Disco italienne parlée et ironique.
+T2049 | Pino D'Angiò | Questo amore è un motore | Pop / Italo-Disco · Festif | Disco italienne parlée-chantée et ironique.
+T2050 | Pino D'Angiò / duetto con Piera Romoli | Una notte maledetta | Pop / Italo-Disco · Groovy | Pop italienne parlée-chantée ; classement prudent.
+T2051 | Rita Lee | Lança Perfume | Pop / Disco · Festif | Disco brésilienne sensuelle, hit de piste de danse.
+T2052 | Shigeru Suzuki | Coral Reef | Pop / City Pop · Calme | Instrumental ensoleillé et léger, guitare claire et arrangements soyeux d'esprit insulaire.
+T2053 | Shigeru Suzuki | Noa Noa | Pop / City Pop · Calme | Instrumental tropical de l'album Pacific.
+T2054 | Tatsuro Yamashita | キスカ - Kiska | Pop / City Pop · Planant | Instrumental balnéaire de l'album Pacific.
+T2055 | Tatum Rush | Big Mama (feat. Frah Quintale) | Pop / Funk · Groovy | Pop funky italo-suisse.
+T2056 | tojiramasaavv | SOLID SLIDER - Tatsuro Yamashita | Pop / City Pop · Groovy | City pop funky de Tatsuro Yamashita, rythmique serrée.
+T2057 | yky1122 | Tatsuro Yamashita - Paper Doll 山下 達郎【Bass Cover】 | Pop / City Pop · Groovy | Reprise à la basse du classique city pop de Yamashita, tout dans le slap et le balancement.
+T2058 | Yumi Matsutoya | 影になって - We're All Free / Kage Ni Natte | Pop / City Pop · Groovy | City pop lumineuse, basse souple et production soignée.
+
+## Pop · Ballades — 36 titres
+Description : Ballades pop, voix et piano.
+Règle : genre Pop ; ambiance Calme, Mélancolique, Planant, Sombre
+
+T2059 | 10cc | I'm Not In Love | Pop / Ballad · Planant | Murs de voix superposées, ballade suspendue.
+T2060 | Alina Simpson | what falling in love feels like / piano cover | Pop / Instrumental · Calme | Reprise au piano solo, douce et sentimentale.
+T2061 | Armando Trovajoli | Che Vuole Questa Musica Stasera | Pop / Ballad · Mélancolique | Ballade italienne langoureuse, voix chargée de regret.
+T2062 | Axelle Red | Sensualité | Pop / Ballad · Calme | Ballade soul langoureuse portée par une voix chuchotée.
+T2063 | Ayo | Down On My Knees | Pop / Folk · Mélancolique | Folk-soul acoustique, supplique amoureuse.
+T2064 | The Beatles | And I Love Her (Remastered 2009) | Pop / Ballad · Calme | Ballade acoustique tendre, guitare espagnole en solo.
+T2065 | The Beatles | Because (Vocals Mix) | Pop / Vocal · Calme | Harmonies a cappella des Beatles, suspendues et irréelles.
+T2066 | Billie Eilish | Not My Responsibility | Pop / Spoken Word · Sombre | Texte parlé sur l'image du corps, sur nappe synthétique inquiète.
+T2067 | Brigitte | Ma Benz | Pop / Lounge · Calme | Reprise lascive et feutrée du titre de NTM.
+T2068 | Chicago | If You Leave Me Now | Pop / Ballad · Mélancolique | Ballade soft rock suppliante, cordes et cuivres en écrin.
+T2069 | Chilly Gonzales | Old Money (Chilly Gonzales Version) | Pop / Instrumental · Mélancolique | Lana Del Rey relue au piano.
+T2070 | Chris Rainbow | Be Like a Woman | Pop / Pop Rock · Calme | Pop rock douce.
+T2071 | Daft Punk | Within | Pop / Ballad · Mélancolique | Piano et voix vocodée, introspection existentielle.
+T2072 | Frankie Goes To Hollywood | The Power Of Love | Pop / Ballad · Calme | Ballade orchestrale solennelle, cordes et voix héroïque.
+T2073 | Goro Noguchi | グッド・ナイト - Good Night | Pop / Ballad · Calme | Ballade japonaise enregistrée à Los Angeles, arrangements soft rock.
+T2074 | Jeanette | El Muchacho de los Ojos Tristes | Pop / Ballad · Mélancolique | Ballade pop espagnole à la voix fragile et rêveuse.
+T2075 | Jevetta Steele | Calling You (Bagdad Cafe/Soundtrack Version) | Pop / Ballad · Mélancolique | Ballade lente et hantée.
+T2076 | Jimmy Fontana | Il mondo | Pop / Ballad · Mélancolique | Grande ballade italienne à l'orchestration ample, voix lyrique pleine de nostalgie.
+T2077 | Julio Iglesias | Je n'ai pas changé (No Vengo Ni Voy) | Pop / Ballad · Mélancolique | Ballade de crooner chantée en français, nostalgie amoureuse.
+T2078 | Julio Iglesias | Moonlight Lady | Pop / Ballad · Calme | Ballade soft-rock romantique en anglais, chant de crooner et arrangement lisse.
+T2079 | Lucio Dalla | L'Anno Che Verrà | Pop / Ballad · Mélancolique | Lettre chantée à un ami, espoir teinté d'ironie.
+T2080 | Luz Casal | Un año de amor | Pop / Ballad · Mélancolique | Ballade dramatique de chagrin amoureux.
+T2081 | Marino Marini | Io sono il vento | Pop / Ballad · Calme | Chanson italienne des années 50.
+T2082 | Mina | Conversazione | Pop / Ballad · Mélancolique | Ballade italienne ; classement prudent.
+T2083 | Mina | Parole parole (2001 Remastered Version) | Pop / Ballad · Calme | Duo chanté-parlé ironique sur orchestre feutré.
+T2084 | MINACELENTANO | Acqua e sale | Pop / Ballad · Mélancolique | Duo italien nostalgique.
+T2085 | Murray Head | Never Even Thought | Pop / Ballad · Mélancolique | Ballade soft rock intime et douce-amère.
+T2086 | PEKOAPRI | つぐない(クラシックギター) | Pop / Ballad · Mélancolique | Ballade de Teresa Teng à la guitare classique.
+T2087 | Piero Piccioni | It's Possible (feat. Catherine Howe) | Pop / Ballad · Calme | Chanson de film italienne douce.
+T2088 | Piero Piccioni | It's Possible (From "Il Dio sotto la pelle") (feat. Catherine Howe) | Pop / Ballad · Mélancolique | Chanson de film des années 70, voix folk et orchestre doux.
+T2089 | Rita Lee | Shangrila | Pop / Ballad · Calme | Ballade pop brésilienne.
+T2090 | Roméo Elvis | Solo | Pop / Pop Rock · Mélancolique | Chanson guitare-voix plus pop que rap, solitude assumée.
+T2091 | Sade | Morning Bird | Pop / Ballad · Mélancolique | Ballade au piano et cordes, voix fragile.
+T2092 | Spandau Ballet | True | Pop / Ballad · Calme | Ballade sophistiquée et soyeuse, chœur tendre.
+T2093 | Sting | Shape Of My Heart | Pop / Ballad · Mélancolique | Ballade à la guitare en mineur sur un joueur de cartes, voix retenue et harmonica.
+T2094 | Voceux | Gotye - Somebody That I Used to Know feat. Kimbra / Full Version #voice #voceux #lyrics #acapella | Pop / Vocal · Mélancolique | Reprise a cappella de la rupture de Gotye.
+
+## Pop · Pop rock & pop dansante — 9 titres
+Description : Pop rock, europop et pop entraînante.
+Règle : genre Pop
+
+T2095 | 24kGoldn | CITY OF ANGELS | Pop / Pop Rock · Énergique | Rap guitare emo.
+T2096 | Bratisla Boys | Stach Stach | Pop / Europop · Festif | Parodie dance kitsch et absurde.
+T2097 | Daft Punk | Fragments of Time (feat. Todd Edwards) | Pop / Pop Rock · Groovy | Pop solaire façon soft rock californien, chant de Todd Edwards.
+T2098 | Frankie Goes To Hollywood | Black Night White Light | Pop / Pop Rock · Énergique | Morceau d'album rock.
+T2099 | Juan Antonio Canta | Rap de los 40 limones | Pop / Novelty · Festif | Rap humoristique espagnol.
+T2100 | Matia Bazar | Stasera... Che Sera! (1991 - Remaster) | Pop / Europop · Groovy | Pop italienne des années 70 supposée.
+T2101 | Morten Harket | Can't Take My Eyes off You | Pop / Pop Rock · Festif | Reprise pop du standard par le chanteur d'a-ha.
+T2102 | Sheet Music Boss | guess who's back | Pop / Instrumental · Énergique | Reprise au piano, vraisemblablement de « Without Me » d'Eminem.
+T2103 | Toploader | Dancing in the Moonlight | Pop / Pop Rock · Festif | Reprise enjouée au piano, refrain à chanter tous ensemble.
+
+## Rock · Blues qui groove — 22 titres
+Description : Blues électrique, texan, de Chicago, et blues rock qui balancent.
+Règle : genre Blues ; ambiance Groovy, Festif, Énergique ; ou style Blues Rock ; ambiance Groovy, Festif, Énergique
+
+T2104 | Albert King | Killing Floor | Blues / Electric Blues · Groovy | Reprise de Howlin' Wolf, guitare tranchante sur riff tenace.
+T2105 | Buddy Miles | Down By The River | Rock / Blues Rock · Groovy | Neil Young repris en funk-rock.
+T2106 | Canned Heat | Going Up The Country | Rock / Blues Rock · Groovy | Blues champêtre à la flûte, insouciant.
+T2107 | Dire Straits | Down To The Waterline | Rock / Blues Rock · Groovy | Rock nocturne à la guitare claire.
+T2108 | Fenton Robinson | Killing Floor | Blues / Chicago Blues · Groovy | Blues de Chicago au riff tournant et guitare fine.
+T2109 | Gene Phillips & His Rhythm Aces | Big Legs | Blues / Jump Blues · Festif | Jump blues de la côte ouest, cuivres et paroles grivoises.
+T2110 | Howlin' Wolf | Killing Floor | Blues / Chicago Blues · Groovy | Riff obsédant et voix rugueuse, blues électrique.
+T2111 | Hubert Sumlin | Sometimes I'm Right | Blues / Chicago Blues · Groovy | Blues électrique.
+T2112 | Magic Slim & The Teardrops | Crazy Woman | Blues / Chicago Blues · Énergique | Blues électrique brut.
+T2113 | Supertramp | You Started Laughing (Live At Pavillon de Paris/1979) | Rock / Blues Rock · Groovy | Blues rock court et décontracté, piano et harmonica.
+T2114 | T-Bone Walker | Blues for Marili | Blues / Texas Blues · Groovy | Instrumental de blues swinguant, guitare fluide.
+T2115 | T-Bone Walker | Blues Rock | Blues / Texas Blues · Groovy | Blues électrique texan.
+T2116 | T-Bone Walker | Papa Ain't Salty | Blues / Jump Blues · Énergique | Jump blues swinguant avec guitare électrique pionnière.
+T2117 | T-Bone Walker | Play on Little Girl | Blues / Texas Blues · Groovy | Blues électrique swing.
+T2118 | T-Bone Walker | Shufflin' the Blues | Blues / Texas Blues · Groovy | Shuffle instrumental à la guitare électrique.
+T2119 | T-Bone Walker | T-Bone Blues Special | Blues / Texas Blues · Groovy | Instrumental blues swinguant à la guitare.
+T2120 | T-Bone Walker | T-Bone Shuffle | Blues / Texas Blues · Groovy | Shuffle jump-blues aux cuivres et guitare élégante.
+T2121 | T-Bone Walker | Two Bones and a Pick | Blues / Texas Blues · Groovy | Instrumental swing à la guitare.
+T2122 | T-Bone Walker | Why Not | Blues / Electric Blues · Groovy | Blues texan à la guitare électrique élégante, swing jump.
+T2123 | T-Bone Walker | You Don't Know What You're Doing | Blues / Texas Blues · Groovy | Blues électrique swingant, guitare claire et cuivres.
+T2124 | them0rus | Crosby, Stills, Nash & Young Almost Cut My Hair Live 1974 | Rock / Blues Rock · Énergique | Version live étirée, guitares rugueuses en duel et voix rageuse de Crosby.
+T2125 | zones2surf | Blues Japanese Style - Kunimoto Takeharu Jam w/ Buddy Guy & Chris Duarte! / 国本武春、バディ・ガイ、クリス・デュアーテ | Blues / Electric Blues · Énergique | Jam blues mêlant shamisen et guitares.
+
+## Rock · Blues mélancolique — 17 titres
+Description : Blues lents et mélancoliques.
+Règle : genre Blues ; ou style Blues Rock
+
+T2126 | Breakout | Kiedy byłem małym chłopcem | Rock / Blues Rock · Mélancolique | Blues lent et nostalgique.
+T2127 | Demon Fuzz | Disillusioned Man | Rock / Blues Rock · Mélancolique | Blues lourd et lent aux cuivres, orgue plaintif.
+T2128 | Fink | Cold Feet | Blues / Blues Rock · Mélancolique | Blues acoustique dépouillé à la guitare, voix rauque.
+T2129 | Gary Moore | Midnight Blues | Blues / Blues Rock · Mélancolique | Blues lent à solos déchirants.
+T2130 | Gary Moore | Parisienne Walkways | Rock / Blues Rock · Mélancolique | Ballade à la guitare et sa note tenue légendaire.
+T2131 | Gary Moore | Parisienne Walkways (Live At Royal Albert Hall, London / 1993) | Rock / Blues Rock · Mélancolique | Ballade guitare au sustain interminable, lyrisme plaintif.
+T2132 | Gary Moore | Still Got The Blues | Blues / Blues Rock · Mélancolique | Ballade blues à la guitare pleureuse.
+T2133 | Lost in Blues | No Water No Wine | Blues / Electric Blues · Mélancolique | Blues de catalogue supposé, inconnu de moi.
+T2134 | Snowy White | How Was It for You | Rock / Blues Rock · Calme | Blues rock posé.
+T2135 | Snowy White | Midnight Blues | Blues / Blues Rock · Mélancolique | Blues lent, guitare électrique plaintive et soutenue.
+T2136 | SoloGuitarSessions | Late Night Slow Blues Backing Track in C Minor / Guitar Jam – Into the Night | Blues / Electric Blues · Mélancolique | Accompagnement de blues lent sans soliste, pour s'exercer.
+T2137 | STEVIE RAY VAUGHAN | Big Tex Blues | Blues / Texas Blues · Mélancolique | Blues lent et cinglant, guitare texane à vif.
+T2138 | T-Bone Walker | Call It Stormy Monday | Blues / Texas Blues · Mélancolique | Blues lent à la guitare élégante, lassitude de semaine.
+T2139 | T-Bone Walker | Evenin' | Blues / Texas Blues · Mélancolique | Blues lent du soir, guitare électrique pleurante.
+T2140 | T-Bone Walker | How Long Blues | Blues / Texas Blues · Mélancolique | Blues lent de T-Bone Walker, guitare électrique plaintive.
+T2141 | T-Bone Walker | Mean Old World | Blues / Texas Blues · Mélancolique | Blues lent à la guitare électrique ciselée, plainte sur la dureté du monde.
+T2142 | T-Bone Walker | T-Bone Blues | Blues / Texas Blues · Mélancolique | Blues lent à guitare électrique fluide.
+
+## Rock · Rock énergique — 34 titres
+Description : Rock alternatif, indie et pop rock qui envoient.
+Règle : genre Rock ; ambiance Énergique, Sombre, Groovy, Festif
+
+T2143 | Baby Dave | Don't Ever Change | Rock / Indie Rock · Énergique | Indie rock guitares en avant, morceau peu documenté.
+T2144 | Cody・Lee(李) | 我愛你 | Rock / Indie Rock · Énergique | Rock indé japonais.
+T2145 | Dada | 3ADI JIDAN | Rock / Alternative Rock · Énergique | Rock alternatif marocain des années 90.
+T2146 | Dire Straits | Sultans Of Swing | Rock / Pop Rock · Groovy | Guitare fingerpicking virtuose sur rythme souple.
+T2147 | Elton John | Bennie And The Jets | Rock / Pop Rock · Groovy | Piano martelé à contretemps, glam décontracté.
+T2148 | Frankie Goes To Hollywood | Born To Run | Rock / Pop Rock · Énergique | Reprise de Springsteen en rock pulsé et emphatique.
+T2149 | Hoba Hoba Spirit | Aourioura | Rock / Ska · Festif | Rock marocain métissé de gnawa, refrain fédérateur.
+T2150 | Hoba Hoba Spirit | La logique | Rock / Alternative Rock · Énergique | Rock marocain ; classement prudent.
+T2151 | Hoba Hoba Spirit | Super Caid | Rock / Ska · Festif | Rock marocain mâtiné de ska, ton satirique.
+T2152 | Josh LaSota | What if The Strokes recorded Instant Crush by Daft Punk? | Rock / Indie Rock · Énergique | Pastiche garage rock d'un titre de Daft Punk à la façon des Strokes.
+T2153 | Karpov | Seven Goblins | Rock / Alternative Rock · Énergique | Rock jeune peu documenté.
+T2154 | Kid Bloom | Electric U | Rock / Indie Rock · Groovy | Rock indé ensoleillé et dansant.
+T2155 | Mac DeMarco | Freaking Out the Neighborhood | Rock / Indie Rock · Énergique | Jangle pop lo-fi enjouée, guitare chorusée et ton désinvolte.
+T2156 | Mashrou' Leila | Fasateen | Rock / Indie Rock · Énergique | Indie libanais nerveux, violon et chant fiévreux.
+T2157 | O.C. Supertones | Attitude (Hi Fi Revival Album Version) | Rock / Ska · Énergique | Ska-punk cuivré à toute allure.
+T2158 | Radiohead | 2 + 2 = 5 | Rock / Alternative Rock · Sombre | Montée tendue qui explose en rock furieux à mi-parcours.
+T2159 | Radiohead | A Wolf At the Door | Rock / Alternative Rock · Sombre | Valse menaçante au chant scandé, angoisse paranoïaque.
+T2160 | Radiohead | Bodysnatchers | Rock / Alternative Rock · Énergique | Riff saturé et nerveux.
+T2161 | Radiohead | Jigsaw Falling Into Place | Rock / Alternative Rock · Énergique | Guitares pressées et tension qui monte sans répit.
+T2162 | Radiohead | There, There | Rock / Alternative Rock · Sombre | Toms tribaux puis explosion de guitares.
+T2163 | Radiohead | Where I End and You Begin | Rock / Alternative Rock · Sombre | Basse obsédante et nappes inquiètes.
+T2164 | Red Hot Chili Peppers | Can't Stop | Rock / Alternative Rock · Énergique | Riff staccato et basse bondissante, rap-rock nerveux.
+T2165 | Red Hot Chili Peppers | Dani California | Rock / Alternative Rock · Énergique | Rock funky au refrain massif et solo final à la Hendrix.
+T2166 | Red Hot Chili Peppers | Dark Necessities | Rock / Alternative Rock · Groovy | Basse slappée et piano sur rock funky.
+T2167 | Red Hot Chili Peppers | Sick Love | Rock / Pop Rock · Groovy | Pop funky et mesurée, piano d'Elton John.
+T2168 | Red Hot Chili Peppers | Snow (Hey Oh) | Rock / Alternative Rock · Énergique | Arpège de guitare en cascade continue et refrain qui pousse en avant.
+T2169 | shahine96 | [3] DANI CALIFORNIA BAND COVER | Rock / Alternative Rock · Énergique | Reprise amateur en groupe du titre des Red Hot.
+T2170 | The Strokes | The Adults Are Talking | Rock / Indie Rock · Énergique | Guitares entrelacées et batterie mécanique, rock nerveux et accrocheur.
+T2171 | Suchmos | PINKVIBES | Rock / Funk · Groovy | Rock japonais acid-jazz.
+T2172 | Supertramp | Ain't Nobody But Me (Live At Pavillon de Paris/1979) | Rock / Pop Rock · Énergique | Rock piano entraînant en live.
+T2173 | Supertramp | Dreamer (Live At Pavillon de Paris/1979) | Rock / Pop Rock · Énergique | Piano électrique bondissant.
+T2174 | Supertramp | Goodbye Stranger | Rock / Pop Rock · Groovy | Piano électrique chaloupé et falsettos.
+T2175 | Téléphone | Un autre monde | Rock / Pop Rock · Énergique | Hymne rock à riff entraînant.
+T2176 | The Voidz | Prophecy of the Dragon | Rock / Alternative Rock · Énergique | Rock expérimental de Julian Casablancas.
+
+## Rock · Rock doux & mélancolique — 32 titres
+Description : Rock alternatif et indie calmes ou mélancoliques.
+Règle : genre Rock
+
+T2177 | The Alan Parsons Project | Eye In The Sky | Rock / Pop Rock · Calme | Pop rock feutré, rythmique régulière et chant doux.
+T2178 | Arctic Monkeys | 505 | Rock / Indie Rock · Mélancolique | Ballade qui explose en climax.
+T2179 | Colin Blunstone | Misty Roses | Rock / Folk Rock · Calme | Reprise feutrée de Tim Hardin, cordes délicates.
+T2180 | Dire Straits | Tunnel Of Love | Rock / Pop Rock · Mélancolique | Longue fresque nostalgique ouverte par une valse de manège, portée par les solos de Knopfler.
+T2181 | Eagles | Hotel California | Rock / Soft Rock · Mélancolique | Récit énigmatique sur arpèges et duel de guitares final.
+T2182 | Elvis Presley | Heartbreak Hotel | Rock / Rock'n'Roll · Mélancolique | Blues lent à l'écho glacial, solitude.
+T2183 | Gerry Rafferty | Right Down the Line | Rock / Pop Rock · Calme | Soft rock tendre, déclaration d'amour pudique.
+T2184 | King Crimson | I Talk to the Wind | Rock / Folk Rock · Calme | Ballade douce à la flûte et aux voix feutrées, à rebours de la furie de l'album.
+T2185 | Led Zeppelin | Stairway to Heaven (Remaster) | Rock / Hard Rock · Mélancolique | Départ folk à la flûte et guitare, montée jusqu'au solo électrique.
+T2186 | Matt Duncan | The Keys | Rock / Pop Rock · Calme | Soft rock rétro aux claviers moelleux.
+T2187 | Murray Head | Boy On the Bridge | Rock / Pop Rock · Mélancolique | Soft rock introspectif.
+T2188 | Peter Cat Recording Co. | Memory Box | Rock / Indie Rock · Mélancolique | Indie rock rétro aux accents de cabaret.
+T2189 | Player | Baby Come Back | Rock / Pop Rock · Calme | Soft rock lisse sur une rupture regrettée.
+T2190 | Radiohead | Exit Music (For A Film) | Rock / Alternative Rock · Mélancolique | Guitare et voix funèbres jusqu'à l'explosion distordue.
+T2191 | Radiohead | Go To Sleep | Rock / Alternative Rock · Cérébral | Guitares acoustiques en mesure boiteuse, final saturé.
+T2192 | Radiohead | No Surprises | Rock / Alternative Rock · Mélancolique | Berceuse au glockenspiel sur une résignation totale.
+T2193 | Radiohead | Scatterbrain | Rock / Alternative Rock · Mélancolique | Ballade feutrée et inquiète.
+T2194 | Radiohead | Subterranean Homesick Alien | Rock / Alternative Rock · Planant | Rhodes et guitares flottantes.
+T2195 | Red Hot Chili Peppers | I Could Die for You | Rock / Pop Rock · Calme | Ballade douce, guitare claire et chant tendre.
+T2196 | Red Hot Chili Peppers | It's Only Natural | Rock / Alternative Rock · Calme | Titre mid-tempo mélodique et apaisé, loin du funk rageur.
+T2197 | Red Hot Chili Peppers | Otherside | Rock / Alternative Rock · Mélancolique | Ballade rock sur l'addiction, mineure et lancinante.
+T2198 | Red Hot Chili Peppers | Scar Tissue | Rock / Alternative Rock · Mélancolique | Ballade douce-amère, guitare slide dépouillée.
+T2199 | Red Hot Chili Peppers | Under the Bridge | Rock / Alternative Rock · Mélancolique | Ballade sur la solitude, guitare claire et chœur final.
+T2200 | Red Hot Chili Peppers | Universally Speaking | Rock / Pop Rock · Calme | Pop-rock doux-amer à mi-tempo.
+T2201 | Red Hot Chili Peppers | Venice Queen | Rock / Alternative Rock · Mélancolique | Hommage funèbre qui s'élève en final.
+T2202 | RJ Long | Jeff Beck - Somewhere Over the Rainbow Live May 2010 | Rock / Instrumental · Calme | Guitare chantante de Jeff Beck sur la mélodie d'Oz.
+T2203 | Santana | Europa (Earth's Cry Heaven's Smile) | Rock / Latin Rock · Mélancolique | Guitare qui chante longuement, lamento instrumental.
+T2204 | Supertramp | From Now On (Live At Pavillon de Paris/1979) | Rock / Pop Rock · Mélancolique | Ballade rêveuse qui finit en chœur repris par le public.
+T2205 | Supertramp | Two Of Us (Live At Pavillon de Paris/1979) | Rock / Pop Rock · Calme | Ballade intimiste au piano électrique.
+T2206 | Thin Lizzy | Still In Love With You (Live At The Tower Theatre, Philadelphia, USA / 1977) | Rock / Hard Rock · Mélancolique | Ballade blues-rock déchirante, solos de guitare jumelles.
+T2207 | Tom Petty And The Heartbreakers | Magnolia | Rock / Folk Rock · Calme | Ballade douce, guitares carillonnantes.
+T2208 | Vundabar | Alien Blues | Rock / Indie Rock · Mélancolique | Indie rock lo-fi au refrain doux-amer, solitude adolescente.
+
+## Folk · Flamenco & tsigane — 6 titres
+Description : Guitares flamencas, rumba et airs tsiganes.
+Règle : genre Folk & World ou Latin ; style Flamenco, Gypsy Jazz ; ou artiste Opa Tsupa, Christophe Lartilleux
+
+T2209 | C. Tangana | Los Tontos (Live at NPR's Tiny Desk) | Latin / Flamenco · Festif | Rumba flamenca en live avec Kiko Veneno.
+T2210 | Christophe Lartilleux | Les deux guitares / Les yeux noirs | Folk & World / Gypsy Jazz · Festif | Deux airs tsiganes russes enchaînés, avec des accélérations de plus en plus endiablées entre swing manouche et fanfare hongroise.
+T2211 | LucasGitanoFamily | Arles Romance | Folk & World / Flamenco · Calme | Guitare gitane romantique, probablement rumba douce.
+T2212 | Opa Tsupa | Les deux guitares (feat. Nicolas Moro) | Folk & World / Traditional · Festif | Chanson tzigane russe qui s'accélère.
+T2213 | Paco de Lucía | Entre Dos Aguas | Folk & World / Flamenco · Groovy | Rumba flamenca virtuose sur basse et bongos.
+T2214 | Yasmin Levy | Una Noche Mas | Folk & World / Flamenco · Mélancolique | Chant sépharade à la plainte flamenca, déchirant.
+
+## Folk · Folk acoustique & traditions — 18 titres
+Description : Folk acoustique, chants traditionnels et guitares nues.
+Règle : genre Folk & World
+
+T2215 | Adrian Quesada | Primos | Folk & World / Instrumental · Mélancolique | Guitares cinématographiques de western.
+T2216 | Beautiful Chorus | Pachamama (BC Version) | Folk & World / New Age · Calme | Chant choral en boucles harmonieuses, ton méditatif.
+T2217 | Bob Marley | Redemption Song | Folk & World / Folk · Mélancolique | Guitare-voix nue, hymne de libération sans rien de reggae dans le son.
+T2218 | Carlyle Fraser | Rattlin' Bog | Folk & World / Celtic · Festif | Chanson à accumulation irlandaise qui accélère, à reprendre en chœur.
+T2219 | Danit | Apus | Folk & World / Folk · Calme | Folk acoustique et percussions délicates.
+T2220 | Dilnaz Akhmadiyeva | Shahine | Folk & World / Folk · Mélancolique | Chant d'Asie centrale, morceau que je ne connais pas.
+T2221 | Donatella Viggiano | Napule Canta E More | Folk & World / Traditional · Mélancolique | Chanson napolitaine nostalgique, voix chargée d'émotion.
+T2222 | Haruomi Hosono | Slack Key Rumba | Folk & World / Exotica · Calme | Exotica à la guitare hawaïenne.
+T2223 | Hermanos Gutiérrez | Hoy Como Ayer | Folk & World / Instrumental · Mélancolique | Duo de guitares cinématographique, western et nostalgique.
+T2224 | Joan Baez | Diamonds And Rust | Folk & World / Folk Rock · Mélancolique | Souvenir de Dylan, voix limpide.
+T2225 | Meteor Airlines | ABRRANIY (Acoustic Version) | Folk & World / Folk · Calme | Version acoustique, je ne connais pas le morceau.
+T2226 | Moriarty | Jimmy | Folk & World / Folk · Mélancolique | Folk acoustique et harmonica, conte de bison perdu.
+T2227 | Neşe Karaböcek | Koca Dünya | Folk & World / Folk · Mélancolique | Chanson turque mélancolique.
+T2228 | Peter Pringle | THE OLDEST SONG IN THE WORLD | Folk & World / Traditional · Calme | Reconstitution d'un chant antique, voix et lyre.
+T2229 | Red Army Choir | Dark Eyes | Folk & World / Choral · Mélancolique | Romance russe en chœur d'hommes.
+T2230 | Simon & Garfunkel | The Sound of Silence (Acoustic Version) | Folk & World / Folk · Mélancolique | Version dépouillée, deux voix en harmonie et une seule guitare acoustique.
+T2231 | Stanislav Stanchev | Dark Eyes (Очи чёрные) / Piano Tutorial | Folk & World / Traditional · Mélancolique | Tutoriel au piano de la romance russe.
+T2232 | Tomohito Nishiura | 教授のカバン (ミニカー) (ハイクオリティーバージョン) - The Toy Car (High Quality Version) | Folk & World / Instrumental · Calme | Thème de jeu vidéo léger et mélancolique à l'accordéon.
+
+## Latino · Salsa & latin soul — 10 titres
+Description : Salsa, boogaloo, mambo, son cubain : les cuivres et les congas.
+Règle : genre Latin ; style Salsa, Boogaloo, Mambo, Afro-Cuban, Guajira, Son, Disco, Cha-Cha
+
+T2233 | Adolescent's Orquesta | Virgen | Latin / Salsa · Festif | Salsa romántica vénézuélienne, cuivres brillants et refrain à danser en couple.
+T2234 | Azùcar | Latin Blue | Latin / Salsa · Festif | Salsa cuivrée et dansante.
+T2235 | Candido | Thousand Finger Man | Latin / Disco · Groovy | Disco-funk latin propulsé par les congas virtuoses de Candido.
+T2236 | Joe Bataan | Latin Lover | Latin / Salsa · Groovy | Latin soul chaloupée, entre salsa et disco.
+T2237 | Joe Bataan | Latin Lover (Specter Edit) | Latin / Boogaloo · Groovy | Latin soul réédité pour la piste de danse.
+T2238 | Joe Bataan | Muchacho Ordinario (2022 - Remaster) | Latin / Salsa · Festif | Latin soul de New York, cuivres et percussions.
+T2239 | Manu Dibango | Besoka on Salsa | Latin / Salsa · Festif | Salsa aux accents afro.
+T2240 | Masayoshi Takanaka | Mambo Magic | Latin / Mambo · Festif | Fusion aux rythmes latins dansants.
+T2241 | Willie Colón | Oh Qué Será? | Latin / Salsa · Festif | Salsa new-yorkaise de Willie Colón.
+T2242 | Yuri Buenaventura | Ne me quitte pas | Latin / Salsa · Groovy | Brel transformé en salsa romantique.
+
+## Latino · Reggaeton, cumbia & corridos — 4 titres
+Description : Musiques latines urbaines et dansantes d'aujourd'hui.
+Règle : genre Latin ; style Reggaeton, Cumbia, Corrido Tumbado, Dembow, Funk
+
+T2243 | Chino Pacas | Yo Preferí Chambear | Latin / Corrido Tumbado · Groovy | Corrido tumbado, requinto et voix traînante.
+T2244 | CucaRafa | Reservado | Latin / Cumbia · Festif | Titre peu documenté, classement incertain.
+T2245 | Nio Garcia | Te Boté (Remix) (feat. Darell, Ozuna & Nicky Jam) | Latin / Reggaeton · Festif | Reggaeton dembow à couplets multiples.
+T2246 | Rantseni | Resiliencia | Latin / Cumbia · Groovy | Morceau que je ne connais pas ; classement prudent.
+
+## Latino · Boléro, tango & ballades — 11 titres
+Description : Boléros, rancheras, tango et ballades latines.
+Règle : genre Latin
+
+T2247 | C. Tangana | Un Veneno | Latin / Bolero · Mélancolique | Boléro à l'ancienne chanté avec Niño de Elche, pur chagrin d'amour.
+T2248 | Camilo | La Mitad | Latin / Ranchera · Mélancolique | Ballade de rupture aux accents mariachi.
+T2249 | Darviin | Ojos de Girasol | Latin / Ballad · Calme | Inconnu de moi, classement indicatif.
+T2250 | El Zar | La Declaración | Latin / Ballad · Calme | Titre inconnu, classement par défaut.
+T2251 | Grupo RYE | Carnal | Latin / Ranchera · Mélancolique | Morceau que je ne connais pas ; classement prudent.
+T2252 | Guillermo Portabales | Yo Te Canto Puerto Rico | Latin / Guajira · Calme | Guajira cubaine tranquille à la guitare. [fixé]
+T2253 | José Vicentes | Cautela | Latin / Folk · Calme | Morceau très peu documenté.
+T2254 | Laura Itandehui | Yo no Necesito de Mucho | Latin / Son · Calme | Chanson latine acoustique et chaleureuse. [fixé]
+T2255 | Magdalena Galka | Libertango (Piano Solo) | Latin / Tango · Énergique | Tango nuevo martelé au piano.
+T2256 | PANTERA BLUE | Lágrima | Latin / Ballad · Mélancolique | Morceau inconnu, titre évoquant une ballade triste, faible confiance.
+T2257 | Rubén González | Melodía del Río | Latin / Afro-Cuban · Calme | Piano solo contemplatif, comme une rivière qui coule. [fixé]
+
+## Rap · FR posé — 47 titres (déjà revue, titres non listés)
+Description : Rap francophone jazzy, lo-fi et contemplatif.
+
+## Rap · FR cloud & spleen — 43 titres (déjà revue, titres non listés)
+Description : Cloud rap francophone vaporeux, ambiances nocturnes et autotune.
+
+## Électro · Deep house instrumentale — 150 titres (déjà revue, titres non listés)
+Description : Deep house brute, jazzy ou lo-fi, centrée sur le groove.
+
+FORMAT DE LA RÉPONSE — À RESPECTER À LA LETTRE
+
+D'abord, en quelques lignes de texte libre, ce que tu as changé et pourquoi.
+
+Puis un seul bloc de code contenant exactement ces sections, dans cet ordre :
+
+```
+PLAYLISTS
+Famille · Nom | description en une phrase de ce qu'on y entend
+(la liste FINALE et COMPLÈTE des playlists, y compris celles que tu ne
+changes pas ; toute playlist actuelle absente de cette liste et non renommée
+sera supprimée)
+
+RENOMMAGES
+Ancien nom exact -> Nouveau nom exact
+(une ligne par playlist renommée ; ses titres la suivent sans être listés)
+
+DEPLACEMENTS
+T0042 | Nom exact d'une playlist de la liste finale
+(une ligne par titre qui change de playlist, et seulement ceux-là ; pour ne
+ranger un titre nulle part, écris « (aucune) » comme playlist)
+
+FIN
+```
+
+Règles du format :
+- Recopie les noms à l'identique, accents et « · » compris.
+- Un titre d'une playlist supprimée doit figurer dans DEPLACEMENTS.
+- N'écris jamais « | » dans un nom ou une description.
+- Si ta réponse ne tient pas en un message, arrête-toi à la fin d'une ligne :
+  on t'écrira « continue » et tu reprendras à la ligne suivante, dans un
+  nouveau bloc, sans répéter ce qui est déjà écrit.

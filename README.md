@@ -513,7 +513,8 @@ Gemini peut déplacer des titres, renommer, supprimer, fusionner ou créer des
 playlists. L'import modifie `config/playlists.toml` bloc par bloc
 (commentaires gardés), écrit les déplacements dans `data/placements.txt` et
 vide les propositions en attente. Ce que tu as placé ou validé toi-même n'est
-jamais déplacé, sauf si sa playlist disparaît. Tout passe par git :
+jamais déplacé, sauf si sa playlist disparaît ; une playlist oubliée dans la
+réponse n'est supprimée que si tous ses titres ont une nouvelle place. Tout passe par git :
 `git diff` montre ce qui a changé, `git checkout -- config data` l'annule.
 
 **Créer une playlist.** Un titre qui n'a sa place nulle part : « ＋ Nouvelle

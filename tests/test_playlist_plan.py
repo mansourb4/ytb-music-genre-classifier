@@ -489,10 +489,10 @@ def test_the_shipped_country_file_covers_the_main_rappers():
         ("Énergique", "Rap · FR énergique"),
         ("Festif", "Rap · FR énergique"),
         ("Sombre", "Rap · FR sombre"),
-        ("Groovy", "Rap · FR groovy & posé"),
-        ("Calme", "Rap · FR groovy & posé"),
-        ("Mélancolique", "Rap · FR mélancolique"),
-        (None, "Rap · FR mélancolique"),
+        ("Groovy", "Rap · FR groovy"),
+        ("Calme", "Rap · FR groovy"),
+        ("Mélancolique", "Rap · FR introspectif"),
+        (None, "Rap · FR introspectif"),
     ],
 )
 def test_french_rap_is_also_split_by_mood(mood, expected):

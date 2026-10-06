@@ -133,10 +133,24 @@ def test_a_track_set_by_hand_stays_unless_its_playlist_goes():
     assert change.moves == {"T0003": "Jazz · Jazz-funk"}
 
 
-def test_tracks_left_in_a_deleted_playlist_are_reported():
-    answer = Answer(playlists=[("Jazz · Jazz-funk", ""), ("Électro · House", "")])
+def test_a_forgotten_playlist_is_kept_not_deleted():
+    """Une réponse coupée oublie des playlists entières : absente de la liste
+    sans que ses titres soient replacés, une playlist est gardée."""
+    answer = Answer(playlists=[("Jazz · Jazz-funk", ""), ("Électro · House", "")],
+                    moves={"T0001": "Jazz · Fusion"})
     change = gemini.plan_changes(answer, ROWS, CURRENT, set())
-    assert any("sans nouvelle place" in p for p in change.problems)
+    assert change.deleted == []
+    assert any("gardée" in p and "Jazz · Fusion" in p for p in change.problems)
+    # On peut encore y déplacer des titres.
+    assert change.moves == {"T0001": "Jazz · Fusion"}
+
+
+def test_a_playlist_is_deleted_once_all_its_tracks_have_a_place():
+    answer = Answer(playlists=[("Jazz · Jazz-funk", ""), ("Électro · House", "")],
+                    moves={"T0003": "Jazz · Jazz-funk"})
+    change = gemini.plan_changes(answer, ROWS, CURRENT, set())
+    assert change.deleted == ["Jazz · Fusion"]
+    assert change.moves == {"T0003": "Jazz · Jazz-funk"}
 
 
 # ------------------------------------------------------------------- plan
@@ -198,6 +212,17 @@ def test_the_prompt_numbers_every_track_and_marks_decisions(library, config):
     assert "Description : Fusion électrique." in prompt
     assert "T0001 | Weather Report | Birdland | Jazz / Fusion · Groovy |  [fixé]" in prompt
     assert prompt.count("FORMAT DE LA RÉPONSE") == 2
+
+
+def test_a_partial_prompt_lists_only_some_playlists(library, config):
+    summary = preview(library, config)
+    plan = load_plan(config.taxonomy.playlists_file, TAXONOMY)
+    prompt, rows = gemini.build(summary, plan, {}, set(), only={"Jazz · Fusion"}, start=7)
+
+    assert [r.id for r in rows] == ["T0007"]
+    assert "## Jazz · Jazz-funk — 2 titres (déjà revue, titres non listés)" in prompt
+    assert "Chameleon" not in prompt and "Birdland" in prompt
+    assert "UNE PARTIE SEULEMENT" in prompt
 
 
 def test_applying_writes_plan_and_moves_and_settles_proposals(library, config, tmp_path):

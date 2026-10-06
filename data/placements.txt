@@ -7,22 +7,53 @@
 # après chaque analyse. La playlist est désignée par son nom, tel qu'écrit
 # dans le plan ; « (aucune) » tient le morceau hors de toute playlist.
 # Supprime une ligne pour rendre le morceau aux règles.
-A2H	Nudes	Rap · FR mélancolique
-ABSOLEM	Subzero	Rap · FR mélancolique
-Abstract Truth	(We Had) A Thing	Électro · Deep house groovy
+A2H	Nudes	Rap · FR introspectif
+ABSOLEM	Subzero	Rap · FR introspectif
+Abstract Truth	(We Had) A Thing	Électro · Deep house vocale
+Al Nather	Mtaktak	Rap · Ailleurs
+Al Zanders	Endcliffe Park	Électro · Deep house instrumentale
 Alastair Lane	Libertad	Électro · Nu-disco & synth
 Alastair Lane	Roman d'Amour	Électro · Nu-disco & synth
-Alastair Lane	Roman d'Amour (Midnight Version)	Électro · Deep house groovy
+Alastair Lane	Roman d'Amour (Midnight Version)	Électro · Deep house vocale
+Aleksandir	Lowdown	Électro · Deep house instrumentale
+Allies for Everyone	Allies Foot	Électro · Deep house instrumentale
 Amadou & Mariam	Sabali	Pop · Indie & synth-pop dansante
 Amy Winehouse	Just Friends	Caraïbes · Reggae, dub & dancehall
 André Navarro II	TAKE SIX - Patterns	Jazz · Smooth & groovy
-aupinard	penelope	Rap · FR mélancolique
-aupinard	quel type de vibe?	Rap · FR groovy & posé
+Ateyaba	French Riviera (feat. Jhené Aiko)	Rap · FR groovy
+Ateyaba	Venus	Rap · FR posé
+aupinard	penelope	Rap · FR introspectif
+aupinard	quel type de vibe?	Rap · FR groovy
 B.B. Jacques	Bleu Cristal	Rap · FR sombre
 B.B. Jacques	Déchirée	Rap · FR sombre
-B.B. Jacques	HARMONIE	Rap · FR mélancolique
+B.B. Jacques	HARMONIE	Rap · FR introspectif
+B.B. Jacques	INTÉRIEUR SCANDINAVE	Rap · FR posé
 B.B. Jacques	Odyssée	Rap · FR sombre
+Bekar	5.9.3	Rap · FR cloud & spleen
+Ben Hauke	Installs	Électro · Deep house instrumentale
+Ben Hauke	Nightwork (feat. Joe Armon-Jones)	Électro · Deep house instrumentale
+Ben Hauke	The Way They Rep	Électro · Deep house instrumentale
+Benidel	Amnésie	Rap · FR cloud & spleen
+berlioz	deep in it	Électro · Deep house instrumentale
+berlioz	miro (feat. Ted Jasper)	Électro · Deep house instrumentale
+berlioz	ode to rahsaan	Électro · Deep house instrumentale
+Black Jazz Consortium	What's Up With the Love	Électro · Deep house instrumentale
+Blue Six	Pure (Jay's Nitelife Dub)	Électro · Deep house instrumentale
+Blue Six	Yeah	Électro · Deep house instrumentale
+Busta Rhymes	I Know What You Want (feat. Flipmode Squad)	Rap · US
+Butch	Just Chill	Électro · Deep house instrumentale
+Byron the Aquarius	Fallenquas	Électro · Deep house instrumentale
 CA7RIEL & Paco Amoroso	Ca7riel & Paco Amoroso: Tiny Desk Concert	Funk · Funk, boogie & disco
+Chaos In the CBD	78 To Stanley Bay	Électro · Deep house instrumentale
+Chaos In the CBD	Accidental Meetings	Électro · Deep house instrumentale
+Chaos In the CBD	Global Erosion (feat. Isaac Aesili)	Électro · Deep house instrumentale
+Chaos In The CBD	Higher Elevation	Électro · Deep house instrumentale
+Chaos In The CBD	It's up to Me [Instrumental] (feat. K LaDawn & Joe Armon-Jones)	Électro · Deep house instrumentale
+Chaos In the CBD	Luxury Motivation	Électro · Deep house instrumentale
+Chaos In the CBD	Midnight in Peckham	Électro · Deep house instrumentale
+Chaos In the CBD	Observe	Électro · Deep house instrumentale
+Chaos In the CBD	Significant Others	Électro · Deep house instrumentale
+Chaos In the CBD	Trust Is Key	Électro · Deep house instrumentale
 Chassol	Birds, Pt. I	Jazz · Contemporain
 Chassol	Carnaval, Pt. II (Motor & Vuvuzuela)	Jazz · Contemporain
 Chassol	Carnaval, Pt. III (Percussions harmoniques)	Jazz · Contemporain
@@ -36,9 +67,22 @@ Chassol	Les sonorités	(aucune)
 Chassol	Reich & Darwin	Jazz · Contemporain
 Chassol	The Big Sun (Introïde)	Jazz · Contemporain
 Chassol	The Big Sun (Outroïde)	(aucune)
+Chez Damier	Close (Radio Edit)	Électro · Deep house instrumentale
+Chez Damier feat. Ron Trent	Foot Therapy	Électro · Deep house instrumentale
+Chez Damier feat. Ron Trent	Sometimes I Feel Like	Électro · Deep house instrumentale
+Chez Damier feat. Ron Trent	The Choice	Électro · Deep house instrumentale
+Chez Damier feat. Ron Trent	The Meaning	Électro · Deep house instrumentale
 Chilly Gonzales	Rap Piano Medley	Classique · Moderne contemplatif
+Chris Luno	golf car house mix	Électro · Deep house instrumentale
+Chris Luno	highway house mix	Électro · Deep house instrumentale
+Chris Sedayao	Old School Deep House Mix (1993-2005)	Électro · Deep house instrumentale
+CHRIS STASSY	Seeing & Believing (Kolter Remix)	Électro · Deep house instrumentale
+COEO	Coast to Coast	Électro · Deep house instrumentale
+Coeo	Timid Dancer	Électro · Deep house instrumentale
+Daft Punk	Contact	Électro · Techno percutante
+Daft Punk	Horizon (Japan CD)	Électro · Ambient & nappes
 Dalida	Helwa Ya Baladi	Orient · Fairouz, tarab & chanson
-Dalí	Jalil	Rap · FR mélancolique
+Dalí	Jalil	Rap · FR introspectif
 Damso	TieksVie	Rap · FR sombre
 Damso	Œveillé	(aucune)
 Daniel Kruglov	Emotions	Classique · Moderne contemplatif
@@ -46,61 +90,157 @@ Danny Wabbit	Internal Jungle Original Mix	Électro · Techno percutante
 Danny Wabbit	Lost Soul	Électro · Techno hypnotique
 DaRand Land	Blessings	Électro · Deep house planante
 DaRand Land	Soothe Me	Électro · Deep house planante
+Darryl Zeuja	J'marche seul	Rap · FR cloud & spleen
 dialE	Like E	Rap · US
 dialE	nine thirty (the glow)	Rap · US
+Dinos	Ciel pleure (feat. Laylow)	Rap · FR cloud & spleen
+Dinos	Helsinki	Rap · FR cloud & spleen
+Diogo Strausz	Emancipação (Ron Trent Remix)	Électro · Deep house instrumentale
+Dioscures	CINÉ CLUB (feat. Laylow)	Rap · FR posé
+DJ Jazzy Jeff	Rock Wit U (Yoruba Soul Mix - Dub) (feat. Erro)	Électro · Deep house instrumentale
+DJOKO	Daylight	Électro · Deep house instrumentale
+Drake	Amen (feat. Teezo Touchdown)	Rap · US
+Drake	Passionfruit	Rap · US
 Driss Bennis	Day Drive (Thru Casablanca)	Électro · Breaks & drum'n'bass
 Driss Bennis	Networks (Prelude)	Électro · Breaks & drum'n'bass
+Earth Boys	Canal St. Blues	Électro · Deep house instrumentale
+Elyon	À la recherche	Rap · FR posé
 Eugen Cicero	Prélude in E Minor, Op. 28 No. 4	Jazz · Bop & cool nocturne
 Fabrizio Chiovetta	Piano Sonata No. 32 in C Minor, Op. 111: II. Arietta. Adagio molto semplice e cantabile	Classique · Romantique tendre
 Fatima Yamaha	Only Of The Universe	Électro · Nu-disco & synth
 Fatima Yamaha	What's a Girl to Do	Électro · Nu-disco & synth
+FEEL	Chico & Rita	Électro · Deep house instrumentale
+Felipe Gordon	The Semimodular Bird of Jazz	Électro · Deep house instrumentale
 Ferqet El Masryeen	El Shawarea Hawadet	Funk · Funk arabe des années 70
+Floating Points	King Bromeliad	Électro · Deep house instrumentale
 Floating Points	Movement 4	Jazz · Spiritual jazz
 Floating Points	Movement 7	Jazz · Spiritual jazz
 Floating Points	Movement 9	Jazz · Spiritual jazz
+Floating Points	Myrtle Avenue	Électro · Deep house instrumentale
+Folamour	After Winter Must Come Spring	Électro · Deep house instrumentale
+Folamour	Night Of Desirable Objects	Électro · Deep house instrumentale
 Frah Quintale	Sì può darsi	Rap · Ailleurs
+Franc Spangler	Dreamworld	Électro · Deep house instrumentale
 Frank Sinatra	That's Life (2008 Remastered)	Jazz · Swing & big band
-Free is in Da House	All Good Funk Alliance  -  The Makes	Électro · Deep house groovy
-Free is in Da House	Bass Toast  -  Each One Teach One	Électro · Deep house groovy
-Free is in Da House	Freil  -  West of Motebe	Électro · Deep house groovy
-Free is in Da House	Street Corner Symphony  -  Memories Of Aphrodite	Électro · Deep house groovy
-Free is in Da House	Street Corner Symphony  -  Symphomaniac (House Mix)	Électro · Deep house groovy
-Free is in Da House	West Bridgford Connection  -  Up 'n' Down	Électro · Deep house groovy
-Furlax	Cosmos	Rap · FR groovy & posé
+Free is in Da House	All Good Funk Alliance  -  The Makes	Électro · Deep house vocale
+Free is in Da House	Bass Toast  -  Each One Teach One	Électro · Deep house vocale
+Free is in Da House	Freil  -  West of Motebe	Électro · Deep house vocale
+Free is in Da House	Street Corner Symphony  -  Memories Of Aphrodite	Électro · Deep house vocale
+Free is in Da House	Street Corner Symphony  -  Symphomaniac (House Mix)	Électro · Deep house vocale
+Free is in Da House	West Bridgford Connection  -  Up 'n' Down	Électro · Deep house vocale
+French The Kid	Thrill	Rap · UK
+Fresh & Low	7 Miles Up	Électro · Deep house instrumentale
+Fuera	Hero	Électro · Deep house instrumentale
+Furlax	Cosmos	Rap · FR groovy
 GAL	Je le pèse Intro	Rap · FR sombre
-GAL	Kendrick Lamar	Rap · FR mélancolique
+GAL	Kendrick Lamar	Rap · FR introspectif
+Gavinco	Amour Fou	Électro · Deep house instrumentale
 George Benson	Nature Boy	Jazz · Vocal & ballades
+Get Lost	Foc	Électro · Deep house instrumentale
+Green Montana	CHAQUE JOUR DE LA SEMAINE	Rap · FR cloud & spleen
+Grems	林檎	Rap · FR posé
+Gros Mo	Paradis Artificiel	Rap · FR posé
 Guillermo Portabales	Yo Te Canto Puerto Rico	Latino · Boléro, tango & ballades
 Hamid El Shaeri - حميد الشاعري	Git Ya Sheta	Orient · Pop arabe
-Hamza	1994	Rap · FR mélancolique
+Hamza	1994	Rap · FR introspectif
+Hamza	Codéine 19	Rap · FR posé
+Hamza	Juste une Minute	Rap · FR groovy
+Hamza	Life	Rap · FR groovy
+Hamza	Ma Réalité	Rap · FR cloud & spleen
 Hamza	Netflix	Rap · FR sombre
+Hamza	Sincèrement	Rap · FR cloud & spleen
+Hamza	Vibes	Rap · FR groovy
 HARIS HAMZA	Alabass	Rap · Maghreb
 Hesham Nour	Oyoun Habibi	Orient · Fairouz, tarab & chanson
+Hidden Spheres	Too Soon	Électro · Deep house instrumentale
+Hidden Spheres	Waiting	Électro · Deep house instrumentale
+House Six	Fantastic Man - A Little Bit More	Électro · Deep house instrumentale
 Human Safari	Jazz Affair	Électro · Techno percutante
-J9ueve	Margiela	Rap · FR mélancolique
-J9ueve	Tous Mes États (feat. La Fève)	Rap · FR groovy & posé
+Ian Pooley	CompuRhythm (Dixon 4/4 Treatment)	Électro · Deep house instrumentale
+Isaac Carter	Calling on Me	Électro · Deep house instrumentale
+J9ueve	LE MONDE ETAIT A NOUS	Rap · FR cloud & spleen
+J9ueve	Margiela	Rap · FR introspectif
+J9ueve	Sans toi (feat. Zamdane)	Rap · FR cloud & spleen
+J9ueve	Tous Mes États (feat. La Fève)	Rap · FR groovy
 Jacques Loussier	Partita N 1 BWV 825 En Si Bémol Majeur-Sarabande	Jazz · Bop & cool nocturne
 Jacques Loussier	Prélude N 6 En Ré Mineur Clavier Bien Tempere Livre I BWV 851	Jazz · Bop qui swingue
 Jacques Loussier Trio	Gnossienne No. 1	Jazz · Bop & cool nocturne
-JeanJass	Pippo inzaghi	Rap · FR groovy & posé
+Jay Tripwire	Dema (Delano Smith Transit Dub) (feat. Boddhi Satva)	Électro · Deep house instrumentale
+Jazzy Bazz	.RAW Spleen (feat. Laylow)	Rap · FR cloud & spleen
+JeanJass	Pippo inzaghi	Rap · FR groovy
+JeanJass & Le Seize	Veillée	Rap · FR posé
+Jimmy Sax	No Man No Cry	Électro · Deep house instrumentale
 Joe Armon-Jones	Midnite Oil (Sparkzzz)	Électro · Broken beat & nu jazz
-Josman	Ailleurs	Rap · FR groovy & posé
+Joe Sansom	3 hour vinyl deep house & techno dj mix | Joe Sansom	Électro · Deep house instrumentale
+Josman	Ailleurs	Rap · FR groovy
+Josman	Dans Le Ciel	Rap · FR posé
+Josman	Dans le vide	Rap · FR cloud & spleen
 Josman	Doré	Rap · FR énergique
-Josman	La Danse de la Joie	Rap · FR mélancolique
+Josman	La Danse de la Joie	Rap · FR introspectif
 Josman	Rich Music	Rap · FR sombre
+Josman	Tulum, México	Rap · FR posé
+Josman	Un Zder, Un Thé	Rap · FR posé
 Josman	Yacht & Champagne (Skit)	Rap · FR énergique
+Kadhem	Phula	Électro · Deep house instrumentale
+Kalabrese	Is This	Électro · Deep house instrumentale
+Kendrick Lamar	LOVE. (feat. Zacari)	Rap · US
+Kerri Chandler	Atmosphere (The Lost Dubs)	Électro · Deep house instrumentale
+Kerri Chandler	Bar A Thym (Extended Mix)	Électro · Deep house instrumentale
+Kerri Chandler	Harder Gets Higher (Album Edit)	Électro · Deep house instrumentale
+Kerri Chandler	I Never Knew Her (Album Edit)	Électro · Deep house instrumentale
+Kerri Chandler	On My Way	Électro · Deep house instrumentale
+Kerri Chandler	Rain (Mood EP Version)	Électro · Deep house instrumentale
+Kerri Chandler	Sunshine & Twilight (Album Edit)	Électro · Deep house instrumentale
+Kerri Chandler	The Sun's Coming Up (Album Edit)	Électro · Deep house instrumentale
+Khali	Ninetynine	Rap · FR cloud & spleen
+Khruangbin	Shida (Bella Suite)	Électro · Deep house instrumentale
+KLANGPLANET	Good	Électro · Deep house instrumentale
 Kokoroko	Abusey Junction	Afrique · Afrobeats & amapiano
-La Fève	BOXE INTERLUDE	Rap · FR mélancolique
+Kora	Kanjira	Électro · Deep house instrumentale
+Krisy	Erotiquement votre (feat. Instagram Followers)	Rap · FR posé
+Krisy	sensuellement vôtre	Rap · FR posé
+La Fève	BOXE INTERLUDE	Rap · FR introspectif
+La Fève	LYELE OUTRO	Rap · FR posé
 La Fève	NO HOOK	Rap · FR énergique
 Laura Itandehui	Yo no Necesito de Mucho	Latino · Boléro, tango & ballades
-Laylow	10'	Rap · FR mélancolique
+LAUSSE THE CAT	Drink With The Leaves (feat. The Young Wizard)	Rap · FR posé
+LAUSSE THE CAT	Fuccboi Lullaby (feat. B-Ahwe)	Rap · FR posé
+Laylow	10'	Rap · FR introspectif
+Laylow	Avenue	Rap · FR posé
+Laylow	LOGICIEL TRISTE	Rap · FR cloud & spleen
+Laylow	Maladresse	Rap · FR cloud & spleen
+Laylow	MILLION FLOWERZ	Rap · FR cloud & spleen
+Laylow	QUE LA PLUIE	Rap · FR cloud & spleen
+Laylow	UN RÊVE ÉTRANGE	Rap · FR posé
+Laylow	UNE HISTOIRE ÉTRANGE	Rap · FR cloud & spleen
+Laylow	WINDOW SHOPPER PART. 2 (feat. Hamza)	Rap · FR posé
 LCD Soundsystem	You Wanted a Hit	Électro · Nu-disco & synth
-Ledé Markson	ALZ	Rap · FR groovy & posé
+Ledé Markson	4zoo	Rap · FR posé
+Ledé Markson	ALZ	Rap · FR groovy
+Ledé Markson	PS	Rap · FR posé
+Levon Vincent	UK Spring Vibes	Électro · Deep house instrumentale
 London Philharmonic Orchestra	Les noces de figaro	Classique · Baroque vif
+Loure	In the Evenings (Hidden Spheres Remix)	Électro · Deep house instrumentale
+Loure	Smooth Talk	Électro · Deep house instrumentale
+Luidji	Agoué	Rap · FR cloud & spleen
+Luidji	Boscolo Exedra	Rap · FR cloud & spleen
+Luidji	Foufoune Palace	Rap · FR groovy
+Luidji	Gisèle (Part 4)	Rap · FR introspectif
+Luidji	Le remède	Rap · FR introspectif
+Luidji	Mauvais réflexe	Rap · FR cloud & spleen
+Luidji	Néons rouges / Belles chansons	Rap · FR introspectif
+Luidji	Sirène	Rap · FR introspectif
+Luidji	Système	Rap · FR cloud & spleen
+Luther	GARÇON	Rap · FR cloud & spleen
 Luther	LESSGUI	Rap · FR sombre
 Luther	VVS	Rap · FR sombre
+Mac Miller	My Favorite Part	Rap · US
+Madcat	Call Me Ishmael	Électro · Deep house instrumentale
 Malo	MÉDICATION	Rap · FR sombre
 Malo	OK	Rap · FR sombre
+Manila Folder	DJ Central - Basil (Version Intégrale Club)	Électro · Deep house instrumentale
+MANSO̶U̶R̶	NORTHERN LINE (feat. SAMSON)	Rap · FR posé
+marilyne naaman	nachez (harp version)	Orient · Fairouz, tarab & chanson
 Masayoshi Takanaka	Bamboo Vender	Pop · City pop & disco
 Masayoshi Takanaka	Breakin' Loase	Rock · Yacht rock
 Masayoshi Takanaka	Eona	Jazz · Smooth & groovy
@@ -111,35 +251,127 @@ Masayoshi Takanaka	Plumed Bird	Jazz · Fusion énergique
 Masayoshi Takanaka	Ride’em High - Ride'em High	Funk · Latin funk
 Masayoshi Takanaka	You Can Never Come To This Place	Rock · Symphonic rock
 Masayoshi Takanaka	空ド白ソ - Sorado Shiraso	Jazz · Fusion énergique
+Max Graef & Muff Deep	Am Fenster	Électro · Deep house instrumentale
 Maximilian Schairer	Piano Sonatina in C Major, op.55, No.1: I. Allegro	Classique · Baroque vif
+MEDHOUSE	AFRO/DEEP HOUSE MIX - A chill Sunday in Casablanca, Morocco (MedHouse Radio #2)	Électro · Deep house instrumentale
+MEDHOUSE	AFRO/DEEP HOUSE MIX - Adventure of a soul (MedHouse Radio #3)	Électro · Deep house instrumentale
+Melodiesinfonie	AO Longo Do Rio	Rap · FR posé
+Melodiesinfonie	Tropicololo	Rap · FR posé
+Melodiesinfonie	Words (feat. Junes)	Rap · FR posé
+Milanezie	Cute Face (feat. thaHomey & Jäde)	Rap · FR posé
 Moji x Sboy	EDWARD	Rap · FR sombre
 Moji x Sboy	LA LUNE À DÉCROCHER	Rap · FR sombre
-Moji x Sboy	Ma go	Rap · FR mélancolique
-Moji x Sboy	VIVIENNE WESTWOOD	Rap · FR groovy & posé
+Moji x Sboy	Ma go	Rap · FR introspectif
+Moji x Sboy	VIVIENNE WESTWOOD	Rap · FR groovy
+Moloko	Sing It Back (Herbert's Tasteful Dub)	Électro · Deep house instrumentale
+Monsieur Nov	Dernier je t'aime (feat. Josman)	Rap · FR introspectif
+Moodymann	Back at Bakers (On Livernois)	Électro · Deep house instrumentale
+Moodymann	Black Mahogani	Électro · Deep house instrumentale
 Moodymann	Born 2 Die	(aucune)
+Moodymann	Come 2 Me	Électro · Deep house instrumentale
+Moodymann	Desire	Électro · Deep house instrumentale
+Moodymann	Freeki Muthafucka	Électro · Deep house instrumentale
+Moodymann	Girl	Électro · Deep house instrumentale
 Moodymann	Got Dem Freaks Wit Me	(aucune)
+Moodymann	Heaven	Électro · Deep house instrumentale
+Moodymann	Hold It Down	Électro · Deep house instrumentale
+Moodymann	Holiday (Live) (feat. Roberta Sweed)	Électro · Deep house instrumentale
+Moodymann	How do U Get 2 Detroit	Électro · Deep house instrumentale
+Moodymann	I Got Werk	Électro · Deep house instrumentale
+Moodymann	I Need You so Much (feat. Roberta Sweed)	Électro · Deep house instrumentale
+Moodymann	I Still Don't Know Yo Name	Électro · Deep house instrumentale
+Moodymann	I'm Doing Fine (feat. Amp Dog Knight)	Électro · Deep house instrumentale
+Moodymann	IGuessuneverbeenlonely	Électro · Deep house instrumentale
+Moodymann	Jimmy D...Nickle	Électro · Deep house instrumentale
+Moodymann	Lyk U Use 2 (feat. Andres)	Électro · Deep house instrumentale
+Moodymann	Mahogani 9000	Électro · Deep house instrumentale
+Moodymann	Mahogany Brown	Électro · Deep house instrumentale
+Moodymann	Max Julien Jacket	Électro · Deep house instrumentale
+Moodymann	Never Quite The Same	Électro · Deep house instrumentale
+Moodymann	No	Électro · Deep house instrumentale
+Moodymann	PonyDownCrew	Électro · Deep house instrumentale
+Moodymann	Radio	Électro · Deep house instrumentale
 Moodymann	Riley's Song	(aucune)
+Moodymann	Roberta Jean Machine (feat. Norma Jean Bell & Roberta Sweed)	Électro · Deep house instrumentale
+Moodymann	Runaway (feat. Roberta Sweed, Norma Jean Bell & Pitch Black City)	Électro · Deep house instrumentale
+Moodymann	Shades of Jae	Électro · Deep house instrumentale
+Moodymann	Sloppy Cosmic	Électro · Deep house instrumentale
 Moodymann	The Most Fearful	(aucune)
 Moodymann	U Don't Even Lyk This Song	(aucune)
+Moodymann	Ulooklykicecreaminthesummertyme (feat. Nikki O)	Électro · Deep house instrumentale
 Moodymann	Yet Unknown	(aucune)
+Moodymann	You're 2 Moody	Électro · Deep house instrumentale
+Myth Syzer	Le code (feat. Bonnie Banane, Ichon & Muddy Monk)	Rap · FR posé
+Myth Syzer	Sans toi (feat. Hamza Al Farissi & Hamza)	Rap · FR introspectif
+Nekfeu	O.D (feat. Murkage Dave)	Rap · FR cloud & spleen
+Nekfeu	Princesse (feat. Nemir)	Rap · FR posé
+Nekfeu	Voyage léger	Rap · FR posé
+Nekfeu	Óλά Καλά	Rap · FR posé
+NeS	PÔLE SUD - interlude	Rap · FR posé
 Nicolas Jaar	The Fool and His Harem	Électro · Ambient & nappes
+Nicolás Jaar	Time For Us	Électro · Deep house instrumentale
+Ninho	De l'autre côté (feat. Nekfeu)	Rap · FR cloud & spleen
+Népal	Cloud 8	Rap · FR posé
+Népal	Emoji	Rap · FR posé
+Népal	Laisse Rouler	Rap · FR posé
+Népal	Lemonade	Rap · FR posé
+Népal	Love64 (Interlude)	Rap · FR posé
+Népal	Sundance	Rap · FR posé
+Népal	Vibe (feat. Sheldon)	Rap · FR posé
+Omar S	Seen Was Set (feat. Big Strick & Norm Talley)	Électro · Deep house instrumentale
+p-rallel	Vibes (feat. Sam Wise & Venna)	Rap · UK
+Parallelle	How Can I Resist (Dub Version)	Électro · Deep house instrumentale
+Paul Simon	Diamonds on the Soles of Her Shoes	(aucune)
 Piero Umiliani	Borgo montano	(aucune)
 Piero Umiliani	Lungo il canale	(aucune)
 Piero Umiliani	Oriente rosso	(aucune)
 Piero Umiliani	Risaie	Jazz · Smooth & groovy
 Piero Umiliani	Vecchie strade	(aucune)
+Pinty	City Limits	Rap · UK
+Pinty	Honey	Rap · UK
+PNL	A l'ammoniaque	Rap · FR cloud & spleen
+PNL	Bambina	Rap · FR cloud & spleen
+PNL	Deux frères	Rap · FR cloud & spleen
+PNL	Déconnecté	Rap · FR cloud & spleen
+PNL	J'suis PNL	Rap · FR cloud & spleen
+PNL	J'suis QLF	Rap · FR posé
+PNL	Jusqu'au dernier gramme	Rap · FR cloud & spleen
+PNL	La misère est si belle	Rap · FR cloud & spleen
+PNL	Le monde ou rien	Rap · FR cloud & spleen
+PNL	Luz de Luna	Rap · FR cloud & spleen
+PNL	Mexico	Rap · FR cloud & spleen
+PNL	Oh lala	Rap · FR cloud & spleen
+PNL	Recherche du bonheur	Rap · FR cloud & spleen
+PNL	Sur Paname	Rap · FR cloud & spleen
 Poirier	Café Com Leite	Brésil · Samba & groove
 Polo & Pan	Canopée	Électro · Nu-disco & synth
 Precipotato	Wolfgang Amadeus Mozart - Piano Concerto No. 20 in D minor, K. 466	Classique · Baroque vif
+PRIME	J'aime pas l'amour	Rap · FR cloud & spleen
 Quincy Jones	Jook Joint Intro	(aucune)
 Quincy Jones	Let The Good Times Roll (feat. Stevie Wonder, Ray Charles & Bono)	Jazz · Swing & big band
 Ragheb Alama	Nasini El Donya	Orient · Fairouz, tarab & chanson
+Rampa	Necessity	Électro · Deep house instrumentale
 Rasch	Aleph	Électro · Techno percutante
 Rasch	Kaligo	Électro · Techno percutante
 rebug	run run run	Électro · Downtempo chill
 rebug	run run run (slowed + reverb)	Électro · Downtempo chill
 rebug	run run run (sped up)	Électro · Downtempo chill
+Redig	Syrup	Électro · Deep house instrumentale
+Rick Wade	Shinjuku Strut	Électro · Deep house instrumentale
+RiskSoundSystem	The Sound Is Yours (Kerri Chandler Remix)	Électro · Deep house instrumentale
+Rocco	Saharien Child	Électro · Deep house instrumentale
+Rodrigo Gallardo	Ay Que Sera Del Sol	Électro · Deep house instrumentale
+Roméo Elvis	Drôle de question	Rap · FR posé
 Roméo Elvis	Soleil	Rap · FR énergique
+Ron Trent	Bass to Love	Électro · Deep house instrumentale
+Ron Trent	Energy	Électro · Deep house instrumentale
+Ron Trent	I Feel the Rhythm	Électro · Deep house instrumentale
+Ron Trent	In the Light	Électro · Deep house instrumentale
+Ron Trent	Piano Track	Électro · Deep house instrumentale
+Ron Trent	Pop, Dip and Spin	Électro · Deep house instrumentale
+Ron Trent feat. Anthony Nicholson	Soul Samba Express	Électro · Deep house instrumentale
+Ron Trent feat. Chez Damier	Don't Try It	Électro · Deep house instrumentale
+Rounhaa	Dubaï	Rap · FR cloud & spleen
 RUBII	BOTB	Rap · UK
 RUBII	Jammin	Rap · UK
 Rubén González	Melodía del Río	Latino · Boléro, tango & ballades
@@ -154,23 +386,46 @@ Sade	Sally	Soul · Soul ballades
 Sade	Smooth Operator	Soul · Soul groovy
 Saint Levant	WAIN MAADY WAIN / وين معدي وين	Orient · Pop arabe
 Sainte	Champagne Shots	Rap · UK
+Sainte	Compare - A COLORS SHOW	Rap · UK
 Sainte	Hunnids	Rap · UK
 Sainte	On Me	Rap · UK
 Sainte	Round & Round	Rap · UK
 Sainte	Soul Mate	Rap · UK
 Sainte	Stylin'	Rap · UK
+Sainté	03'	Rap · UK
 Sal Davis	Quaboos	Funk · Funk arabe des années 70
+Sameed	Dusty Jazz	Électro · Deep house instrumentale
+Schmoov!	In Yo Soul	Électro · Deep house instrumentale
+Seb Wildblood	Jazz, Vol. 1	Électro · Deep house instrumentale
+Seb Wildblood	Jazz, Vol. 1 (Christopher Rau Remix)	Électro · Deep house instrumentale
+Seb Wildblood	Seal of Approval	Électro · Deep house instrumentale
+Secret Value Orchestra	Serious Intentions	Électro · Deep house instrumentale
+Selug	Léon (feat. Luther)	Rap · FR cloud & spleen
+Session Victim	Hide and Seek	Électro · Deep house instrumentale
+Session Victim	House in the Hills	Électro · Deep house instrumentale
 Sherine	Sabry Aalil	Orient · Fairouz, tarab & chanson
 Shy High	formula (feat. Garrett Sparrow)	Rap · US
 Shy High	independent films	Rap · US
+Sköne	À la poursuite d'un oiseau bleu	Rap · FR posé
+Solomun	Never Sleep Again (Keinemusik Remix)	Électro · Deep house instrumentale
 Some of Us Festival	Some of Us Extended - People's Choice Soundsystem	(aucune)
 Some of Us Festival	Some of Us Extended II - Nathabes	(aucune)
 Some of Us Festival	Some of Us Extended II - Yaya	(aucune)
+Soul Saver	Another Day	Électro · Deep house instrumentale
+Soulstance	Blue Grassland	Électro · Deep house instrumentale
+Spider ZED	envie de rien	Rap · FR cloud & spleen
+Spirit of Ecstasy	Ateyaba - metacultivation	Rap · FR posé
 Squall p	Amsterdame	Rap · FR sombre
-Squall p	GRAND GALA	Rap · FR groovy & posé
-Squall p	Nova	Rap · FR groovy & posé
-Squall p	PALIER BOUGAINVILLE	Rap · FR groovy & posé
+Squall p	GRAND GALA	Rap · FR groovy
+Squall p	Nova	Rap · FR groovy
+Squall p	PALIER BOUGAINVILLE	Rap · FR groovy
 Squall p	Rolli	Rap · FR sombre
+Stavroz	The Finishing (Viken Arman Remix)	Électro · Deep house instrumentale
+Stavroz	The Ginning	Électro · Deep house instrumentale
+Stormy	Africain	Rap · Maghreb
+Strath	Mutual Attraction	Électro · Deep house instrumentale
+Swing	Rivage	Rap · FR posé
+T_Pazos	Superego	Électro · Deep house instrumentale
 Tal Fussman	Burning Bridges	Électro · Techno hypnotique
 Tal Fussman	Even Rome Wasn't Built In a Day	Électro · Techno hypnotique
 Tal Fussman	It Was Misunderstood	Électro · Techno hypnotique
@@ -180,17 +435,39 @@ Tamango	Rosso così	Rap · Ailleurs
 The Silhouettes Project	Standing There (feat. Asher Kosher & Paya)	Rap · US
 The Silhouettes Project	What U Need (feat. Purple Cloud)	Rap · US
 The Temptations	Papa Was A Rollin' Stone (Single Version)	Soul · Soul groovy
-TIF	MATHUSALEM	Rap · FR mélancolique
+Thed	Toucher les Étoiles	Rap · FR posé
+TIF	MATHUSALEM	Rap · FR introspectif
 TIF	Maylin	(aucune)
 TIF	SHADOW BOXING	Rap · FR énergique
-TIF	TIF - LIVE SESSION 1.6	Rap · FR groovy & posé
+TIF	TIF - LIVE SESSION 1.6	Rap · FR groovy
+Tom Jarmey	Beach Jazz (feat. MarBlu)	Électro · Deep house instrumentale
+tonton4o	Pepe Bradock - Deep Burnt	Électro · Deep house instrumentale
+Tour-Maubourg	Ode to Love	Électro · Deep house instrumentale
 TRAUM	Frédéric Chopin: Étude Op. 10, No. 9 in F Minor (Allegro molto agitato)	Classique · Romantique passionné
+Trus'me	Working Nights	Électro · Deep house instrumentale
 Tuerie	Le givre et le vent	Rap · FR sombre
-Tuerie	No More	Rap · FR groovy & posé
-Tuerie	PRÊCHE !	Rap · FR groovy & posé
+Tuerie	No More	Rap · FR groovy
+Tuerie	PRÊCHE !	Rap · FR groovy
+Tunnelvisions	Guava (Extended Mix)	Électro · Deep house instrumentale
+Tyler, The Creator	Boredom (feat. Rex Orange County & Anna of the North)	Rap · US
+Tyler, The Creator	EARFQUAKE	Rap · US
+Tyler, The Creator	Glitter	Rap · US
+Tyler, The Creator	GONE, GONE / THANK YOU	Rap · US
+Tyler, The Creator	PUPPET	Rap · US
+Tyler, The Creator	RUNNING OUT OF TIME	Rap · US
+Tyler, The Creator	See You Again (feat. Kali Uchis)	Rap · US
+Tyler, The Creator	Tomorrow	Rap · US
 Vulax	LAO (Participation au concours d'Avner) VULAX	Classique · Moderne contemplatif
+Wale The Sage	Bleue	Rap · FR posé
+Wbeeza	He's so Crazy (Mixed)	Électro · Deep house instrumentale
+West Code	Street Funk	Électro · Deep house instrumentale
+Yanns	Clic clic pan pan	Rap · FR énergique
+Youandewan	Be Good To Me Poly	Électro · Deep house instrumentale
+Ysos	IL FAUT QUE DRAKE POSE SUR CETTE INSTRU ! (c'est si doux)	Rap · FR posé
 YUNDI	Piano Sonata No. 14 in C Minor, K. 457: I. Molto allegro	Classique · Baroque vif
 YUNDI	Piano Sonata No. 14 in C Minor, K. 457: III. Allegro assai	Classique · Baroque vif
 Yusef Lateef	Like It Is	Jazz · Lounge & jazz d'ambiance
 Yusef Lateef	Moon Cup	(aucune)
 Yusef Lateef	Othelia	Jazz · Smooth & groovy
+Zamdane	Naïf	Rap · FR cloud & spleen
+Zuukou Mayzie	Je t'aime si je peux (Interlude)	Rap · FR posé
