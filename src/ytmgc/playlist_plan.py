@@ -31,7 +31,8 @@ from ytmgc.taxonomy import Taxonomy
 
 #: Clés comprises dans un bloc `[[playlist]]`. Toute autre est une faute de
 #: frappe : l'ignorer élargirait la règle sans prévenir.
-_BLOCK_KEYS = {"nom", "description", "genres", "styles", "ambiances", "artistes", "pays"}
+_BLOCK_KEYS = {"nom", "description", "genres", "styles", "ambiances", "artistes", "pays", "manuelle"}
+_CRITERIA = {"genres", "styles", "ambiances", "artistes", "pays"}
 _SIZE_KEYS = {"min", "max"}
 
 #: YouTube Music refuse les chevrons dans une description de playlist.
@@ -223,6 +224,20 @@ def parse_plan(text: str, taxonomy: Taxonomy, source: str = "playlists.toml") ->
                 f"{where} : clé inconnue « {', '.join(sorted(typo))} » "
                 f"(attendu : {', '.join(sorted(_BLOCK_KEYS))})"
             )
+        if name not in rules:
+            order.append(name)
+            rules[name] = []
+        if description := str(block.get("description", "")).strip():
+            descriptions.setdefault(name, description)
+        if block.get("manuelle") is True:
+            # Une playlist manuelle n'a pas de règle : seuls les titres qu'on
+            # y déplace la remplissent. Lui donner des critères la ferait
+            # ressembler aux autres, sans le dire.
+            if criteria := sorted(set(block) & _CRITERIA):
+                raise PlanError(f"{where} : une playlist manuelle n'a pas de critère ({', '.join(criteria)})")
+            continue
+        if "manuelle" in block and block["manuelle"] is not False:
+            raise PlanError(f"{where} : « manuelle » vaut true ou false")
         styles = tuple(
             style for style in (taxonomy.canonical_style(s) for s in _names(block, "styles", where))
             if style
@@ -236,11 +251,7 @@ def parse_plan(text: str, taxonomy: Taxonomy, source: str = "playlists.toml") ->
         )
         # Deux blocs du même nom alimentent la même playlist : c'est ainsi
         # qu'on écrit « Jazz-Funk, ou bien Fusion quand elle est groovy ».
-        if name not in rules:
-            order.append(name)
         rules[name].append(rule)
-        if description := str(block.get("description", "")).strip():
-            descriptions.setdefault(name, description)
 
     if not order:
         raise PlanError(f"{source} ne décrit aucune playlist ([[playlist]] attendu)")
@@ -250,6 +261,56 @@ def parse_plan(text: str, taxonomy: Taxonomy, source: str = "playlists.toml") ->
     if len(set(keys)) != len(keys):
         raise PlanError(f"{source} : deux playlists ne diffèrent que par la casse ou les accents")
     return Plan(playlists, min_size=min_size, max_size=max_size)
+
+
+#: Les playlists créées depuis l'aperçu s'ajoutent sous cet en-tête, en fin
+#: de fichier : elles n'ont pas de règle, leur place n'influe donc sur rien.
+MANUAL_SECTION = "# ============================================== créées depuis l'aperçu"
+
+#: YouTube Music refuse un titre de playlist plus long.
+MAX_NAME = 150
+
+
+def _toml_string(text: str) -> str:
+    return '"' + text.replace("\\", "\\\\").replace('"', '\\"') + '"'
+
+
+def add_manual_playlist(
+    path: str | Path, name: str, description: str, taxonomy: Taxonomy
+) -> PlannedPlaylist:
+    """Ajoute au plan une playlist sans règle, que les déplacements rempliront.
+
+    Le fichier est complété, jamais réécrit : ses commentaires et l'ordre de
+    ses règles restent tels que l'utilisateur les a laissés. Le résultat est
+    relu avant d'être enregistré ; une écriture qui le rendrait illisible
+    n'a pas lieu.
+    """
+    name = " ".join(name.split())
+    description = " ".join(description.split())
+    if not name:
+        raise PlanError("Donne un nom à la playlist")
+    if len(name) > MAX_NAME:
+        raise PlanError(f"Nom trop long : {MAX_NAME} caractères au plus")
+    file = Path(path)
+    plan = load_plan(file, taxonomy)
+    key = "plan/" + slugify(name)
+    if key in plan.by_key():
+        raise PlanError(f"Une playlist « {plan.by_key()[key].name} » existe déjà")
+
+    text = file.read_text(encoding="utf-8").rstrip("\n") + "\n"
+    if MANUAL_SECTION not in text:
+        text += "\n\n" + MANUAL_SECTION + "\n"
+    block = f"\n[[playlist]]\nnom = {_toml_string(name)}\n"
+    if description:
+        block += f"description = {_toml_string(description)}\n"
+    block += "manuelle = true\n"
+    text += block
+
+    updated = parse_plan(text, taxonomy, source=file.name)
+    temporary = file.with_suffix(file.suffix + ".tmp")
+    temporary.write_text(text, encoding="utf-8")
+    temporary.replace(file)
+    return updated.by_key()[key]
 
 
 def load_plan(path: str | Path, taxonomy: Taxonomy) -> Plan:
@@ -312,7 +373,10 @@ def build_description(playlist: PlannedPlaylist, marker: str) -> str:
     lines = [playlist.name, ""]
     if playlist.description:
         lines += [playlist.description, ""]
-    lines.append("Règle : " + " — ou — ".join(rule.describe() for rule in playlist.rules) + ".")
+    if playlist.rules:
+        lines.append("Règle : " + " — ou — ".join(rule.describe() for rule in playlist.rules) + ".")
+    else:
+        lines.append("Playlist composée à la main.")
     lines += ["", marker]
     return "\n".join(lines).translate(_FORBIDDEN)
 

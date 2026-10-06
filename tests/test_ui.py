@@ -1071,7 +1071,8 @@ def test_the_move_menu_lists_the_other_playlists(page, repository, config, tmp_p
     fusion.locator("li.track").first.wait_for()
 
     options = fusion.locator("select.move option").all_text_contents()
-    assert options == ["Déplacer vers…", "Jazz · Jazz-funk", "Ne ranger nulle part"]
+    assert options == ["Déplacer vers…", "＋ Nouvelle playlist…", "Jazz · Jazz-funk",
+                       "Ne ranger nulle part"]
 
 
 def test_no_move_menu_outside_the_family_sort(page):
@@ -1290,3 +1291,55 @@ def test_the_step_bar_links_to_every_step(page):
     assert len(targets) == 7
     for target in targets:
         assert page.locator(target).count() == 1, target
+
+
+# ------------------------------------------------------- nouvelle playlist
+
+
+def test_a_new_playlist_can_be_created_from_the_move_menu(page, repository, config, tmp_path):
+    """Un titre qui n'a sa place nulle part : on crée la playlist sur le
+    moment, il y est rangé, sans recalcul de l'aperçu."""
+    from ytmgc import placements
+
+    seed_jazz(repository, config, tmp_path)
+    page.click("#preview-btn")
+    funk = page.locator('#preview-list details.pl[data-key="plan/jazz-jazz-funk"]')
+    funk.wait_for()
+    funk.locator("summary .name").click()
+    row = funk.locator("li.track", has_text="Chameleon")
+    row.wait_for()
+
+    previews = []
+    page.on("request", lambda r: previews.append(r.url) if "/api/preview" in r.url else None)
+    row.locator("select.move").select_option("__new__")
+    assert page.locator("#new-playlist").is_visible()
+    page.fill("#new-playlist-name", "Jazz · Dimanche matin")
+    page.fill("#new-playlist-desc", "Café et croissants")
+    page.click("#new-playlist-create")
+    page.wait_for_function(
+        "() => document.querySelector('#preview-msg').textContent.includes('créée')"
+    )
+
+    assert not page.locator("#new-playlist").is_visible()
+    assert previews == []
+    made = page.locator('#preview-list details.pl[data-key="plan/jazz-dimanche-matin"]')
+    assert "1 titres" in made.locator(".count").text_content()
+    assert [p.playlist for p in placements.load(config.taxonomy.placements_file)] == [
+        "Jazz · Dimanche matin"]
+    # La nouvelle playlist est aussitôt proposée dans les autres menus.
+    funk.locator("li.track").first.wait_for()
+    options = funk.locator("select.move").first.locator("option").all_text_contents()
+    assert "Jazz · Dimanche matin" in options
+
+
+def test_a_taken_name_keeps_the_dialog_open_with_the_reason(page, repository, config, tmp_path):
+    seed_jazz(repository, config, tmp_path)
+    page.click("#preview-btn")
+    page.locator("#new-playlist-btn").wait_for()
+    page.click("#new-playlist-btn")
+    page.fill("#new-playlist-name", "Jazz · Fusion")
+    page.click("#new-playlist-create")
+    page.wait_for_function(
+        "() => document.querySelector('#new-playlist-msg').textContent.includes('existe déjà')"
+    )
+    assert page.locator("#new-playlist").is_visible()

@@ -504,3 +504,65 @@ def test_french_rap_is_also_split_by_mood(mood, expected):
     known = origins.load("data/pays.txt")
     playlist = assign(judged("a", "Hip Hop", "Trap", mood), plan, TAXONOMY, ("Nekfeu",), known)
     assert playlist.name == expected
+
+
+# ------------------------------------------------------- playlists manuelles
+
+
+def test_a_manual_playlist_has_no_rule_and_takes_nothing_by_itself():
+    plan = parse_plan('[[playlist]]\nnom = "Rap · Drill UK"\nmanuelle = true\n'
+                      '[[playlist]]\nnom = "Rap"\ngenres = ["Hip Hop"]', TAXONOMY)
+    drill = plan.playlists[0]
+
+    assert drill.rules == ()
+    assert assign(judged("a", "Hip Hop", "Drill"), plan, TAXONOMY).name == "Rap"
+
+
+def test_a_manual_playlist_receives_the_tracks_moved_into_it():
+    plan = parse_plan('[[playlist]]\nnom = "Dimanche"\nmanuelle = true', TAXONOMY)
+    plans = plan_by_rules([judged("a", "Jazz", "Fusion")], TAXONOMY, plan, "✱",
+                          {"a": "plan/dimanche"})
+    assert [(p.name, p.video_ids) for p in plans] == [("Dimanche", ("a",))]
+    assert "Playlist composée à la main." in plans[0].description
+
+
+@pytest.mark.parametrize(
+    ("text", "message"),
+    [
+        ('[[playlist]]\nnom = "X"\nmanuelle = true\ngenres = ["Jazz"]', "pas de critère"),
+        ('[[playlist]]\nnom = "X"\nmanuelle = "oui"', "true ou false"),
+    ],
+)
+def test_a_manual_playlist_is_checked_too(text, message):
+    with pytest.raises(PlanError, match=message):
+        parse_plan(text, TAXONOMY)
+
+
+def test_creating_a_playlist_appends_it_and_keeps_the_rest_of_the_file(tmp_path):
+    from ytmgc.playlist_plan import MANUAL_SECTION, add_manual_playlist
+
+    path = tmp_path / "playlists.toml"
+    path.write_text(PLAN.replace("[taille]", "# Mon commentaire\n[taille]"), encoding="utf-8")
+    made = add_manual_playlist(path, '  Rap ·  Drill "UK" ', "Pour la salle", TAXONOMY)
+    add_manual_playlist(path, "Dimanche", "", TAXONOMY)
+    text = path.read_text(encoding="utf-8")
+
+    assert made.name == 'Rap · Drill "UK"' and made.description == "Pour la salle"
+    assert "# Mon commentaire" in text and text.count(MANUAL_SECTION) == 1
+    names = [p.name for p in load_plan(path, TAXONOMY).playlists]
+    assert names[-2:] == ['Rap · Drill "UK"', "Dimanche"]
+
+
+@pytest.mark.parametrize(
+    ("name", "message"),
+    [("Jazz · fusion", "existe déjà"), ("   ", "Donne un nom"), ("x" * 151, "trop long")],
+)
+def test_a_new_playlist_name_must_be_free_and_reasonable(tmp_path, name, message):
+    from ytmgc.playlist_plan import add_manual_playlist
+
+    path = tmp_path / "playlists.toml"
+    path.write_text(PLAN, encoding="utf-8")
+    before = path.read_text(encoding="utf-8")
+    with pytest.raises(PlanError, match=message):
+        add_manual_playlist(path, name, "", TAXONOMY)
+    assert path.read_text(encoding="utf-8") == before

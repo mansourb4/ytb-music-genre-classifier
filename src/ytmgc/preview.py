@@ -270,7 +270,7 @@ def suggest_playlists(
     # Pays exigés par chaque playlist ; None si l'une de ses règles n'en exige pas.
     required = {
         p.key: (frozenset(c for r in p.rules for c in r.countries)
-                if all(r.countries for r in p.rules) else None)
+                if p.rules and all(r.countries for r in p.rules) else None)
         for p in plan.playlists
     }
     members = {plan.key: plan.video_ids for plan in plans}

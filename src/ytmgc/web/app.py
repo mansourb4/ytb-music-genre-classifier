@@ -132,6 +132,13 @@ class PlacementRequest(BaseModel):
     target: str
 
 
+class NewPlaylistRequest(BaseModel):
+    name: str
+    description: str = ""
+    #: Titres à y ranger aussitôt créée.
+    video_ids: list[str] = Field(default_factory=list)
+
+
 class ConfirmRequest(BaseModel):
     video_ids: list[str] = Field(default_factory=list)
 
@@ -795,6 +802,39 @@ def create_app(services: Services) -> FastAPI:
             "playlist": name,
             "file": str(Path(path).resolve()),
             "moved": len(book),
+        }
+
+    @app.post("/api/playlists")
+    def create_playlist(request: NewPlaylistRequest) -> dict:
+        """Crée une playlist manuelle dans le plan, et y range les titres donnés.
+
+        Elle est écrite dans config/playlists.toml, comme les autres : elle
+        survit aux analyses, se versionne, et peut recevoir des règles plus
+        tard en éditant le fichier.
+        """
+        from ytmgc import placements
+        from ytmgc.playlist_plan import PlanError, add_manual_playlist
+        from ytmgc.taxonomy import load_taxonomy
+
+        try:
+            playlist = add_manual_playlist(
+                config.taxonomy.playlists_file, request.name, request.description, load_taxonomy()
+            )
+        except PlanError as exc:
+            raise HTTPException(400, str(exc)) from exc
+
+        by_id = {t.video_id: t for t in repository.all_tracks()}
+        tracks = [by_id[v] for v in dict.fromkeys(request.video_ids) if v in by_id]
+        if tracks:
+            book = placements.load(config.taxonomy.placements_file)
+            for track in tracks:
+                book.put(track, playlist.name)
+            placements.save(book, config.taxonomy.placements_file)
+        return {
+            "target": {"key": playlist.key, "name": playlist.name},
+            "placed": _placed([t.video_id for t in tracks]) if tracks else {},
+            "count": len(tracks),
+            "file": str(Path(config.taxonomy.playlists_file).resolve()),
         }
 
     @app.post("/api/verdicts/confirm")
