@@ -673,6 +673,10 @@ publications.
   le morceau suit les règles — et nommé dans l'aperçu, jamais perdu en silence.
 * **Seul le tri « Par famille » l'applique** : les autres tris n'ont pas de
   playlists fixes où déplacer.
+* **L'ordre de la relecture est figé.** Les artistes sont classés par nombre
+  de titres à leur première apparition, puis gardent leur place — mémorisée
+  dans le navigateur. Trié à chaque rendu, valider deux titres d'un artiste le
+  faisait passer derrière le suivant : la liste bougeait sous les yeux.
 * **La relecture des verdicts peu sûrs est regroupée par artiste.** Un artiste
   inconnu du modèle l'est pour tous ses titres, et se corrige d'un geste.
   Valider un verdict le fait passer en source `manuel` : c'est désormais une
@@ -685,10 +689,10 @@ publications.
 
 ## Tests
 
-659 tests, aucun appel réseau, y compris l'API web complète (aperçu,
+662 tests, aucun appel réseau, y compris l'API web complète (aperçu,
 application, annulation), son contrôle d'accès et les quatre voies de connexion.
 
-Soixante-treize d’entre eux chargent l’interface dans un vrai navigateur (`tests/test_ui.py`).
+Soixante-seize d’entre eux chargent l’interface dans un vrai navigateur (`tests/test_ui.py`).
 Le câblage du DOM échappe aux tests Python : deux défauts d'onglets sont passés
 au travers de la suite avant d'être vus à l'écran. Ces tests sont ignorés
 lorsque Playwright ou son navigateur sont absents, pour que la suite reste
