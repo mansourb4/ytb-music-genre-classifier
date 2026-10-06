@@ -1,0 +1,104 @@
+PLAYLISTS
+Brésil · Bossa nova | Bossa nova, qu'elle vienne du Brésil, du jazz ou d'une musique de film.
+Brésil · Samba & groove | Samba, MPB qui danse et groove brésilien des années 70-80.
+Brésil · MPB douce | Musique populaire brésilienne calme ou mélancolique : la saudade.
+Maghreb · Gnawa | Transe gnaoua : guembri, qraqeb et chants responsoriaux, du rituel à la fusion.
+Funk · Funk arabe des années 70 | Funk, orgue et synthés du Maghreb et du Liban des années 70-80.
+Maghreb · Raï & chaâbi | Raï, chaâbi, chanson kabyle et chansons de fête.
+Maghreb · Traditions | Chants et percussions des oasis marocaines, folk berbère.
+Orient · Oud & taqsim | Oud et improvisations sur les maqâms : musique savante instrumentale.
+Orient · Pop arabe | Al jeel et pop arabe dansante.
+Orient · Fairouz, tarab & chanson | Fairouz et les Rahbani, Warda, Marcel Khalife : la grande chanson arabe, tendre et nostalgique.
+Jazz · Ethio-jazz | Le jazz éthiopien de Mulatu Astatke et de l'âge d'or d'Addis-Abeba.
+Afrique · Folk, blues & mandingue | Guitares mandingues, blues touareg, morna, semba : l'Afrique acoustique.
+Funk · Afrobeat | Afrobeat et highlife : cuivres, polyrythmies et transe funk, de Fela à Kokoroko.
+Afrique · Afrobeats & amapiano | Afrobeats, afroswing et amapiano : la pop africaine d'aujourd'hui.
+Caraïbes · Reggae, dub & dancehall | Roots reggae, dub, lovers rock, dancehall, ragga et le zouk des Antilles.
+Jazz · Latin jazz | Jazz afro-cubain et latin, quel que soit le genre donné par le verdict.
+Soul · R&B & neo soul groovy | R&B contemporain et neo soul qui groovent.
+Soul · R&B & neo soul posés | R&B et neo soul calmes, langoureux ou mélancoliques.
+Pop · Variété française | Chanson et variété françaises.
+Jazz · Jazz-funk & groove | Jazz-funk, soul-jazz, acid jazz, et la fusion quand elle groove.
+Rock · Psyché & prog nerveux | Rock psychédélique et progressif qui pousse : riffs, tension, groove lourd.
+Rock · Psyché & prog rêveur | Rock psychédélique et progressif planant, contemplatif ou mélancolique.
+Rap · FR énergique | Rap francophone qui cogne : trap, drill et boom bap énergiques, sons de fête.
+Rap · FR sombre | Rap francophone sombre : trap et drill menaçantes, boom bap noir.
+Rap · FR groovy | Rap francophone décontracté et chaloupé, pour hocher la tête.
+Rap · FR introspectif | Rap à texte sur le sens de la vie, la famille, le doute.
+Rap · US | Rap américain et canadien.
+Rap · UK | Rap britannique et irlandais : grime, drill UK, rap londonien.
+Rap · Maghreb | Rap marocain, algérien et tunisien.
+Rap · Ailleurs | Rap d'Italie, d'Allemagne, d'Espagne, du Japon, du Mexique…
+Rap · Pays à préciser | Rap dont l'artiste n'a pas encore de pays.
+Électro · Deep house vocale | Deep house new-yorkaise et soulful, chantée et chaleureuse.
+Électro · Deep house planante | Deep house rêveuse, calme ou nocturne.
+Électro · House | House classique, garage et afro house.
+Électro · Techno percutante | Techno, tech house et progressive qui frappent : pour la piste.
+Électro · Techno hypnotique | Techno mélodique, minimale et dub techno : boucles qui planent.
+Électro · Nu-disco & synth | Nu-disco, italo, synth-pop et synthwave.
+Électro · Broken beat & nu jazz | Broken beat, nu jazz et UK garage : rythmes cassés et chaleur jazz-soul.
+Électro · Breaks & drum'n'bass | Breakbeat, electro, jungle, drum & bass et footwork : rapide et nerveux.
+Électro · Ambient & nappes | Ambient, drone et downtempo planants : nappes, espace, apesanteur.
+Électro · Downtempo chill | Downtempo, trip hop et lounge : calme, mélancolique ou doucement groovy.
+Électro · Expérimental & IDM | IDM, glitch, leftfield et électronique expérimentale.
+Jazz · Fusion énergique | Jazz électrique et jazz-rock virtuoses : ça joue vite et fort.
+Jazz · Fusion planante | Fusion aérienne : claviers, nappes et grooves lents.
+Jazz · Bop qui swingue | Bebop, hard bop et post-bop énergiques.
+Jazz · Bop & cool nocturne | Cool jazz, modal et bop lents : le jazz de fin de soirée.
+Jazz · Spiritual jazz | Jazz spirituel, third stream et jazz aventureux.
+Jazz · Smooth & groovy | Smooth jazz et jazz contemporain qui groovent.
+Jazz · Contemporain | Jazz d'aujourd'hui exigeant, mélancolique ou intense.
+Jazz · Vocal & ballades | Voix et ballades jazz, swing compris quand il ralentit.
+Jazz · Swing & big band | Swing, big band, dixieland et voix qui swinguent.
+Jazz · Lounge & jazz d'ambiance | Lounge, smooth jazz calme, musiques d'illustration : le jazz d'ambiance.
+Soul · Soul groovy | Soul qui groove : Motown, Stax, soul psychédélique.
+Soul · Soul ballades | Ballades soul, voix déchirantes et slows.
+Funk · Funk, boogie & disco | Funk, boogie et disco.
+Classique · Baroque vif | Baroque et classique allègres : allegros, fugues, concertos.
+Classique · Baroque lent | Baroque et classique lents : adagios, airs, largos.
+Classique · Romantique passionné | Romantisme tumultueux : virtuosité, orages, élans.
+Classique · Romantique tendre | Romantisme intime : nocturnes, romances, mélancolie.
+Classique · Moderne tendu | Modernes et contemporains : tension, recherche, rythmes.
+Classique · Moderne contemplatif | Impressionnisme, minimalisme et néo-classique contemplatifs : piano, nappes, Zimmer et Hisaishi.
+Pop · Indie & synth-pop dansante | Pop indépendante, synth-pop et new wave qui bougent.
+Pop · Indie & synth-pop douce | Pop indépendante, dream pop et synth-pop douces ou mélancoliques.
+Pop · City pop & disco | City pop japonaise, AOR et pop disco.
+Pop · Ballades | Ballades pop, voix et piano.
+Pop · Pop rock & pop dansante | Pop rock, europop et pop entraînante.
+Rock · Blues qui groove | Blues électrique, texan, de Chicago, et blues rock qui balancent.
+Rock · Blues mélancolique | Blues lents et mélancoliques.
+Rock · Rock énergique | Rock alternatif, indie et pop rock qui envoient.
+Rock · Rock doux & mélancolique | Rock alternatif et indie calmes ou mélancoliques.
+Folk · Flamenco & tsigane | Guitares flamencas, rumba et airs tsiganes.
+Folk · Folk acoustique & traditions | Folk acoustique, chants traditionnels et guitares nues.
+Latino · Salsa & latin soul | Salsa, boogaloo, mambo, son cubain : les cuivres et les congas.
+Latino · Reggaeton, cumbia & corridos | Musiques latines urbaines et dansantes d'aujourd'hui.
+Latino · Boléro, tango & ballades | Boléros, rancheras, tango et ballades latines.
+Rap · FR posé | Rap francophone jazzy, lo-fi et contemplatif.
+Rap · FR cloud & spleen | Cloud rap francophone vaporeux, ambiances nocturnes et autotune.
+Électro · Deep house instrumentale | Deep house brute, jazzy ou lo-fi, centrée sur le groove.
+Rock · Symphonic rock | Rock aux cordes et à l'orchestre : mellotron, envolées symphoniques.
+Funk · Latin funk | Funk aux couleurs latines : congas, cuivres et basses rondes, du latin soul new-yorkais au groove brésilien des années 70.
+Rock · Yacht rock | Des grooves funk sophistiqués, des mélodies pop accrocheuses et une orchestration lisse (strings, cuivres, synths). Relax mais refiné. ✨
+
+RENOMMAGES
+
+DEPLACEMENTS
+T0130 | Électro · Deep house instrumentale
+T0131 | Électro · Deep house instrumentale
+T0137 | Électro · Deep house instrumentale
+T0146 | Électro · Deep house vocale
+T0172 | Électro · Deep house instrumentale
+T0184 | Électro · Deep house instrumentale
+T0190 | Électro · Deep house instrumentale
+T0523 | Électro · Nu-disco & synth
+T0566 | Électro · Downtempo chill
+T1062 | Jazz · Bop & cool nocturne
+T1109 | Jazz · Bop & cool nocturne
+T1110 | Jazz · Bop & cool nocturne
+T1113 | Jazz · Vocal & ballades
+T1273 | Jazz · Bop & cool nocturne
+T1279 | Jazz · Vocal & ballades
+T1280 | Jazz · Vocal & ballades
+
+FIN
