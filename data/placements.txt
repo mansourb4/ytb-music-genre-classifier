@@ -7,15 +7,132 @@
 # après chaque analyse. La playlist est désignée par son nom, tel qu'écrit
 # dans le plan ; « (aucune) » tient le morceau hors de toute playlist.
 # Supprime une ligne pour rendre le morceau aux règles.
+A2H	Nudes	Rap · FR mélancolique
+ABSOLEM	Subzero	Rap · FR mélancolique
+Abstract Truth	(We Had) A Thing	Électro · Deep house groovy
+Alastair Lane	Libertad	Électro · Nu-disco & synth
+Alastair Lane	Roman d'Amour	Électro · Nu-disco & synth
+Alastair Lane	Roman d'Amour (Midnight Version)	Électro · Deep house groovy
+André Navarro II	TAKE SIX - Patterns	Jazz · Smooth & groovy
+aupinard	penelope	Rap · FR mélancolique
+aupinard	quel type de vibe?	Rap · FR groovy & posé
 B.B. Jacques	Bleu Cristal	Rap · FR sombre
 B.B. Jacques	Déchirée	Rap · FR sombre
 B.B. Jacques	HARMONIE	Rap · FR mélancolique
 B.B. Jacques	Odyssée	Rap · FR sombre
+Chassol	Dominos, Pt. I	(aucune)
+Chassol	Drumachine	(aucune)
+Chassol	Les sonorités	(aucune)
+Chassol	The Big Sun (Outroïde)	(aucune)
+Dalí	Jalil	Rap · FR mélancolique
+Damso	TieksVie	Rap · FR sombre
+Damso	Œveillé	(aucune)
+Daniel Kruglov	Emotions	Classique · Moderne contemplatif
+Danny Wabbit	Internal Jungle Original Mix	Électro · Techno percutante
+Danny Wabbit	Lost Soul	Électro · Techno hypnotique
+DaRand Land	Blessings	Électro · Deep house planante
+DaRand Land	Soothe Me	Électro · Deep house planante
+dialE	Like E	Rap · US
+dialE	nine thirty (the glow)	Rap · US
+Driss Bennis	Day Drive (Thru Casablanca)	Électro · Breaks & drum'n'bass
+Driss Bennis	Networks (Prelude)	Électro · Breaks & drum'n'bass
+Frah Quintale	Sì può darsi	Rap · Ailleurs
+Free is in Da House	All Good Funk Alliance  -  The Makes	Électro · Deep house groovy
 Free is in Da House	Bass Toast  -  Each One Teach One	Électro · Deep house groovy
+Free is in Da House	Freil  -  West of Motebe	Électro · Deep house groovy
+Free is in Da House	Street Corner Symphony  -  Memories Of Aphrodite	Électro · Deep house groovy
+Free is in Da House	Street Corner Symphony  -  Symphomaniac (House Mix)	Électro · Deep house groovy
+Free is in Da House	West Bridgford Connection  -  Up 'n' Down	Électro · Deep house groovy
+Furlax	Cosmos	Rap · FR groovy & posé
+GAL	Je le pèse Intro	Rap · FR sombre
+GAL	Kendrick Lamar	Rap · FR mélancolique
+Hamza	1994	Rap · FR mélancolique
+Hamza	Netflix	Rap · FR sombre
+HARIS HAMZA	Alabass	Rap · Maghreb
+Human Safari	Jazz Affair	Électro · Techno percutante
+J9ueve	Margiela	Rap · FR mélancolique
+J9ueve	Tous Mes États (feat. La Fève)	Rap · FR groovy & posé
+JeanJass	Pippo inzaghi	Rap · FR groovy & posé
+Josman	Ailleurs	Rap · FR groovy & posé
+Josman	Doré	Rap · FR énergique
+Josman	La Danse de la Joie	Rap · FR mélancolique
+Josman	Rich Music	Rap · FR sombre
 Josman	Yacht & Champagne (Skit)	Rap · FR énergique
+La Fève	BOXE INTERLUDE	Rap · FR mélancolique
+La Fève	NO HOOK	Rap · FR énergique
+Laylow	10'	Rap · FR mélancolique
+Ledé Markson	ALZ	Rap · FR groovy & posé
+Luther	LESSGUI	Rap · FR sombre
+Luther	VVS	Rap · FR sombre
+Malo	MÉDICATION	Rap · FR sombre
+Malo	OK	Rap · FR sombre
 Masayoshi Takanaka	Bamboo Vender	Pop · City pop & disco
+Masayoshi Takanaka	Breakin' Loase	Rock · Yacht rock
+Masayoshi Takanaka	Eona	Jazz · Smooth & groovy
 Masayoshi Takanaka	Good (Bad?) Old Days	Jazz · Fusion planante
+Masayoshi Takanaka	I Remember You	Jazz · Smooth & groovy
 Masayoshi Takanaka	Penguin Dancer	Pop · City pop & disco
 Masayoshi Takanaka	Plumed Bird	Jazz · Fusion énergique
+Masayoshi Takanaka	Ride’em High - Ride'em High	Funk · Latin funk
+Masayoshi Takanaka	You Can Never Come To This Place	Rock · Symphonic rock
 Masayoshi Takanaka	空ド白ソ - Sorado Shiraso	Jazz · Fusion énergique
+Moji x Sboy	EDWARD	Rap · FR sombre
+Moji x Sboy	LA LUNE À DÉCROCHER	Rap · FR sombre
+Moji x Sboy	Ma go	Rap · FR mélancolique
+Moji x Sboy	VIVIENNE WESTWOOD	Rap · FR groovy & posé
+Moodymann	Born 2 Die	(aucune)
+Moodymann	Got Dem Freaks Wit Me	(aucune)
+Moodymann	Riley's Song	(aucune)
+Moodymann	The Most Fearful	(aucune)
+Moodymann	U Don't Even Lyk This Song	(aucune)
+Moodymann	Yet Unknown	(aucune)
+Nicolas Jaar	The Fool and His Harem	Électro · Ambient & nappes
+Piero Umiliani	Borgo montano	(aucune)
+Piero Umiliani	Lungo il canale	(aucune)
+Piero Umiliani	Oriente rosso	(aucune)
+Piero Umiliani	Risaie	Jazz · Smooth & groovy
+Piero Umiliani	Vecchie strade	(aucune)
+Quincy Jones	Jook Joint Intro	(aucune)
+Rasch	Aleph	Électro · Techno percutante
+Rasch	Kaligo	Électro · Techno percutante
+rebug	run run run	Électro · Downtempo chill
+rebug	run run run (slowed + reverb)	Électro · Downtempo chill
+rebug	run run run (sped up)	Électro · Downtempo chill
+Roméo Elvis	Soleil	Rap · FR énergique
+RUBII	BOTB	Rap · UK
+RUBII	Jammin	Rap · UK
 S R	Barbie Beauty Boutique Soundtrack - Track 4	Électro · House
+Sainte	Champagne Shots	Rap · UK
+Sainte	Hunnids	Rap · UK
+Sainte	On Me	Rap · UK
+Sainte	Round & Round	Rap · UK
+Sainte	Soul Mate	Rap · UK
+Sainte	Stylin'	Rap · UK
+Shy High	formula (feat. Garrett Sparrow)	Rap · US
+Shy High	independent films	Rap · US
+Some of Us Festival	Some of Us Extended - People's Choice Soundsystem	(aucune)
+Some of Us Festival	Some of Us Extended II - Nathabes	(aucune)
+Some of Us Festival	Some of Us Extended II - Yaya	(aucune)
+Squall p	Amsterdame	Rap · FR sombre
+Squall p	GRAND GALA	Rap · FR groovy & posé
+Squall p	Nova	Rap · FR groovy & posé
+Squall p	PALIER BOUGAINVILLE	Rap · FR groovy & posé
+Squall p	Rolli	Rap · FR sombre
+Tal Fussman	Burning Bridges	Électro · Techno hypnotique
+Tal Fussman	Even Rome Wasn't Built In a Day	Électro · Techno hypnotique
+Tal Fussman	It Was Misunderstood	Électro · Techno hypnotique
+TALE$	Perico y Escama	Rap · Ailleurs
+Tamango	MALADIE D'AMOUR	Rap · Ailleurs
+Tamango	Rosso così	Rap · Ailleurs
+The Silhouettes Project	Standing There (feat. Asher Kosher & Paya)	Rap · US
+The Silhouettes Project	What U Need (feat. Purple Cloud)	Rap · US
+TIF	MATHUSALEM	Rap · FR mélancolique
+TIF	Maylin	(aucune)
+TIF	SHADOW BOXING	Rap · FR énergique
+TIF	TIF - LIVE SESSION 1.6	Rap · FR groovy & posé
+Tuerie	Le givre et le vent	Rap · FR sombre
+Tuerie	No More	Rap · FR groovy & posé
+Tuerie	PRÊCHE !	Rap · FR groovy & posé
+Yusef Lateef	Like It Is	Jazz · Lounge & jazz d'ambiance
+Yusef Lateef	Moon Cup	(aucune)
+Yusef Lateef	Othelia	Jazz · Smooth & groovy
