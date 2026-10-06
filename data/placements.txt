@@ -13,6 +13,8 @@ Abstract Truth	(We Had) A Thing	Électro · Deep house groovy
 Alastair Lane	Libertad	Électro · Nu-disco & synth
 Alastair Lane	Roman d'Amour	Électro · Nu-disco & synth
 Alastair Lane	Roman d'Amour (Midnight Version)	Électro · Deep house groovy
+Amadou & Mariam	Sabali	Pop · Indie & synth-pop dansante
+Amy Winehouse	Just Friends	Caraïbes · Reggae, dub & dancehall
 André Navarro II	TAKE SIX - Patterns	Jazz · Smooth & groovy
 aupinard	penelope	Rap · FR mélancolique
 aupinard	quel type de vibe?	Rap · FR groovy & posé
@@ -20,10 +22,22 @@ B.B. Jacques	Bleu Cristal	Rap · FR sombre
 B.B. Jacques	Déchirée	Rap · FR sombre
 B.B. Jacques	HARMONIE	Rap · FR mélancolique
 B.B. Jacques	Odyssée	Rap · FR sombre
+CA7RIEL & Paco Amoroso	Ca7riel & Paco Amoroso: Tiny Desk Concert	Funk · Funk, boogie & disco
+Chassol	Birds, Pt. I	Jazz · Contemporain
+Chassol	Carnaval, Pt. II (Motor & Vuvuzuela)	Jazz · Contemporain
+Chassol	Carnaval, Pt. III (Percussions harmoniques)	Jazz · Contemporain
+Chassol	Carnaval, Pt. IV (Keupons)	Jazz · Contemporain
 Chassol	Dominos, Pt. I	(aucune)
 Chassol	Drumachine	(aucune)
+Chassol	Générique	Jazz · Contemporain
+Chassol	Générique Big Sun	Jazz · Contemporain
+Chassol	Haré Rama, Haré Krishna	Jazz · Contemporain
 Chassol	Les sonorités	(aucune)
+Chassol	Reich & Darwin	Jazz · Contemporain
+Chassol	The Big Sun (Introïde)	Jazz · Contemporain
 Chassol	The Big Sun (Outroïde)	(aucune)
+Chilly Gonzales	Rap Piano Medley	Classique · Moderne contemplatif
+Dalida	Helwa Ya Baladi	Orient · Fairouz, tarab & chanson
 Dalí	Jalil	Rap · FR mélancolique
 Damso	TieksVie	Rap · FR sombre
 Damso	Œveillé	(aucune)
@@ -36,7 +50,16 @@ dialE	Like E	Rap · US
 dialE	nine thirty (the glow)	Rap · US
 Driss Bennis	Day Drive (Thru Casablanca)	Électro · Breaks & drum'n'bass
 Driss Bennis	Networks (Prelude)	Électro · Breaks & drum'n'bass
+Eugen Cicero	Prélude in E Minor, Op. 28 No. 4	Jazz · Bop & cool nocturne
+Fabrizio Chiovetta	Piano Sonata No. 32 in C Minor, Op. 111: II. Arietta. Adagio molto semplice e cantabile	Classique · Romantique tendre
+Fatima Yamaha	Only Of The Universe	Électro · Nu-disco & synth
+Fatima Yamaha	What's a Girl to Do	Électro · Nu-disco & synth
+Ferqet El Masryeen	El Shawarea Hawadet	Funk · Funk arabe des années 70
+Floating Points	Movement 4	Jazz · Spiritual jazz
+Floating Points	Movement 7	Jazz · Spiritual jazz
+Floating Points	Movement 9	Jazz · Spiritual jazz
 Frah Quintale	Sì può darsi	Rap · Ailleurs
+Frank Sinatra	That's Life (2008 Remastered)	Jazz · Swing & big band
 Free is in Da House	All Good Funk Alliance  -  The Makes	Électro · Deep house groovy
 Free is in Da House	Bass Toast  -  Each One Teach One	Électro · Deep house groovy
 Free is in Da House	Freil  -  West of Motebe	Électro · Deep house groovy
@@ -46,22 +69,34 @@ Free is in Da House	West Bridgford Connection  -  Up 'n' Down	Électro · Deep h
 Furlax	Cosmos	Rap · FR groovy & posé
 GAL	Je le pèse Intro	Rap · FR sombre
 GAL	Kendrick Lamar	Rap · FR mélancolique
+George Benson	Nature Boy	Jazz · Vocal & ballades
+Guillermo Portabales	Yo Te Canto Puerto Rico	Latino · Boléro, tango & ballades
+Hamid El Shaeri - حميد الشاعري	Git Ya Sheta	Orient · Pop arabe
 Hamza	1994	Rap · FR mélancolique
 Hamza	Netflix	Rap · FR sombre
 HARIS HAMZA	Alabass	Rap · Maghreb
+Hesham Nour	Oyoun Habibi	Orient · Fairouz, tarab & chanson
 Human Safari	Jazz Affair	Électro · Techno percutante
 J9ueve	Margiela	Rap · FR mélancolique
 J9ueve	Tous Mes États (feat. La Fève)	Rap · FR groovy & posé
+Jacques Loussier	Partita N 1 BWV 825 En Si Bémol Majeur-Sarabande	Jazz · Bop & cool nocturne
+Jacques Loussier	Prélude N 6 En Ré Mineur Clavier Bien Tempere Livre I BWV 851	Jazz · Bop qui swingue
+Jacques Loussier Trio	Gnossienne No. 1	Jazz · Bop & cool nocturne
 JeanJass	Pippo inzaghi	Rap · FR groovy & posé
+Joe Armon-Jones	Midnite Oil (Sparkzzz)	Électro · Broken beat & nu jazz
 Josman	Ailleurs	Rap · FR groovy & posé
 Josman	Doré	Rap · FR énergique
 Josman	La Danse de la Joie	Rap · FR mélancolique
 Josman	Rich Music	Rap · FR sombre
 Josman	Yacht & Champagne (Skit)	Rap · FR énergique
+Kokoroko	Abusey Junction	Afrique · Afrobeats & amapiano
 La Fève	BOXE INTERLUDE	Rap · FR mélancolique
 La Fève	NO HOOK	Rap · FR énergique
+Laura Itandehui	Yo no Necesito de Mucho	Latino · Boléro, tango & ballades
 Laylow	10'	Rap · FR mélancolique
+LCD Soundsystem	You Wanted a Hit	Électro · Nu-disco & synth
 Ledé Markson	ALZ	Rap · FR groovy & posé
+London Philharmonic Orchestra	Les noces de figaro	Classique · Baroque vif
 Luther	LESSGUI	Rap · FR sombre
 Luther	VVS	Rap · FR sombre
 Malo	MÉDICATION	Rap · FR sombre
@@ -76,6 +111,7 @@ Masayoshi Takanaka	Plumed Bird	Jazz · Fusion énergique
 Masayoshi Takanaka	Ride’em High - Ride'em High	Funk · Latin funk
 Masayoshi Takanaka	You Can Never Come To This Place	Rock · Symphonic rock
 Masayoshi Takanaka	空ド白ソ - Sorado Shiraso	Jazz · Fusion énergique
+Maximilian Schairer	Piano Sonatina in C Major, op.55, No.1: I. Allegro	Classique · Baroque vif
 Moji x Sboy	EDWARD	Rap · FR sombre
 Moji x Sboy	LA LUNE À DÉCROCHER	Rap · FR sombre
 Moji x Sboy	Ma go	Rap · FR mélancolique
@@ -92,7 +128,12 @@ Piero Umiliani	Lungo il canale	(aucune)
 Piero Umiliani	Oriente rosso	(aucune)
 Piero Umiliani	Risaie	Jazz · Smooth & groovy
 Piero Umiliani	Vecchie strade	(aucune)
+Poirier	Café Com Leite	Brésil · Samba & groove
+Polo & Pan	Canopée	Électro · Nu-disco & synth
+Precipotato	Wolfgang Amadeus Mozart - Piano Concerto No. 20 in D minor, K. 466	Classique · Baroque vif
 Quincy Jones	Jook Joint Intro	(aucune)
+Quincy Jones	Let The Good Times Roll (feat. Stevie Wonder, Ray Charles & Bono)	Jazz · Swing & big band
+Ragheb Alama	Nasini El Donya	Orient · Fairouz, tarab & chanson
 Rasch	Aleph	Électro · Techno percutante
 Rasch	Kaligo	Électro · Techno percutante
 rebug	run run run	Électro · Downtempo chill
@@ -101,13 +142,25 @@ rebug	run run run (sped up)	Électro · Downtempo chill
 Roméo Elvis	Soleil	Rap · FR énergique
 RUBII	BOTB	Rap · UK
 RUBII	Jammin	Rap · UK
+Rubén González	Melodía del Río	Latino · Boléro, tango & ballades
 S R	Barbie Beauty Boutique Soundtrack - Track 4	Électro · House
+Sade	Clean Heart	Soul · Soul groovy
+Sade	Every Word	Soul · Soul ballades
+Sade	Flow	Soul · Soul ballades
+Sade	Is It a Crime (Live)	Soul · Soul ballades
+Sade	Love Is Stronger Than Pride	Soul · Soul ballades
+Sade	Mermaid	Jazz · Lounge & jazz d'ambiance
+Sade	Sally	Soul · Soul ballades
+Sade	Smooth Operator	Soul · Soul groovy
+Saint Levant	WAIN MAADY WAIN / وين معدي وين	Orient · Pop arabe
 Sainte	Champagne Shots	Rap · UK
 Sainte	Hunnids	Rap · UK
 Sainte	On Me	Rap · UK
 Sainte	Round & Round	Rap · UK
 Sainte	Soul Mate	Rap · UK
 Sainte	Stylin'	Rap · UK
+Sal Davis	Quaboos	Funk · Funk arabe des années 70
+Sherine	Sabry Aalil	Orient · Fairouz, tarab & chanson
 Shy High	formula (feat. Garrett Sparrow)	Rap · US
 Shy High	independent films	Rap · US
 Some of Us Festival	Some of Us Extended - People's Choice Soundsystem	(aucune)
@@ -126,13 +179,18 @@ Tamango	MALADIE D'AMOUR	Rap · Ailleurs
 Tamango	Rosso così	Rap · Ailleurs
 The Silhouettes Project	Standing There (feat. Asher Kosher & Paya)	Rap · US
 The Silhouettes Project	What U Need (feat. Purple Cloud)	Rap · US
+The Temptations	Papa Was A Rollin' Stone (Single Version)	Soul · Soul groovy
 TIF	MATHUSALEM	Rap · FR mélancolique
 TIF	Maylin	(aucune)
 TIF	SHADOW BOXING	Rap · FR énergique
 TIF	TIF - LIVE SESSION 1.6	Rap · FR groovy & posé
+TRAUM	Frédéric Chopin: Étude Op. 10, No. 9 in F Minor (Allegro molto agitato)	Classique · Romantique passionné
 Tuerie	Le givre et le vent	Rap · FR sombre
 Tuerie	No More	Rap · FR groovy & posé
 Tuerie	PRÊCHE !	Rap · FR groovy & posé
+Vulax	LAO (Participation au concours d'Avner) VULAX	Classique · Moderne contemplatif
+YUNDI	Piano Sonata No. 14 in C Minor, K. 457: I. Molto allegro	Classique · Baroque vif
+YUNDI	Piano Sonata No. 14 in C Minor, K. 457: III. Allegro assai	Classique · Baroque vif
 Yusef Lateef	Like It Is	Jazz · Lounge & jazz d'ambiance
 Yusef Lateef	Moon Cup	(aucune)
 Yusef Lateef	Othelia	Jazz · Smooth & groovy

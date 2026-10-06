@@ -2241,7 +2241,7 @@ Mac Miller	Wings	Hip Hop	Jazzy Hip-Hop	Mélancolique	0.75	claude	Rap introspecti
 Macabre Plaza	A Bird's Last Look	Pop	Bossa Nova	Calme	0.35	claude	Pop rétro teintée de bossa.
 Maceo Plex	Gravy Train (Nicolas Jaar Remix)	Electronic	Minimal	Groovy	0.35	claude	Remix minimal lent et texturé.
 Madcat	Call Me Ishmael	Electronic	Deep House	Groovy	0.35	claude	House teintée de disco, peu documentée.
-Madd	N	Hip Hop	Cloud Rap	Sombre	0.15	claude	Inconnu de moi, classement indicatif.
+Madd	N	Hip Hop	Cloud Rap	Sombre	0.15	manuel	Inconnu de moi, classement indicatif.
 Maes	Tmax 530	Hip Hop	Trap	Énergique	0.30	claude	Trap de rue supposée.
 Magdalena Galka	Libertango (Piano Solo)	Latin	Tango	Énergique	0.75	claude	Tango nuevo martelé au piano.
 Magic Slim & The Teardrops	Crazy Woman	Blues	Chicago Blues	Énergique	0.55	claude	Blues électrique brut.
@@ -3439,7 +3439,7 @@ Sade	Punch Drunk	Jazz	Jazz-Funk	Groovy	0.60	claude	Instrumental jazz-funk du gro
 Sade	Sally	Funk & Soul	Soul-Jazz	Mélancolique	0.70	claude	Soul lente et bluesy, saxo nocturne.
 Sade	Siempre Hay Esperanza	Funk & Soul	Soul	Groovy	0.65	claude	Groove jazzy et latin, sax en avant et voix posée.
 Sade	Skin (Live 2011)	Funk & Soul	Soul	Calme	0.70	claude	Ballade soul feutrée, voix suave sur groove lent, en live.
-Sade	Slave Song	Reggae	Lovers Rock	Mélancolique	0.60	claude	Pulsation reggae lente et voix grave sur l'esclavage.
+Sade	Slave Song	Reggae	Lovers Rock	Mélancolique	0.60	manuel	Pulsation reggae lente et voix grave sur l'esclavage.
 Sade	Smooth Operator (Single Version)	Funk & Soul	Smooth Jazz	Groovy	0.90	claude	Sophisti-pop jazzy, saxophone et basse hypnotique.
 Sade	Smooth Operator (Live)	Funk & Soul	Soul	Groovy	0.85	claude	Sax et groove feutré en live.
 Sade	Somebody Already Broke My Heart	Funk & Soul	Ballad	Mélancolique	0.90	claude	Ballade lente et nue, cœur qu'on a déjà brisé.
