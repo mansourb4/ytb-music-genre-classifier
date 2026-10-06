@@ -461,17 +461,20 @@ styles = ["Trap", "Drill"]
 * L'aperçu relit `data/verdicts.txt` à chaque calcul : une ligne corrigée à la
   main s'y voit aussitôt, sans relancer l'analyse.
 
-**Déplacer un titre.** Dans l'aperçu, chaque titre porte un menu « Déplacer
-vers… » : toutes les playlists du plan, « Ne ranger nulle part », et « Rendre
-aux règles » pour un titre déjà déplacé. Les titres non rangés ont le même
-menu, et un ▶ ouvre chaque titre dans YouTube Music. Un déplacement l'emporte sur les règles et tient après chaque analyse ;
+**Déplacer un titre.** Dans l'aperçu, chaque titre porte un bouton
+« Déplacer » : il ouvre les playlists du plan regroupées par famille (Funk,
+Jazz, Rap…), avec un champ pour chercher par nom — sans se soucier des
+accents —, plus « Ne ranger nulle part » et « Rendre aux règles » pour un
+titre déjà déplacé. Entrée choisit la première playlist trouvée. Les titres
+non rangés ont le même bouton, et un ▶ ouvre chaque titre dans YouTube Music. Un déplacement l'emporte sur les règles et tient après chaque analyse ;
 il est écrit dans `data/placements.txt` (`artiste <tab> titre <tab> playlist`),
 versionné comme les verdicts et modifiable à la main. Toutes les publications
 d'un même morceau suivent le déplacement. Si la playlist visée disparaît du
 plan, l'aperçu le signale et le titre suit les règles en attendant.
 
 **Créer une playlist.** Un titre qui n'a sa place nulle part : « ＋ Nouvelle
-playlist… » dans son menu « Déplacer vers… » (ou le bouton « ＋ Nouvelle
+playlist… » après « Déplacer » — ou tape son nom dans la recherche, puis
+« Créer la playlist » — (ou le bouton « ＋ Nouvelle
 playlist » de l'étape 6) ouvre une fenêtre où l'on donne un nom — de
 préférence « Famille · Nom », pour qu'elle se range avec les autres — et une
 description facultative. La playlist est ajoutée en fin de

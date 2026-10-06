@@ -1007,6 +1007,25 @@ styles = ["Jazz-Funk"]
 """
 
 
+def move(page, button, target):
+    """Déplace par le choix de playlist : ouvrir, puis cliquer la cible."""
+    button.click()
+    page.locator(f'#move-picker button.pick[data-target="{target}"]').click()
+
+
+def picker_families(page) -> dict[str, list[str]]:
+    """Ce que montre le choix de playlist : famille -> playlists, dans l'ordre."""
+    return page.evaluate("""() => Object.fromEntries(
+      [...document.querySelectorAll('#move-picker .family')].filter((f) => f.querySelector('h4'))
+        .map((f) => [f.querySelector('h4').firstChild.textContent.trim(),
+                     [...f.querySelectorAll('button.pick')].map((b) => b.textContent.trim())]))""")
+
+
+def picker_specials(page) -> list[str]:
+    return [t.strip() for t in
+            page.locator("#move-picker button.pick.special").all_text_contents()]
+
+
 def seed_jazz(repository, config, tmp_path):
     from ytmgc import verdicts
     from ytmgc.classifier import classify_tracks
@@ -1043,7 +1062,7 @@ def test_a_track_can_be_moved_from_the_preview(page, repository, config, tmp_pat
     page.wait_for_selector('#preview-list details.pl[data-key="plan/jazz-jazz-funk"] li.track')
     funk.locator('.track-check[value="j2"]').uncheck()
 
-    funk.locator('select.move[data-videos="j1"]').select_option("plan/jazz-fusion")
+    move(page, funk.locator('button.move[data-videos="j1"]'), "plan/jazz-fusion")
     page.wait_for_function(
         "() => document.querySelector('#preview-msg').textContent.includes('déplacé vers')"
     )
@@ -1059,7 +1078,8 @@ def test_a_track_can_be_moved_from_the_preview(page, repository, config, tmp_pat
     fusion.locator("summary .name").click()
     moved = fusion.locator("li.track", has_text="Chameleon")
     assert "déplacé" in moved.text_content()
-    assert moved.locator('option[value="regles"]').count() == 1
+    moved.locator("button.move").click()
+    assert "Rendre aux règles" in picker_specials(page)
 
 
 def test_the_move_menu_lists_the_other_playlists(page, repository, config, tmp_path):
@@ -1070,16 +1090,104 @@ def test_the_move_menu_lists_the_other_playlists(page, repository, config, tmp_p
     fusion.locator("summary .name").click()
     fusion.locator("li.track").first.wait_for()
 
-    options = fusion.locator("select.move option").all_text_contents()
-    assert options == ["Déplacer vers…", "＋ Nouvelle playlist…", "Jazz · Jazz-funk",
-                       "Ne ranger nulle part"]
+    fusion.locator("button.move").first.click()
+    assert picker_families(page) == {"Jazz": ["Jazz-funk"]}
+    assert picker_specials(page) == ["＋ Nouvelle playlist…", "Ne ranger nulle part"]
+
+
+WIDE_PLAN = MOVE_PLAN + """
+[[playlist]]
+nom = "Funk · Latin funk"
+manuelle = true
+
+[[playlist]]
+nom = "Funk · Afrobeat"
+styles = ["Afrobeat"]
+
+[[playlist]]
+nom = "Électro · Deep house"
+styles = ["Deep House"]
+
+[[playlist]]
+nom = "Divers"
+manuelle = true
+"""
+
+
+def open_picker_on_chameleon(page, repository, config, tmp_path):
+    seed_jazz(repository, config, tmp_path)
+    (tmp_path / "playlists.toml").write_text(WIDE_PLAN, encoding="utf-8")
+    page.click("#preview-btn")
+    funk = page.locator('#preview-list details.pl[data-key="plan/jazz-jazz-funk"]')
+    funk.wait_for()
+    funk.locator("summary .name").click()
+    funk.locator('button.move[data-videos="j1"]').click()
+    page.locator("#move-picker-search").wait_for()
+
+
+def test_the_picker_groups_playlists_by_family(page, repository, config, tmp_path):
+    """Familles par ordre alphabétique, les sans-famille à la fin ; la
+    playlist actuelle du titre n'est pas proposée."""
+    open_picker_on_chameleon(page, repository, config, tmp_path)
+    assert picker_families(page) == {
+        "Électro": ["Deep house"],
+        "Funk": ["Afrobeat", "Latin funk"],
+        "Jazz": ["Fusion"],
+        "Autres": ["Divers"],
+    }
+    assert page.evaluate("document.activeElement.id") == "move-picker-search"
+
+
+def test_the_picker_search_ignores_case_and_accents(page, repository, config, tmp_path):
+    open_picker_on_chameleon(page, repository, config, tmp_path)
+    page.fill("#move-picker-search", "LATIN")
+    assert picker_families(page) == {"Funk": ["Latin funk"]}
+    page.fill("#move-picker-search", "electro")
+    assert picker_families(page) == {"Électro": ["Deep house"]}
+    # Le nom de la famille compte : « funk » montre toute la famille Funk.
+    page.fill("#move-picker-search", "funk")
+    assert list(picker_families(page)) == ["Funk"]
+    assert picker_specials(page) == ["＋ Créer la playlist « funk »"]
+
+
+def test_enter_moves_to_the_first_playlist_found(page, repository, config, tmp_path):
+    from ytmgc import placements
+
+    open_picker_on_chameleon(page, repository, config, tmp_path)
+    page.fill("#move-picker-search", "latin")
+    page.press("#move-picker-search", "Enter")
+    page.wait_for_function(
+        "() => document.querySelector('#preview-msg').textContent.includes('déplacé vers')"
+    )
+    assert not page.locator("#move-picker").is_visible()
+    assert [p.playlist for p in placements.load(config.taxonomy.placements_file)] == [
+        "Funk · Latin funk"]
+
+
+def test_a_search_without_match_offers_to_create_it(page, repository, config, tmp_path):
+    open_picker_on_chameleon(page, repository, config, tmp_path)
+    page.fill("#move-picker-search", "Jazz · Dimanche matin")
+    assert picker_families(page) == {}
+    assert "Aucune playlist" in page.locator("#move-picker-list").text_content()
+    page.press("#move-picker-search", "Enter")
+    assert page.locator("#new-playlist").is_visible()
+    assert page.input_value("#new-playlist-name") == "Jazz · Dimanche matin"
+
+
+def test_escape_closes_the_picker_without_moving(page, repository, config, tmp_path):
+    from ytmgc import placements
+
+    open_picker_on_chameleon(page, repository, config, tmp_path)
+    page.keyboard.press("Escape")
+    assert not page.locator("#move-picker").is_visible()
+    assert len(placements.load(config.taxonomy.placements_file)) == 0
 
 
 def test_no_move_menu_outside_the_family_sort(page):
     render_sample_preview(page)
     page.locator("details.pl").first.click()
     page.wait_for_selector("li.track")
-    assert page.locator("select.move").count() == 0
+    assert page.locator("button.move").count() == 0
 
 
 # --------------------------------------------------------------- relecture
@@ -1157,8 +1265,8 @@ def test_an_artist_can_be_moved_in_one_go(page, repository, config, tmp_path):
 
     seed_unsure(repository, config, tmp_path)
     open_review(page)
-    page.locator("#review .review-group").nth(0).locator(".row select.move").select_option(
-        "plan/jazz-fusion")
+    move(page, page.locator("#review .review-group").nth(0).locator(".row button.move"),
+         "plan/jazz-fusion")
     page.wait_for_function(
         "() => document.querySelector('#preview-msg').textContent.includes('déplacés vers')"
     )
@@ -1311,7 +1419,7 @@ def test_a_new_playlist_can_be_created_from_the_move_menu(page, repository, conf
 
     previews = []
     page.on("request", lambda r: previews.append(r.url) if "/api/preview" in r.url else None)
-    row.locator("select.move").select_option("__new__")
+    move(page, row.locator("button.move"), "__new__")
     assert page.locator("#new-playlist").is_visible()
     page.fill("#new-playlist-name", "Jazz · Dimanche matin")
     page.fill("#new-playlist-desc", "Café et croissants")
@@ -1328,8 +1436,8 @@ def test_a_new_playlist_can_be_created_from_the_move_menu(page, repository, conf
         "Jazz · Dimanche matin"]
     # La nouvelle playlist est aussitôt proposée dans les autres menus.
     funk.locator("li.track").first.wait_for()
-    options = funk.locator("select.move").first.locator("option").all_text_contents()
-    assert "Jazz · Dimanche matin" in options
+    funk.locator("button.move").first.click()
+    assert "Dimanche matin" in picker_families(page)["Jazz"]
 
 
 def test_a_taken_name_keeps_the_dialog_open_with_the_reason(page, repository, config, tmp_path):

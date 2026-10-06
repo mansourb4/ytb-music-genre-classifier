@@ -133,11 +133,11 @@ button.primary { background: var(--accent); border-color: var(--accent); color: 
 button.primary:hover:not(:disabled) { background: var(--accent-strong); border-color: var(--accent-strong); color: #fff; }
 button.danger { background: var(--danger); border-color: var(--danger); color: #fff; }
 button.danger:hover:not(:disabled) { color: #fff; filter: brightness(1.05); }
-input[type=text], input:not([type]), input[type=password], select, textarea {
+input[type=text], input[type=search], input:not([type]), input[type=password], select, textarea {
   font: inherit; font-size: .9rem; padding: .5rem .75rem; border-radius: var(--radius-sm);
   border: 1px solid var(--border-strong); background: var(--surface); color: var(--text);
 }
-input[type=text], input:not([type]), input[type=password] { width: 100%; }
+input[type=text], input[type=search], input:not([type]), input[type=password] { width: 100%; }
 select { max-width: 100%; }
 #browser-choice { width: 100%; }
 textarea {
@@ -231,7 +231,9 @@ ul.tracks { list-style: none; margin: 0; padding: 0; color: var(--text); }
 .track-facts { color: var(--muted); font-size: .77rem; margin-top: .1rem; }
 .track-note { display: block; color: var(--muted); font-size: .8rem; font-style: italic; margin-top: .15rem; }
 .track-tags { color: var(--accent); font-size: .74rem; opacity: .85; }
-.track select.move { flex: 0 0 auto; width: auto; max-width: 11.5rem; font-size: .8rem; padding: .35rem .5rem; }
+.track button.move { flex: 0 0 auto; }
+button.move { font-size: .8rem; padding: .35rem .65rem; white-space: nowrap; }
+button.move::after { content: " ▾"; opacity: .55; }
 
 /* L'ambiance en couleur : c'est elle qui fait la cohérence d'une playlist. */
 .mood { display: inline-block; font-size: .7rem; font-weight: 600; padding: .05rem .45rem;
@@ -283,7 +285,6 @@ button.confirm:hover:not(:disabled) { background: var(--ok); color: #fff; border
 .review-group > h4 span { color: var(--muted); font-weight: 500; font-size: .8rem;
   background: var(--surface-2); border-radius: 999px; padding: .05rem .5rem; }
 .review-group > .row { gap: .5rem; margin-bottom: .3rem; }
-.review-group > .row select.move { width: auto; font-size: .8rem; padding: .35rem .5rem; }
 #review-more { margin-top: .3rem; }
 
 /* --------------------------------------------------------------- non rangés */
@@ -393,6 +394,28 @@ dialog#new-playlist::backdrop { background: rgba(20, 16, 34, .45); backdrop-filt
 #new-playlist label { display: grid; gap: .3rem; font-size: .84rem; font-weight: 600; }
 #new-playlist .row { justify-content: flex-end; }
 
+/* --------------------------------------------------------------- choix de la playlist */
+dialog#move-picker { border: 1px solid var(--border); border-radius: var(--radius); padding: 0;
+  width: min(34rem, calc(100vw - 2rem)); background: var(--surface); color: var(--text); box-shadow: 0 20px 60px rgba(0,0,0,.25); }
+dialog#move-picker::backdrop { background: rgba(20, 16, 34, .45); backdrop-filter: blur(2px); }
+#move-picker .head { padding: 1.1rem 1.2rem .7rem; display: grid; gap: .55rem; border-bottom: 1px solid var(--border); }
+#move-picker h3 { margin: 0; font-size: 1.05rem; }
+#move-picker .hint { margin: 0; }
+#move-picker-list { max-height: min(60vh, 28rem); overflow-y: auto; padding: .4rem .6rem .8rem; }
+#move-picker .family { margin-top: .5rem; }
+#move-picker .family > h4 { position: sticky; top: -.4rem; margin: 0; padding: .35rem .5rem .25rem;
+  font-size: .72rem; font-weight: 700; letter-spacing: .06em; text-transform: uppercase;
+  color: var(--muted); background: var(--surface); }
+#move-picker .family > h4 span { font-weight: 500; letter-spacing: 0; text-transform: none; opacity: .8; }
+#move-picker button.pick { display: block; width: 100%; text-align: left;
+  background: none; border: 0; border-radius: var(--radius-sm); padding: .45rem .6rem; font-size: .9rem;
+  font-weight: 500; color: var(--text); box-shadow: none; }
+#move-picker button.pick:hover, #move-picker button.pick:focus-visible { background: var(--accent-soft); color: var(--accent-strong); outline: none; }
+#move-picker button.pick.special { color: var(--accent); }
+#move-picker mark { background: none; color: inherit; font-weight: 700; text-decoration: underline; text-underline-offset: 2px; }
+#move-picker .empty { padding: .8rem .6rem 0; }
+#move-picker .foot { display: flex; justify-content: flex-end; padding: .7rem 1.2rem; border-top: 1px solid var(--border); }
+
 /* --------------------------------------------------------------- petits écrans */
 @media (max-width: 640px) {
   body { font-size: 14.5px; }
@@ -403,7 +426,7 @@ dialog#new-playlist::backdrop { background: rgba(20, 16, 34, .45); backdrop-filt
   .track { flex-wrap: wrap; align-items: flex-start; }
   .track .cover { display: none; }
   .track-main { flex-basis: calc(100% - 4.6rem); }
-  .track select.move, .track button.confirm { margin-left: auto; }
+  .track button.move, .track button.confirm { margin-left: auto; }
   .tabs { border-radius: 14px; }
 }
 </style>
@@ -729,6 +752,19 @@ dialog#new-playlist::backdrop { background: rgba(20, 16, 34, .45); backdrop-filt
   </form>
 </dialog>
 
+<!-- Choix de la playlist où déplacer un titre : regroupées par famille, et
+     filtrées à la frappe — un menu déroulant de quatre-vingts noms ne se lit pas. -->
+<dialog id="move-picker" aria-labelledby="move-picker-title">
+  <div class="head">
+    <h3 id="move-picker-title">Déplacer vers…</h3>
+    <p class="hint" id="move-picker-what"></p>
+    <input type="search" id="move-picker-search" autocomplete="off" spellcheck="false"
+           placeholder="Chercher une playlist ou une famille…" aria-label="Chercher une playlist">
+  </div>
+  <div id="move-picker-list"></div>
+  <div class="foot"><button type="button" id="move-picker-cancel">Annuler</button></div>
+</dialog>
+
 <!-- Bandeau fixe : le panneau se trouvait en bas de page, hors écran, donc
      invisible au moment précis où l'utilisateur attend un signe de vie. -->
 <div id="job-box" class="hidden">
@@ -973,17 +1009,9 @@ function playLink(videoId) {
 function moveMenu(videoIds, currentKey, moved, label = "Déplacer vers…") {
   if (!previewTargets.length) return "";
   const ids = Array.isArray(videoIds) ? videoIds : [videoIds];
-  const options = previewTargets
-    .filter((t) => t.key !== currentKey)
-    .map((t) => `<option value="${escapeHtml(t.key)}">${escapeHtml(t.name)}</option>`)
-    .join("");
-  return `<select class="move" data-videos="${escapeHtml(ids.join(","))}" aria-label="${escapeHtml(label)}">
-    <option value="" selected disabled>${escapeHtml(label)}</option>
-    <option value="__new__">＋ Nouvelle playlist…</option>
-    ${options}
-    ${currentKey !== null ? `<option value="aucune">Ne ranger nulle part</option>` : ""}
-    ${moved ? `<option value="regles">Rendre aux règles</option>` : ""}
-  </select>`;
+  return `<button type="button" class="move" data-videos="${escapeHtml(ids.join(","))}"
+    data-current="${escapeHtml(currentKey ?? "")}" data-outside="${currentKey === null ? "1" : ""}"
+    data-moved="${moved ? "1" : ""}" aria-haspopup="dialog" aria-label="${escapeHtml(label)}">${ids.length > 1 ? `Déplacer les ${ids.length}` : "Déplacer"}</button>`;
 }
 
 //: Groupes d'artistes affichés dans la relecture ; on en ajoute à la demande.
@@ -1347,15 +1375,121 @@ function restorePreviewState(state) {
 
 // Lié une seule fois : l'aperçu est reconstruit à chaque calcul, et un
 // gestionnaire posé à chaque rendu enregistrerait un déplacement plusieurs fois.
-document.addEventListener("change", (event) => {
-  const select = event.target;
-  if (!select.matches("select.move") || !select.value) return;
-  if (select.value === "__new__") {
-    select.value = "";
-    openNewPlaylist(select.dataset.videos.split(","));
-    return;
+document.addEventListener("click", (event) => {
+  const button = event.target.closest("button.move");
+  if (!button) return;
+  event.preventDefault();
+  openMovePicker(button);
+});
+
+/** Famille d'une playlist : ce qui précède « · » dans son nom. */
+function familyOf(name) {
+  const at = name.indexOf(" · ");
+  return at > 0 ? [name.slice(0, at), name.slice(at + 3)] : ["Autres", name];
+}
+
+/** Pour chercher sans se soucier des accents ni de la casse. */
+function fold(text) {
+  return text.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+}
+
+/** Met en gras ce qui correspond à la recherche ; `text` n'est pas encore échappé. */
+function highlight(text, query) {
+  const at = query ? fold(text).indexOf(query) : -1;
+  if (at < 0) return escapeHtml(text);
+  return escapeHtml(text.slice(0, at)) + `<mark>${escapeHtml(text.slice(at, at + query.length))}</mark>`
+    + escapeHtml(text.slice(at + query.length));
+}
+
+//: Bouton qui a ouvert le choix : il porte les titres, la playlist actuelle.
+let movePickerFor = null;
+
+function openMovePicker(button) {
+  movePickerFor = button;
+  const count = button.dataset.videos.split(",").length;
+  $("move-picker-what").textContent = count > 1 ? `${count} titres` : "";
+  $("move-picker-what").hidden = count < 2;
+  $("move-picker-search").value = "";
+  renderMovePicker();
+  $("move-picker").showModal();
+  $("move-picker-search").focus();
+}
+
+function renderMovePicker() {
+  const button = movePickerFor;
+  const raw = $("move-picker-search").value.trim();
+  const query = fold(raw);
+  const families = new Map();
+  for (const target of previewTargets) {
+    if (target.key === button.dataset.current) continue;
+    const [family, rest] = familyOf(target.name);
+    if (query && !fold(target.name).includes(query)) continue;
+    if (!families.has(family)) families.set(family, []);
+    families.get(family).push({ ...target, rest });
   }
-  moveTo(select.dataset.videos.split(","), select.value, select);
+  const byName = (a, b) => a.localeCompare(b, "fr", { sensitivity: "base" });
+  const groups = [...families.keys()].sort((a, b) =>
+    (a === "Autres") - (b === "Autres") || byName(a, b));
+
+  const html = [];
+  const specials = [];
+  specials.push(`<button type="button" class="pick special" data-target="__new__">＋ ${raw
+    ? `Créer la playlist « ${escapeHtml(raw)} »` : "Nouvelle playlist…"}</button>`);
+  if (!query) {
+    if (!button.dataset.outside) specials.push(
+      `<button type="button" class="pick special" data-target="aucune">Ne ranger nulle part</button>`);
+    if (button.dataset.moved) specials.push(
+      `<button type="button" class="pick special" data-target="regles">Rendre aux règles</button>`);
+  }
+  for (const family of groups) {
+    const items = families.get(family).sort((a, b) => byName(a.rest, b.rest));
+    html.push(`<div class="family"><h4>${highlight(family, query)} <span>${items.length}</span></h4>${
+      items.map((t) => `<button type="button" class="pick" data-target="${escapeHtml(t.key)}"
+        title="${escapeHtml(t.name)}">${highlight(t.rest, query)}</button>`).join("")}</div>`);
+  }
+  if (!groups.length) html.push(`<p class="msg empty">Aucune playlist ne contient « ${escapeHtml(raw)} ».</p>`);
+  // Les playlists d'abord quand on cherche : c'est elles qu'on cherche.
+  $("move-picker-list").innerHTML = query
+    ? html.join("") + `<div class="family">${specials.join("")}</div>`
+    : `<div class="family">${specials.join("")}</div>` + html.join("");
+}
+
+$("move-picker-search").addEventListener("input", renderMovePicker);
+$("move-picker-search").addEventListener("keydown", (event) => {
+  const picks = [...$("move-picker-list").querySelectorAll("button.pick")];
+  if (event.key === "ArrowDown" && picks.length) {
+    event.preventDefault();
+    picks[0].focus();
+  } else if (event.key === "Enter") {
+    // Entrée prend la première playlist trouvée, ou crée celle qu'on a tapée.
+    event.preventDefault();
+    const first = picks.find((p) => !p.classList.contains("special")) || picks[0];
+    if ($("move-picker-search").value.trim() && first) first.click();
+  }
+});
+$("move-picker-list").addEventListener("keydown", (event) => {
+  if (event.key !== "ArrowDown" && event.key !== "ArrowUp") return;
+  event.preventDefault();
+  const picks = [...$("move-picker-list").querySelectorAll("button.pick")];
+  const at = picks.indexOf(document.activeElement);
+  const next = at + (event.key === "ArrowDown" ? 1 : -1);
+  if (next < 0) $("move-picker-search").focus();
+  else picks[Math.min(next, picks.length - 1)].focus();
+});
+$("move-picker-list").addEventListener("click", (event) => {
+  const pick = event.target.closest("button.pick");
+  if (!pick) return;
+  const button = movePickerFor;
+  const ids = button.dataset.videos.split(",");
+  const name = $("move-picker-search").value.trim();
+  $("move-picker").close();
+  if (pick.dataset.target === "__new__") openNewPlaylist(ids, name);
+  else moveTo(ids, pick.dataset.target, button);
+});
+$("move-picker-cancel").addEventListener("click", () => $("move-picker").close());
+// Un clic hors de la fenêtre la ferme, comme Échap.
+$("move-picker").addEventListener("click", (event) => {
+  if (event.target === $("move-picker")) $("move-picker").close();
 });
 
 document.addEventListener("click", (event) => {
@@ -1387,14 +1521,13 @@ async function moveTo(videoIds, target, control) {
     $("preview-msg").textContent = error.message;
     $("preview-msg").classList.add("error");
     control.disabled = false;
-    if (control.matches("select")) control.value = "";
   }
 }
 
 //: Titres à ranger dans la playlist en cours de création.
 let newPlaylistFor = [];
 
-function openNewPlaylist(videoIds) {
+function openNewPlaylist(videoIds, name = "") {
   newPlaylistFor = videoIds;
   const families = [...new Set(previewTargets.map((t) => t.name.split(" · ")[0]))];
   $("new-playlist-families").innerHTML = families
@@ -1402,7 +1535,7 @@ function openNewPlaylist(videoIds) {
   $("new-playlist-for").textContent = videoIds.length
     ? `${videoIds.length > 1 ? `Les ${videoIds.length} titres y seront rangés` : "Le titre y sera rangé"} dès sa création. Elle n'a pas de règle : seuls les titres que tu y ranges la remplissent.`
     : "Elle n'a pas de règle : seuls les titres que tu y ranges la remplissent.";
-  $("new-playlist-name").value = "";
+  $("new-playlist-name").value = name;
   $("new-playlist-desc").value = "";
   $("new-playlist-msg").textContent = "";
   $("new-playlist-msg").classList.remove("error");

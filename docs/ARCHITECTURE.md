@@ -656,6 +656,16 @@ playlist manuelle n'a pas de règle : elle ne prend que les titres déplacés
 vers elle, ce qui rend sa place dans le fichier sans effet. Elle ne peut pas
 porter de critère — elle ressemblerait alors aux autres sans le dire.
 
+*Choisir où déplacer.* Le menu déroulant listait quatre-vingts noms dans
+l'ordre du plan : illisible, et sans recherche. Le bouton « Déplacer » ouvre
+désormais une fenêtre où les playlists sont regroupées par famille — ce qui
+précède « · » dans leur nom —, familles et playlists par ordre alphabétique,
+les noms sans famille dans « Autres » à la fin. Un champ filtre à la frappe,
+sans tenir compte des accents ni de la casse, sur le nom entier : taper
+« funk » montre toute la famille Funk et Jazz · Jazz-funk & groove. Entrée
+prend la première playlist trouvée ; sans résultat, elle ouvre la création
+d'une playlist au nom tapé.
+
 *Le rap par pays.* À la demande de l'utilisateur, le rap se découpe d'abord
 par pays : Rap · FR, US, UK, Maghreb, Ailleurs. Le rap francophone (582 titres,
 toutes ambiances mêlées) est ensuite redécoupé par ambiance — énergique,
@@ -697,10 +707,10 @@ publications.
 
 ## Tests
 
-675 tests, aucun appel réseau, y compris l'API web complète (aperçu,
+680 tests, aucun appel réseau, y compris l'API web complète (aperçu,
 application, annulation), son contrôle d'accès et les quatre voies de connexion.
 
-Soixante-dix-huit d’entre eux chargent l’interface dans un vrai navigateur (`tests/test_ui.py`).
+Quatre-vingt-trois d’entre eux chargent l’interface dans un vrai navigateur (`tests/test_ui.py`).
 Le câblage du DOM échappe aux tests Python : deux défauts d'onglets sont passés
 au travers de la suite avant d'être vus à l'écran. Ces tests sont ignorés
 lorsque Playwright ou son navigateur sont absents, pour que la suite reste
