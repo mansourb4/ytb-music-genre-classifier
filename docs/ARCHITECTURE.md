@@ -664,7 +664,14 @@ les noms sans famille dans « Autres » à la fin. Un champ filtre à la frappe,
 sans tenir compte des accents ni de la casse, sur le nom entier : taper
 « funk » montre toute la famille Funk et Jazz · Jazz-funk & groove. Entrée
 prend la première playlist trouvée ; sans résultat, elle ouvre la création
-d'une playlist au nom tapé.
+d'une playlist au nom tapé. Chaque famille est un bloc à en-tête teinté,
+et chaque playlist montre son nombre de titres, lu dans l'aperçu tel que
+les déplacements l'ont mis à jour : on voit si on remplit une playlist ou si
+on en commence une.
+
+*Retirer.* Le ✕ d'un titre est un déplacement vers « (aucune) » : pas de
+nouveau mécanisme, et le même retour en arrière (« Rendre aux règles »). Il
+ne touche pas à la bibliothèque YouTube Music.
 
 *Le rap par pays.* À la demande de l'utilisateur, le rap se découpe d'abord
 par pays : Rap · FR, US, UK, Maghreb, Ailleurs. Le rap francophone (582 titres,
@@ -707,10 +714,10 @@ publications.
 
 ## Tests
 
-680 tests, aucun appel réseau, y compris l'API web complète (aperçu,
+682 tests, aucun appel réseau, y compris l'API web complète (aperçu,
 application, annulation), son contrôle d'accès et les quatre voies de connexion.
 
-Quatre-vingt-trois d’entre eux chargent l’interface dans un vrai navigateur (`tests/test_ui.py`).
+Quatre-vingt-cinq d’entre eux chargent l’interface dans un vrai navigateur (`tests/test_ui.py`).
 Le câblage du DOM échappe aux tests Python : deux défauts d'onglets sont passés
 au travers de la suite avant d'être vus à l'écran. Ces tests sont ignorés
 lorsque Playwright ou son navigateur sont absents, pour que la suite reste

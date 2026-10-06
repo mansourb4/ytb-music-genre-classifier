@@ -466,7 +466,11 @@ styles = ["Trap", "Drill"]
 Jazz, Rap…), avec un champ pour chercher par nom — sans se soucier des
 accents —, plus « Ne ranger nulle part » et « Rendre aux règles » pour un
 titre déjà déplacé. Entrée choisit la première playlist trouvée. Les titres
-non rangés ont le même bouton, et un ▶ ouvre chaque titre dans YouTube Music. Un déplacement l'emporte sur les règles et tient après chaque analyse ;
+non rangés ont le même bouton, et un ▶ ouvre chaque titre dans YouTube Music.
+Chaque playlist y affiche son nombre de titres. Le **✕** à côté retire un
+titre dont on ne veut finalement pas : il n'est rangé nulle part et passe
+dans les non rangés, d'où « Rendre aux règles » le remet. Il reste dans ta
+bibliothèque YouTube Music. Un déplacement l'emporte sur les règles et tient après chaque analyse ;
 il est écrit dans `data/placements.txt` (`artiste <tab> titre <tab> playlist`),
 versionné comme les verdicts et modifiable à la main. Toutes les publications
 d'un même morceau suivent le déplacement. Si la playlist visée disparaît du

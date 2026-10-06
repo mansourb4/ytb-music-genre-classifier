@@ -1018,7 +1018,7 @@ def picker_families(page) -> dict[str, list[str]]:
     return page.evaluate("""() => Object.fromEntries(
       [...document.querySelectorAll('#move-picker .family')].filter((f) => f.querySelector('h4'))
         .map((f) => [f.querySelector('h4').firstChild.textContent.trim(),
-                     [...f.querySelectorAll('button.pick')].map((b) => b.textContent.trim())]))""")
+                     [...f.querySelectorAll('button.pick')].map((b) => b.querySelector('.name').textContent.trim())]))""")
 
 
 def picker_specials(page) -> list[str]:
@@ -1138,6 +1138,17 @@ def test_the_picker_groups_playlists_by_family(page, repository, config, tmp_pat
     assert page.evaluate("document.activeElement.id") == "move-picker-search"
 
 
+def test_the_picker_shows_each_playlist_size(page, repository, config, tmp_path):
+    """Le nombre de titres de chaque playlist, à droite de son nom."""
+    open_picker_on_chameleon(page, repository, config, tmp_path)
+    sizes = dict(page.evaluate("""() => [...document.querySelectorAll('#move-picker button.pick:not(.special)')]
+      .map((b) => [b.querySelector('.name').textContent, b.querySelector('.n').textContent])"""))
+    assert sizes["Fusion"] == "1 titre"
+    assert sizes["Latin funk"] == "0 titre"
+    jazz = page.locator("#move-picker .family", has_text="Fusion").locator("h4")
+    assert "1 playlist" in jazz.text_content()
+
+
 def test_the_picker_search_ignores_case_and_accents(page, repository, config, tmp_path):
     open_picker_on_chameleon(page, repository, config, tmp_path)
     page.fill("#move-picker-search", "LATIN")
@@ -1183,11 +1194,39 @@ def test_escape_closes_the_picker_without_moving(page, repository, config, tmp_p
     assert len(placements.load(config.taxonomy.placements_file)) == 0
 
 
+def test_a_track_can_be_removed_from_every_playlist(page, repository, config, tmp_path):
+    """« ✕ » : on n'en veut finalement pas. Le titre sort de sa playlist,
+    sans recalcul, et rejoint les non rangés d'où on peut le rendre aux règles."""
+    from ytmgc import placements
+
+    seed_jazz(repository, config, tmp_path)
+    page.click("#preview-btn")
+    funk = page.locator('#preview-list details.pl[data-key="plan/jazz-jazz-funk"]')
+    funk.wait_for()
+    funk.locator("summary .name").click()
+    previews = []
+    page.on("request", lambda r: previews.append(r.url) if "/api/preview" in r.url else None)
+    funk.locator('button.drop[data-videos="j1"]').click()
+    page.wait_for_function(
+        "() => document.querySelector('#preview-msg').textContent.includes('retiré des playlists')"
+    )
+
+    assert previews == []
+    assert [p.playlist for p in placements.load(config.taxonomy.placements_file)] == ["(aucune)"]
+    assert "1 titres" in funk.locator(".count").text_content()
+    page.locator("#unsorted details.pl summary").click()
+    kept_out = page.locator("#unsorted li.track", has_text="Chameleon")
+    assert kept_out.locator("button.drop").count() == 0
+    kept_out.locator("button.move").click()
+    assert "Rendre aux règles" in picker_specials(page)
+
+
 def test_no_move_menu_outside_the_family_sort(page):
     render_sample_preview(page)
     page.locator("details.pl").first.click()
     page.wait_for_selector("li.track")
     assert page.locator("button.move").count() == 0
+    assert page.locator("button.drop").count() == 0
 
 
 # --------------------------------------------------------------- relecture
