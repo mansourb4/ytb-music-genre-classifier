@@ -454,6 +454,7 @@ dialog#move-picker::backdrop { background: rgba(20, 16, 34, .45); backdrop-filte
   .track .cover { display: none; }
   .track-main { flex-basis: calc(100% - 4.6rem); }
   .track button.move, .track button.accept { margin-left: auto; }
+  .track.proposal > button { flex: 1 1 auto; margin-left: 0; }
   .tabs { border-radius: 14px; }
 }
 </style>
@@ -1076,12 +1077,12 @@ function playLink(videoId) {
  * Menu de déplacement. `videoIds` : un identifiant, ou plusieurs pour déplacer
  * d'un coup les titres d'un artiste.
  */
-function moveMenu(videoIds, currentKey, moved, label = "Déplacer vers…") {
+function moveMenu(videoIds, currentKey, moved, label = "Déplacer vers…", text = null) {
   if (!previewTargets.length) return "";
   const ids = Array.isArray(videoIds) ? videoIds : [videoIds];
   return `<button type="button" class="move" data-videos="${escapeHtml(ids.join(","))}"
     data-current="${escapeHtml(currentKey ?? "")}" data-outside="${currentKey === null ? "1" : ""}"
-    data-moved="${moved ? "1" : ""}" aria-haspopup="dialog" aria-label="${escapeHtml(label)}">${ids.length > 1 ? `Déplacer les ${ids.length}` : "Déplacer"}</button>`;
+    data-moved="${moved ? "1" : ""}" aria-haspopup="dialog" aria-label="${escapeHtml(label)}">${escapeHtml(text ?? (ids.length > 1 ? `Déplacer les ${ids.length}` : "Déplacer"))}</button>`;
 }
 
 /**
@@ -2495,6 +2496,7 @@ function renderProposals(p) {
             row.to_key ? escapeHtml(row.to_name) : "Nulle part"}</span></span>
         </div>
         <button class="accept" data-videos="${escapeHtml(row.video_id)}">✓ Accepter</button>
+        ${moveMenu(row.video_id, row.from_key, false, "Ranger dans une autre playlist…", "Autre playlist")}
         <button class="keep" data-videos="${escapeHtml(row.video_id)}" title="Le titre reste dans « ${
           escapeHtml(from)} », et son verdict est validé">Garder ici</button>
       </li>`;
@@ -2516,7 +2518,8 @@ function renderProposals(p) {
     </summary>
     <div class="body">
       <p class="hint">Écoute en cas de doute (▶). « Accepter » range le titre dans la playlist proposée ;
-        « Garder ici » le laisse où il est et valide son verdict. Dans les deux cas, il ne sera plus proposé.</p>
+        « Autre playlist » le range dans celle de ton choix ; « Garder ici » le laisse où il est et valide
+        son verdict. Dans tous les cas, il ne sera plus proposé.</p>
       ${html}
     </div>
   </details>`;

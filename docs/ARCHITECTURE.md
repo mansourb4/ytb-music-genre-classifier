@@ -729,8 +729,9 @@ détonne dans une liste est exactement ce qu'un modèle fait bien, et ce
 qu'aucune règle sur le genre ne capture.
 
 * **Une proposition n'est qu'un avis.** Elle attend dans
-  `data/propositions.txt` ; « Accepter » en fait un déplacement, « Garder
-  ici » valide le verdict du titre. Rien ne bouge sans un clic.
+  `data/propositions.txt` ; « Accepter » en fait un déplacement, « Autre
+  playlist » ouvre le choix habituel quand ni la proposée ni l'actuelle ne
+  conviennent, « Garder ici » valide le verdict du titre. Rien ne bouge sans un clic.
 * **Ce qui a été décidé à la main n'est jamais proposé** — titre déplacé ou
   verdict validé. Il figure dans les fichiers, marqué `[validé]`, parce qu'il
   dit ce qu'est la playlist. Un déplacement fait à la main tranche aussi la
@@ -747,10 +748,10 @@ qu'aucune règle sur le genre ne capture.
 
 ## Tests
 
-704 tests, aucun appel réseau, y compris l'API web complète (aperçu,
+705 tests, aucun appel réseau, y compris l'API web complète (aperçu,
 application, annulation), son contrôle d'accès et les quatre voies de connexion.
 
-Quatre-vingt-huit d’entre eux chargent l’interface dans un vrai navigateur (`tests/test_ui.py`).
+Quatre-vingt-neuf d’entre eux chargent l’interface dans un vrai navigateur (`tests/test_ui.py`).
 Le câblage du DOM échappe aux tests Python : deux défauts d'onglets sont passés
 au travers de la suite avant d'être vus à l'écran. Ces tests sont ignorés
 lorsque Playwright ou son navigateur sont absents, pour que la suite reste

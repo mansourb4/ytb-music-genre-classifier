@@ -1278,6 +1278,28 @@ def test_accepting_moves_and_keeping_validates(page, repository, config, tmp_pat
     assert len(placements.load(config.taxonomy.placements_file)) == 1
 
 
+def test_a_proposal_can_go_to_another_playlist(page, repository, config, tmp_path):
+    """Ni la proposée ni l'actuelle : « Autre playlist » ouvre le choix
+    habituel, et le titre quitte la liste des propositions."""
+    from ytmgc import placements, playlist_review
+
+    import_review(page, repository, config, tmp_path)
+    row = page.locator("#proposals li.proposal", has_text="Chameleon")
+    assert row.locator("button.move").text_content() == "Autre playlist"
+    row.locator("button.move").click()
+    # La playlist actuelle n'est pas proposée ; la proposée l'est.
+    assert picker_families(page) == {"Jazz": ["Fusion"]}
+    page.locator('#move-picker button.pick[data-target="aucune"]').click()
+    page.wait_for_function(
+        "() => document.querySelector('#preview-msg').textContent.includes('retiré des playlists')")
+
+    assert [p.playlist for p in placements.load(config.taxonomy.placements_file)] == ["(aucune)"]
+    assert page.locator("#proposals li.proposal", has_text="Chameleon").count() == 0
+    assert page.locator("#proposals li.proposal", has_text="Watermelon").count() == 1
+    assert [p.title for p in playlist_review.load(config.taxonomy.proposals_file)] == [
+        "Watermelon Man"]
+
+
 def test_the_review_files_can_be_prepared_and_downloaded(page, repository, config, tmp_path):
     seed_jazz(repository, config, tmp_path)
     page.click("#preview-btn")

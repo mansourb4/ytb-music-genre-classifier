@@ -482,8 +482,8 @@ plan, l'aperçu le signale et le titre suit les règles en attendant.
 claude.ai, écris « Vas-y », et recolle la réponse : Claude relit chaque
 playlist en entier et ne signale que les titres qui en cassent la vibe, avec
 la playlist où ils iraient mieux. Ses propositions s'affichent, groupées par
-playlist : « Accepter » déplace le titre, « Garder ici » le laisse et valide
-son verdict, « Tout accepter » tranche une playlist d'un coup. Ce que tu as
+playlist : « Accepter » déplace le titre, « Autre playlist » le range dans
+celle de ton choix, « Garder ici » le laisse et valide son verdict, « Tout accepter » tranche une playlist d'un coup. Ce que tu as
 déjà déplacé ou validé n'est jamais proposé. Les propositions en attente sont
 dans `data/propositions.txt`.
 
