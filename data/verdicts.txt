@@ -1674,25 +1674,25 @@ José Vicentes	Cautela	Latin	Folk	Calme	0.15	claude	Morceau très peu documenté
 Josh LaSota	What if The Strokes recorded Instant Crush by Daft Punk?	Rock	Indie Rock	Énergique	0.50	claude	Pastiche garage rock d'un titre de Daft Punk à la façon des Strokes.
 Joshua Rifkin	Solace - A Mexican Serenade	Jazz	Ragtime	Mélancolique	0.80	claude	Rag lent en habanera, le plus nostalgique de Joplin.
 Josman	3ein / Risotto Gambas	Hip Hop	Trap	Sombre	0.30	claude	Morceau en deux parties, ambiance nocturne.
-Josman	50k€	Hip Hop	Trap	Énergique	0.30	claude	Trap ego-trip au flow assuré.
+Josman	50k€	Hip Hop	Trap	Énergique	0.30	manuel	Trap ego-trip au flow assuré.
 Josman	À feu doux...	Hip Hop	Trap	Calme	0.30	claude	Rap posé et mélodique, détails incertains.
-Josman	AhGars!	Hip Hop	Trap	Énergique	0.30	claude	Trap de Josman, peu documentée.
+Josman	AhGars!	Hip Hop	Trap	Énergique	0.30	manuel	Trap de Josman, peu documentée.
 Josman	Ailleurs	Hip Hop	Trap	Mélancolique	0.30	claude	Rap mélodique.
 Josman	Apple Pay	Hip Hop	Trap	Énergique	0.35	claude	Trap insolente sur la richesse.
 Josman	Au Bout	Hip Hop	Trap	Mélancolique	0.45	claude	Trap introspective.
-Josman	CARLO	Hip Hop	Trap	Énergique	0.25	claude	Trap peu documentée.
+Josman	CARLO	Hip Hop	Trap	Énergique	0.25	manuel	Trap peu documentée.
 Josman	Cocktail	Hip Hop	Trap	Groovy	0.35	claude	Trap mélodique détendue.
 Josman	Cohiba	Hip Hop	Trap	Groovy	0.30	claude	Trap détendue au flow nonchalant.
 Josman	Cotton Club Freestyle (Remix)	Hip Hop	Jazzy Hip-Hop	Groovy	0.45	claude	Freestyle sur prod jazzy, flow détaché.
 Josman	Dans Le Ciel	Hip Hop	Cloud Rap	Planant	0.40	claude	Trap aérienne et vaporeuse.
 Josman	Dans le vide	Hip Hop	Cloud Rap	Mélancolique	0.35	claude	Rap désabusé au flow nonchalant sur production vaporeuse.
 Josman	Doré	Hip Hop	Trap	Groovy	0.30	claude	Trap mélodique et décontractée, classement indicatif.
-Josman	Goal	Hip Hop	Trap	Énergique	0.30	claude	Trap de Josman.
+Josman	Goal	Hip Hop	Trap	Énergique	0.30	manuel	Trap de Josman.
 Josman	Interdit (Interlude)	Hip Hop	Cloud Rap	Mélancolique	0.30	claude	Interlude introspectif.
 Josman	J'aime Bien!	Hip Hop	Trap	Énergique	0.50	claude	Trap insouciante de Josman, flow sautillant.
 Josman	L'Occasion	Hip Hop	Trap	Groovy	0.35	claude	Trap mélodique détendue.
 Josman	La Danse de la Joie	Hip Hop	Trap	Groovy	0.30	claude	Titre peu documenté, classement incertain.
-Josman	Les Flammes	Hip Hop	Trap	Énergique	0.30	claude	Trap de Josman.
+Josman	Les Flammes	Hip Hop	Trap	Énergique	0.30	manuel	Trap de Josman.
 Josman	Lifestyle	Hip Hop	Trap	Énergique	0.40	claude	Trap rythmée et clinquante.
 Josman	McQueen / Givenchy	Hip Hop	Trap	Sombre	0.30	claude	Titre en deux parties, trap mélodique et nocturne.
 Josman	Mort Ce soir	Hip Hop	Trap	Sombre	0.35	claude	Morceau nocturne et désabusé.

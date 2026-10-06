@@ -7,4 +7,7 @@
 # après chaque analyse. La playlist est désignée par son nom, tel qu'écrit
 # dans le plan ; « (aucune) » tient le morceau hors de toute playlist.
 # Supprime une ligne pour rendre le morceau aux règles.
-
+Josman	Yacht & Champagne (Skit)	Rap · FR énergique
+Masayoshi Takanaka	Good (Bad?) Old Days	Jazz · Fusion planante
+Masayoshi Takanaka	空ド白ソ - Sorado Shiraso	Jazz · Fusion énergique
+S R	Barbie Beauty Boutique Soundtrack - Track 4	Électro · House
