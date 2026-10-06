@@ -384,6 +384,15 @@ label.file-pick input { font-size: .8rem; }
 #job-counts { font-variant-numeric: tabular-nums; white-space: nowrap; }
 #job-msg { margin: .2rem 0 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
+/* --------------------------------------------------------------- nouvelle playlist */
+dialog#new-playlist { border: 1px solid var(--border); border-radius: var(--radius); padding: 0;
+  width: min(30rem, calc(100vw - 2rem)); background: var(--surface); color: var(--text); box-shadow: 0 20px 60px rgba(0,0,0,.25); }
+dialog#new-playlist::backdrop { background: rgba(20, 16, 34, .45); backdrop-filter: blur(2px); }
+#new-playlist form { padding: 1.3rem 1.4rem 1.2rem; display: grid; gap: .8rem; }
+#new-playlist h3 { margin: 0; font-size: 1.1rem; }
+#new-playlist label { display: grid; gap: .3rem; font-size: .84rem; font-weight: 600; }
+#new-playlist .row { justify-content: flex-end; }
+
 /* --------------------------------------------------------------- petits écrans */
 @media (max-width: 640px) {
   body { font-size: 14.5px; }
@@ -662,6 +671,7 @@ label.file-pick input { font-size: .8rem; }
   <h2><span class="step">6</span>Prévisualiser</h2>
   <div class="row">
     <button id="preview-btn">Recalculer l'aperçu</button>
+    <button id="new-playlist-btn" hidden>＋ Nouvelle playlist</button>
   </div>
   <p class="hint spacer">Ce que deviendra ton compte avec le tri choisi. Coche ou décoche des playlists et des titres avant d'appliquer.</p>
   <div id="preview-summary" class="stats spacer hidden"></div>
@@ -696,6 +706,28 @@ label.file-pick input { font-size: .8rem; }
     <span class="msg" id="purge-count"></span>
   </div>
 </section>
+
+<!-- Création d'une playlist manuelle : sans règle, elle ne reçoit que les
+     titres qu'on y range. Elle est écrite dans config/playlists.toml. -->
+<dialog id="new-playlist">
+  <form id="new-playlist-form">
+    <h3>Nouvelle playlist</h3>
+    <p class="hint" id="new-playlist-for"></p>
+    <label><span>Nom</span>
+      <input id="new-playlist-name" list="new-playlist-families" maxlength="150" autocomplete="off"
+             placeholder="Famille · Nom — par exemple « Rap · Drill UK »">
+    </label>
+    <datalist id="new-playlist-families"></datalist>
+    <label><span>Description <span class="msg">(facultatif : ce qu'on y entend)</span></span>
+      <input id="new-playlist-desc" maxlength="300" autocomplete="off">
+    </label>
+    <p class="msg" id="new-playlist-msg"></p>
+    <div class="row">
+      <button type="button" id="new-playlist-cancel">Annuler</button>
+      <button type="submit" class="primary" id="new-playlist-create">Créer</button>
+    </div>
+  </form>
+</dialog>
 
 <!-- Bandeau fixe : le panneau se trouvait en bas de page, hors écran, donc
      invisible au moment précis où l'utilisateur attend un signe de vie. -->
@@ -947,6 +979,7 @@ function moveMenu(videoIds, currentKey, moved, label = "Déplacer vers…") {
     .join("");
   return `<select class="move" data-videos="${escapeHtml(ids.join(","))}" aria-label="${escapeHtml(label)}">
     <option value="" selected disabled>${escapeHtml(label)}</option>
+    <option value="__new__">＋ Nouvelle playlist…</option>
     ${options}
     ${currentKey !== null ? `<option value="aucune">Ne ranger nulle part</option>` : ""}
     ${moved ? `<option value="regles">Rendre aux règles</option>` : ""}
@@ -1174,6 +1207,7 @@ function renderPreview(data) {
   lastData = data;
   lastPreview = p;
   previewTargets = p.targets || [];
+  $("new-playlist-btn").hidden = !previewTargets.length;
   // Chaque rendu repart de zéro : rien de l'aperçu précédent ne doit subsister.
   $("preview-list").innerHTML = "";
   $("preview-selection").innerHTML = "";
@@ -1316,6 +1350,11 @@ function restorePreviewState(state) {
 document.addEventListener("change", (event) => {
   const select = event.target;
   if (!select.matches("select.move") || !select.value) return;
+  if (select.value === "__new__") {
+    select.value = "";
+    openNewPlaylist(select.dataset.videos.split(","));
+    return;
+  }
   moveTo(select.dataset.videos.split(","), select.value, select);
 });
 
@@ -1351,6 +1390,56 @@ async function moveTo(videoIds, target, control) {
     if (control.matches("select")) control.value = "";
   }
 }
+
+//: Titres à ranger dans la playlist en cours de création.
+let newPlaylistFor = [];
+
+function openNewPlaylist(videoIds) {
+  newPlaylistFor = videoIds;
+  const families = [...new Set(previewTargets.map((t) => t.name.split(" · ")[0]))];
+  $("new-playlist-families").innerHTML = families
+    .map((f) => `<option value="${escapeHtml(f)} · ">`).join("");
+  $("new-playlist-for").textContent = videoIds.length
+    ? `${videoIds.length > 1 ? `Les ${videoIds.length} titres y seront rangés` : "Le titre y sera rangé"} dès sa création. Elle n'a pas de règle : seuls les titres que tu y ranges la remplissent.`
+    : "Elle n'a pas de règle : seuls les titres que tu y ranges la remplissent.";
+  $("new-playlist-name").value = "";
+  $("new-playlist-desc").value = "";
+  $("new-playlist-msg").textContent = "";
+  $("new-playlist-msg").classList.remove("error");
+  $("new-playlist").showModal();
+  $("new-playlist-name").focus();
+}
+
+$("new-playlist-btn").addEventListener("click", () => openNewPlaylist([]));
+$("new-playlist-cancel").addEventListener("click", () => $("new-playlist").close());
+$("new-playlist-form").addEventListener("submit", async (event) => {
+  event.preventDefault();
+  const button = $("new-playlist-create");
+  button.disabled = true;
+  try {
+    const made = await api("/api/playlists", {
+      name: $("new-playlist-name").value,
+      description: $("new-playlist-desc").value,
+      video_ids: newPlaylistFor,
+    });
+    $("new-playlist").close();
+    // Dans les cibles de l'aperçu lui-même : chaque rendu en repart.
+    const targets = lastPreview.targets || (lastPreview.targets = []);
+    if (!targets.some((t) => t.key === made.target.key)) targets.push(made.target);
+    previewTargets = targets;
+    if (made.count) applyPlaced(made.placed);
+    else redraw();
+    $("preview-msg").classList.remove("error");
+    $("preview-msg").innerHTML = `Playlist « ${escapeHtml(made.target.name)} » créée`
+      + (made.count ? `, ${made.count} titre(s) rangé(s)` : "")
+      + `. Ajoutée à <code>${escapeHtml(made.file)}</code>.`;
+  } catch (error) {
+    $("new-playlist-msg").textContent = error.message;
+    $("new-playlist-msg").classList.add("error");
+  } finally {
+    button.disabled = false;
+  }
+});
 
 //: Recompte ce que la page affiche à partir des titres de chaque playlist.
 function recount(p) {

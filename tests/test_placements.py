@@ -430,3 +430,38 @@ def test_a_track_of_unknown_country_is_offered_one_playlist_per_country():
     plans = plan_of(**{"fr dur": ["a"], "fr doux": ["b"], "us": ["c"], "attente": ["u"]})
     got = suggestions_for(plans, profiles, plan_text)
     assert [s["name"] for s in got["u"]] == ["fr dur", "us"]
+
+
+# ------------------------------------------------------- nouvelle playlist
+
+
+def test_a_playlist_created_from_the_page_takes_the_tracks_at_once(client, config):
+    response = client.post("/api/playlists", json={
+        "name": "Jazz · Dimanche", "description": "Café et croissants", "video_ids": ["j1", "w1"]})
+    made = response.json()
+
+    assert made["target"] == {"key": "plan/jazz-dimanche", "name": "Jazz · Dimanche"}
+    assert {v: info["playlist"] for v, info in made["placed"].items()} == {
+        "j1": "plan/jazz-dimanche", "w1": "plan/jazz-dimanche"}
+    assert "manuelle = true" in open(config.taxonomy.playlists_file, encoding="utf-8").read()
+
+    summary = preview_of(client)
+    assert "Jazz · Dimanche" in [t["name"] for t in summary["targets"]]
+    dimanche = next(p for p in summary["playlists"] if p["name"] == "Jazz · Dimanche")
+    assert dimanche["count"] == 2
+
+
+def test_an_empty_playlist_can_be_created_for_later(client):
+    made = client.post("/api/playlists", json={"name": "Chill · Dimanche"}).json()
+    assert made["count"] == 0 and made["placed"] == {}
+    assert "Chill · Dimanche" in [t["name"] for t in preview_of(client)["targets"]]
+
+
+def test_a_taken_name_is_refused_with_a_readable_message(client):
+    response = client.post("/api/playlists", json={"name": "jazz · FUSION"})
+    assert response.status_code == 400
+    assert "existe déjà" in response.json()["detail"]
+
+
+def preview_of(client):
+    return client.post("/api/preview", json={"sort_mode": "familles"}).json()["preview"]

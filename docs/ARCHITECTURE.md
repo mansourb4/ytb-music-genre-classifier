@@ -648,6 +648,14 @@ lien d'artiste, de style ou de genre : l'ambiance seule rapprochait
 Interstellar d'une transe gnaoua. Le pays connu d'un artiste écarte les
 playlists d'autres pays, et la playlist d'attente (`pays = ["?"]`).
 
+*Créer une playlist depuis l'aperçu.* `add_manual_playlist` ajoute un bloc
+`manuelle = true` en fin de `config/playlists.toml`, sous un en-tête dédié. Le
+fichier est complété, jamais réécrit : ses commentaires et l'ordre de ses
+règles restent intacts, et le résultat est relu avant d'être enregistré. Une
+playlist manuelle n'a pas de règle : elle ne prend que les titres déplacés
+vers elle, ce qui rend sa place dans le fichier sans effet. Elle ne peut pas
+porter de critère — elle ressemblerait alors aux autres sans le dire.
+
 *Le rap par pays.* À la demande de l'utilisateur, le rap se découpe d'abord
 par pays : Rap · FR, US, UK, Maghreb, Ailleurs. Le rap francophone (582 titres,
 toutes ambiances mêlées) est ensuite redécoupé par ambiance — énergique,
@@ -689,10 +697,10 @@ publications.
 
 ## Tests
 
-662 tests, aucun appel réseau, y compris l'API web complète (aperçu,
+675 tests, aucun appel réseau, y compris l'API web complète (aperçu,
 application, annulation), son contrôle d'accès et les quatre voies de connexion.
 
-Soixante-seize d’entre eux chargent l’interface dans un vrai navigateur (`tests/test_ui.py`).
+Soixante-dix-huit d’entre eux chargent l’interface dans un vrai navigateur (`tests/test_ui.py`).
 Le câblage du DOM échappe aux tests Python : deux défauts d'onglets sont passés
 au travers de la suite avant d'être vus à l'écran. Ces tests sont ignorés
 lorsque Playwright ou son navigateur sont absents, pour que la suite reste

@@ -470,6 +470,15 @@ versionné comme les verdicts et modifiable à la main. Toutes les publications
 d'un même morceau suivent le déplacement. Si la playlist visée disparaît du
 plan, l'aperçu le signale et le titre suit les règles en attendant.
 
+**Créer une playlist.** Un titre qui n'a sa place nulle part : « ＋ Nouvelle
+playlist… » dans son menu « Déplacer vers… » (ou le bouton « ＋ Nouvelle
+playlist » de l'étape 6) ouvre une fenêtre où l'on donne un nom — de
+préférence « Famille · Nom », pour qu'elle se range avec les autres — et une
+description facultative. La playlist est ajoutée en fin de
+`config/playlists.toml`, avec `manuelle = true` : elle n'a pas de règle, seuls
+les titres qu'on y range la remplissent. On peut lui en écrire une plus tard,
+en éditant le fichier.
+
 **Les playlists voisines, en un clic.** Sous chaque titre, « Aussi possible »
 propose jusqu'à trois autres playlists où il aurait sa place, sous forme de
 boutons. Elles sont choisies d'après ce que chaque playlist contient : d'abord
