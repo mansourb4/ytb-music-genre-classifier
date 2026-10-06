@@ -51,6 +51,7 @@ et relancés sans perte, et `plan`/`apply` se rejouent hors ligne.
 | `planner.py` | Classifications → ensemble de playlists souhaité. Hors ligne. |
 | `origins.py` | Pays d'origine des artistes (`data/pays.txt`), pour les règles `pays` du plan. |
 | `playlist_review.py` | Relecture par playlist : playlists exportées en fichiers pour Claude.ai, lecture des intrus signalés, propositions en attente (`data/propositions.txt`). |
+| `gemini.py` | Révision complète : toute la bibliothèque en un prompt, lecture de la réponse (playlists finales, renommages, déplacements) et application au plan et aux déplacements. |
 | `placements.py` | Déplacements faits à la main dans l'aperçu : fichier `data/placements.txt`, résolution par morceau, priorité sur les règles. |
 | `playlist_plan.py` | Tri « Par famille » : lecture et vérification de `config/playlists.toml`, affectation de chaque morceau à la première playlist dont une règle l'accepte. |
 | `sync.py` | Diff état souhaité / état distant, puis application. |
@@ -750,9 +751,34 @@ qu'aucune règle sur le genre ne capture.
 * **Le fichier répondu est noté** grâce à la ligne `FICHIER n SUR m` que la
   réponse recopie ; `RIEN` est une réponse valide.
 
+### 22. Une révision complète, en un seul passage
+
+Même réduite à des propositions, la relecture demandait encore trop de clics.
+Un modèle à très grande fenêtre (Gemini 2.5 Pro, un million de jetons) peut
+lire d'un coup les ~4 000 titres — playlists, descriptions, règles, notes des
+verdicts — soit environ 150 000 jetons. On lui laisse les mains libres, y
+compris sur la liste des playlists elles-mêmes.
+
+* **La réponse décrit un état, pas des opérations.** La section PLAYLISTS est
+  la liste finale complète : une playlist absente et non renommée est
+  supprimée. C'est plus robuste qu'une liste de suppressions qu'il faudrait
+  penser à écrire.
+* **Les titres sont numérotés** (`gemini/pistes.tsv`) : la réponse ne
+  recopie ni artiste ni titre, elle est plus courte et ne casse pas sur une
+  faute d'orthographe. Seuls les titres qui changent sont listés.
+* **Le plan est modifié bloc par bloc**, pas réécrit : commentaires, ordre
+  des règles et blocs multiples d'une même playlist sont conservés ; le
+  résultat est relu avant d'être écrit. Les règles restent, pour les titres
+  ajoutés plus tard ; les déplacements portent la décision de Gemini.
+* **Vérifier d'abord, écrire ensuite** : sans `--appliquer`, l'import décrit
+  ce qu'il ferait et signale les lignes invalides (numéro inconnu, playlist
+  hors de la liste finale, renommage d'une playlist inexistante).
+* **Les décisions de l'utilisateur tiennent** : un titre déplacé ou validé à
+  la main n'est déplacé que si sa playlist disparaît.
+
 ## Tests
 
-707 tests, aucun appel réseau, y compris l'API web complète (aperçu,
+719 tests, aucun appel réseau, y compris l'API web complète (aperçu,
 application, annulation), son contrôle d'accès et les quatre voies de connexion.
 
 Quatre-vingt-onze d’entre eux chargent l’interface dans un vrai navigateur (`tests/test_ui.py`).

@@ -626,6 +626,50 @@ def cmd_review(args: argparse.Namespace, config: Config) -> int:
     return 0
 
 
+def cmd_gemini_export(args: argparse.Namespace, config: Config) -> int:
+    """Écrit le prompt de révision complète et la table des numéros de titres."""
+    from ytmgc import gemini, placements, playlist_review, verdicts
+    from ytmgc.playlist_plan import load_plan
+    from ytmgc.preview import build_preview
+
+    repository = _repository(config)
+    scoped = apply_sort_mode(config, "familles")
+    summary, _, _ = build_preview(repository, scoped, sort_mode="familles")
+    taxonomy = load_taxonomy()
+    plan = load_plan(config.taxonomy.playlists_file, taxonomy)
+    fixed = playlist_review.fixed_keys(verdicts.load(config.claude.verdicts_file),
+                                       placements.load(config.taxonomy.placements_file))
+    prompt, rows = gemini.build(summary, plan,
+                                {t.video_id: t for t in repository.all_tracks()}, fixed)
+    folder = Path(args.dossier)
+    folder.mkdir(parents=True, exist_ok=True)
+    (folder / gemini.PROMPT_FILE).write_text(prompt, encoding="utf-8")
+    gemini.save_rows(rows, folder / gemini.TRACKS_FILE)
+    print(f"{len(rows)} titres, {len(prompt)} caractères : {folder / gemini.PROMPT_FILE}")
+    print("Glisse ce fichier dans Gemini, puis enregistre sa réponse entière dans un fichier "
+          "et lance « gemini-importe ».")
+    return 0
+
+
+def cmd_gemini_import(args: argparse.Namespace, config: Config) -> int:
+    """Lit la réponse de Gemini et l'applique : plan, déplacements, propositions."""
+    from ytmgc import gemini
+
+    rows = gemini.load_rows(Path(args.dossier) / gemini.TRACKS_FILE)
+    answer = gemini.parse(Path(args.reponse).read_text(encoding="utf-8"))
+    if not answer.finished:
+        print("⚠ La réponse ne se termine pas par FIN : elle est peut-être coupée.")
+    change = gemini.apply(answer, rows, config, load_taxonomy(), write=args.appliquer)
+    for line in change.lines(rows):
+        print(line)
+    if not args.appliquer:
+        print("\nRien n'a été écrit. Relance avec --appliquer pour appliquer ces changements.")
+    else:
+        print(f"\nÉcrit : {config.taxonomy.playlists_file}, {config.taxonomy.placements_file}. "
+              "Recalcule l'aperçu pour voir le résultat.")
+    return 0
+
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         prog="ytmgc",
@@ -745,6 +789,19 @@ def build_parser() -> argparse.ArgumentParser:
 
     status = subparsers.add_parser("status", help="État d'avancement")
     status.set_defaults(func=cmd_status)
+
+    gem_export = subparsers.add_parser(
+        "gemini-exporte", help="Écrire le prompt de révision complète pour Gemini")
+    gem_export.add_argument("--dossier", default="gemini")
+    gem_export.set_defaults(func=cmd_gemini_export)
+
+    gem_import = subparsers.add_parser(
+        "gemini-importe", help="Lire et appliquer la réponse de Gemini")
+    gem_import.add_argument("reponse", help="Fichier contenant la réponse entière de Gemini")
+    gem_import.add_argument("--dossier", default="gemini")
+    gem_import.add_argument("--appliquer", action="store_true",
+                            help="Écrire les changements (sinon : vérification seule)")
+    gem_import.set_defaults(func=cmd_gemini_import)
 
     review = subparsers.add_parser("review", help="Lister les appariements incertains")
     review.add_argument("--limit", type=int, default=50)

@@ -492,6 +492,30 @@ Une fois la relecture faite, le panneau « titres à vérifier » propose
 playlist sans rien signaler passent en « manuel » d'un coup, après
 confirmation. Ceux qu'une proposition attend restent en dehors.
 
+**Révision complète par Gemini — tout trier d'un coup.** Plutôt que de
+trancher des propositions, on confie toute la bibliothèque à un modèle à très
+grande fenêtre, avec les mains libres :
+
+```bash
+python -m ytmgc gemini-exporte          # écrit gemini/prompt.txt et gemini/pistes.tsv
+```
+
+Glisse `gemini/prompt.txt` dans Gemini (2.5 Pro), enregistre sa réponse
+entière — texte et bloc de code, tous les messages si elle a dû
+« continuer » — dans `gemini/reponse.txt`, puis :
+
+```bash
+python -m ytmgc gemini-importe gemini/reponse.txt              # vérifie, n'écrit rien
+python -m ytmgc gemini-importe gemini/reponse.txt --appliquer  # applique
+```
+
+Gemini peut déplacer des titres, renommer, supprimer, fusionner ou créer des
+playlists. L'import modifie `config/playlists.toml` bloc par bloc
+(commentaires gardés), écrit les déplacements dans `data/placements.txt` et
+vide les propositions en attente. Ce que tu as placé ou validé toi-même n'est
+jamais déplacé, sauf si sa playlist disparaît. Tout passe par git :
+`git diff` montre ce qui a changé, `git checkout -- config data` l'annule.
+
 **Créer une playlist.** Un titre qui n'a sa place nulle part : « ＋ Nouvelle
 playlist… » après « Déplacer » — ou tape son nom dans la recherche, puis
 « Créer la playlist » — (ou le bouton « ＋ Nouvelle
