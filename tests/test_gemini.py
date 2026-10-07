@@ -341,3 +341,53 @@ def test_a_complete_sort_is_applied_and_nothing_is_left_to_check(library, config
     assert all(t.moved for p in after.playlists for t in p.tracks)
     text = (tmp_path / "playlists.toml").read_text(encoding="utf-8")
     assert "Jazz · Fusion" not in text and "manuelle = true" in text
+
+
+def test_names_rewritten_by_the_model_are_brought_back_to_the_plan():
+    """Gemini a écrit « Soul RnB et neo soul groovy » pour « Soul · R&B & neo
+    soul groovy », et « Orient Funk arabe » pour « Funk · Funk arabe »."""
+    current = ["Soul · R&B & neo soul groovy", "Funk · Funk arabe", "Rap · FR sombre",
+               "Orient · Pop arabe"]
+    answer = Answer(playlists=[("Soul RnB et neo soul groovy", ""), ("Orient Funk arabe", ""),
+                               ("Rap Monde", ""), ("Rap FR sombre", ""), ("(aucune)", "")],
+                    moves={"T0001": "Soul RnB et neo soul groovy", "T0002": "Orient Funk arabe",
+                           "T0003": "Rap Mondee"})
+    renames = gemini.canonical_names(answer, current)
+    assert [n for n, _ in answer.playlists] == [
+        "Soul · R&B & neo soul groovy", "Orient · Funk arabe", "Rap · Monde", "Rap · FR sombre",
+        "(aucune)"]
+    assert renames == {"Funk · Funk arabe": "Orient · Funk arabe"}
+    assert answer.moves == {"T0001": "Soul · R&B & neo soul groovy",
+                            "T0002": "Orient · Funk arabe", "T0003": "Rap · Monde"}
+
+
+SHIFTED = """```
+PLAYLISTS
+Jazz · Groove | Funk.
+Jazz · Ciel ouvert | Fusion.
+
+CLASSEMENT
+T0001 | Herbie Hancock | Watermelon Man | Jazz · Groove | jazz-funk
+T0002 | Weather Report | Birdland | Jazz · Ciel ouvert | fusion
+T0003 | Inconnu | Jamais vu | Jazz · Groove | ?
+T0001 | Herbie Hancock | Chameleon | Jazz · Groove | jazz-funk
+FIN
+```"""
+
+
+def test_a_line_whose_number_drifted_is_put_back_on_its_track():
+    """Un modèle qui saute une ligne décale toute sa numérotation : l'artiste
+    et le titre recopiés désignent le vrai titre."""
+    answer = gemini.parse(SHIFTED)
+    change = gemini.plan_changes(answer, ROWS, CURRENT, set())
+    # T0001 annoncé Watermelon Man est en fait T0002 ; T0002 Birdland est T0003.
+    assert change.moves["T0002"] == "Jazz · Groove"
+    assert change.moves["T0003"] == "Jazz · Ciel ouvert"
+    assert any("2 ligne(s) au numéro décalé" in p for p in change.problems)
+    assert any("1 ligne(s) dont l'artiste" in p and "T0003" in p for p in change.problems)
+
+
+def test_a_retry_lists_the_tracks_to_classify_again():
+    text = gemini.build_retry(ROWS, ["T0002", "T0003"], "un exemple")
+    assert "T0002 | Herbie Hancock | Watermelon Man\nT0003 | Weather Report | Birdland" in text
+    assert "un exemple" in text and "(2)" in text and "T0001" not in text.split("(2)")[1]

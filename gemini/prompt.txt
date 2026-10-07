@@ -34,18 +34,21 @@ PLAYLISTS
 Nom de la playlist | description en une phrase de ce qu'on y entend
 
 CLASSEMENT
-T0001 | Nom exact de la playlist | genre précis trouvé
-T0002 | Nom exact de la playlist | genre précis trouvé
+T0001 | artiste | titre | Nom exact de la playlist | genre précis trouvé
+T0002 | artiste | titre | Nom exact de la playlist | genre précis trouvé
 ```
 
-Arrête-toi après environ 600 titres, à la fin d'une ligne. On t'écrira
+Arrête-toi après environ 400 titres, à la fin d'une ligne. On t'écrira
 « continue » : reprends au titre suivant, dans un nouveau bloc de code qui
 commence par CLASSEMENT, sans rien répéter. Quand le dernier titre est
 classé, termine le bloc par une ligne FIN.
 
 Règles du format :
 - Une ligne par titre, dans l'ordre des numéros, sans en sauter un seul.
-- Le nom de playlist est recopié à l'identique de ta section PLAYLISTS.
+- Recopie l'artiste et le titre tels qu'ils sont dans la liste : c'est ce
+  qui permet de vérifier que chaque numéro désigne bien le bon titre.
+- Le nom de playlist est recopié à l'identique de ta section PLAYLISTS, avec
+  son « · » : « Famille · Nom ».
 - Le genre précis tient en quelques mots (« deep house », « bossa nova »,
   « rap français cloud »).
 - N'écris jamais « | » dans un nom, une description ou un genre.
@@ -4193,18 +4196,21 @@ PLAYLISTS
 Nom de la playlist | description en une phrase de ce qu'on y entend
 
 CLASSEMENT
-T0001 | Nom exact de la playlist | genre précis trouvé
-T0002 | Nom exact de la playlist | genre précis trouvé
+T0001 | artiste | titre | Nom exact de la playlist | genre précis trouvé
+T0002 | artiste | titre | Nom exact de la playlist | genre précis trouvé
 ```
 
-Arrête-toi après environ 600 titres, à la fin d'une ligne. On t'écrira
+Arrête-toi après environ 400 titres, à la fin d'une ligne. On t'écrira
 « continue » : reprends au titre suivant, dans un nouveau bloc de code qui
 commence par CLASSEMENT, sans rien répéter. Quand le dernier titre est
 classé, termine le bloc par une ligne FIN.
 
 Règles du format :
 - Une ligne par titre, dans l'ordre des numéros, sans en sauter un seul.
-- Le nom de playlist est recopié à l'identique de ta section PLAYLISTS.
+- Recopie l'artiste et le titre tels qu'ils sont dans la liste : c'est ce
+  qui permet de vérifier que chaque numéro désigne bien le bon titre.
+- Le nom de playlist est recopié à l'identique de ta section PLAYLISTS, avec
+  son « · » : « Famille · Nom ».
 - Le genre précis tient en quelques mots (« deep house », « bossa nova »,
   « rap français cloud »).
 - N'écris jamais « | » dans un nom, une description ou un genre.

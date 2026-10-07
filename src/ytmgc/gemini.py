@@ -32,6 +32,7 @@ un déplacement, même s'il reste où il était : c'est Gemini qui l'a rangé.
 
 from __future__ import annotations
 
+import difflib
 import re
 from collections import Counter
 from dataclasses import dataclass, field
@@ -286,18 +287,21 @@ PLAYLISTS
 Nom de la playlist | description en une phrase de ce qu'on y entend
 
 CLASSEMENT
-T0001 | Nom exact de la playlist | genre précis trouvé
-T0002 | Nom exact de la playlist | genre précis trouvé
+T0001 | artiste | titre | Nom exact de la playlist | genre précis trouvé
+T0002 | artiste | titre | Nom exact de la playlist | genre précis trouvé
 ```
 
-Arrête-toi après environ 600 titres, à la fin d'une ligne. On t'écrira
+Arrête-toi après environ 400 titres, à la fin d'une ligne. On t'écrira
 « continue » : reprends au titre suivant, dans un nouveau bloc de code qui
 commence par CLASSEMENT, sans rien répéter. Quand le dernier titre est
 classé, termine le bloc par une ligne FIN.
 
 Règles du format :
 - Une ligne par titre, dans l'ordre des numéros, sans en sauter un seul.
-- Le nom de playlist est recopié à l'identique de ta section PLAYLISTS.
+- Recopie l'artiste et le titre tels qu'ils sont dans la liste : c'est ce
+  qui permet de vérifier que chaque numéro désigne bien le bon titre.
+- Le nom de playlist est recopié à l'identique de ta section PLAYLISTS, avec
+  son « · » : « Famille · Nom ».
 - Le genre précis tient en quelques mots (« deep house », « bossa nova »,
   « rap français cloud »).
 - N'écris jamais « | » dans un nom, une description ou un genre.
@@ -354,6 +358,38 @@ def build_complete(summary, tracks: dict, plan=None) -> tuple[str, list[Row]]:
     return prompt, rows
 
 
+RETRY = """\
+Merci. Mais dans certains de tes messages, la numérotation a glissé : tu as
+sauté ou répété un titre, puis continué à numéroter, si bien que chaque
+numéro a reçu la playlist de son voisin (par exemple {example}).
+
+Refais le classement des titres ci-dessous, et seulement eux, avec
+exactement la même liste de playlists que dans ta réponse (ne la change pas,
+ne la recopie pas). Cette fois, recopie sur chaque ligne l'artiste et le
+titre, tels qu'ils sont écrits ici :
+
+```
+CLASSEMENT
+T0601 | artiste | titre | Nom exact de la playlist | genre précis trouvé
+```
+
+Environ 300 titres par message, dans un bloc de code qui commence par
+CLASSEMENT ; on t'écrira « continue ». Une ligne par titre, sans en sauter
+ni en répéter. Après le dernier, une ligne FIN.
+
+LES TITRES À RECLASSER ({count})
+
+{lines}
+"""
+
+
+def build_retry(rows: dict[str, Row], ids: list[str], example: str) -> str:
+    """Le message qui redemande le classement de certains titres, avec
+    artiste et titre recopiés sur chaque ligne pour qu'aucun numéro ne glisse."""
+    lines = [" | ".join([i, _clean(rows[i].artist), _clean(rows[i].title)]) for i in ids]
+    return RETRY.format(example=example, count=len(ids), lines="\n".join(lines))
+
+
 def save_rows(rows: list[Row], path: str | Path) -> None:
     lines = ["# Numéros des titres du prompt Gemini : numéro | artiste | titre | playlist d'alors"]
     lines += ["\t".join([r.id, r.artist.replace("\t", " "), r.title.replace("\t", " "),
@@ -383,6 +419,12 @@ class Answer:
     finished: bool = False
     #: Réponse au tri complet : chaque titre est classé, pas seulement déplacé.
     complete: bool = False
+    #: Les lignes qui recopient artiste et titre, dans l'ordre : (numéro,
+    #: (artiste, titre), playlist). De quoi vérifier chaque numéro.
+    labelled: list[tuple[str, tuple[str, str], str]] = field(default_factory=list)
+    #: Les champs bruts de ces lignes : un titre peut contenir « | », la
+    #: colonne de la playlist ne se trouve qu'une fois la liste connue.
+    raw: dict[int, list[str]] = field(default_factory=dict)
 
 
 def _section(line: str) -> str | None:
@@ -421,10 +463,19 @@ def parse(text: str) -> Answer:
                         answer.renames[old.strip()] = new.strip()
                     break
         elif current in ("DEPLACEMENTS", "CLASSEMENT") and "|" in line:
-            track, _, rest = line.partition("|")
-            playlist = rest.split("|")[0]  # le genre trouvé, s'il suit, n'est pas lu
-            if _ID_RE.match(track.strip()) and playlist.strip():
-                answer.moves[track.strip()] = playlist.strip().strip("«» ")
+            track, *fields = [f.strip() for f in line.split("|")]
+            if not _ID_RE.match(track):
+                continue
+            # « T | playlist [| genre] », ou « T | artiste | titre | playlist [| genre] » ;
+            # le genre trouvé n'est pas lu.
+            playlist = (fields[2] if len(fields) >= 3 else fields[0]).strip("«» ")
+            if not playlist:
+                continue
+            if len(fields) >= 3:
+                answer.raw[len(answer.labelled)] = fields
+                answer.labelled.append((track, (fields[0], fields[1]), playlist))
+            answer.moves.pop(track, None)  # une ligne reprise plus loin remplace l'ancienne
+            answer.moves[track] = playlist
     if not answer.playlists:
         raise GeminiError(
             "Aucune section PLAYLISTS dans cette réponse. Colle la réponse entière de "
@@ -480,6 +531,133 @@ def _resolver(names: list[str]):
     return resolve
 
 
+def _loose(name: str) -> str:
+    """Un nom de playlist, sans ce que les modèles réécrivent à leur guise :
+    le « · », « & » devenu « et », « R&B » devenu « RnB »."""
+    words = {"and": "et", "n": "et", "rnb": "r et b"}  # fold() écrit « & » « and »
+    return " ".join(words.get(w, w) for w in fold(name).replace("·", " ").split())
+
+
+def canonical_names(answer: Answer, current: list[str]) -> dict[str, str]:
+    """Remet les noms de la réponse à l'orthographe du plan.
+
+    Un nom qui ne diffère d'une playlist actuelle que par la ponctuation est
+    cette playlist ; une playlist dont seule la famille change (« Funk · X »
+    devenue « Orient X ») est renommée ; un nom nouveau sans « · » le reçoit
+    après sa famille. Renvoie les renommages ainsi trouvés.
+    """
+    by_loose = {_loose(n): n for n in current}
+    families = {_loose(n.split("·")[0]) for n in current if "·" in n}
+    by_rest: dict[str, list[str]] = {}
+    for n in current:
+        if "·" in n:
+            by_rest.setdefault(_loose(n.split("·", 1)[1]), []).append(n)
+    taken = {by_loose[_loose(n)] for n, _ in answer.playlists if _loose(n) in by_loose}
+    mapping: dict[str, str] = {}
+    renames: dict[str, str] = {}
+    for name, _ in answer.playlists:
+        if fold(name) in (fold(NOWHERE), "aucune"):
+            continue
+        if _loose(name) in by_loose:
+            mapping[name] = by_loose[_loose(name)]
+            continue
+        fixed = name
+        if "·" not in name:
+            head, _, rest = name.partition(" ")
+            if rest and _loose(head) in families:
+                fixed = f"{head} · {rest}"
+        mapping[name] = fixed
+        if "·" in fixed:
+            same = by_rest.get(_loose(fixed.split("·", 1)[1]), [])
+            if len(same) == 1 and same[0] not in taken and same[0] not in renames:
+                renames[same[0]] = fixed
+    answer.playlists = [(mapping.get(n, n), d) for n, d in answer.playlists]
+    final = {_loose(n): n for n, _ in answer.playlists}
+
+    def target(name: str) -> str:
+        """Un nom de playlist d'une ligne de classement : celui de la liste,
+        même mal recopié (« Classique Classique et Baroque vif »)."""
+        if name in mapping:
+            return mapping[name]
+        close = difflib.get_close_matches(_loose(name), list(final), n=1, cutoff=0.85)
+        if close:
+            return final[close[0]]
+        same = [n for k, n in final.items() if set(k.split()) == set(_loose(name).split())]
+        return same[0] if len(same) == 1 else name
+
+    names = set(final.values()) | {NOWHERE}
+
+    def split(fields: list[str]) -> tuple[tuple[str, str], str]:
+        """(artiste, titre), playlist : la playlist est le premier champ, après
+        l'artiste et le titre, qui en nomme une de la liste."""
+        for i in range(2, len(fields)):
+            name = NOWHERE if fold(fields[i]) in (fold(NOWHERE), "aucune") else target(fields[i])
+            if name in names:
+                return (fields[0], " | ".join(fields[1:i])), name
+        return (fields[0], fields[1]), target(fields[2])
+
+    labelled = []
+    for n, (track, label, playlist) in enumerate(answer.labelled):
+        if n in answer.raw:
+            label, playlist = split(answer.raw[n])
+        labelled.append((track, label, playlist))
+        answer.moves[track] = playlist
+    answer.labelled = labelled
+    answer.moves = {t: target(p) for t, p in answer.moves.items()}
+    answer.renames = {**renames, **{o: mapping.get(n, n) for o, n in answer.renames.items()}}
+    return renames
+
+
+def _likeness(label: tuple[str, str], row: Row) -> float:
+    """À quel point l'artiste et le titre recopiés ressemblent à ceux du titre
+    (1 : la même chanson, aux fautes de recopie près)."""
+    artist, title = label
+    if entry_key(artist, title) == row.key:
+        return 1.0
+    return difflib.SequenceMatcher(None, fold(f"{artist} {title}"),
+                                   fold(f"{row.artist} {row.title}")).ratio()
+
+
+#: Ressemblance minimale pour rattacher une ligne mal recopiée à un titre.
+SAME_TRACK = 0.9
+
+
+def realign(answer: Answer, rows: dict[str, Row]) -> tuple[int, list[str]]:
+    """Vérifie, pour chaque ligne qui recopie artiste et titre, que son numéro
+    désigne bien ce titre ; sinon la rattache au bon numéro, ou l'écarte.
+
+    Un modèle qui saute ou répète une ligne décale toute la suite de sa
+    numérotation : sans cette vérification, chaque titre recevrait la playlist
+    de son voisin. Renvoie le nombre de lignes recalées, et celles écartées.
+    """
+    if not answer.labelled:
+        return 0, []
+    by_key = {row.key: row.id for row in rows.values()}
+    labelled = {track for track, _, _ in answer.labelled}
+    # Les lignes sans artiste ni titre restent telles quelles.
+    moves = {t: p for t, p in answer.moves.items() if t not in labelled}
+    fixed, rejected = 0, []
+    for track, label, playlist in answer.labelled:
+        row = rows.get(track)
+        found = by_key.get(entry_key(*label))
+        if found is None:
+            # Pas de correspondance exacte : le titre le plus ressemblant, autour.
+            n = int(track[1:])
+            near = [f"T{i:04d}" for i in range(max(1, n - 30), n + 31) if f"T{i:04d}" in rows]
+            score, best = max(((_likeness(label, rows[i]), i) for i in near), default=(0, None))
+            found = best if score >= SAME_TRACK else None
+        if found == track and row is not None:
+            moves[track] = playlist
+            continue
+        if found is None:
+            rejected.append(track)
+            continue
+        moves[found] = playlist
+        fixed += 1
+    answer.moves = moves
+    return fixed, rejected
+
+
 def plan_changes(answer: Answer, rows: dict[str, Row], current: list[str],
                  fixed_keys: set[str]) -> Change:
     """Ce que la réponse demande, vérifié contre le plan actuel et les titres.
@@ -489,8 +667,16 @@ def plan_changes(answer: Answer, rows: dict[str, Row], current: list[str],
     """
     if answer.complete:
         fixed_keys = set()
+    canonical_names(answer, current)
+    realigned, rejected = realign(answer, rows)
     change = Change()
-    final = [name for name, _ in answer.playlists]
+    if realigned:
+        change.problems.append(f"{realigned} ligne(s) au numéro décalé, rattachée(s) au bon titre")
+    if rejected:
+        change.problems.append(
+            f"{len(rejected)} ligne(s) dont l'artiste et le titre ne correspondent à aucun titre, "
+            f"ignorée(s) ({', '.join(rejected[:5])}…)")
+    final = [name for name, _ in answer.playlists if fold(name) not in (fold(NOWHERE), "aucune")]
     resolve_final = _resolver(final)
     resolve_current = _resolver(current)
 
@@ -634,7 +820,8 @@ def apply(answer: Answer, rows: dict[str, Row], config, taxonomy, *, write: bool
         name = change.renamed.get(playlist.name, playlist.name)
         if playlist.description and name not in before:
             before[name] = playlist.description
-    change.described = {n: d for n, d in change.described.items() if before.get(n) != d}
+    change.described = {n: d for n, d in change.described.items()
+                         if before.get(n) != d and not (answer.complete and before.get(n))}
 
     text = edit_plan_text(plan_path.read_text(encoding="utf-8"), change)
     parse_plan(text, taxonomy)  # une faute ici arrête tout, avant toute écriture

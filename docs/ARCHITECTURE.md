@@ -799,9 +799,30 @@ compris sur la liste des playlists elles-mêmes.
   n'est plus « à vérifier ». Les garde-fous restent : un titre oublié par
   la réponse est signalé et garde sa place, sa playlist n'est pas supprimée.
 
+* **Chaque ligne recopie artiste et titre.** La première réponse au tri
+  complet (7 messages de 600 lignes, au format « numéro | playlist ») a
+  glissé dans trois messages sur sept : un titre sauté ou répété, puis la
+  numérotation continuée — chaque titre recevait la playlist de son voisin
+  (Dany Brillant en deep house, Barenboim jouant Mahler en variété). Rien
+  ne permettait de le voir à l'import ; il a fallu comparer, par fenêtres de
+  50 titres, la famille donnée par Gemini à celle d'avant, décalée de −40 à
+  +40 lignes : le meilleur accord tombait à +3 ou +4 sur ces trois messages
+  seulement. Le format demande désormais « numéro | artiste | titre |
+  playlist | genre » : `realign` rattache une ligne au titre qu'elle nomme
+  (clé exacte, sinon le plus ressemblant à ±30 numéros, ressemblance ≥ 0,9)
+  et écarte celle qui ne nomme aucun titre. `build_retry` redemande une
+  plage de titres dans ce format.
+* **Les noms sont rapprochés du plan.** Gemini réécrit les noms à sa façon :
+  sans « · », « & » devenu « et », « R&B » devenu « RnB », parfois une
+  faute de frappe. `canonical_names` ramène un nom à la playlist actuelle
+  qui ne s'en distingue que par cela, remet le « · » après la famille,
+  traite en renommage une playlist dont seule la famille change, et
+  rattache une ligne mal recopiée au nom le plus proche de la liste. Une
+  playlist reprise garde sa description.
+
 ## Tests
 
-726 tests, aucun appel réseau, y compris l'API web complète (aperçu,
+729 tests, aucun appel réseau, y compris l'API web complète (aperçu,
 application, annulation), son contrôle d'accès et les quatre voies de connexion.
 
 Quatre-vingt-onze d’entre eux chargent l’interface dans un vrai navigateur (`tests/test_ui.py`).
