@@ -1,0 +1,702 @@
+Dans certains de tes messages, la numérotation a glissé : tu as sauté ou
+répété un titre, puis continué à numéroter, si bien que chaque numéro a reçu
+la playlist de son voisin (par exemple T0797 Dany Brillant « Les moulins de mon cœur » classé en deep house, ou T0783 Barenboim jouant Mahler classé en variété française).
+
+Reclasse les 600 titres ci-dessous, et seulement eux (T3001 à T3600),
+dans tes playlists — les voici, recopie leur nom à l'identique :
+
+- Brésil · Bossa nova
+- Brésil · Samba & groove
+- Brésil · MPB douce
+- Maghreb · Gnawa
+- Orient · Funk arabe des années 70
+- Maghreb · Raï & chaâbi
+- Maghreb · Traditions
+- Orient · Oud & taqsim
+- Orient · Pop arabe
+- Orient · Fairouz, tarab & chanson
+- Jazz · Ethio-jazz
+- Afrique · Folk, blues & mandingue
+- Afrique · Afrobeat
+- Afrique · Afrobeats & amapiano
+- Caraïbes · Reggae, dub & dancehall
+- Jazz · Latin jazz
+- Soul · R&B & neo soul groovy
+- Soul · R&B & neo soul posés
+- Pop · Variété française
+- Jazz · Jazz-funk & groove
+- Rock · Psyché & prog nerveux
+- Rock · Psyché & prog rêveur
+- Rock · Yacht rock
+- Rap · FR énergique
+- Rap · FR sombre
+- Rap · FR groovy
+- Rap · FR introspectif
+- Rap · FR posé
+- Rap · FR cloud & spleen
+- Rap · US
+- Rap · UK
+- Rap · Maghreb
+- Rap · Monde
+- Électro · Deep house vocale
+- Électro · Deep house planante
+- Électro · Deep house instrumentale
+- Électro · House
+- Électro · Techno percutante
+- Électro · Techno hypnotique
+- Électro · Nu-disco & synth
+- Électro · Broken beat & nu jazz
+- Électro · Breaks & drum'n'bass
+- Électro · Ambient & nappes
+- Électro · Downtempo chill
+- Électro · Expérimental & IDM
+- Jazz · Fusion énergique
+- Jazz · Fusion planante
+- Jazz · Bop qui swingue
+- Jazz · Bop & cool nocturne
+- Jazz · Spiritual jazz
+- Jazz · Smooth & groovy
+- Jazz · Contemporain
+- Jazz · Vocal & ballades
+- Jazz · Swing & big band
+- Jazz · Lounge & jazz d'ambiance
+- Soul · Soul groovy
+- Soul · Soul ballades
+- Funk · Funk, boogie & disco
+- Classique · Baroque et Classique vif
+- Classique · Baroque et Classique lent
+- Classique · Romantique passionné
+- Classique · Romantique tendre
+- Classique · Moderne tendu
+- Classique · Moderne contemplatif
+- Pop · Indie & synth-pop dansante
+- Pop · Indie & synth-pop douce
+- Pop · City pop & disco
+- Pop · Ballades
+- Pop · Pop rock & pop dansante
+- Rock · Blues qui groove
+- Rock · Blues mélancolique
+- Rock · Rock énergique
+- Rock · Rock doux & mélancolique
+- Folk · Flamenco & tsigane
+- Folk · Folk acoustique & traditions
+- Latino · Salsa & latin soul
+- Latino · Reggaeton, cumbia & corridos
+- Latino · Boléro, tango & ballades
+- (aucune) — seulement pour ce qui n'est pas de la musique
+
+Chaque ligne a CINQ colonnes : numéro, artiste et titre recopiés tels
+qu'ils sont écrits ici, PUIS LE NOM DE LA PLAYLIST, puis le genre précis.
+La playlist est obligatoire : une ligne sans playlist est perdue.
+
+```
+CLASSEMENT
+T3001 | artiste | titre | Nom exact de la playlist | genre précis trouvé
+```
+
+Environ 300 titres par message, dans un bloc de code qui commence par
+CLASSEMENT ; on t'écrira « continue ». Une ligne par titre, sans en sauter
+ni en répéter. Après le dernier (T3600), une ligne FIN.
+
+LES TITRES À RECLASSER
+
+T3001 | PRISM - Topic | MEMORIES OF YOU ~ WHEN YOU WERE GONE
+T3002 | prodbyjulpich__ | (FREE) Ino Casablanca x Josman Type Beat - "Virements" - JULPICH
+T3003 | ProOne79 | No Plan
+T3004 | Prunk | Heat
+T3005 | Prunk | Keep It Simple
+T3006 | PXNDORA NXGHTS | Night Vegas
+T3007 | Qendresa | 2 Much
+T3008 | Qendresa | Rumour
+T3009 | Qendresa | Underwater Haters
+T3010 | Quarteto Jobim-Morelenbaum | Água de Beber
+T3011 | Quentin Harris | Poor People (Big Room Mix)
+T3012 | Quentin Harris | You Can't Have New York [Shelter Anthem Vocal Mix] (feat. Monique Bingham)
+T3013 | Quincy Jones | A Sleepin' Bee
+T3014 | Quincy Jones | Ai No Corrida (feat. Dune)
+T3015 | Quincy Jones | Along Came Betty
+T3016 | Quincy Jones | At The End Of The Day (Grace) (feat. Toots Thielemans, Barry White & Mervyn Warren)
+T3017 | Quincy Jones | Be My Guest
+T3018 | Quincy Jones | Betcha Wouldn't Hurt Me
+T3019 | Quincy Jones | Betcha Wouldn't Hurt Me (Extended Version)
+T3020 | Quincy Jones | Black Orpheus (Manha De Carnaval)
+T3021 | Quincy Jones | Blues Day
+T3022 | Quincy Jones | Body Heat
+T3023 | Quincy Jones | Boo's Bloos
+T3024 | Quincy Jones | Boogie Bossa Nova
+T3025 | Quincy Jones | Boogie Joe The Grinder
+T3026 | Quincy Jones | Bright Moon
+T3027 | Quincy Jones | Chega De Saudade (No More Blues)
+T3028 | Quincy Jones | Chump Change
+T3029 | Quincy Jones | Cool Joe, Mean Joe (Killer Joe)
+T3030 | Quincy Jones | Dancin' Pants
+T3031 | Quincy Jones | Desafinado
+T3032 | Quincy Jones | Do Nothin' Till You Hear From Me (feat. Phil Collins)
+T3033 | Quincy Jones | Evening In Paris
+T3034 | Quincy Jones | Everything Must Change
+T3035 | Quincy Jones | Everything Must Change (Reprise)
+T3036 | Quincy Jones | Eyes Of Love
+T3037 | Quincy Jones | Heaven's Girl (feat. R. Kelly, Ronald Isley, Aaron Hall & Charlie Wilson)
+T3038 | Quincy Jones | I'm Gonna Miss You In The Morning
+T3039 | Quincy Jones | If I Ever Lose This Heaven
+T3040 | Quincy Jones | Is It Love That We're Missin' (feat. Gloria Estefan & Warren Wiebe)
+T3041 | Quincy Jones | Jook Joint Outro (feat. Barry White, Tamia & Toots Thielemans)
+T3042 | Quincy Jones | Jook Joint Reprise (feat. Ray Charles & Funkmaster Flex)
+T3043 | Quincy Jones | Just A Man
+T3044 | Quincy Jones | Just Once
+T3045 | Quincy Jones | Kings Road Blues
+T3046 | Quincy Jones | Lalo Bossa Nova
+T3047 | Quincy Jones | Let The Good Times Roll (feat. Stevie Wonder, Ray Charles & Bono)
+T3048 | Quincy Jones | London Derriere
+T3049 | Quincy Jones | Love I Never Had It So Good
+T3050 | Quincy Jones | Love Me By Name (feat. Patti Austin)
+T3051 | Quincy Jones | Love Theme From "The Getaway" (Faraway Forever) (Instrumental)
+T3052 | Quincy Jones | Manteca
+T3053 | Quincy Jones | Medley: What's New / We'll Be Together Again / Time On My Hands / You Go To My Head / Laura
+T3054 | Quincy Jones | Moody's Mood For Love (I'm In The Mood For Love)
+T3055 | Quincy Jones | No Bones At All
+T3056 | Quincy Jones | On The Street Where You Live
+T3057 | Quincy Jones | One Hundred Ways
+T3058 | Quincy Jones | One Track Mind
+T3059 | Quincy Jones | Place Blanche
+T3060 | Quincy Jones | Razzamatazz
+T3061 | Quincy Jones | Samba De Una Nota So (One Note Samba)
+T3062 | Quincy Jones | "Sanford & Son Theme" - NBC-TV (The Streetbeater)
+T3063 | Quincy Jones | Se E Tarde Me Pardoa (Forgive Me If I'm Late)
+T3064 | Quincy Jones | Serenata
+T3065 | Quincy Jones | Sermonette
+T3066 | Quincy Jones | Slow Jams (feat. Babyface & Tamia)
+T3067 | Quincy Jones | Something Special
+T3068 | Quincy Jones | Soul Bossa Nova
+T3069 | Quincy Jones | Soul Saga (Song Of The Buffalo Soldier)
+T3070 | Quincy Jones | Stockholm Sweetnin'
+T3071 | Quincy Jones | Stomp (feat. Coolio, Yo-Yo, Shaquille O'Neal & Luniz)
+T3072 | Quincy Jones | Stuff Like That (feat. Nickolas Ashford, Valerie Simpson & Chaka Khan)
+T3073 | Quincy Jones | Summer In The City
+T3074 | Quincy Jones | Superstition
+T3075 | Quincy Jones | Superwoman (Where Were You When I Needed You) (feat. Patti Austin)
+T3076 | Quincy Jones | Takin It To The Streets (feat. Gwen Guthrie & Luther Vandross)
+T3077 | Quincy Jones | Tell Me A Bedtime Story
+T3078 | Quincy Jones | The Dude
+T3079 | Quincy Jones | The Oom Is Blues
+T3080 | Quincy Jones | Tribute To A.F. - RO
+T3081 | Quincy Jones | Turn On The Action
+T3082 | Quincy Jones | Velas
+T3083 | Quincy Jones | Walkin'
+T3084 | Quincy Jones | You Put A Move On My Heart (feat. Tamia)
+T3085 | Quincy Jones | You've Got It Bad Girl
+T3086 | Quinn Oulton | 100 Degrees
+T3087 | Quintus Project | Night Flight
+T3088 | R1D1 | In The Soul
+T3089 | Rachid Aseyakhe | Fly me to the moon (Acoustic Arabic) (feat. Amine Makdad)
+T3090 | Rachid Taha | Comme d'habitude
+T3091 | Rad&Co | Unspoken Thoughts
+T3092 | Radiohead | 15 Step
+T3093 | Radiohead | 2 + 2 = 5
+T3094 | Radiohead | A Punch Up at a Wedding
+T3095 | Radiohead | A Wolf At the Door
+T3096 | Radiohead | All I Need
+T3097 | Radiohead | Backdrifts
+T3098 | Radiohead | Bodysnatchers
+T3099 | Radiohead | Climbing Up the Walls (Zero 7 Mix)
+T3100 | Radiohead | Exit Music (For A Film)
+T3101 | Radiohead | Faust Arp
+T3102 | Radiohead | Go To Sleep
+T3103 | Radiohead | House Of Cards
+T3104 | Radiohead | I Will
+T3105 | Radiohead | Jigsaw Falling Into Place
+T3106 | Radiohead | Myxomatosis
+T3107 | Radiohead | No Surprises
+T3108 | Radiohead | Nude
+T3109 | Radiohead | Reckoner
+T3110 | Radiohead | Sail To The Moon
+T3111 | Radiohead | Scatterbrain
+T3112 | Radiohead | Sit Down. Stand Up
+T3113 | Radiohead | Subterranean Homesick Alien
+T3114 | Radiohead | The Gloaming
+T3115 | Radiohead | There, There
+T3116 | Radiohead | Videotape
+T3117 | Radiohead | We Suck Young Blood
+T3118 | Radiohead | Weird Fishes / Arpeggi
+T3119 | Radiohead | Where I End and You Begin
+T3120 | Radiohead | You And Whose Army?
+T3121 | Radiq | Waiting for My Man (feat. Khansa Batma)
+T3122 | Radu Lupu | Schubert: 4 Impromptus, D. 899 (Op. 90): No. 4 in A-Flat Major. Allegretto
+T3123 | Raffaele Attanasio | Chara
+T3124 | Ragheb Alama | Nasini El Donya
+T3125 | Raïna Raï | Zina
+T3126 | Raiun | sunkiss
+T3127 | Ralf GUM | After Midnight (feat. Portia Monique)
+T3128 | Ralf GUM | All This Love for You (Rocco Main Mix) (feat. Diamondancer)
+T3129 | Ralf GUM | Back to Love (feat. Joseph Junior & Ayanda Jiya)
+T3130 | Ralf GUM | Claudette (Ralf Gum Radio Edit) (feat. Monique Bingham)
+T3131 | Ralf Gum | Kissing Strangers [Ralf Gum & Crisp Original Club Mix] (feat. Monique Bingham)
+T3132 | Ralf Gum | Little W. 12th St. [Ralf GUM Main Mix] (feat. Monique Bingham)
+T3133 | Ralf Gum | Take Me To My Love [Main Mix] (feat. Monique Bingham)
+T3134 | Ralf Gum | The Pap [Ralf GUM Main Mix] (feat. Monique Bingham)
+T3135 | Ramp | Everybody Loves The Sunshine
+T3136 | Rampa | Fluke
+T3137 | Rampa | Necessity
+T3138 | Randy George | Daft Punk - Something About Us - Randy George Theremin
+T3139 | Randy Weston's African Rhythms | Waltz For Sweet Cakes
+T3140 | Rantseni | Resiliencia
+T3141 | Raphael Saadiq | Get Involved
+T3142 | Rare Samples & Songs Oleg Tsoy | Bobby Lyle - Inner Space
+T3143 | Rare Samples & Songs Oleg Tsoy | Nathan Davis - A Thought For Cannon
+T3144 | Rasch | Aleph
+T3145 | Rasch | Kaligo
+T3146 | Raste | Still Alive
+T3147 | rebug | run run run
+T3148 | rebug | run run run (slowed + reverb)
+T3149 | rebug | run run run (sped up)
+T3150 | Recondite | Tie In
+T3151 | Red | Little bit of Liszt at the end 🫣
+T3152 | Red Army Choir | Dark Eyes
+T3153 | Red Hot Chili Peppers | Can't Stop
+T3154 | Red Hot Chili Peppers | Dani California
+T3155 | Red Hot Chili Peppers | Dark Necessities
+T3156 | Red Hot Chili Peppers | I Could Die for You
+T3157 | Red Hot Chili Peppers | It's Only Natural
+T3158 | Red Hot Chili Peppers | Otherside
+T3159 | Red Hot Chili Peppers | Scar Tissue
+T3160 | Red Hot Chili Peppers | Sick Love
+T3161 | Red Hot Chili Peppers | Snow (Hey Oh)
+T3162 | Red Hot Chili Peppers | Under the Bridge
+T3163 | Red Hot Chili Peppers | Universally Speaking
+T3164 | Red Hot Chili Peppers | Venice Queen
+T3165 | Redig | Syrup
+T3166 | Rejjie Snow | Egyptian Luvr
+T3167 | Rejjie Snow | Loveleen
+T3168 | Rema | Dumebi
+T3169 | rémi.fr | BOSSA NOVA BOUNCE (feat. Pablo Rochat)
+T3170 | René & Angela | I Love You More
+T3171 | Resident Advisor | RA Live: Laurent Garnier b2b Seth Troxler at Nuits Sonores 2018
+T3172 | Reuel | REUEL "Tchaikovsky's Piano Concerto No. 1 in B-flat Minor" (Official Video)
+T3173 | Revers Gagnant | Paradis bleu
+T3174 | Rework | You're So Just Just (Matt Tolfrey EC1 Edit)
+T3175 | Ric Wilson | Everyone Moves To LA (feat. Felicia Douglass)
+T3176 | Rich Medina | The Sickness
+T3177 | Richard Desjardins | Dans ses yeux
+T3178 | Rick James | Mary Jane
+T3179 | Rick Wade | Shinjuku Strut
+T3180 | Rill | Visual Numbers
+T3181 | Rim'K | Cellophané
+T3182 | Rim'K | Room Service
+T3183 | Rioleval | Teebee03
+T3184 | Risk Assessment | It’s Not Right But It’s Okay (Vocal Mix Edit) (feat. Monica Blaire)
+T3185 | RiskSoundSystem | The Sound Is Yours (Kerri Chandler Remix)
+T3186 | Rita Lee | Lança Perfume
+T3187 | Rita Lee | Shangrila
+T3188 | Riyad Sunbati | Tqasim oud
+T3189 | RJ Long | Jeff Beck - Somewhere Over the Rainbow Live May 2010
+T3190 | Robson Jorge | Eva
+T3191 | Robson Jorge | Ginga
+T3192 | Rocco | Saharien Child
+T3193 | Rodrigo Amarante | O Nao-Pedido de Casamento
+T3194 | Rodrigo Gallardo | Ay Que Sera Del Sol
+T3195 | Roland Leesker | Respect
+T3196 | Romane | Passion (feat. Alice Bassié)
+T3197 | Roméo Elvis | Agora (feat. Jan Paternoster)
+T3198 | Roméo Elvis | Bébé aime la drogue
+T3199 | Roméo Elvis | Bobo
+T3200 | Roméo Elvis | Bruxelles C'est Devenu La Jungle
+T3201 | Roméo Elvis | Calme
+T3202 | Roméo Elvis | Chocolat
+T3203 | Roméo Elvis | Diable
+T3204 | Roméo Elvis | Drôle De Décision
+T3205 | Roméo Elvis | Drôle de question
+T3206 | Roméo Elvis | François Pignon (feat. Jeanjass)
+T3207 | Roméo Elvis | Interlude
+T3208 | Roméo Elvis | Intro
+T3209 | Roméo Elvis | J'ai vu (feat. Angèle)
+T3210 | Roméo Elvis | Kuneditdoen (with Zwangere Guy) (feat. Zwangere Guy)
+T3211 | Roméo Elvis | Lenita
+T3212 | Roméo Elvis | Les hommes ne pleurent pas
+T3213 | Roméo Elvis | Ma tête
+T3214 | Roméo Elvis | Nappeux
+T3215 | Roméo Elvis | Pogo
+T3216 | Roméo Elvis | Poignée De Punchline
+T3217 | Roméo Elvis | Schaerabeek (feat. Loxley)
+T3218 | Roméo Elvis | Soleil
+T3219 | Roméo Elvis | Solo
+T3220 | Roméo Elvis | Thalys (feat. Lomepal)
+T3221 | Roméo Elvis & Le Motel | Assurance (feat. Yellowstraps)
+T3222 | Roméo Elvis & Le Motel | Copain
+T3223 | Roméo Elvis & Le Motel | Intro
+T3224 | Roméo Elvis & Le Motel | Juliette
+T3225 | Roméo Elvis & Le Motel | Morale
+T3226 | Ron Hall | The Way You Love Me (feat. Marc Evans)
+T3227 | Ron Trent | Admira
+T3228 | Ron Trent | Bass to Love
+T3229 | Ron Trent | Boogie Down
+T3230 | Ron Trent | Cool Water (feat. Ivan Conti & Lars Bartkuhn)
+T3231 | Ron Trent | Cycle of Many
+T3232 | Ron Trent | Energy
+T3233 | Ron Trent | Flos Potentia (Sugar, Cotton, Tabacco) (feat. Khruangbin)
+T3234 | Ron Trent | Flowers (feat. Venecia)
+T3235 | Ron Trent | History
+T3236 | Ron Trent | I Feel the Rhythm
+T3237 | Ron Trent | In the Light
+T3238 | Ron Trent | Melt into you (feat. Alex Malherios)
+T3239 | Ron Trent | Morning Feve
+T3240 | Ron Trent | On my way home
+T3241 | Ron Trent | Piano Track
+T3242 | Ron Trent | Pop, Dip and Spin
+T3243 | Ron Trent | Prescription
+T3244 | Ron Trent | Seduction
+T3245 | Ron Trent | Space Ridims
+T3246 | Ron Trent | Sphere (feat. Jean-Luc Ponty)
+T3247 | Ron Trent | WARM
+T3248 | Ron Trent | What do the stars say to you
+T3249 | Ron Trent feat. Anthony Nicholson | Soul Samba Express
+T3250 | Ron Trent feat. Chez Damier | Don't Try It
+T3251 | Ron Trent feat. Harry Dennis | Black Magic Woman
+T3252 | Ronnie Foster | Mystic Brew
+T3253 | Rony Seikaly | Dancing Alone
+T3254 | Room 5 Feat. Oliver Cheatham | Make Luv (Radio Version)
+T3255 | Rose Royce | Love Don't Live Here Anymore
+T3256 | Roseaux | Kaät
+T3257 | Rosenna Samson | Nostalgia
+T3258 | Rosie Gaines | Closer Than Close (Mentor Remake)
+T3259 | Rosinha De Valença | Summertime
+T3260 | Rounhaa | Dubaï
+T3261 | Rousing Chamber | SOFF / Afro House & Indie Dance Mix by @rousingchamber
+T3262 | Rousseau | Beethoven - Moonlight Sonata (Full)
+T3263 | Rousseau | Chopin - Etude Op. 10 No. 3 (Tristesse)
+T3264 | Rousseau | Clair de Lune [Ver. 1] (Debussy)
+T3265 | Rousseau | Comptine d'un autre ete (Yann Tiersen)
+T3266 | Rousseau | Debussy - Clair de Lune
+T3267 | Rousseau | Etude Op. 10 No. 4 - Torrent (Chopin)
+T3268 | Rousseau | Für Elise (Beethoven)
+T3269 | Rousseau | Gymnopédie No. 1 (Satie)
+T3270 | Rousseau | Heroic Polonaise - Op. 53 in A Flat Major (Chopin)
+T3271 | Rousseau | La Campanella (Liszt)
+T3272 | Rousseau | Liebesleid - Love's Sorrow (Kreisler)
+T3273 | Rousseau | Liebestraum No. 3 - Love Dream (Liszt)
+T3274 | Rousseau | Liszt - Consolation No. 3
+T3275 | Rousseau | Liszt - Un Sospiro
+T3276 | Rousseau | Minecraft (C418)
+T3277 | Rousseau | Moonlight Sonata - 1st Movement (Beethoven)
+T3278 | Rousseau | Moonlight Sonata - 2nd Movement (Beethoven)
+T3279 | Rousseau | Moonlight Sonata - 3rd Movement (Beethoven)
+T3280 | Rousseau | Nocturne in E Flat Major - Op. 9 No. 2 (Chopin)
+T3281 | Rousseau | Prelude in C major (Bach)
+T3282 | Rousseau | Prelude in C Sharp Minor - Op. 3 No. 2 (Rachmaninoff)
+T3283 | Rousseau | Prelude in E Minor - Op. 28 No. 4 (Chopin)
+T3284 | Rousseau | Reflets dans l'eau - Images (Debussy)
+T3285 | Rousseau | Rondo Alla Turca - Turkish March (Mozart)
+T3286 | Rousseau | Summer - The Four Seasons (Vivaldi)
+T3287 | Rousseau | The Most Beautiful & Relaxing Piano Pieces (Vol. 1)
+T3288 | Rousseau | Una Mattina (Ludovico Einaudi)
+T3289 | Rousseau | Winter - The Four Seasons (Vivaldi)
+T3290 | Rove Ranger | Millennial Millenium
+T3291 | Roy Ayers | Ooh
+T3292 | Roy Ayers Ubiquity | Everybody Loves The Sunshine
+T3293 | Roy Ayers Ubiquity | Gotta Find A Lover
+T3294 | Roy Ayers Ubiquity | Mystic Voyage
+T3295 | Roy Ayers Ubiquity | Running Away (12-Inch Long Version)
+T3296 | Roy Ayers Ubiquity | The Third Eye
+T3297 | Röyksopp | Remind Me
+T3298 | RTHLSS Ent. 日本 | Buddha Brand – D.L's Midnight Theme Pt.1 / 黒船 (Kurofune) (1996)
+T3299 | Rubén González | Melodía del Río
+T3300 | RUBII | BOTB
+T3301 | RUBII | Jammin
+T3302 | Ruf Dug | Make This Right (Radio Edit)
+T3303 | Russ | Goodbye
+T3304 | Ry's | ELLIPSE
+T3305 | Ryan Prewett | My Side (feat. Brian Nathan & Andriana)
+T3306 | S-Crew | J’aurais pas dû
+T3307 | S. Fidelity | Me at the Zoo (Cody Currie Remix)
+T3308 | S.Pri Noir | Kawasaki (feat. Laylow)
+T3309 | S R | Barbie Beauty Boutique Soundtrack - Track 4
+T3310 | S-TEE | TRUESTHONER INTERLUDE
+T3311 | S-Tone Inc | No Meio Do Samba (S-Tone Dub)
+T3312 | S-Tone Inc | Todo Mundo Vai
+T3313 | Saber Rebai | Sidi Mansour
+T3314 | Sacha Distel | La belle vie
+T3315 | Sacha Distel | Oui, oui, oui, oui
+T3316 | Sade | All About Our Love
+T3317 | Sade | Bullet Proof Soul
+T3318 | Sade | By Your Side
+T3319 | Sade | Cherish the Day
+T3320 | Sade | Cherish the Day (Live)
+T3321 | Sade | Cherry Pie
+T3322 | Sade | Clean Heart
+T3323 | Sade | Every Word
+T3324 | Sade | Fear
+T3325 | Sade | Feel No Pain
+T3326 | Sade | Flow
+T3327 | Sade | Frankie's First Affair
+T3328 | Sade | Give It Up
+T3329 | Sade | Hang on to Your Love
+T3330 | Sade | Hang On to Your Love (Long Version)
+T3331 | Sade | Haunt Me
+T3332 | Sade | I Couldn't Love You More
+T3333 | Sade | I Never Thought I'd See the Day
+T3334 | Sade | I Will Be Your Friend
+T3335 | Sade | Immigrant
+T3336 | Sade | Is It a Crime
+T3337 | Sade | Is It a Crime (Live)
+T3338 | Sade | It's Only Love That Gets You Through
+T3339 | Sade | Jezebel
+T3340 | Sade | Jezebel (Live)
+T3341 | Sade | Keep Looking
+T3342 | Sade | King of Sorrow
+T3343 | Sade | Kiss of Life
+T3344 | Sade | Kiss of Life (Live)
+T3345 | Sade | Like a Tattoo
+T3346 | Sade | Like a Tattoo (Live Video from San Diego)
+T3347 | Sade | Love Is Stronger Than Pride
+T3348 | Sade | Lovers Rock
+T3349 | Sade | Maureen
+T3350 | Sade | Mermaid
+T3351 | Sade | Morning Bird
+T3352 | Sade | Mr Wrong
+T3353 | Sade | Never as Good as the First Time
+T3354 | Sade | No Ordinary Love
+T3355 | Sade | No Ordinary Love (Live)
+T3356 | Sade | Nothing Can Come Between Us
+T3357 | Sade | Paradise
+T3358 | Sade | Paradise (Live)
+T3359 | Sade | Paradise / Nothing Can Come Between Us (Live 2011)
+T3360 | Sade | Pearls
+T3361 | Sade | Please Send Me Someone to Love
+T3362 | Sade | Punch Drunk
+T3363 | Sade | Sally
+T3364 | Sade | Siempre Hay Esperanza
+T3365 | Sade | Skin (Live 2011)
+T3366 | Sade | Slave Song
+T3367 | Sade | Smooth Operator (Live)
+T3368 | Sade | Smooth Operator (Single Version)
+T3369 | Sade | Somebody Already Broke My Heart
+T3370 | Sade | Tar Baby
+T3371 | Sade | The Sweetest Gift
+T3372 | Sade | The Sweetest Taboo
+T3373 | Sade | The Sweetest Taboo (Live)
+T3374 | Sade | Turn My Back On You
+T3375 | Sade | War of the Hearts
+T3376 | Sade | When Am I Going to Make a Living
+T3377 | Sade | Why Can't We Live Together
+T3378 | Sade | You're Not the Man
+T3379 | Sade | Your Love Is King
+T3380 | Sade | Your Love Is King (Live at Live Aid, Wembley Stadium, 13th July 1985)
+T3381 | Safar (FR) | Exorce
+T3382 | Saïan Supa Crew | Angela
+T3383 | Saint Levant | WAIN MAADY WAIN / وين معدي وين
+T3384 | Sainté | 03'
+T3385 | Sainte | Champagne Shots
+T3386 | Sainte | Compare - A COLORS SHOW
+T3387 | Sainte | Hunnids
+T3388 | Sainte | On Me
+T3389 | Sainte | Round & Round
+T3390 | Sainte | Soul Mate
+T3391 | Sainte | Stylin'
+T3392 | Sal Davis | Quaboos
+T3393 | Salvatore Adamo | Tombe la neige
+T3394 | Sam Cooke | A Change Is Gonna Come
+T3395 | Sambabook | Vou Festejar
+T3396 | Sameed | Dusty Jazz
+T3397 | Sameer Ahmad | Matriochka
+T3398 | Samira Saïd | Rouhi
+T3399 | Sampha | Satellite Business
+T3400 | sample text | Miles Davis - Shhh [In a Silent Way, 1969 Stereo]
+T3401 | Sandra de Sá | Pela Cidade
+T3402 | Sandy Barber | I Think I'll Do Some Stepping (On My Own) (OPOLOPO Rework)
+T3403 | Santa | BOEING (feat. La Fève)
+T3404 | Santana | Aqua Marine
+T3405 | Santana | Europa (Earth's Cry Heaven's Smile)
+T3406 | Santana | Maria Maria (feat. The Product G&B)
+T3407 | Saul feat. Brother Portrait | No Fuss No Fight
+T3408 | SAULT | Son Shine
+T3409 | Saxson | Beach
+T3410 | SCH | Je la connais
+T3411 | SCH | Loup noir
+T3412 | SCH | Mannschaft (feat. Freeze Corleone)
+T3413 | SCH | Otto
+T3414 | Schacke | Met Her At The Herrensauna (Dj Ibon's Club Mix) (DJ Ibon's Club Mix)
+T3415 | Schmoov! | In Yo Soul
+T3416 | Schmoov! | Playground
+T3417 | Schmoov! | Taking Me Over
+T3418 | Scylla | Solitude
+T3419 | Seafood Sam | Ramsey
+T3420 | Sean McCabe feat. Jennifer Wallace | Something About You
+T3421 | Seatbelts | Mushroom Hunting
+T3422 | Seatbelts | Rush
+T3423 | Seb Wildblood | Jazz, Vol. 1
+T3424 | Seb Wildblood | Jazz, Vol. 1 (Christopher Rau Remix)
+T3425 | Seb Wildblood | Seal of Approval
+T3426 | Sebastião Tapajos | Dora / Saudade da Bahia
+T3427 | Sebastien Casanova | Cloudy Others (feat. Arthur Alfocea)
+T3428 | Sébastien Léger | KissShower
+T3429 | Sébastien Tellier | La ritournelle
+T3430 | Secret Value Orchestra | Serious Intentions
+T3431 | Selug | Léon (feat. Luther)
+T3432 | Senamo | Fleurs du mal
+T3433 | Serane | S9
+T3434 | Session Victim | Hide and Seek
+T3435 | Session Victim | House in the Hills
+T3436 | Seth Gueko | Titi parisien [Remix] (feat. Oxmo Puccino & Nekfeu)
+T3437 | Seu Jorge | Amiga da Minha Mulher
+T3438 | Seu Jorge | Dia de Comemorar
+T3439 | Seu Jorge | Tive Razão (Ao Vivo)
+T3440 | Seu Jorge | Zé do Caroço (Ao Vivo)
+T3441 | shahine96 | [3] DANI CALIFORNIA BAND COVER
+T3442 | Shakatak | Invitations (Extended Mix)
+T3443 | Shake The Dog | Do It (feat. Monique Bingham)
+T3444 | Shake The Dog | Run (feat. Monique Bingham)
+T3445 | Shakedown | At Night
+T3446 | Sharon Revoal | Reaching for Our Star
+T3447 | Shawn Cartier | Lemon
+T3448 | Shazz | Mirage
+T3449 | Sherine | Sabry Aalil
+T3450 | Shigeo Sekito | Paroles Paroles
+T3451 | Shigeo Sekito | The Word 2
+T3452 | Shigeo Sekito | The Word 2 (Remixed by Masamichi Torii)
+T3453 | Shigeru Suzuki | Coral Reef
+T3454 | Shigeru Suzuki | Noa Noa
+T3455 | Shigeru Suzuki | Passion Flower
+T3456 | Shiro SAGISU | Nothing Can Be Explained (inst ver.) - Nothing Can Be Explained (Instumental Version)
+T3457 | Shkoon | Ala Moj Al Bahr (Goldcap Remix)
+T3458 | Shobee | Train De Vie (feat. Laylow)
+T3459 | Shouse | Love Tonight (Edit)
+T3460 | Shy High | formula (feat. Garrett Sparrow)
+T3461 | Shy High | independent films
+T3462 | Sidney Bechet | Blues in Thirds
+T3463 | Sidney Bechet | Embraceable You
+T3464 | Sidney Bechet | I Got Rhythm
+T3465 | Sidney Bechet | I've Found a New Baby
+T3466 | Sidney Bechet | King Porter Stomp
+T3467 | Sidney Bechet | Nuages
+T3468 | Sidney Bechet | On the Sunny Side of the Street
+T3469 | Sidney Bechet | Petite Fleur (Live - Remastered)
+T3470 | Sidney Bechet | Rose de Picardie
+T3471 | Sidney Bechet | Stormy Weather
+T3472 | Sidney Bechet | Sweet Georgia Brown
+T3473 | Sidney Bechet | Who's Sorry Now?
+T3474 | Silva | Fica Tudo Bem
+T3475 | Simon & Garfunkel | The Sound of Silence (Acoustic Version)
+T3476 | Sir Piers | Don't You Love Me [Original Full Length Main Mix] (feat. Monique Bingham)
+T3477 | Sixth Station Trio | Great Fairy Fountain (From "The Legend of Zelda: Skyward Sword")
+T3478 | Sköne | À la poursuite d'un oiseau bleu
+T3479 | Sligo | Aurora (DJ IBON Remix)
+T3480 | Sly & The Family Stone | If You Want Me to Stay
+T3481 | Sly, Slick & Wicked | Sho' Nuff
+T3482 | Smino | Z4L
+T3483 | Smockey | Le Président, Ma Moto Et Moi
+T3484 | Snarky Puppy | Lingus
+T3485 | Sneazzy | SANG FROID (feat. Laylow)
+T3486 | Snoh Aalegra | Nothing Burns Like The Cold (feat. Vince Staples)
+T3487 | Snoop Dogg | Gin and Juice
+T3488 | Snoop Dogg | Let's Get Blown
+T3489 | Snoop Dogg | Mulholland Drive
+T3490 | Snowy White | How Was It for You
+T3491 | Snowy White | Midnight Blues
+T3492 | Sofiane Pamart | FOREVER
+T3493 | Sofiane Pamart | Medellin
+T3494 | Sofiane Pamart | SOLITUDE
+T3495 | Sofiane Pamart | They Said I Was « Just A Musician »
+T3496 | sofiane salamane | LIYEH LIYEH (Live)
+T3497 | Solar House | Got 2 B U
+T3498 | Soldiers Of Twilight | Believe (Extended Mix)
+T3499 | Soldiers Of Twilight | Ready E
+T3500 | SoloGuitarSessions | Late Night Slow Blues Backing Track in C Minor / Guitar Jam – Into the Night
+T3501 | Solomun | Never Sleep Again (Keinemusik Remix)
+T3502 | Son Little | bbbaby
+T3503 | Sonia Rosa | The Shadow Of Your Smile
+T3504 | Sonny Clark | Come Rain Or Come Shine (feat. John Coltrane)
+T3505 | Sonny Clark | News For Lulu (feat. John Coltrane)
+T3506 | Sonny Clark | Sonny's Crib (Alternate Take)
+T3507 | Sonny Clark | Sonny's Crib (feat. John Coltrane)
+T3508 | Sonny Clark | Speak Low (Alternate Take) (feat. John Coltrane)
+T3509 | Sonny Clark | Speak Low (feat. John Coltrane)
+T3510 | Sonny Clark | With A Song In My Heart (Alternate Take)
+T3511 | Sonny Clark | With A Song In My Heart (feat. John Coltrane)
+T3512 | Sopico | Bonne étoile
+T3513 | Sopico | Le hasard ou la chance (Colors Version)
+T3514 | Sopico | Unplugged #4: La nuit
+T3515 | Sopico | Unplugged #5: Robotique
+T3516 | Soul Button | Paramour
+T3517 | Soul Keita | Democracy, I Was Thirsty (Orginal Mix) (feat. Nicolas Jaar)
+T3518 | Soul Keita | Dusties n' 808s
+T3519 | Soul Saver | Another Day
+T3520 | Soulsearcher | Can't Get Enough! (Prunk Remix)
+T3521 | Soulstance | Blue Grassland
+T3522 | Space Dimension Controller | Early Steps
+T3523 | Spandau Ballet | True
+T3524 | Sparkle | What About
+T3525 | Specter | Windtalker
+T3526 | Spider ZED | envie de rien
+T3527 | Spinall | Sere
+T3528 | Spirit of Ecstasy | Ateyaba - metacultivation
+T3529 | Squall p | Amsterdame
+T3530 | Squall p | CALLIGRAPHIE
+T3531 | Squall p | GRAND GALA
+T3532 | Squall p | Nova
+T3533 | Squall p | PALIER BOUGAINVILLE
+T3534 | Squall p | Rolli
+T3535 | Stan Getz | Aguas de Marco
+T3536 | Stan Getz | Autumn Leaves (Live)
+T3537 | Stan Getz | Corcovado (Quiet Nights Of Quiet Stars) (feat. Astrud Gilberto & Antonio Carlos Jobim)
+T3538 | Stan Getz | Desafinado
+T3539 | Stan Getz | Doralice (feat. Antonio Carlos Jobim)
+T3540 | Stan Getz | É Preciso Perdoar
+T3541 | Stan Getz | O Grande Amor (feat. Antonio Carlos Jobim)
+T3542 | Stan Getz | Para Machuchar Meu Coracao
+T3543 | Stan Getz | Só Danço Samba
+T3544 | Stan Getz | The Girl From Ipanema (feat. Astrud Gilberto & Antonio Carlos Jobim)
+T3545 | Stan Getz | Vivo Sonhando (feat. Antonio Carlos Jobim)
+T3546 | Stan Getz | Wee (Allen's Alley)
+T3547 | Stanis | Fractal
+T3548 | Stanislav Stanchev | Concert - Harp and Piano / Sofia City Art Gallery
+T3549 | Stanislav Stanchev | Dark Eyes (Очи чёрные) / Piano Tutorial
+T3550 | Stavroz | Designer Eggs im Garten
+T3551 | Stavroz | Gold Town
+T3552 | Stavroz | Great Day to Fly a Kite
+T3553 | Stavroz | The Finishing
+T3554 | Stavroz | The Finishing (Viken Arman Remix)
+T3555 | Stavroz | The Ginning
+T3556 | Stazzia | You Can't Stop the Groove
+T3557 | Steely Dan | Godwhacker
+T3558 | Steely Dan | Green Earrings (2025 Remaster)
+T3559 | Stef Mendesidis | Spectral Transmission
+T3560 | Stef Mendesidis | Techno
+T3561 | Stefan Schilli | Oboe Concerto in C Major, RV 452: II. Adagio
+T3562 | Stela | Piece of soul
+T3563 | Stelvio Cipriani | Libidine (#8)
+T3564 | Stelvio Cipriani | Mary's Theme
+T3565 | Stephan Bodzin | Collider
+T3566 | Stephan Bodzin | Singularity
+T3567 | Steve Lacy | Atomic Vomit
+T3568 | Steve Spacek | Waiting 4 You
+T3569 | STEVIE RAY VAUGHAN | Big Tex Blues
+T3570 | Stevie Wonder | Don't You Worry 'Bout A Thing
+T3571 | Stevie Wonder | Ebony Eyes
+T3572 | Stevie Wonder | Part-Time Lover
+T3573 | Stevie Wonder | Skeletons
+T3574 | Stevie Wonder | Summer Soft
+T3575 | Stevie Wonder | Too High
+T3576 | Stimming | Bright Star (Sunset Mix)
+T3577 | Stimming | Prepare
+T3578 | Sting | Shape Of My Heart
+T3579 | Stormy | Africain
+T3580 | Strath | Mutual Attraction
+T3581 | Stress | Rude Gal
+T3582 | Studio Apartment | 10 Flight [Nulife Vocal Mix] (feat. Monique Bingham)
+T3583 | Sublime | baume
+T3584 | Submorphics | Long Been Gone
+T3585 | Suchmos | PINKVIBES
+T3586 | Sunbear | Rhythm of Our Souls
+T3587 | Super Guitar Bros | Fairy Fountain
+T3588 | SuperMegaSuperCool Révolution | Full Shine Render
+T3589 | Superstar Prince Aziz | Batman
+T3590 | Supertramp | A Soapbox Opera (Live At Pavillon de Paris/1979)
+T3591 | Supertramp | Ain't Nobody But Me (Live At Pavillon de Paris/1979)
+T3592 | Supertramp | Asylum (Live At Pavillon de Paris/1979)
+T3593 | Supertramp | Bloody Well Right (Live At Pavillon de Paris/1979)
+T3594 | Supertramp | Child Of Vision
+T3595 | Supertramp | Crime Of The Century (Live At Pavillon de Paris/1979)
+T3596 | Supertramp | Dreamer (Live At Pavillon de Paris/1979)
+T3597 | Supertramp | From Now On (Live At Pavillon de Paris/1979)
+T3598 | Supertramp | Goodbye Stranger
+T3599 | Supertramp | Hide In Your Shell (Live At Pavillon de Paris/1979)
+T3600 | Supertramp | Rudy (Live At Pavillon de Paris/1979)

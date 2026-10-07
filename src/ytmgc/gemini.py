@@ -359,35 +359,44 @@ def build_complete(summary, tracks: dict, plan=None) -> tuple[str, list[Row]]:
 
 
 RETRY = """\
-Merci. Mais dans certains de tes messages, la numérotation a glissé : tu as
-sauté ou répété un titre, puis continué à numéroter, si bien que chaque
-numéro a reçu la playlist de son voisin (par exemple {example}).
+Dans certains de tes messages, la numérotation a glissé : tu as sauté ou
+répété un titre, puis continué à numéroter, si bien que chaque numéro a reçu
+la playlist de son voisin (par exemple {example}).
 
-Refais le classement des titres ci-dessous, et seulement eux, avec
-exactement la même liste de playlists que dans ta réponse (ne la change pas,
-ne la recopie pas). Cette fois, recopie sur chaque ligne l'artiste et le
-titre, tels qu'ils sont écrits ici :
+Reclasse les {count} titres ci-dessous, et seulement eux ({first} à {last}),
+dans tes playlists — les voici, recopie leur nom à l'identique :
+
+{playlists}
+- (aucune) — seulement pour ce qui n'est pas de la musique
+
+Chaque ligne a CINQ colonnes : numéro, artiste et titre recopiés tels
+qu'ils sont écrits ici, PUIS LE NOM DE LA PLAYLIST, puis le genre précis.
+La playlist est obligatoire : une ligne sans playlist est perdue.
 
 ```
 CLASSEMENT
-T0601 | artiste | titre | Nom exact de la playlist | genre précis trouvé
+{first} | artiste | titre | Nom exact de la playlist | genre précis trouvé
 ```
 
 Environ 300 titres par message, dans un bloc de code qui commence par
 CLASSEMENT ; on t'écrira « continue ». Une ligne par titre, sans en sauter
-ni en répéter. Après le dernier, une ligne FIN.
+ni en répéter. Après le dernier ({last}), une ligne FIN.
 
-LES TITRES À RECLASSER ({count})
+LES TITRES À RECLASSER
 
 {lines}
 """
 
 
-def build_retry(rows: dict[str, Row], ids: list[str], example: str) -> str:
+def build_retry(rows: dict[str, Row], ids: list[str], example: str,
+                playlists: list[str] = ()) -> str:
     """Le message qui redemande le classement de certains titres, avec
-    artiste et titre recopiés sur chaque ligne pour qu'aucun numéro ne glisse."""
+    artiste et titre recopiés sur chaque ligne pour qu'aucun numéro ne glisse,
+    et la liste des playlists à utiliser."""
     lines = [" | ".join([i, _clean(rows[i].artist), _clean(rows[i].title)]) for i in ids]
-    return RETRY.format(example=example, count=len(ids), lines="\n".join(lines))
+    return RETRY.format(example=example, count=len(ids), first=ids[0], last=ids[-1],
+                        playlists="\n".join(f"- {name}" for name in playlists),
+                        lines="\n".join(lines))
 
 
 def save_rows(rows: list[Row], path: str | Path) -> None:

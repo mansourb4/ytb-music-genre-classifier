@@ -388,6 +388,7 @@ def test_a_line_whose_number_drifted_is_put_back_on_its_track():
 
 
 def test_a_retry_lists_the_tracks_to_classify_again():
-    text = gemini.build_retry(ROWS, ["T0002", "T0003"], "un exemple")
+    text = gemini.build_retry(ROWS, ["T0002", "T0003"], "un exemple", ["Jazz · Groove"])
     assert "T0002 | Herbie Hancock | Watermelon Man\nT0003 | Weather Report | Birdland" in text
-    assert "un exemple" in text and "(2)" in text and "T0001" not in text.split("(2)")[1]
+    assert "un exemple" in text and "les 2 titres" in text and "(T0002 à T0003)" in text
+    assert "- Jazz · Groove" in text and "T0001" not in text
