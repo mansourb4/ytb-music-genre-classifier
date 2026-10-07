@@ -199,7 +199,7 @@ def test_the_shipped_plan_is_valid():
         ("Folk & World", "Ethio-Jazz", "Groovy", "Jazz · Ethio-jazz"),
         ("Funk & Soul", "Afrobeat", "Groovy", "Funk · Afrobeat"),
         ("Pop", "Afrobeats", "Festif", "Afrique · Afrobeats & amapiano"),
-        ("Jazz", "Latin Jazz", "Groovy", "Jazz · Latin jazz"),
+        ("Jazz", "Latin Jazz", "Groovy", "Jazz · Fusion brésilienne & latine"),
         ("Latin", "Salsa", "Festif", "Latino · Salsa & latin soul"),
         ("Latin", "Flamenco", "Festif", "Folk · Flamenco & tsigane"),
         ("Reggae", "Roots Reggae", "Groovy", "Caraïbes · Reggae, dub & dancehall"),

@@ -176,8 +176,8 @@ styles = ["Dancehall", "Dub"]
 # ------------------------------------------------------------ autres styles
 
 [[playlist]]
-nom = "Jazz · Latin jazz"
-description = "Jazz afro-cubain et latin, quel que soit le genre donné par le verdict."
+nom = "Jazz · Fusion brésilienne & latine"
+description = "Jazz-funk et fusion aux couleurs brésiliennes, bossa en big band et quelques standards afro-cubains."
 styles = ["Latin Jazz"]
 
 [[playlist]]
