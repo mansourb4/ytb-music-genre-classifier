@@ -22,8 +22,9 @@ de l'orthographe d'un titre.
 Ce que l'utilisateur a décidé lui-même — déplacement, verdict validé — est
 marqué « [fixé] » et n'est jamais déplacé, sauf si sa playlist disparaît.
 
-Le tri complet (`build_complete`) va plus loin : Gemini ne reçoit que la
-liste des titres, sans playlists ni règles, invente ses propres playlists et
+Le tri complet (`build_complete`) va plus loin : Gemini reçoit la liste des
+titres et, en simple inspiration, les playlists actuelles — sans savoir quel
+titre est où ni par quelle règle. Il fait ses propres playlists et
 range chaque titre — y compris ceux fixés à la main. Sa réponse remplace
 DEPLACEMENTS par CLASSEMENT, une ligne par titre ; chaque titre classé reçoit
 un déplacement, même s'il reste où il était : c'est Gemini qui l'a rangé.
@@ -32,6 +33,7 @@ un déplacement, même s'il reste où il était : c'est Gemini qui l'a rangé.
 from __future__ import annotations
 
 import re
+from collections import Counter
 from dataclasses import dataclass, field
 from pathlib import Path
 
@@ -253,8 +255,12 @@ Ce qu'elle attend de ses playlists :
 - comprendre ce qu'elle écoute : le nom d'une playlist dit ce qu'on y entend ;
 - garder la même vibe du premier au dernier titre d'une playlist.
 
-Tu as carte blanche : aucune playlist n'existe d'avance, crée-en autant que
-nécessaire, de la taille que tu veux, nommées comme tu veux. Pour trouver le
+Tu as carte blanche : crée autant de playlists que nécessaire, de la taille
+que tu veux, nommées comme tu veux. Inspire-toi des playlists actuelles de la
+personne, listées plus bas avec quelques-uns de leurs artistes : elles disent
+comment elle aime découper sa musique. Reprends celles qui sonnent juste
+(sous leur nom exact), améliore, fusionne ou coupe les autres, oublie celles
+qui ne tiennent pas, invente celles qui manquent. Pour trouver le
 genre de chaque titre, utilise internet et toutes les sources utiles
 (Discogs, MusicBrainz, AllMusic, Wikipédia, Rate Your Music, Last.fm,
 Bandcamp, YouTube…) plutôt que de deviner, surtout pour les artistes peu
@@ -299,8 +305,28 @@ Règles du format :
 """
 
 
-def build_complete(summary, tracks: dict) -> tuple[str, list[Row]]:
-    """Le prompt du tri complet : tous les titres, et rien de ce qui a été fait.
+def _inspiration(summary, plan) -> list[str]:
+    """Les playlists actuelles, en exemples : nom, taille, description, artistes."""
+    written = plan.by_key() if plan is not None else {}
+    lines = []
+    for playlist in summary.playlists:
+        rules = written.get(playlist.key)
+        artists = Counter(t.main_artist or t.artist for t in playlist.tracks)
+        line = f"- {playlist.name} ({len(playlist.tracks)} titres)"
+        if rules and rules.description:
+            line += f" : {_clean(rules.description)}"
+        top = ", ".join(_clean(a) for a, _ in artists.most_common(INSPIRATION_ARTISTS))
+        lines.append(line + (f" — ex. {top}" if top else ""))
+    return lines
+
+
+#: Artistes cités en exemple pour chaque playlist actuelle.
+INSPIRATION_ARTISTS = 6
+
+
+def build_complete(summary, tracks: dict, plan=None) -> tuple[str, list[Row]]:
+    """Le prompt du tri complet : tous les titres, et les playlists actuelles en
+    simple inspiration — sans dire quel titre est où, ni par quelle règle.
 
     Les titres écartés par l'utilisateur (« (aucune) ») restent hors du prompt :
     il ne les veut dans aucune playlist.
@@ -321,7 +347,9 @@ def build_complete(summary, tracks: dict) -> tuple[str, list[Row]]:
     ordered = sorted(found.values(), key=lambda t: (fold(t[0]), fold(t[1])))
     rows = [Row(f"T{i:04d}", a, t, p) for i, (a, t, p) in enumerate(ordered, start=1)]
     lines = [" | ".join([r.id, _clean(r.artist), _clean(r.title)]) for r in rows]
+    inspiration = _inspiration(summary, plan)
     prompt = "\n".join([COMPLETE_INTRO.format(count=len(rows)), COMPLETE_FORMAT,
+                        "PLAYLISTS ACTUELLES, POUR T'EN INSPIRER", "", *inspiration, "",
                         "LES TITRES", "", *lines, "", COMPLETE_FORMAT])
     return prompt, rows
 

@@ -641,7 +641,7 @@ def cmd_gemini_export(args: argparse.Namespace, config: Config) -> int:
                                        placements.load(config.taxonomy.placements_file))
     library = {t.video_id: t for t in repository.all_tracks()}
     if args.complet:
-        prompt, rows = gemini.build_complete(summary, library)
+        prompt, rows = gemini.build_complete(summary, library, plan)
     else:
         prompt, rows = gemini.build(summary, plan, library, fixed)
     folder = Path(args.dossier)
@@ -797,7 +797,7 @@ def build_parser() -> argparse.ArgumentParser:
         "gemini-exporte", help="Écrire le prompt de révision complète pour Gemini")
     gem_export.add_argument("--dossier", default="gemini")
     gem_export.add_argument("--complet", action="store_true",
-                            help="Tri complet : Gemini range tout, sans playlists ni règles")
+                            help="Tri complet : Gemini range tout, inspiré des playlists actuelles")
     gem_export.set_defaults(func=cmd_gemini_export)
 
     gem_import = subparsers.add_parser(

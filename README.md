@@ -517,9 +517,10 @@ jamais déplacé, sauf si sa playlist disparaît ; une playlist oubliée dans la
 réponse n'est supprimée que si tous ses titres ont une nouvelle place. Tout passe par git :
 `git diff` montre ce qui a changé, `git checkout -- config data` l'annule.
 
-**Tri complet par Gemini — repartir de zéro.** Avec `--complet`, Gemini ne
-reçoit que la liste des titres, sans playlists ni règles : il crée ses propres
-playlists, cherche le genre de chaque titre sur internet et range tout, même
+**Tri complet par Gemini — repartir de zéro.** Avec `--complet`, Gemini
+reçoit la liste des titres et, pour s'en inspirer, tes playlists actuelles
+(nom, description, quelques artistes) — sans règles ni place des titres : il
+garde celles qui sonnent juste, refait les autres, crée les siennes, cherche le genre de chaque titre sur internet et range tout, même
 ce que tu avais placé ou validé (seuls les titres écartés restent écartés) :
 
 ```bash

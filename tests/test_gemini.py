@@ -315,13 +315,16 @@ def test_a_complete_sort_reports_the_tracks_it_forgot():
     assert "Jazz · Jazz-funk" not in change.deleted and "Jazz · Fusion" not in change.deleted
 
 
-def test_the_complete_prompt_lists_tracks_only(library, config):
+def test_the_complete_prompt_lists_tracks_and_current_playlists_as_examples(library, config):
     summary = preview(library, config)
-    prompt, rows = gemini.build_complete(summary, {})
+    plan = load_plan(config.taxonomy.playlists_file, TAXONOMY)
+    prompt, rows = gemini.build_complete(summary, {}, plan)
     assert [(r.id, r.title) for r in rows] == [
         ("T0001", "Chameleon"), ("T0002", "Watermelon Man"), ("T0003", "Birdland")]
     assert "T0003 | Weather Report | Birdland\n" in prompt
-    assert "Jazz · Fusion" not in prompt and "Règle :" not in prompt
+    # Les playlists actuelles servent d'exemples, sans dire quel titre y est.
+    assert "- Jazz · Fusion (1 titres) : Fusion électrique. — ex. Weather Report" in prompt
+    assert "Inspire-toi" in prompt and "Règle :" not in prompt
     assert "internet" in prompt and "CLASSEMENT" in prompt
 
 

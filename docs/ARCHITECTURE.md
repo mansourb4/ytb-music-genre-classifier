@@ -785,9 +785,12 @@ compris sur la liste des playlists elles-mêmes.
   entrée, la réponse s'essouffle. `build(only=…)` ne liste les titres que de
   certaines playlists — les autres sont nommées, pour rester des cibles — et
   une même table de numéros sert à toutes les parties.
-* **Le tri complet repart de zéro** (`gemini-exporte --complet`). Gemini ne
-  reçoit que « numéro | artiste | titre », triés par artiste : ni playlists,
-  ni règles, ni verdicts, ni limite de taille. Il invente ses playlists, cherche
+* **Le tri complet repart de zéro** (`gemini-exporte --complet`). Gemini
+  reçoit « numéro | artiste | titre », triés par artiste, et les playlists
+  actuelles en simple inspiration (nom, taille, description, six artistes) :
+  ni quel titre est où, ni règles, ni verdicts, ni limite de taille. Il
+  reprend sous leur nom exact celles qui sonnent juste — elles gardent alors
+  leurs règles —, refait ou oublie les autres, invente les siennes, cherche
   le genre de chaque titre en ligne et range tout, titres fixés compris ; seuls
   les titres écartés à la main restent hors du prompt. Sa section CLASSEMENT
   donne une ligne par titre (`T0042 | playlist | genre trouvé`, le genre n'est

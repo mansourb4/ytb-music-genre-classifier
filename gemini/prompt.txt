@@ -5,8 +5,12 @@ Ce qu'elle attend de ses playlists :
 - comprendre ce qu'elle écoute : le nom d'une playlist dit ce qu'on y entend ;
 - garder la même vibe du premier au dernier titre d'une playlist.
 
-Tu as carte blanche : aucune playlist n'existe d'avance, crée-en autant que
-nécessaire, de la taille que tu veux, nommées comme tu veux. Pour trouver le
+Tu as carte blanche : crée autant de playlists que nécessaire, de la taille
+que tu veux, nommées comme tu veux. Inspire-toi des playlists actuelles de la
+personne, listées plus bas avec quelques-uns de leurs artistes : elles disent
+comment elle aime découper sa musique. Reprends celles qui sonnent juste
+(sous leur nom exact), améliore, fusionne ou coupe les autres, oublie celles
+qui ne tiennent pas, invente celles qui manquent. Pour trouver le
 genre de chaque titre, utilise internet et toutes les sources utiles
 (Discogs, MusicBrainz, AllMusic, Wikipédia, Rate Your Music, Last.fm,
 Bandcamp, YouTube…) plutôt que de deviner, surtout pour les artistes peu
@@ -46,6 +50,90 @@ Règles du format :
   « rap français cloud »).
 - N'écris jamais « | » dans un nom, une description ou un genre.
 - Ne change pas la liste des playlists en cours de route.
+
+PLAYLISTS ACTUELLES, POUR T'EN INSPIRER
+
+- Brésil · Bossa nova (61 titres) : Bossa nova, qu'elle vienne du Brésil, du jazz ou d'une musique de film. — ex. Stan Getz, Quincy Jones, Joao Gilberto, Luiz Bonfá, João Gilberto, Herbie Mann
+- Brésil · Samba & groove (45 titres) : Samba, MPB qui danse et groove brésilien des années 70-80. — ex. Ana Mazzotti, Seu Jorge, João Bosco, Novos Baianos, Affonsinho, Almir Guinéto
+- Brésil · MPB douce (47 titres) : Musique populaire brésilienne calme ou mélancolique : la saudade. — ex. Lucas Santtana, Mariana Froes, Ana Mazzotti, Arthur Verocai, Chico Buarque, Dora Morelenbaum
+- Maghreb · Gnawa (28 titres) : Transe gnaoua : guembri, qraqeb et chants responsoriaux, du rituel à la fusion. — ex. Hassan Boussou, Maalem Mahmoud Gania, Maalem Mahmoud Guinia, Majid Bekkas, Boiler Room, Electric Jalaba
+- Funk · Funk arabe des années 70 (20 titres) : Funk, orgue et synthés du Maghreb et du Liban des années 70-80. — ex. Abdou El Omari, Ahmed Fakroun, Ziad Rahbani, Carthago, Ahmed Malek, Douaa
+- Maghreb · Raï & chaâbi (14 titres) : Raï, chaâbi, chanson kabyle et chansons de fête. — ex. Cheb, Labess, CHEIKHA RIMITTI, Khaled, Mohamed Allaoua, Mohamed Lamouri
+- Maghreb · Traditions (10 titres) : Chants et percussions des oasis marocaines, folk berbère. — ex. Compagnie El Hamri, Compagnie El Hashemi Nhass, Compagnie Jellouili & Ghih, Compagnie Meskaoui, Aber Sabeel, Hindi Zahra
+- Orient · Oud & taqsim (6 titres) : Oud et improvisations sur les maqâms : musique savante instrumentale. — ex. Munir Bachir, Abdallah Chahine, Naseer Shamma, Riyad Sunbati, Ziad Rahbani
+- Orient · Pop arabe (13 titres) : Al jeel et pop arabe dansante. — ex. Hamid El Shaeri, Hameed El Shaery, Bedouin Burger, Hamed Al Shaeri, Hamid El Sha'ery, Hamid El Shaeri - حميد الشاعري
+- Orient · Fairouz, tarab & chanson (36 titres) : Fairouz et les Rahbani, Warda, Marcel Khalife : la grande chanson arabe, tendre et nostalgique. — ex. Fairuz, El Shab Arrab, Fairouz, Marcel Khalife, Warda El Gazaerya, CHAAMA
+- Jazz · Ethio-jazz (14 titres) : Le jazz éthiopien de Mulatu Astatke et de l'âge d'or d'Addis-Abeba. — ex. Mulatu Astatke, Feqadu Amde-mesqel, Girma Hadgu
+- Afrique · Folk, blues & mandingue (12 titres) : Guitares mandingues, blues touareg, morna, semba : l'Afrique acoustique. — ex. Blick Bassy, N'Gou Bagayoko, 3MA, Amadou & Mariam, Bonga, Cesária Evora
+- Funk · Afrobeat (7 titres) : Afrobeat et highlife : cuivres, polyrythmies et transe funk, de Fela à Kokoroko. — ex. Fela Kuti, 2666 - The Art Of Listening, David Walters, Ice, Orgone
+- Afrique · Afrobeats & amapiano (10 titres) : Afrobeats, afroswing et amapiano : la pop africaine d'aujourd'hui. — ex. Burna Boy, CKay, Dave, Kokoroko, Kouz1, Rema
+- Caraïbes · Reggae, dub & dancehall (8 titres) : Roots reggae, dub, lovers rock, dancehall, ragga et le zouk des Antilles. — ex. Amy Winehouse, Bob Marley & The Wailers, David Martial, Elephant Man, Flavia Coelho, Free Nationals
+- Jazz · Latin jazz (21 titres) : Jazz afro-cubain et latin, quel que soit le genre donné par le verdict. — ex. Masayoshi Takanaka, Quincy Jones, Ana Mazzotti, Cesar Camargo Mariano, Azymuth, Earth, Wind & Fire
+- Soul · R&B & neo soul groovy (41 titres) : R&B contemporain et neo soul qui groovent. — ex. Free Nationals, Amy Winehouse, GeeJay, Jungle, Peven Everett, Qendresa
+- Soul · R&B & neo soul posés (48 titres) : R&B et neo soul calmes, langoureux ou mélancoliques. — ex. Quincy Jones, Dalí, Gotts Street Park, Thundercat, 4batz, Anita Baker
+- Pop · Variété française (34 titres) : Chanson et variété françaises. — ex. Charles Aznavour, Dany Brillant, Eva sur Seine, Joe Dassin, Sacha Distel, Yves Montand
+- Jazz · Jazz-funk & groove (141 titres) : Jazz-funk, soul-jazz, acid jazz, et la fusion quand elle groove. — ex. Masayoshi Takanaka, Quincy Jones, Premier Contact, Jamiroquai, Jiro Inagaki and His Soul Media, Cesar Camargo Mariano
+- Rock · Psyché & prog nerveux (28 titres) : Rock psychédélique et progressif qui pousse : riffs, tension, groove lourd. — ex. Demon Fuzz, King Crimson, Radiohead, Supertramp, The Alan Parsons Project, Altin Gün
+- Rock · Psyché & prog rêveur (40 titres) : Rock psychédélique et progressif planant, contemplatif ou mélancolique. — ex. Radiohead, Pink Floyd, Supertramp, King Crimson, Tame Impala, The Alan Parsons Project
+- Rap · FR énergique (113 titres) : Rap francophone qui cogne : trap, drill et boom bap énergiques, sons de fête. — ex. Nekfeu, Josman, JUL, 8ruki, Alpha Wann, Roméo Elvis
+- Rap · FR sombre (109 titres) : Rap francophone sombre : trap et drill menaçantes, boom bap noir. — ex. Laylow, Damso, Josman, Nekfeu, Népal, SCH
+- Rap · FR groovy (115 titres) : Rap francophone décontracté et chaloupé, pour hocher la tête. — ex. Roméo Elvis, Josman, Hamza, JeanJass, Le Dé, Furlax
+- Rap · FR introspectif (162 titres) : Rap à texte sur le sens de la vie, la famille, le doute. — ex. Nekfeu, Damso, B.B. Jacques, Népal, Roméo Elvis, Luidji
+- Rap · US (121 titres) : Rap américain et canadien. — ex. Kendrick Lamar, Tyler, The Creator, Boldy James, Mac Miller, Jack Harlow, MF DOOM
+- Rap · UK (38 titres) : Rap britannique et irlandais : grime, drill UK, rap londonien. — ex. LAUSSE THE CAT, Sainte, Knucks, Kofi Stone, Pinty, Rejjie Snow
+- Rap · Maghreb (28 titres) : Rap marocain, algérien et tunisien. — ex. ElGrandeToto, Issam, ISSAM, Draganov, HARIS HAMZA, L’morphine
+- Rap · Ailleurs (24 titres) : Rap d'Italie, d'Allemagne, d'Espagne, du Japon, du Mexique… — ex. Frah Quintale, Nicola Armellin, TALE$, Tamango, Al Nather, Bb trickz
+- Rap · Pays à préciser (27 titres) : Rap dont l'artiste n'a pas encore de pays. — ex. 2nd Exit, D.H.C., Deema, Didaem, Do Your Thang, Don. G
+- Électro · Deep house vocale (139 titres) : Deep house new-yorkaise et soulful, chantée et chaleureuse. — ex. Free is in Da House, Kerri Chandler, Blue Six, Moodymann, Fresh & Low, Louie Vega
+- Électro · Deep house planante (117 titres) : Deep house rêveuse, calme ou nocturne. — ex. DaRand Land, Blue Six, Black Jazz Consortium, Alain Ho, &ME, Ron Trent
+- Électro · House (132 titres) : House classique, garage et afro house. — ex. Daft Punk, DJ Fudge, Hardsoul, Afro Medusa, Breakfast TILT, Channel Tres
+- Électro · Techno percutante (77 titres) : Techno, tech house et progressive qui frappent : pour la piste. — ex. Laurent Garnier, Alpha Tracks, Altinbas, Human Safari, Martin Buttrich, Narciss
+- Électro · Techno hypnotique (76 titres) : Techno mélodique, minimale et dub techno : boucles qui planent. — ex. NTO, Tal Fussman, Ignez, David August, Guy Gerber, Kollektiv Turmstrasse
+- Électro · Nu-disco & synth (90 titres) : Nu-disco, italo, synth-pop et synthwave. — ex. Daft Punk, L'Impératrice, Yuksek, Frankie Goes To Hollywood, Alastair Lane, Crazy P
+- Électro · Broken beat & nu jazz (26 titres) : Broken beat, nu jazz et UK garage : rythmes cassés et chaleur jazz-soul. — ex. Al Dobson Jr, Loure, Dan Kye, Duke Hugh, Okvsho, Andrew Ashong
+- Électro · Breaks & drum'n'bass (21 titres) : Breakbeat, electro, jungle, drum & bass et footwork : rapide et nerveux. — ex. Driss Bennis, Daft Punk, Alix Perez, Alpha Tracks, Detroit's Filthiest, DRS
+- Électro · Ambient & nappes (81 titres) : Ambient, drone et downtempo planants : nappes, espace, apesanteur. — ex. Nicolas Jaar, Ron Trent, Daft Punk, Acid Pauli, Air, Kerala Dust
+- Électro · Downtempo chill (75 titres) : Downtempo, trip hop et lounge : calme, mélancolique ou doucement groovy. — ex. Daft Punk, kuribo98, Melodiesinfonie, Nicolas Jaar, rebug, Ron Trent
+- Électro · Expérimental & IDM (11 titres) : IDM, glitch, leftfield et électronique expérimentale. — ex. Nicolas Jaar, Burnt Friedman, Daft Punk, Emptyset, LudoWic, NightCrawl
+- Jazz · Fusion énergique (66 titres) : Jazz électrique et jazz-rock virtuoses : ça joue vite et fort. — ex. Masayoshi Takanaka, Jean-Luc Ponty, Cos, Miles Davis, CASIOPEA, Cesar Camargo Mariano
+- Jazz · Fusion planante (59 titres) : Fusion aérienne : claviers, nappes et grooves lents. — ex. Masayoshi Takanaka, Jean-Luc Ponty, Azymuth, Miles Davis, Goro Noguchi, Herbie Hancock
+- Jazz · Bop qui swingue (97 titres) : Bebop, hard bop et post-bop énergiques. — ex. Miles Davis, Paul Chambers, Jacques Loussier, Miles Davis (trumpet), Barney Wilen (tenor sax), Rene Urtreger (piano), Pierre Michelot (bass), Kenny Clarke (drums), Sonny Clark, Dizzy Gillespie
+- Jazz · Bop & cool nocturne (67 titres) : Cool jazz, modal et bop lents : le jazz de fin de soirée. — ex. Miles Davis (trumpet), Barney Wilen (tenor sax), Rene Urtreger (piano), Pierre Michelot (bass), Kenny Clarke (drums), Vince Guaraldi Trio, Jacques Loussier, Miles Davis, Chet Baker, Johnny Smith
+- Jazz · Spiritual jazz (45 titres) : Jazz spirituel, third stream et jazz aventureux. — ex. Kamasi Washington, Floating Points, Lonnie Liston Smith, Herbie Hancock, Kool & The Gang, Ahmed Sirour
+- Jazz · Smooth & groovy (24 titres) : Smooth jazz et jazz contemporain qui groovent. — ex. Four80east, George Benson, Masayoshi Takanaka, André Navarro II, Athletic Progression, Cal Harris Jr.
+- Jazz · Contemporain (48 titres) : Jazz d'aujourd'hui exigeant, mélancolique ou intense. — ex. Chassol, Marc Copland, Mathieu Fiset
+- Jazz · Vocal & ballades (79 titres) : Voix et ballades jazz, swing compris quand il ralentit. — ex. Wes Montgomery, Michel Petrucciani, Quincy Jones, Sidney Bechet, The Swingle Singers, Eddie Barclay
+- Jazz · Swing & big band (70 titres) : Swing, big band, dixieland et voix qui swinguent. — ex. The Swingle Singers, Quincy Jones, Eddie Barclay, Oscar Peterson Trio, Sidney Bechet, Michel Legrand
+- Jazz · Lounge & jazz d'ambiance (43 titres) : Lounge, smooth jazz calme, musiques d'illustration : le jazz d'ambiance. — ex. Piero Umiliani, Dana and Alden, Four80east, George Benson, Shigeo Sekito, Stelvio Cipriani
+- Soul · Soul groovy (68 titres) : Soul qui groove : Motown, Stax, soul psychédélique. — ex. Sade, Amy Winehouse, Stevie Wonder, Barry White, Bill Withers, Quincy Jones
+- Soul · Soul ballades (81 titres) : Ballades soul, voix déchirantes et slows. — ex. Sade, Quincy Jones, Amy Winehouse, Bill Withers, Khruangbin, Kool & The Gang
+- Funk · Funk, boogie & disco (105 titres) : Funk, boogie et disco. — ex. Quincy Jones, Kool & The Gang, Chic, Barry White, Dabeull, George Benson
+- Classique · Baroque vif (82 titres) : Baroque et classique allègres : allegros, fugues, concertos. — ex. Julia Cload, YUNDI, Rousseau, Maximilian Schairer, Alicia de Larrocha, Ana-Marija Markovina
+- Classique · Baroque lent (57 titres) : Baroque et classique lents : adagios, airs, largos. — ex. Julia Cload, YUNDI, Rousseau, Traum Piano, András Schiff, Budapest Strings
+- Classique · Romantique passionné (53 titres) : Romantisme tumultueux : virtuosité, orages, élans. — ex. TRAUM, YUNDI, Andreas Staier, Rousseau, Kassia, Vladimir Horowitz
+- Classique · Romantique tendre (73 titres) : Romantisme intime : nocturnes, romances, mélancolie. — ex. YUNDI, Andreas Staier, Rousseau, Khatia Buniatishvili, TRAUM, Traum Piano
+- Classique · Moderne tendu (37 titres) : Modernes et contemporains : tension, recherche, rythmes. — ex. Catherine Gordeladze, Varyk, Alfonso Peduto, Ivan Yanakov, Kaleidoscope Orchestra, NeedToWant - Piano
+- Classique · Moderne contemplatif (79 titres) : Impressionnisme, minimalisme et néo-classique contemplatifs : piano, nappes, Zimmer et Hisaishi. — ex. Chilly Gonzales, Rousseau, Catherine Gordeladze, Sofiane Pamart, Alexandre Tharaud, Daniel Kruglov
+- Pop · Indie & synth-pop dansante (26 titres) : Pop indépendante, synth-pop et new wave qui bougent. — ex. Frankie Goes To Hollywood, Varnish La Piscine, The Whitest Boy Alive, Amadou & Mariam, Angèle, Baby Dave
+- Pop · Indie & synth-pop douce (42 titres) : Pop indépendante, dream pop et synth-pop douces ou mélancoliques. — ex. Men I Trust, Cigarettes After Sex, Frankie Goes To Hollywood, Vendredi sur Mer, Apanhador Só, Bakar
+- Pop · City pop & disco (39 titres) : City pop japonaise, AOR et pop disco. — ex. Goro Noguchi, Makoto Matsushita, Masayoshi Takanaka, Pino D'Angiò, Shigeru Suzuki, Miki Matsubara
+- Pop · Ballades (31 titres) : Ballades pop, voix et piano. — ex. The Beatles, Julio Iglesias, Mina, Piero Piccioni, 10cc, Armando Trovajoli
+- Pop · Pop rock & pop dansante (7 titres) : Pop rock, europop et pop entraînante. — ex. 24kGoldn, Bratisla Boys, Frankie Goes To Hollywood, Juan Antonio Canta, Matia Bazar, Morten Harket
+- Rock · Blues qui groove (22 titres) : Blues électrique, texan, de Chicago, et blues rock qui balancent. — ex. T-Bone Walker, Albert King, Buddy Miles, Canned Heat, Dire Straits, Fenton Robinson
+- Rock · Blues mélancolique (17 titres) : Blues lents et mélancoliques. — ex. T-Bone Walker, Gary Moore, Snowy White, Breakout, Demon Fuzz, Fink
+- Rock · Rock énergique (33 titres) : Rock alternatif, indie et pop rock qui envoient. — ex. Radiohead, Red Hot Chili Peppers, Hoba Hoba Spirit, Supertramp, Cody・Lee(李), Dada
+- Rock · Rock doux & mélancolique (31 titres) : Rock alternatif et indie calmes ou mélancoliques. — ex. Red Hot Chili Peppers, Radiohead, Supertramp, The Alan Parsons Project, Arctic Monkeys, Colin Blunstone
+- Folk · Flamenco & tsigane (6 titres) : Guitares flamencas, rumba et airs tsiganes. — ex. C. Tangana, Christophe Lartilleux, LucasGitanoFamily, Opa Tsupa, Paco de Lucía, Yasmin Levy
+- Folk · Folk acoustique & traditions (18 titres) : Folk acoustique, chants traditionnels et guitares nues. — ex. Adrian Quesada, Beautiful Chorus, Bob Marley, Carlyle Fraser, Danit, Dilnaz Akhmadiyeva
+- Latino · Salsa & latin soul (9 titres) : Salsa, boogaloo, mambo, son cubain : les cuivres et les congas. — ex. Joe Bataan, Adolescent's Orquesta, Azùcar, Candido, Manu Dibango, Willie Colón
+- Latino · Reggaeton, cumbia & corridos (4 titres) : Musiques latines urbaines et dansantes d'aujourd'hui. — ex. Chino Pacas, CucaRafa, Nio Garcia, Rantseni
+- Latino · Boléro, tango & ballades (11 titres) : Boléros, rancheras, tango et ballades latines. — ex. C. Tangana, Camilo, Darviin, El Zar, Grupo RYE, Guillermo Portabales
+- Rap · FR posé (41 titres) : Rap francophone jazzy, lo-fi et contemplatif. — ex. Népal, Josman, Laylow, Nekfeu, Krisy, Ledé Markson
+- Rap · FR cloud & spleen (41 titres) : Cloud rap francophone vaporeux, ambiances nocturnes et autotune. — ex. PNL, Laylow, Luidji, Dinos, Hamza, J9ueve
+- Électro · Deep house instrumentale (154 titres) : Deep house brute, jazzy ou lo-fi, centrée sur le groove. — ex. Moodymann, Chaos In the CBD, Kerri Chandler, Ron Trent, Ben Hauke, berlioz
+- Rock · Symphonic rock (1 titres) : Rock aux cordes et à l'orchestre : mellotron, envolées symphoniques. — ex. Masayoshi Takanaka
+- Funk · Latin funk (1 titres) : Funk aux couleurs latines : congas, cuivres et basses rondes, du latin soul new-yorkais au groove brésilien des années 70. — ex. Masayoshi Takanaka
+- Rock · Yacht rock (6 titres) : Des grooves funk sophistiqués, des mélodies pop accrocheuses et une orchestration lisse (strings, cuivres, synths). Relax mais refiné. ✨ — ex. Chris Rainbow, Daft Punk, Ed Motta, Masayoshi Takanaka, Pages, Player
 
 LES TITRES
 
