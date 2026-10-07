@@ -21,6 +21,12 @@ de l'orthographe d'un titre.
 
 Ce que l'utilisateur a décidé lui-même — déplacement, verdict validé — est
 marqué « [fixé] » et n'est jamais déplacé, sauf si sa playlist disparaît.
+
+Le tri complet (`build_complete`) va plus loin : Gemini ne reçoit que la
+liste des titres, sans playlists ni règles, invente ses propres playlists et
+range chaque titre — y compris ceux fixés à la main. Sa réponse remplace
+DEPLACEMENTS par CLASSEMENT, une ligne par titre ; chaque titre classé reçoit
+un déplacement, même s'il reste où il était : c'est Gemini qui l'a rangé.
 """
 
 from __future__ import annotations
@@ -37,7 +43,7 @@ PROMPT_FILE = "prompt.txt"
 TRACKS_FILE = "pistes.tsv"
 FIXED = "[fixé]"
 
-SECTIONS = ("PLAYLISTS", "RENOMMAGES", "DEPLACEMENTS", "FIN")
+SECTIONS = ("PLAYLISTS", "RENOMMAGES", "DEPLACEMENTS", "CLASSEMENT", "FIN")
 _ID_RE = re.compile(r"^T\d{4,5}$")
 
 
@@ -239,6 +245,87 @@ def build(summary, plan, tracks: dict, fixed_keys: set[str], *,
     return prompt, rows
 
 
+COMPLETE_INTRO = """\
+Tu es musicologue. Voici toute la discothèque d'une personne : {count}
+titres. Range-la entièrement en playlists, comme tu l'entends.
+
+Ce qu'elle attend de ses playlists :
+- comprendre ce qu'elle écoute : le nom d'une playlist dit ce qu'on y entend ;
+- garder la même vibe du premier au dernier titre d'une playlist.
+
+Tu as carte blanche : aucune playlist n'existe d'avance, crée-en autant que
+nécessaire, de la taille que tu veux, nommées comme tu veux. Pour trouver le
+genre de chaque titre, utilise internet et toutes les sources utiles
+(Discogs, MusicBrainz, AllMusic, Wikipédia, Rate Your Music, Last.fm,
+Bandcamp, YouTube…) plutôt que de deviner, surtout pour les artistes peu
+connus. Tous les titres doivent être rangés ; un titre qui n'est pas de la
+musique (podcast, extrait de film, bruit…) peut aller dans « (aucune) ».
+
+Les titres sont triés par artiste, au format :
+
+    numéro | artiste | titre
+"""
+
+COMPLETE_FORMAT = """\
+FORMAT DE LA RÉPONSE — À RESPECTER À LA LETTRE
+
+Ta réponse sera lue par un programme. Elle se fait en plusieurs messages :
+la liste est trop longue pour un seul.
+
+Premier message : en quelques lignes, ta logique de rangement. Puis un bloc
+de code avec la liste COMPLÈTE de tes playlists, et le début du classement :
+
+```
+PLAYLISTS
+Nom de la playlist | description en une phrase de ce qu'on y entend
+
+CLASSEMENT
+T0001 | Nom exact de la playlist | genre précis trouvé
+T0002 | Nom exact de la playlist | genre précis trouvé
+```
+
+Arrête-toi après environ 600 titres, à la fin d'une ligne. On t'écrira
+« continue » : reprends au titre suivant, dans un nouveau bloc de code qui
+commence par CLASSEMENT, sans rien répéter. Quand le dernier titre est
+classé, termine le bloc par une ligne FIN.
+
+Règles du format :
+- Une ligne par titre, dans l'ordre des numéros, sans en sauter un seul.
+- Le nom de playlist est recopié à l'identique de ta section PLAYLISTS.
+- Le genre précis tient en quelques mots (« deep house », « bossa nova »,
+  « rap français cloud »).
+- N'écris jamais « | » dans un nom, une description ou un genre.
+- Ne change pas la liste des playlists en cours de route.
+"""
+
+
+def build_complete(summary, tracks: dict) -> tuple[str, list[Row]]:
+    """Le prompt du tri complet : tous les titres, et rien de ce qui a été fait.
+
+    Les titres écartés par l'utilisateur (« (aucune) ») restent hors du prompt :
+    il ne les veut dans aucune playlist.
+    """
+    from ytmgc.verdicts import main_artist
+
+    found: dict[str, tuple[str, str, str]] = {}
+    for playlist in summary.playlists:
+        for track in playlist.tracks:
+            artist = track.main_artist or track.artist
+            found.setdefault(entry_key(artist, track.title), (artist, track.title, playlist.name))
+    for entry in summary.unsorted:
+        track = tracks.get(entry["video_id"])
+        if entry.get("reason") == "kept_out" or track is None:
+            continue
+        found.setdefault(entry_key(main_artist(track), track.title),
+                         (main_artist(track), track.title, NOWHERE))
+    ordered = sorted(found.values(), key=lambda t: (fold(t[0]), fold(t[1])))
+    rows = [Row(f"T{i:04d}", a, t, p) for i, (a, t, p) in enumerate(ordered, start=1)]
+    lines = [" | ".join([r.id, _clean(r.artist), _clean(r.title)]) for r in rows]
+    prompt = "\n".join([COMPLETE_INTRO.format(count=len(rows)), COMPLETE_FORMAT,
+                        "LES TITRES", "", *lines, "", COMPLETE_FORMAT])
+    return prompt, rows
+
+
 def save_rows(rows: list[Row], path: str | Path) -> None:
     lines = ["# Numéros des titres du prompt Gemini : numéro | artiste | titre | playlist d'alors"]
     lines += ["\t".join([r.id, r.artist.replace("\t", " "), r.title.replace("\t", " "),
@@ -266,6 +353,8 @@ class Answer:
     renames: dict[str, str] = field(default_factory=dict)
     moves: dict[str, str] = field(default_factory=dict)
     finished: bool = False
+    #: Réponse au tri complet : chaque titre est classé, pas seulement déplacé.
+    complete: bool = False
 
 
 def _section(line: str) -> str | None:
@@ -288,6 +377,7 @@ def parse(text: str) -> Answer:
         if section:
             current = section
             answer.finished |= section == "FIN"
+            answer.complete |= section == "CLASSEMENT"
             continue
         if current == "PLAYLISTS" and "|" in line:
             name, _, description = line.partition("|")
@@ -302,8 +392,9 @@ def parse(text: str) -> Answer:
                     if old.strip() and new.strip():
                         answer.renames[old.strip()] = new.strip()
                     break
-        elif current == "DEPLACEMENTS" and "|" in line:
-            track, _, playlist = line.partition("|")
+        elif current in ("DEPLACEMENTS", "CLASSEMENT") and "|" in line:
+            track, _, rest = line.partition("|")
+            playlist = rest.split("|")[0]  # le genre trouvé, s'il suit, n'est pas lu
             if _ID_RE.match(track.strip()) and playlist.strip():
                 answer.moves[track.strip()] = playlist.strip().strip("«» ")
     if not answer.playlists:
@@ -327,6 +418,8 @@ class Change:
     described: dict[str, str] = field(default_factory=dict)
     moves: dict[str, str] = field(default_factory=dict)
     kept_fixed: list[str] = field(default_factory=list)
+    #: Tri complet : titres classés là où ils étaient déjà.
+    confirmed: dict[str, str] = field(default_factory=dict)
     problems: list[str] = field(default_factory=list)
 
     def lines(self, rows: dict[str, Row]) -> list[str]:
@@ -337,6 +430,8 @@ class Change:
             f"{len(self.described)} description(s) mise(s) à jour",
             f"{len(self.moves)} titre(s) déplacé(s)",
         ]
+        if self.confirmed:
+            out.append(f"{len(self.confirmed)} laissé(s) à leur place")
         details = [f"  renommée : {a} -> {b}" for a, b in self.renamed.items()]
         details += [f"  supprimée : {name}" for name in self.deleted]
         details += [f"  créée : {name}" for name, _ in self.created]
@@ -359,7 +454,13 @@ def _resolver(names: list[str]):
 
 def plan_changes(answer: Answer, rows: dict[str, Row], current: list[str],
                  fixed_keys: set[str]) -> Change:
-    """Ce que la réponse demande, vérifié contre le plan actuel et les titres."""
+    """Ce que la réponse demande, vérifié contre le plan actuel et les titres.
+
+    Pour un tri complet, rien n'est fixé et un titre classé là où il était est
+    gardé dans `confirmed` : il recevra lui aussi un déplacement.
+    """
+    if answer.complete:
+        fixed_keys = set()
     change = Change()
     final = [name for name, _ in answer.playlists]
     resolve_final = _resolver(final)
@@ -408,11 +509,20 @@ def plan_changes(answer: Answer, rows: dict[str, Row], current: list[str],
             continue
         now = change.renamed.get(row.playlist, row.playlist)
         if target == now:
+            if answer.complete:
+                change.confirmed[track] = target
             continue
         if row.key in fixed_keys and row.playlist not in deleted:
             change.kept_fixed.append(track)
             continue
         change.moves[track] = target
+    if answer.complete:
+        missing = [i for i in rows if i not in answer.moves]
+        if missing:
+            change.problems.append(
+                f"{len(missing)} titre(s) non classé(s) par la réponse ({missing[0]}…) : "
+                "ils restent où ils sont"
+            )
     orphans = [r for r in rows.values() if r.playlist in deleted and r.id not in change.moves]
     if orphans:
         change.problems.append(
@@ -511,7 +621,7 @@ def apply(answer: Answer, rows: dict[str, Row], config, taxonomy, *, write: bool
     for placement in book:
         name = change.renamed.get(placement.playlist, placement.playlist)
         kept[placement.key] = Placement(placement.artist, placement.title, name)
-    for track, target in change.moves.items():
+    for track, target in {**change.confirmed, **change.moves}.items():
         row = rows[track]
         kept[row.key] = Placement(row.artist, row.title, target)
     placements.save(PlacementBook(list(kept.values())), config.taxonomy.placements_file)

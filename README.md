@@ -517,6 +517,20 @@ jamais déplacé, sauf si sa playlist disparaît ; une playlist oubliée dans la
 réponse n'est supprimée que si tous ses titres ont une nouvelle place. Tout passe par git :
 `git diff` montre ce qui a changé, `git checkout -- config data` l'annule.
 
+**Tri complet par Gemini — repartir de zéro.** Avec `--complet`, Gemini ne
+reçoit que la liste des titres, sans playlists ni règles : il crée ses propres
+playlists, cherche le genre de chaque titre sur internet et range tout, même
+ce que tu avais placé ou validé (seuls les titres écartés restent écartés) :
+
+```bash
+python -m ytmgc gemini-exporte --complet
+```
+
+Il répond en plusieurs messages (écris-lui « continue » jusqu'à FIN) ; colle
+tout dans `gemini/reponse.txt` et importe comme ci-dessus — l'import reconnaît
+seul un tri complet. Chaque titre classé est placé, plus rien n'est « à
+vérifier » ; les anciennes playlists que Gemini n'a pas reprises disparaissent.
+
 **Créer une playlist.** Un titre qui n'a sa place nulle part : « ＋ Nouvelle
 playlist… » après « Déplacer » — ou tape son nom dans la recherche, puis
 « Créer la playlist » — (ou le bouton « ＋ Nouvelle

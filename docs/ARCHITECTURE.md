@@ -785,10 +785,20 @@ compris sur la liste des playlists elles-mêmes.
   entrée, la réponse s'essouffle. `build(only=…)` ne liste les titres que de
   certaines playlists — les autres sont nommées, pour rester des cibles — et
   une même table de numéros sert à toutes les parties.
+* **Le tri complet repart de zéro** (`gemini-exporte --complet`). Gemini ne
+  reçoit que « numéro | artiste | titre », triés par artiste : ni playlists,
+  ni règles, ni verdicts, ni limite de taille. Il invente ses playlists, cherche
+  le genre de chaque titre en ligne et range tout, titres fixés compris ; seuls
+  les titres écartés à la main restent hors du prompt. Sa section CLASSEMENT
+  donne une ligne par titre (`T0042 | playlist | genre trouvé`, le genre n'est
+  pas lu) ; l'import la reconnaît seul. Chaque titre classé reçoit un
+  déplacement, même s'il reste où il était : c'est Gemini qui l'a rangé, il
+  n'est plus « à vérifier ». Les garde-fous restent : un titre oublié par
+  la réponse est signalé et garde sa place, sa playlist n'est pas supprimée.
 
 ## Tests
 
-721 tests, aucun appel réseau, y compris l'API web complète (aperçu,
+726 tests, aucun appel réseau, y compris l'API web complète (aperçu,
 application, annulation), son contrôle d'accès et les quatre voies de connexion.
 
 Quatre-vingt-onze d’entre eux chargent l’interface dans un vrai navigateur (`tests/test_ui.py`).

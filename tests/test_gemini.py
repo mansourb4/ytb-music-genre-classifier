@@ -264,3 +264,77 @@ def test_the_cli_checks_before_it_writes(library, config, tmp_path, monkeypatch,
 
     assert cli.main(["gemini-importe", str(answer), "--dossier", str(folder), "--appliquer"]) == 0
     assert "Jazz · Fusion électrique" in (tmp_path / "playlists.toml").read_text(encoding="utf-8")
+
+
+# ------------------------------------------------------------- tri complet
+
+COMPLETE = """Je range par énergie.
+
+```
+PLAYLISTS
+Jazz · Groove | Funk et claviers.
+Jazz · Ciel ouvert | Fusion lumineuse.
+
+CLASSEMENT
+T0001 | Jazz · Groove | jazz-funk
+```
+
+continue
+
+```
+CLASSEMENT
+T0002 | Jazz · Groove | jazz-funk
+T0003 | Jazz · Ciel ouvert | jazz fusion
+FIN
+```"""
+
+
+def test_a_complete_sort_is_read_across_messages_genre_ignored():
+    answer = gemini.parse(COMPLETE)
+    assert answer.complete and answer.finished
+    assert answer.moves == {"T0001": "Jazz · Groove", "T0002": "Jazz · Groove",
+                            "T0003": "Jazz · Ciel ouvert"}
+
+
+def test_a_complete_sort_places_every_track_even_those_set_by_hand():
+    rows = {**ROWS, "T0001": Row("T0001", "Herbie Hancock", "Chameleon", "Jazz · Groove")}
+    answer = gemini.parse(COMPLETE)
+    change = gemini.plan_changes(answer, rows, CURRENT + ["Jazz · Groove"],
+                                 {r.key for r in rows.values()})
+    assert change.kept_fixed == []
+    assert change.moves == {"T0002": "Jazz · Groove", "T0003": "Jazz · Ciel ouvert"}
+    assert change.confirmed == {"T0001": "Jazz · Groove"}
+    assert sorted(change.deleted) == sorted(CURRENT)
+
+
+def test_a_complete_sort_reports_the_tracks_it_forgot():
+    answer = gemini.parse(COMPLETE.split("continue")[0])
+    change = gemini.plan_changes(answer, ROWS, CURRENT, set())
+    assert any("2 titre(s) non classé(s)" in p for p in change.problems)
+    # Leurs playlists ne sont pas supprimées : ils y restent.
+    assert "Jazz · Jazz-funk" not in change.deleted and "Jazz · Fusion" not in change.deleted
+
+
+def test_the_complete_prompt_lists_tracks_only(library, config):
+    summary = preview(library, config)
+    prompt, rows = gemini.build_complete(summary, {})
+    assert [(r.id, r.title) for r in rows] == [
+        ("T0001", "Chameleon"), ("T0002", "Watermelon Man"), ("T0003", "Birdland")]
+    assert "T0003 | Weather Report | Birdland\n" in prompt
+    assert "Jazz · Fusion" not in prompt and "Règle :" not in prompt
+    assert "internet" in prompt and "CLASSEMENT" in prompt
+
+
+def test_a_complete_sort_is_applied_and_nothing_is_left_to_check(library, config, tmp_path):
+    placements.save(PlacementBook([Placement("Weather Report", "Birdland", "Jazz · Jazz-funk")]),
+                    config.taxonomy.placements_file)
+    _, rows = gemini.build_complete(preview(library, config), {})
+    gemini.apply(gemini.parse(COMPLETE), {r.id: r for r in rows}, config, TAXONOMY, write=True)
+
+    after = preview(library, config)
+    names = {p.name: sorted(t.title for t in p.tracks) for p in after.playlists}
+    assert names == {"Jazz · Groove": ["Chameleon", "Watermelon Man"],
+                     "Jazz · Ciel ouvert": ["Birdland"]}
+    assert all(t.moved for p in after.playlists for t in p.tracks)
+    text = (tmp_path / "playlists.toml").read_text(encoding="utf-8")
+    assert "Jazz · Fusion" not in text and "manuelle = true" in text
