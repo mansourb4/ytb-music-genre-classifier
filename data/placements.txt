@@ -7,6 +7,7 @@
 # après chaque analyse. La playlist est désignée par son nom, tel qu'écrit
 # dans le plan ; « (aucune) » tient le morceau hors de toute playlist.
 # Supprime une ligne pour rendre le morceau aux règles.
+2666 - The Art Of Listening	Àbáse – Laroyê (2021 - Album)	Jazz · Spiritual jazz
 39bermuda	Substances	Rap · FR énergique
 4th Sign	Deep Dip	Électro · Deep house vocale
 4th Sign	The Movement	Électro · Deep house vocale
@@ -50,6 +51,10 @@ Aminition	Answerless Question	Électro · Deep house planante
 AMK	Malya	Rap · FR introspectif
 Amotik	Chihattar (feat. Tina Ramamurthy)	Électro · Techno hypnotique
 Amy Winehouse	Just Friends	Caraïbes · Reggae, dub & dancehall
+Amy Winehouse	The Girl From Ipanema	Jazz · Vocal & ballades
+Ana Mazzotti	Agora ou Nunca Mais	Brésil · Samba & groove
+Ana Mazzotti	Cordão	Brésil · MPB douce
+Ana Mazzotti	Feel Like Making Love	Brésil · Samba & groove
 Anders Ponsaing	The Man with the Red Face (feat. Claus Højensgård)	Électro · Downtempo chill
 Andrew Ashong	Low Ceilings	Électro · Broken beat & nu jazz
 André Navarro II	TAKE SIX - Patterns	Jazz · Smooth & groovy
@@ -69,9 +74,11 @@ Ateyaba	Niamtougou (Outro)	Rap · FR sombre
 Ateyaba	Venus	Rap · FR posé
 Athletic Progression	White Crayon	Jazz · Smooth & groovy
 Attia Ahmed	Soul Keita   Submercer	(aucune)
+aupinard	jeu pour enfant	Rap · FR posé
 aupinard	penelope	Rap · FR introspectif
 aupinard	quel type de vibe?	Rap · FR groovy
 ayrtn	Alone	Rap · UK
+Azymuth	Estreito De Taruma	Jazz · Jazz-funk & groove
 B.B. Jacques	Bleu Cristal	Rap · FR sombre
 B.B. Jacques	Déchirée	Rap · FR sombre
 B.B. Jacques	HARMONIE	Rap · FR introspectif
@@ -105,6 +112,7 @@ Blame the Mono	Daddy Calls it Europop	(aucune)
 Blue Six	Pure (Jay's Nitelife Dub)	Électro · Deep house instrumentale
 Blue Six	Yeah	Électro · Deep house instrumentale
 Bokken	Belle Somme	(aucune)
+Bonga	Mona Ki Ngi Xica	Folk · Folk acoustique & traditions
 Bongoplanet	Spaceships for Sale	(aucune)
 Bouss	Ça parle mal	(aucune)
 Bradaframanadamada	Légalité	(aucune)
@@ -122,6 +130,8 @@ Carrion	True Love	Rap · Ailleurs
 Cataract	Wiretap	Électro · Deep house planante
 ccato	there is a woman in somalia	Électro · Downtempo chill
 Cesar B.	Morning	Électro · Downtempo chill
+Cesar Camargo Mariano	Futebol de Bar	Brésil · Samba & groove
+Cesar Camargo Mariano	Fábrica	Jazz · Fusion énergique
 Cesar Camargo Mariano	Imigrantes	Jazz · Fusion énergique
 CHAAMA	Munajat	Orient · Fairouz, tarab & chanson
 Chaim	Your Mulana (Trikk Numero Fim Dub)	Électro · Deep house planante
@@ -167,6 +177,7 @@ Chris Luno	highway house mix	Électro · Deep house instrumentale
 Chris Rainbow	Be Like a Woman	Rock · Yacht rock
 Chris Sedayao	Old School Deep House Mix (1993-2005)	Électro · Deep house instrumentale
 CHRIS STASSY	Seeing & Believing (Kolter Remix)	Électro · Deep house instrumentale
+CKay	love nwantiti [North African Remix] (feat. ElGrande Toto)	Rap · Maghreb
 Clara Valverde	samba do moço bonito	Brésil · MPB douce
 Claudio Ricci	The Love We Share	Électro · House
 Cody Currie	Moves (House Mix) (feat. Eliza Rose)	Électro · Deep house vocale
@@ -214,7 +225,7 @@ Darviin	Ojos de Girasol	Latino · Boléro, tango & ballades
 Dauwd	Macadam Therapy	Électro · Deep house planante
 David August	A Golden Rush	Électro · Techno hypnotique
 David Gold	Phenomena	Électro · Ambient & nappes
-David Walters	Kryé Mwen	Funk · Afrobeat
+David Walters	Kryé Mwen	Afrique · Afrobeats & amapiano
 DBO	COME 2 ME	Électro · House
 Deema	CAN I?	Rap · UK
 Deetron	Each Step (Powerhouse Extended Mix)	Électro · House
@@ -250,6 +261,7 @@ Driss Bennis	Networks (Prelude)	Électro · Breaks & drum'n'bass
 Droop-E	Rossi Wine (feat. Kendrick Lamar)	Rap · US
 Dying & Barakat	About That Promise	Électro · Techno hypnotique
 Earth Boys	Canal St. Blues	Électro · Deep house instrumentale
+Earth, Wind & Fire	Beijo (Interlude)	Soul · R&B & neo soul posés
 Ed Motta	1978	Rock · Yacht rock
 Eddie Barclay	Ne m'laissez pas comme ça	Jazz · Swing & big band
 El Shab Arrab	law kan	Orient · Fairouz, tarab & chanson
@@ -278,6 +290,7 @@ FEEL	Chico & Rita	Électro · Deep house instrumentale
 Felipe Gordon	The Semimodular Bird of Jazz	Électro · Deep house instrumentale
 Femme Falafel	Depressão	Pop · Indie & synth-pop douce
 FEMTOGO	MME. RIFFAUD	Rap · FR sombre
+Feqadu Amde-mesqel	Asmarina (My Asmara)	Jazz · Jazz-funk & groove
 Feral	Court of Light	Électro · Techno hypnotique
 Ferdi	SERENADE	Jazz · Lounge & jazz d'ambiance
 Ferqet El Masryeen	El Shawarea Hawadet	Funk · Funk arabe des années 70
@@ -324,6 +337,7 @@ GeeJay	Ordinary Girl	Soul · R&B & neo soul groovy
 GeeJay	Stronger	Soul · R&B & neo soul groovy
 Gene Lawrence	Feel Like Making Love	Soul · Soul groovy
 George Benson	Nature Boy	Jazz · Vocal & ballades
+George Duke	Brazilian Love Affair	Jazz · Jazz-funk & groove
 Germannu	Fale De Mim (Mendel Edit)	Électro · Nu-disco & synth
 Get Lost	Foc	Électro · Deep house instrumentale
 Gianni´s Humble	show me // something	Électro · Deep house instrumentale
@@ -331,6 +345,7 @@ Giga Papaskiri	Lucie From Paris	Électro · Deep house planante
 Gil Scott-Heron	Morning Thoughts	Jazz · Jazz-funk & groove
 Giorgi Kubaneishvili	The Color Of	Électro · Deep house planante
 Giovanni Mirabassi	Convite para a Vida (feat. Gianluca Renzi & Leon Parker)	Jazz · Bop & cool nocturne
+Girma Hadgu	Ené Alantchi Alnorem (I Can't Live Without You)	Jazz · Jazz-funk & groove
 GLemix	Love Frequency	Électro · House
 Goedi	Le sigarette (Goedi Rmx) (feat. Frah Quintale)	Électro · Downtempo chill
 Golden Hands	Take Me Back	Funk · Funk, boogie & disco
@@ -370,6 +385,7 @@ Haris Hamza	Mchilli	Rap · Maghreb
 Harley	Supalife 2	Rap · FR groovy
 Harumi	Fire by the River	Rock · Psyché & prog rêveur
 Hash 24	Champagne Prototype	Rap · FR groovy
+Henri Salvador	Jardin d'hiver	Pop · Variété française
 Herbie Hancock	Ostinato (Suite for Angela)	Jazz · Fusion planante
 Herbie Hancock	Quasar	Jazz · Spiritual jazz
 Herbie Hancock	Sleeping Giant	Jazz · Spiritual jazz
@@ -490,12 +506,13 @@ Kiko Navarro	Sonando Contigo (Tuccillo Deep Mix)	Électro · Deep house vocale
 KiLLOWEN	Sober	Rap · UK
 KLANGPLANET	Good	Électro · Deep house instrumentale
 Klaus Veen	Poison	Électro · House
-Kokoroko	Abusey Junction	Afrique · Afrobeats & amapiano
+Kokoroko	Abusey Junction	Jazz · Lounge & jazz d'ambiance
 Koma	Loin des rêves	Rap · FR introspectif
 Konfusion Kidzz	On My Mind	Électro · Deep house vocale
 Kora	Kanjira	Électro · Deep house instrumentale
 KOTA The Friend	Oh Darling How I Love You .	Rap · US
-Kouz1	Magic	Afrique · Afrobeats & amapiano
+Kouz1	Ana	Rap · Maghreb
+Kouz1	Magic	Rap · Maghreb
 Krisy	AU CLUB	Rap · FR groovy
 Krisy	C'EST UN MOOD	Rap · FR groovy
 Krisy	Erotiquement votre (feat. Instagram Followers)	Rap · FR posé
@@ -570,6 +587,7 @@ Luv Resval	MPC, Part II (La rivière)	Rap · FR sombre
 Lympstyle _short	Piano improvisation	Classique · Moderne contemplatif
 Léonie Pernet	Les chants de Maldoror	Électro · Nu-disco & synth
 Mac Miller	My Favorite Part	Rap · US
+Macabre Plaza	A Bird's Last Look	Jazz · Lounge & jazz d'ambiance
 Maceo Plex	Gravy Train (Nicolas Jaar Remix)	Électro · Nu-disco & synth
 Madcat	Call Me Ishmael	Électro · Deep house instrumentale
 Maes	Tmax 530	Rap · FR énergique
@@ -602,8 +620,10 @@ Masayoshi Takanaka	I Remember You	Jazz · Smooth & groovy
 Masayoshi Takanaka	Mambo Magic	Jazz · Latin jazz
 Masayoshi Takanaka	Penguin Dancer	Pop · City pop & disco
 Masayoshi Takanaka	Plumed Bird	Jazz · Fusion énergique
+Masayoshi Takanaka	Radio Rio	Jazz · Jazz-funk & groove
 Masayoshi Takanaka	Ride’em High - Ride'em High	Funk · Latin funk
 Masayoshi Takanaka	You Can Never Come To This Place	Rock · Symphonic rock
+Masayoshi Takanaka	伊豆甘夏納豆売り - Izu Amanatsu Nattou Uri	Jazz · Jazz-funk & groove
 Masayoshi Takanaka	空ド白ソ - Sorado Shiraso	Jazz · Fusion énergique
 Mateo Dufour	Break It Up (Aline Umber Remix)	Électro · Deep house instrumentale
 Mathieu Fiset	Chick's Pain	Jazz · Contemporain
@@ -687,6 +707,18 @@ Moodymann	You're 2 Moody	Électro · Deep house instrumentale
 Mou	Sous ma couverture	Pop · Indie & synth-pop douce
 Mr GISCARD	Pho	Pop · Variété française
 Mr. G	Daily Prayer	Électro · House
+Mulatu Astatke	Dèwèl (Bell)	Jazz · Latin jazz
+Mulatu Astatke	Gubèlyé (My Gubel)	Jazz · Jazz-funk & groove
+Mulatu Astatke	Kasalèfkut Hulu (From All the Time I Have Passed)	Jazz · Latin jazz
+Mulatu Astatke	Munayé (My Muna)	Jazz · Jazz-funk & groove
+Mulatu Astatke	Mètché Dershé (When Am I Going to Reach There?)	Jazz · Spiritual jazz
+Mulatu Astatke	Nètsanèt (Liberty)	Jazz · Jazz-funk & groove
+Mulatu Astatke	Sabyé (My Saba)	Jazz · Latin jazz
+Mulatu Astatke	Tezeta (Nostalgia)	Jazz · Spiritual jazz
+Mulatu Astatke	Tezetayé Antchi Lidj (Baby, My Unforgettable Remembrance)	Jazz · Bop & cool nocturne
+Mulatu Astatke	Yègellé Tezeta (My Own Memory)	Jazz · Jazz-funk & groove
+Mulatu Astatke	Yèkatit (February)	Jazz · Jazz-funk & groove
+Mulatu Astatke	Yèkèrmo Sèw (A Man of Experience and Wisdom)	Jazz · Spiritual jazz
 murmur	HEIDY FLY - MÄR | 12.23	Électro · House
 Murphy's Law (UK)	Take My Love (Prunk Remix)	Électro · House
 mynameisntjmack	BUNKER/PREROLL	Rap · US
@@ -762,6 +794,7 @@ Piero Umiliani	Borgo montano	(aucune)
 Piero Umiliani	Lungo il canale	(aucune)
 Piero Umiliani	Oriente rosso	(aucune)
 Piero Umiliani	Risaie	Jazz · Smooth & groovy
+Piero Umiliani	Tanto lontano	(aucune)
 Piero Umiliani	Vecchie strade	(aucune)
 Pino D'Angiò / duetto con Piera Romoli	Una notte maledetta	Pop · City pop & disco
 Pinty	City Limits	Rap · UK
@@ -791,6 +824,7 @@ Prince Waly	Cra$h (feat. Enchantée Julia & Jazzy Bazz)	Rap · FR groovy
 ProOne79	No Plan	Rap · Pays à préciser
 Prunk	Heat	Électro · House
 PXNDORA NXGHTS	Night Vegas	Électro · Nu-disco & synth
+Quincy Jones	Boogie Bossa Nova	Jazz · Swing & big band
 Quincy Jones	Jook Joint Intro	(aucune)
 Quincy Jones	Let The Good Times Roll (feat. Stevie Wonder, Ray Charles & Bono)	Jazz · Swing & big band
 Quincy Jones	Love Theme From "The Getaway" (Faraway Forever) (Instrumental)	Jazz · Lounge & jazz d'ambiance
@@ -923,7 +957,7 @@ Strath	Mutual Attraction	Électro · Deep house instrumentale
 Stress	Rude Gal	Rap · FR énergique
 Sublime	baume	Pop · Indie & synth-pop douce
 SuperMegaSuperCool Révolution	Full Shine Render	Électro · Ambient & nappes
-Superstar Prince Aziz	Batman	Afrique · Afrobeats & amapiano
+Superstar Prince Aziz	Batman	(aucune)
 Swing	Rivage	Rap · FR posé
 T_Pazos	Superego	Électro · Deep house instrumentale
 Table	Hotspot	Électro · House
@@ -945,6 +979,7 @@ Thed	Toucher les Étoiles	Rap · FR posé
 THIRD WIFE	Lowbird	Électro · Downtempo chill
 Thornato	Last Chance (feat. The Spy From Cairo)	Électro · Broken beat & nu jazz
 Thundercat	Walk On By (feat. Kendrick Lamar)	Soul · R&B & neo soul posés
+Tiakola	Atasanté (feat. Hamza)	Rap · FR énergique
 Tianmi	Soulager	Pop · Indie & synth-pop douce
 TIF	MATHUSALEM	Rap · FR introspectif
 TIF	Maylin	(aucune)
@@ -993,6 +1028,8 @@ Wale The Sage	Bleue	Rap · FR posé
 WAR	The World is a Ghetto	Soul · Soul ballades
 Warp Dub Sound System	Night Places Darkness Upon The Earth	Électro · Techno hypnotique
 Wbeeza	He's so Crazy (Mixed)	Électro · Deep house instrumentale
+Wes Montgomery	Baubles Bangles And Beads	Jazz · Bop & cool nocturne
+Wes Montgomery	Canadian Sunset	Jazz · Bop qui swingue
 Wesley Joseph	Ur_Room	Rap · UK
 West Code	Street Funk	Électro · Techno percutante
 West Code	That Civic Has A Laptop	Électro · Techno percutante
