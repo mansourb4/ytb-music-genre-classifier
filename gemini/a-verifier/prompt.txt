@@ -1,0 +1,546 @@
+Tu es musicologue. Une personne a rangé sa discothèque en 81
+playlists. Pour 405 de ses titres, le genre est incertain : souvent des
+artistes peu connus. Vérifie chacun d'eux et range-le dans la bonne
+playlist.
+
+Ce qu'elle attend de ses playlists :
+- comprendre ce qu'elle écoute : le nom d'une playlist dit ce qu'on y entend ;
+- garder la même vibe du premier au dernier titre d'une playlist.
+
+Pour chaque titre, cherche sur internet ce qu'il est vraiment (Discogs,
+MusicBrainz, AllMusic, Bandcamp, Rate Your Music, Last.fm, YouTube…) plutôt
+que de deviner, puis choisis la playlist où il sonne juste. S'il y est déjà,
+garde-la. Range-le uniquement dans une playlist de la liste ci-dessous : n'en
+crée pas, n'en renomme pas. « (aucune) » est réservé à ce qui n'est pas de la
+musique (podcast, annonce, tutoriel, bruit) : un DJ set, un mix, une reprise
+ou une musique de jeu vidéo sont de la musique, range-les.
+
+LES PLAYLISTS (nom, taille, description, quelques artistes)
+
+- Brésil · Bossa nova (61 titres) : Bossa nova, qu'elle vienne du Brésil, du jazz ou d'une musique de film. — ex. Stan Getz, Quincy Jones, Joao Gilberto, Luiz Bonfá, João Gilberto, Herbie Mann
+- Brésil · Samba & groove (45 titres) : Samba, MPB qui danse et groove brésilien des années 70-80. — ex. Ana Mazzotti, Seu Jorge, João Bosco, Novos Baianos, Affonsinho, Almir Guinéto
+- Brésil · MPB douce (47 titres) : Musique populaire brésilienne calme ou mélancolique : la saudade. — ex. Lucas Santtana, Mariana Froes, Ana Mazzotti, Arthur Verocai, Chico Buarque, Dora Morelenbaum
+- Maghreb · Gnawa (28 titres) : Transe gnaoua : guembri, qraqeb et chants responsoriaux, du rituel à la fusion. — ex. Hassan Boussou, Maalem Mahmoud Gania, Maalem Mahmoud Guinia, Majid Bekkas, Boiler Room, Electric Jalaba
+- Funk · Funk arabe des années 70 (20 titres) : Funk, orgue et synthés du Maghreb et du Liban des années 70-80. — ex. Abdou El Omari, Ahmed Fakroun, Ziad Rahbani, Carthago, Ahmed Malek, Douaa
+- Maghreb · Raï & chaâbi (14 titres) : Raï, chaâbi, chanson kabyle et chansons de fête. — ex. Cheb, Labess, CHEIKHA RIMITTI, Khaled, Mohamed Allaoua, Mohamed Lamouri
+- Maghreb · Traditions (10 titres) : Chants et percussions des oasis marocaines, folk berbère. — ex. Compagnie El Hamri, Compagnie El Hashemi Nhass, Compagnie Jellouili & Ghih, Compagnie Meskaoui, Aber Sabeel, Hindi Zahra
+- Orient · Oud & taqsim (6 titres) : Oud et improvisations sur les maqâms : musique savante instrumentale. — ex. Munir Bachir, Abdallah Chahine, Naseer Shamma, Riyad Sunbati, Ziad Rahbani
+- Orient · Pop arabe (13 titres) : Al jeel et pop arabe dansante. — ex. Hamid El Shaeri, Hameed El Shaery, Bedouin Burger, Hamed Al Shaeri, Hamid El Sha'ery, Hamid El Shaeri - حميد الشاعري
+- Orient · Fairouz, tarab & chanson (36 titres) : Fairouz et les Rahbani, Warda, Marcel Khalife : la grande chanson arabe, tendre et nostalgique. — ex. Fairuz, El Shab Arrab, Fairouz, Marcel Khalife, Warda El Gazaerya, CHAAMA
+- Jazz · Ethio-jazz (14 titres) : Le jazz éthiopien de Mulatu Astatke et de l'âge d'or d'Addis-Abeba. — ex. Mulatu Astatke, Feqadu Amde-mesqel, Girma Hadgu
+- Afrique · Folk, blues & mandingue (12 titres) : Guitares mandingues, blues touareg, morna, semba : l'Afrique acoustique. — ex. Blick Bassy, N'Gou Bagayoko, 3MA, Amadou & Mariam, Bonga, Cesária Evora
+- Funk · Afrobeat (7 titres) : Afrobeat et highlife : cuivres, polyrythmies et transe funk, de Fela à Kokoroko. — ex. Fela Kuti, 2666 - The Art Of Listening, David Walters, Ice, Orgone
+- Afrique · Afrobeats & amapiano (10 titres) : Afrobeats, afroswing et amapiano : la pop africaine d'aujourd'hui. — ex. Burna Boy, CKay, Dave, Kokoroko, Kouz1, Rema
+- Caraïbes · Reggae, dub & dancehall (8 titres) : Roots reggae, dub, lovers rock, dancehall, ragga et le zouk des Antilles. — ex. Amy Winehouse, Bob Marley & The Wailers, David Martial, Elephant Man, Flavia Coelho, Free Nationals
+- Jazz · Latin jazz (21 titres) : Jazz afro-cubain et latin, quel que soit le genre donné par le verdict. — ex. Masayoshi Takanaka, Quincy Jones, Ana Mazzotti, Cesar Camargo Mariano, Azymuth, Earth, Wind & Fire
+- Soul · R&B & neo soul groovy (41 titres) : R&B contemporain et neo soul qui groovent. — ex. Free Nationals, Amy Winehouse, GeeJay, Jungle, Peven Everett, Qendresa
+- Soul · R&B & neo soul posés (48 titres) : R&B et neo soul calmes, langoureux ou mélancoliques. — ex. Quincy Jones, Dalí, Gotts Street Park, Thundercat, 4batz, Anita Baker
+- Pop · Variété française (34 titres) : Chanson et variété françaises. — ex. Charles Aznavour, Dany Brillant, Eva sur Seine, Joe Dassin, Sacha Distel, Yves Montand
+- Jazz · Jazz-funk & groove (141 titres) : Jazz-funk, soul-jazz, acid jazz, et la fusion quand elle groove. — ex. Masayoshi Takanaka, Quincy Jones, Premier Contact, Jamiroquai, Jiro Inagaki and His Soul Media, Cesar Camargo Mariano
+- Rock · Psyché & prog nerveux (28 titres) : Rock psychédélique et progressif qui pousse : riffs, tension, groove lourd. — ex. Demon Fuzz, King Crimson, Radiohead, Supertramp, The Alan Parsons Project, Altin Gün
+- Rock · Psyché & prog rêveur (40 titres) : Rock psychédélique et progressif planant, contemplatif ou mélancolique. — ex. Radiohead, Pink Floyd, Supertramp, King Crimson, Tame Impala, The Alan Parsons Project
+- Rap · FR énergique (113 titres) : Rap francophone qui cogne : trap, drill et boom bap énergiques, sons de fête. — ex. Nekfeu, Josman, JUL, 8ruki, Alpha Wann, Roméo Elvis
+- Rap · FR sombre (109 titres) : Rap francophone sombre : trap et drill menaçantes, boom bap noir. — ex. Laylow, Damso, Josman, Nekfeu, Népal, SCH
+- Rap · FR groovy (115 titres) : Rap francophone décontracté et chaloupé, pour hocher la tête. — ex. Roméo Elvis, Josman, Hamza, JeanJass, Le Dé, Furlax
+- Rap · FR introspectif (162 titres) : Rap à texte sur le sens de la vie, la famille, le doute. — ex. Nekfeu, Damso, B.B. Jacques, Népal, Roméo Elvis, Luidji
+- Rap · US (121 titres) : Rap américain et canadien. — ex. Kendrick Lamar, Tyler, The Creator, Boldy James, Mac Miller, Jack Harlow, MF DOOM
+- Rap · UK (38 titres) : Rap britannique et irlandais : grime, drill UK, rap londonien. — ex. LAUSSE THE CAT, Sainte, Knucks, Kofi Stone, Pinty, Rejjie Snow
+- Rap · Maghreb (28 titres) : Rap marocain, algérien et tunisien. — ex. ElGrandeToto, Issam, ISSAM, Draganov, HARIS HAMZA, L’morphine
+- Rap · Ailleurs (24 titres) : Rap d'Italie, d'Allemagne, d'Espagne, du Japon, du Mexique… — ex. Frah Quintale, Nicola Armellin, TALE$, Tamango, Al Nather, Bb trickz
+- Rap · Pays à préciser (27 titres) : Rap dont l'artiste n'a pas encore de pays. — ex. 2nd Exit, D.H.C., Deema, Didaem, Do Your Thang, Don. G
+- Électro · Deep house vocale (139 titres) : Deep house new-yorkaise et soulful, chantée et chaleureuse. — ex. Free is in Da House, Kerri Chandler, Blue Six, Moodymann, Fresh & Low, Louie Vega
+- Électro · Deep house planante (117 titres) : Deep house rêveuse, calme ou nocturne. — ex. DaRand Land, Blue Six, Black Jazz Consortium, Alain Ho, &ME, Ron Trent
+- Électro · House (132 titres) : House classique, garage et afro house. — ex. Daft Punk, DJ Fudge, Hardsoul, Afro Medusa, Breakfast TILT, Channel Tres
+- Électro · Techno percutante (77 titres) : Techno, tech house et progressive qui frappent : pour la piste. — ex. Laurent Garnier, Alpha Tracks, Altinbas, Human Safari, Martin Buttrich, Narciss
+- Électro · Techno hypnotique (76 titres) : Techno mélodique, minimale et dub techno : boucles qui planent. — ex. NTO, Tal Fussman, Ignez, David August, Guy Gerber, Kollektiv Turmstrasse
+- Électro · Nu-disco & synth (90 titres) : Nu-disco, italo, synth-pop et synthwave. — ex. Daft Punk, L'Impératrice, Yuksek, Frankie Goes To Hollywood, Alastair Lane, Crazy P
+- Électro · Broken beat & nu jazz (26 titres) : Broken beat, nu jazz et UK garage : rythmes cassés et chaleur jazz-soul. — ex. Al Dobson Jr, Loure, Dan Kye, Duke Hugh, Okvsho, Andrew Ashong
+- Électro · Breaks & drum'n'bass (21 titres) : Breakbeat, electro, jungle, drum & bass et footwork : rapide et nerveux. — ex. Driss Bennis, Daft Punk, Alix Perez, Alpha Tracks, Detroit's Filthiest, DRS
+- Électro · Ambient & nappes (81 titres) : Ambient, drone et downtempo planants : nappes, espace, apesanteur. — ex. Nicolas Jaar, Ron Trent, Daft Punk, Acid Pauli, Air, Kerala Dust
+- Électro · Downtempo chill (75 titres) : Downtempo, trip hop et lounge : calme, mélancolique ou doucement groovy. — ex. Daft Punk, kuribo98, Melodiesinfonie, Nicolas Jaar, rebug, Ron Trent
+- Électro · Expérimental & IDM (11 titres) : IDM, glitch, leftfield et électronique expérimentale. — ex. Nicolas Jaar, Burnt Friedman, Daft Punk, Emptyset, LudoWic, NightCrawl
+- Jazz · Fusion énergique (66 titres) : Jazz électrique et jazz-rock virtuoses : ça joue vite et fort. — ex. Masayoshi Takanaka, Jean-Luc Ponty, Cos, Miles Davis, CASIOPEA, Cesar Camargo Mariano
+- Jazz · Fusion planante (59 titres) : Fusion aérienne : claviers, nappes et grooves lents. — ex. Masayoshi Takanaka, Jean-Luc Ponty, Azymuth, Miles Davis, Goro Noguchi, Herbie Hancock
+- Jazz · Bop qui swingue (97 titres) : Bebop, hard bop et post-bop énergiques. — ex. Miles Davis, Paul Chambers, Jacques Loussier, Miles Davis (trumpet), Barney Wilen (tenor sax), Rene Urtreger (piano), Pierre Michelot (bass), Kenny Clarke (drums), Sonny Clark, Dizzy Gillespie
+- Jazz · Bop & cool nocturne (67 titres) : Cool jazz, modal et bop lents : le jazz de fin de soirée. — ex. Miles Davis (trumpet), Barney Wilen (tenor sax), Rene Urtreger (piano), Pierre Michelot (bass), Kenny Clarke (drums), Vince Guaraldi Trio, Jacques Loussier, Miles Davis, Chet Baker, Johnny Smith
+- Jazz · Spiritual jazz (45 titres) : Jazz spirituel, third stream et jazz aventureux. — ex. Kamasi Washington, Floating Points, Lonnie Liston Smith, Herbie Hancock, Kool & The Gang, Ahmed Sirour
+- Jazz · Smooth & groovy (24 titres) : Smooth jazz et jazz contemporain qui groovent. — ex. Four80east, George Benson, Masayoshi Takanaka, André Navarro II, Athletic Progression, Cal Harris Jr.
+- Jazz · Contemporain (48 titres) : Jazz d'aujourd'hui exigeant, mélancolique ou intense. — ex. Chassol, Marc Copland, Mathieu Fiset
+- Jazz · Vocal & ballades (79 titres) : Voix et ballades jazz, swing compris quand il ralentit. — ex. Wes Montgomery, Michel Petrucciani, Quincy Jones, Sidney Bechet, The Swingle Singers, Eddie Barclay
+- Jazz · Swing & big band (70 titres) : Swing, big band, dixieland et voix qui swinguent. — ex. The Swingle Singers, Quincy Jones, Eddie Barclay, Oscar Peterson Trio, Sidney Bechet, Michel Legrand
+- Jazz · Lounge & jazz d'ambiance (43 titres) : Lounge, smooth jazz calme, musiques d'illustration : le jazz d'ambiance. — ex. Piero Umiliani, Dana and Alden, Four80east, George Benson, Shigeo Sekito, Stelvio Cipriani
+- Soul · Soul groovy (68 titres) : Soul qui groove : Motown, Stax, soul psychédélique. — ex. Sade, Amy Winehouse, Stevie Wonder, Barry White, Bill Withers, Quincy Jones
+- Soul · Soul ballades (81 titres) : Ballades soul, voix déchirantes et slows. — ex. Sade, Quincy Jones, Amy Winehouse, Bill Withers, Khruangbin, Kool & The Gang
+- Funk · Funk, boogie & disco (105 titres) : Funk, boogie et disco. — ex. Quincy Jones, Kool & The Gang, Chic, Barry White, Dabeull, George Benson
+- Classique · Baroque vif (82 titres) : Baroque et classique allègres : allegros, fugues, concertos. — ex. Julia Cload, YUNDI, Rousseau, Maximilian Schairer, Alicia de Larrocha, Ana-Marija Markovina
+- Classique · Baroque lent (57 titres) : Baroque et classique lents : adagios, airs, largos. — ex. Julia Cload, YUNDI, Rousseau, Traum Piano, András Schiff, Budapest Strings
+- Classique · Romantique passionné (53 titres) : Romantisme tumultueux : virtuosité, orages, élans. — ex. TRAUM, YUNDI, Andreas Staier, Rousseau, Kassia, Vladimir Horowitz
+- Classique · Romantique tendre (73 titres) : Romantisme intime : nocturnes, romances, mélancolie. — ex. YUNDI, Andreas Staier, Rousseau, Khatia Buniatishvili, TRAUM, Traum Piano
+- Classique · Moderne tendu (37 titres) : Modernes et contemporains : tension, recherche, rythmes. — ex. Catherine Gordeladze, Varyk, Alfonso Peduto, Ivan Yanakov, Kaleidoscope Orchestra, NeedToWant - Piano
+- Classique · Moderne contemplatif (79 titres) : Impressionnisme, minimalisme et néo-classique contemplatifs : piano, nappes, Zimmer et Hisaishi. — ex. Chilly Gonzales, Rousseau, Catherine Gordeladze, Sofiane Pamart, Alexandre Tharaud, Daniel Kruglov
+- Pop · Indie & synth-pop dansante (26 titres) : Pop indépendante, synth-pop et new wave qui bougent. — ex. Frankie Goes To Hollywood, Varnish La Piscine, The Whitest Boy Alive, Amadou & Mariam, Angèle, Baby Dave
+- Pop · Indie & synth-pop douce (42 titres) : Pop indépendante, dream pop et synth-pop douces ou mélancoliques. — ex. Men I Trust, Cigarettes After Sex, Frankie Goes To Hollywood, Vendredi sur Mer, Apanhador Só, Bakar
+- Pop · City pop & disco (39 titres) : City pop japonaise, AOR et pop disco. — ex. Goro Noguchi, Makoto Matsushita, Masayoshi Takanaka, Pino D'Angiò, Shigeru Suzuki, Miki Matsubara
+- Pop · Ballades (31 titres) : Ballades pop, voix et piano. — ex. The Beatles, Julio Iglesias, Mina, Piero Piccioni, 10cc, Armando Trovajoli
+- Pop · Pop rock & pop dansante (7 titres) : Pop rock, europop et pop entraînante. — ex. 24kGoldn, Bratisla Boys, Frankie Goes To Hollywood, Juan Antonio Canta, Matia Bazar, Morten Harket
+- Rock · Blues qui groove (22 titres) : Blues électrique, texan, de Chicago, et blues rock qui balancent. — ex. T-Bone Walker, Albert King, Buddy Miles, Canned Heat, Dire Straits, Fenton Robinson
+- Rock · Blues mélancolique (17 titres) : Blues lents et mélancoliques. — ex. T-Bone Walker, Gary Moore, Snowy White, Breakout, Demon Fuzz, Fink
+- Rock · Rock énergique (33 titres) : Rock alternatif, indie et pop rock qui envoient. — ex. Radiohead, Red Hot Chili Peppers, Hoba Hoba Spirit, Supertramp, Cody・Lee(李), Dada
+- Rock · Rock doux & mélancolique (31 titres) : Rock alternatif et indie calmes ou mélancoliques. — ex. Red Hot Chili Peppers, Radiohead, Supertramp, The Alan Parsons Project, Arctic Monkeys, Colin Blunstone
+- Folk · Flamenco & tsigane (6 titres) : Guitares flamencas, rumba et airs tsiganes. — ex. C. Tangana, Christophe Lartilleux, LucasGitanoFamily, Opa Tsupa, Paco de Lucía, Yasmin Levy
+- Folk · Folk acoustique & traditions (18 titres) : Folk acoustique, chants traditionnels et guitares nues. — ex. Adrian Quesada, Beautiful Chorus, Bob Marley, Carlyle Fraser, Danit, Dilnaz Akhmadiyeva
+- Latino · Salsa & latin soul (9 titres) : Salsa, boogaloo, mambo, son cubain : les cuivres et les congas. — ex. Joe Bataan, Adolescent's Orquesta, Azùcar, Candido, Manu Dibango, Willie Colón
+- Latino · Reggaeton, cumbia & corridos (4 titres) : Musiques latines urbaines et dansantes d'aujourd'hui. — ex. Chino Pacas, CucaRafa, Nio Garcia, Rantseni
+- Latino · Boléro, tango & ballades (11 titres) : Boléros, rancheras, tango et ballades latines. — ex. C. Tangana, Camilo, Darviin, El Zar, Grupo RYE, Guillermo Portabales
+- Rap · FR posé (41 titres) : Rap francophone jazzy, lo-fi et contemplatif. — ex. Népal, Josman, Laylow, Nekfeu, Krisy, Ledé Markson
+- Rap · FR cloud & spleen (41 titres) : Cloud rap francophone vaporeux, ambiances nocturnes et autotune. — ex. PNL, Laylow, Luidji, Dinos, Hamza, J9ueve
+- Électro · Deep house instrumentale (154 titres) : Deep house brute, jazzy ou lo-fi, centrée sur le groove. — ex. Moodymann, Chaos In the CBD, Kerri Chandler, Ron Trent, Ben Hauke, berlioz
+- Rock · Symphonic rock (1 titres) : Rock aux cordes et à l'orchestre : mellotron, envolées symphoniques. — ex. Masayoshi Takanaka
+- Funk · Latin funk (1 titres) : Funk aux couleurs latines : congas, cuivres et basses rondes, du latin soul new-yorkais au groove brésilien des années 70. — ex. Masayoshi Takanaka
+- Rock · Yacht rock (6 titres) : Des grooves funk sophistiqués, des mélodies pop accrocheuses et une orchestration lisse (strings, cuivres, synths). Relax mais refiné. ✨ — ex. Chris Rainbow, Daft Punk, Ed Motta, Masayoshi Takanaka, Pages, Player
+
+FORMAT DE LA RÉPONSE — À RESPECTER À LA LETTRE
+
+Ta réponse sera lue par un programme. Un bloc de code, une ligne par titre,
+CINQ colonnes : le numéro, l'artiste et le titre recopiés tels qu'ils sont
+écrits dans la liste, PUIS LA PLAYLIST CHOISIE, puis le genre trouvé.
+
+```
+CLASSEMENT
+T0001 | artiste | titre | Nom exact de la playlist | genre précis trouvé
+FIN
+```
+
+- Tous les titres, dans l'ordre, sans en sauter ni en répéter.
+- La playlist est recopiée à l'identique de la liste, « · » compris.
+- Si tout ne tient pas en un message, arrête-toi après environ 200 titres :
+  on t'écrira « continue », reprends au titre suivant dans un nouveau bloc
+  qui commence par CLASSEMENT. Après le dernier titre, une ligne FIN.
+- N'écris jamais « | » dans un nom ou un genre.
+
+LES TITRES À VÉRIFIER
+
+T0001 | 7liwa | Da7k T9ada | actuellement : Rap · Maghreb
+T0002 | Adi Oasis | Le Départ | actuellement : Soul · R&B & neo soul groovy
+T0003 | Adriatique | Deep In The Three | actuellement : Électro · Deep house planante
+T0004 | Agoria | Scala | actuellement : Électro · Deep house planante
+T0005 | Ahmed Sirour | "Sensitive" - feat. Cleveland P. Jones (music & production by Ahmed Sirour) | actuellement : Soul · R&B & neo soul groovy
+T0006 | Al Dobson Jr | Peru Timing | actuellement : Électro · Broken beat & nu jazz
+T0007 | Alain Ho | All Those Frqs There | actuellement : Électro · Deep house planante
+T0008 | Alain Ho | What We Had (feat. Zoé) | actuellement : Électro · Deep house planante
+T0009 | Alina Yanovna | A Secret Within | actuellement : Classique · Moderne contemplatif
+T0010 | Alix Perez | Cape Reinga | actuellement : Électro · Breaks & drum'n'bass
+T0011 | Altinbas | Biosfera | actuellement : Électro · Techno hypnotique
+T0012 | AMK | Malya | actuellement : Rap · FR introspectif
+T0013 | Amotik | Chihattar (feat. Tina Ramamurthy) | actuellement : Électro · Techno hypnotique
+T0014 | Åre:gone | Latin Lover | actuellement : Électro · Techno percutante
+T0015 | Arpow | Event Horizon | actuellement : Électro · Deep house planante
+T0016 | Astre | Freedom (Jesse Jacob Remix) | actuellement : Électro · House
+T0017 | Astrohertz | In My Soul (Extended Mix) | actuellement : Électro · House
+T0018 | Ateyaba | Niamtougou (Outro) | actuellement : Rap · FR introspectif
+T0019 | Athletic Progression | White Crayon | actuellement : Jazz · Smooth & groovy
+T0020 | Belga | Borda da Linha | actuellement : Brésil · MPB douce
+T0021 | Beny Jr | Mariachi | actuellement : Rap · Ailleurs
+T0022 | Bianca Costa | Belle âme | actuellement : Pop · Indie & synth-pop douce
+T0023 | Blacksheep Shelter Thessaly | The Ghetto, Laroye Rework ( Extended mix ) | actuellement : Électro · Deep house vocale
+T0024 | Cal Harris Jr. | Airborne | actuellement : Jazz · Smooth & groovy
+T0025 | Chaim | Your Mulana (Trikk Numero Fim Dub) | actuellement : Électro · Deep house planante
+T0026 | Cheb | H'mmam Zaligin | actuellement : Maghreb · Raï & chaâbi
+T0027 | Cheb | دوار العالم الثالث | actuellement : Maghreb · Raï & chaâbi
+T0028 | Cheb | كوتوكوتو | actuellement : Maghreb · Raï & chaâbi
+T0029 | Clara Valverde | samba do moço bonito | actuellement : Brésil · MPB douce
+T0030 | Common Saints | Summer Sun | actuellement : Soul · Soul ballades
+T0031 | Como Sea | Alicia Never Lies | actuellement : Électro · House
+T0032 | Compagnie El Hashemi Nhass | Al Kaouini | actuellement : Maghreb · Traditions
+T0033 | Cos | Babel Live | actuellement : Jazz · Fusion énergique
+T0034 | Cos | Cha Cha Cha | actuellement : Jazz · Fusion énergique
+T0035 | Cos | Nog Verder | actuellement : Jazz · Fusion planante
+T0036 | Cos | Sors ton pétard, Johnny | actuellement : Jazz · Fusion énergique
+T0037 | Cosmic Analog Ensemble | Ya3tik el 3afieh | actuellement : Électro · Downtempo chill
+T0038 | Cousin | Catsu | actuellement : Électro · Deep house planante
+T0039 | CRC | La vie ne vaut rien | actuellement : Rap · FR introspectif
+T0040 | CRC | Le sort des pétales | actuellement : Rap · FR introspectif
+T0041 | CRC | Ouverture | actuellement : Rap · FR introspectif
+T0042 | Crystal Murray | After Ten | actuellement : Soul · R&B & neo soul posés
+T0043 | CucaRafa | Reservado | actuellement : Latino · Reggaeton, cumbia & corridos
+T0044 | Curumin | Mistério Stereo | actuellement : Brésil · Samba & groove
+T0045 | D.H.C. | Price of Livin' (feat. Yoxng Jah & Kid Snap) | actuellement : Rap · Pays à préciser
+T0046 | D.Y.A | Do It | actuellement : Électro · House
+T0047 | Dada | 3ADI JIDAN | actuellement : Rock · Rock énergique
+T0048 | Dalma Festival | Stef Mendesidis (live) / Dalma Festival 2025 | actuellement : Électro · Techno hypnotique
+T0049 | Dana and Alden | vroom vroom | actuellement : Jazz · Lounge & jazz d'ambiance
+T0050 | Dany Brillant | Dieu | actuellement : Pop · Variété française
+T0051 | Danya | Zone 0 | actuellement : Électro · Ambient & nappes
+T0052 | Darviin | Ojos de Girasol | actuellement : Latino · Boléro, tango & ballades
+T0053 | Dauwd | Macadam Therapy | actuellement : Électro · Deep house planante
+T0054 | David August | A Golden Rush | actuellement : Électro · Deep house planante
+T0055 | David Gold | Phenomena | actuellement : Électro · Ambient & nappes
+T0056 | David Walters | Kryé Mwen | actuellement : Funk · Afrobeat
+T0057 | DBO | COME 2 ME | actuellement : Électro · House
+T0058 | Deema | CAN I? | actuellement : Rap · Pays à préciser
+T0059 | Deetron | Each Step (Powerhouse Extended Mix) | actuellement : Électro · House
+T0060 | DeevoDaGenius | A Lord's Prayer | actuellement : Rap · US
+T0061 | DELACOUR | Dub City | actuellement : Électro · Techno hypnotique
+T0062 | Didaem | Varus | actuellement : Rap · Pays à préciser
+T0063 | Dilnaz Akhmadiyeva | Shahine | actuellement : Folk · Folk acoustique & traditions
+T0064 | DJ Fudge | If I Had A Band | actuellement : Électro · House
+T0065 | DJ Fudge | My Love Is Pure (feat. Tasita D'Mour) [Classic Mix] (feat. Tasita D'Mour) | actuellement : Électro · House
+T0066 | DJ Fudge | Simpatico (feat. Omar) | actuellement : Soul · R&B & neo soul groovy
+T0067 | DJ Fudge | Something (Vocal Mix) (feat. Barbie Mak) | actuellement : Électro · House
+T0068 | Do Your Thang | Umami (feat. White Boy, Jekesa, Rubber Soul & Alan Beez) | actuellement : Rap · Pays à préciser
+T0069 | Don Bigg | 11 - 16/05 | actuellement : Rap · Maghreb
+T0070 | Don. G | SILICONE | actuellement : Rap · Pays à préciser
+T0071 | DonGee | 10/10 | actuellement : Rap · Pays à préciser
+T0072 | Douaa | Haditouni | actuellement : Funk · Funk arabe des années 70
+T0073 | Draganov | 3DABI | actuellement : Rap · Maghreb
+T0074 | Draganov | Maak | actuellement : Rap · Maghreb
+T0075 | Draganov | Paradis | actuellement : Rap · Maghreb
+T0076 | Droop-E | Rossi Wine (feat. Kendrick Lamar) | actuellement : Rap · US
+T0077 | Dying & Barakat | About That Promise | actuellement : Électro · Techno hypnotique
+T0078 | Eddie Barclay | Ne m'laissez pas comme ça | actuellement : Jazz · Swing & big band
+T0079 | El Shab Arrab | law kan | actuellement : Orient · Fairouz, tarab & chanson
+T0080 | El Shab Arrab | sabar | actuellement : Orient · Fairouz, tarab & chanson
+T0081 | El Shab Arrab | ya malaky | actuellement : Orient · Fairouz, tarab & chanson
+T0082 | El Shab Arrab | yama 3yoony | actuellement : Orient · Fairouz, tarab & chanson
+T0083 | El Zar | La Declaración | actuellement : Latino · Boléro, tango & ballades
+T0084 | Elan Marinho | playlist para estudar como nietzsche sobre o abismo em uma corda bamba entre o animal e o übermensch | actuellement : Classique · Romantique tendre
+T0085 | Ele A | Globo | actuellement : Rap · FR groovy
+T0086 | Elevator Music | gum.mp3 (DJ Set) - Elevator Music | actuellement : Électro · House
+T0087 | Eleven Of July | Annihilation | actuellement : Électro · Techno percutante
+T0088 | ElGrandeToto | Haram (Pablo II) | actuellement : Rap · Maghreb
+T0089 | Elpatron970 | All Black | actuellement : Rap · Ailleurs
+T0090 | Elysian Spring | Blue Sands | actuellement : Jazz · Bop & cool nocturne
+T0091 | Equation | I'll Say A Prayer 4 U | actuellement : Électro · Deep house vocale
+T0092 | Eva sur Seine | Une Belle Histoire | actuellement : Pop · Variété française
+T0093 | Ezhel | Bazen (feat. Emel) | actuellement : Rap · Ailleurs
+T0094 | FaceSoul | Love | actuellement : Soul · R&B & neo soul posés
+T0095 | Femme Falafel | Depressão | actuellement : Pop · Indie & synth-pop douce
+T0096 | FEMTOGO | MME. RIFFAUD | actuellement : Rap · FR sombre
+T0097 | Feral | Court of Light | actuellement : Électro · Techno hypnotique
+T0098 | Ferdi | SERENADE | actuellement : Jazz · Lounge & jazz d'ambiance
+T0099 | Four Tracks | You Mean Everything to Me | actuellement : Soul · Soul ballades
+T0100 | Francesco Demegni | Don't Forget | actuellement : Jazz · Lounge & jazz d'ambiance
+T0101 | François Sentinelle | Est-ce que tu regrettes ? | actuellement : Pop · Variété française
+T0102 | Frank Houston | Life Happens (feat. Phil Davis & Terreon Gully) | actuellement : Jazz · Smooth & groovy
+T0103 | Frank Jade | Young Free and Single | actuellement : Funk · Funk, boogie & disco
+T0104 | Frankie Goes To Hollywood | bang… | actuellement : Pop · Indie & synth-pop dansante
+T0105 | Frankie Goes To Hollywood | Including The Ballad Of 32 | actuellement : Rock · Psyché & prog nerveux
+T0106 | Frankie Goes To Hollywood | (Tag) | actuellement : Pop · Indie & synth-pop dansante
+T0107 | Frankie Goes To Hollywood | Wish (The Lads Were Here) | actuellement : Pop · Indie & synth-pop dansante
+T0108 | Fred B | Summer Time In Color | actuellement : Électro · House
+T0109 | Full Crate & Gaidaa | A Storm on a Summers Day | actuellement : Soul · R&B & neo soul posés
+T0110 | FUNERAL Ant Bell | City of Champions | actuellement : Rap · Pays à préciser
+T0111 | Gaan | Sade - Smooth Operator (De Rigueur Bootleg) | actuellement : Électro · House
+T0112 | Gannein | Semantic Satiation | actuellement : Électro · Techno hypnotique
+T0113 | Gene Lawrence | Feel Like Making Love | actuellement : Soul · Soul groovy
+T0114 | Germannu | Fale De Mim (Mendel Edit) | actuellement : Électro · Nu-disco & synth
+T0115 | Gianni´s Humble | show me // something | actuellement : Électro · House
+T0116 | Giga Papaskiri | Lucie From Paris | actuellement : Électro · Deep house planante
+T0117 | Gil Scott-Heron | Morning Thoughts | actuellement : Jazz · Jazz-funk & groove
+T0118 | Giorgi Kubaneishvili | The Color Of | actuellement : Électro · Deep house planante
+T0119 | GLemix | Love Frequency | actuellement : Électro · House
+T0120 | Goedi | Le sigarette (Goedi Rmx) (feat. Frah Quintale) | actuellement : Électro · Downtempo chill
+T0121 | Golden Hands | Take Me Back | actuellement : Funk · Funk, boogie & disco
+T0122 | Goro Noguchi | 21世紀箱舟の出帆 - The Departure Of 21th Century's Ark | actuellement : Jazz · Fusion énergique
+T0123 | Goro Noguchi | 北回帰線 - The Tropic Of Cancer | actuellement : Pop · City pop & disco
+T0124 | Goro Noguchi | 少女よ - Little Girl | actuellement : Pop · City pop & disco
+T0125 | Goro Noguchi | 汚さずにいられない - I Can't Stop Lovin' You | actuellement : Pop · City pop & disco
+T0126 | Goro Noguchi | 狂った地球 - A Crazy Fruit | actuellement : Pop · City pop & disco
+T0127 | Goro Noguchi | 薔薇 - Roses | actuellement : Jazz · Fusion planante
+T0128 | Gracy Hopkins | The Canção: Family (feat. Faktiss) | actuellement : Rap · FR groovy
+T0129 | Gros Mo | #Hulahoop | actuellement : Rap · FR groovy
+T0130 | Grupo RYE | Carnal | actuellement : Latino · Boléro, tango & ballades
+T0131 | GTI | Full Contact | actuellement : Électro · Nu-disco & synth
+T0132 | Guy Gerber | One Day In May | actuellement : Électro · Techno hypnotique
+T0133 | H&H SoulSurvivors | Be Right There (H&H Magic T Version Extended Mix) | actuellement : Électro · House
+T0134 | Haipe Music | SMOU7AT (HAIPE RE-EDIT) | actuellement : Électro · House
+T0135 | Hamed Al Shaeri | Maktob Aleina | actuellement : Orient · Pop arabe
+T0136 | Hameed El Shaery | Ya Saheb | actuellement : Orient · Pop arabe
+T0137 | Hamid El Sha'ery | Shantet Safar | actuellement : Orient · Pop arabe
+T0138 | Hany Shenoda Ferqet Masr | El Sobheya | actuellement : Orient · Fairouz, tarab & chanson
+T0139 | Haris Hamza | Mchilli | actuellement : Rap · Maghreb
+T0140 | Harley | Supalife 2 | actuellement : Rap · Pays à préciser
+T0141 | Harumi | Fire by the River | actuellement : Rock · Psyché & prog rêveur
+T0142 | Hash 24 | Champagne Prototype | actuellement : Électro · House
+T0143 | Hessa | Funky Talks | actuellement : Électro · Techno percutante
+T0144 | hierogliphix | Gran Turismo Sessions (Music Similar To The GT OST) | actuellement : Jazz · Jazz-funk & groove
+T0145 | Hoba Hoba Spirit | La logique | actuellement : Rock · Rock énergique
+T0146 | Hologram Lo' | Le biff et moi | actuellement : Rap · FR sombre
+T0147 | Hotel Ugly | The Ballad of Eddie Jabuley | actuellement : Soul · R&B & neo soul posés
+T0148 | Human Experiments | Persistence | actuellement : Électro · Techno percutante
+T0149 | Ian Rees | Jazzy Funk Boi 3000 | actuellement : Jazz · Jazz-funk & groove
+T0150 | IASAM | Copernic | actuellement : Électro · Ambient & nappes
+T0151 | Ignez | Telomere | actuellement : Électro · Techno hypnotique
+T0152 | Igor Levit | Klavierstück in B Minor | actuellement : Classique · Romantique tendre
+T0153 | illi | Escale | actuellement : Pop · Indie & synth-pop douce
+T0154 | Iman Europe | masterpiece. | actuellement : Soul · R&B & neo soul posés
+T0155 | Ino Casablanca | DIMA RAVE | actuellement : Électro · Techno percutante
+T0156 | ISAO SUZUKI | LOVING LASH | actuellement : Jazz · Bop & cool nocturne
+T0157 | Ivana June | In Time | actuellement : Soul · R&B & neo soul posés
+T0158 | Jack Harlow | Wasted Youth (feat. Shloob) | actuellement : Rap · US
+T0159 | Jackson Homer | IDEA OF US | actuellement : Pop · Indie & synth-pop douce
+T0160 | Jaffa | Sneakin' (vocal) | actuellement : Électro · Downtempo chill
+T0161 | Jake Antonio | wants and needs | actuellement : Pop · Indie & synth-pop douce
+T0162 | Jeunesaint | Pu$$y Tsunami | actuellement : Rap · Pays à préciser
+T0163 | Jhelisa | Friendly Pressure (Into The Sunshine Mix) | actuellement : Jazz · Jazz-funk & groove
+T0164 | Jitwam | Back to My Place | actuellement : Électro · Deep house vocale
+T0165 | JKriv | Emmanuel | actuellement : Électro · Downtempo chill
+T0166 | Joachim Garraud | Joachim Garraud & Friends - KFUQWSW | actuellement : Électro · Breaks & drum'n'bass
+T0167 | John Cameron | Liquid Sunshine | actuellement : Jazz · Lounge & jazz d'ambiance
+T0168 | Johnny Heyward | 「もし君が･････」 草刈正雄 | actuellement : Pop · City pop & disco
+T0169 | Jon Sable | Imperfect Circuit | actuellement : Électro · Techno percutante
+T0170 | Jordan Lee | In Between Feelings (feat. HolyBrune) | actuellement : Soul · R&B & neo soul posés
+T0171 | José Vicentes | Cautela | actuellement : Latino · Boléro, tango & ballades
+T0172 | Joss Moog | Wil | actuellement : Électro · Downtempo chill
+T0173 | JP Munii | I look left | actuellement : Électro · House
+T0174 | Juan Antonio Canta | Rap de los 40 limones | actuellement : Pop · Pop rock & pop dansante
+T0175 | Jungle Jack | Dictons égyptiens | actuellement : Rap · FR groovy
+T0176 | Jürgen Paape | Whisper Echo | actuellement : Électro · Techno hypnotique
+T0177 | KAFFKIEZ | Nie Allein | actuellement : Pop · Indie & synth-pop douce
+T0178 | KAGAMI | Perfect Wave | actuellement : Électro · Techno percutante
+T0179 | Karl Soon | Gett Low | actuellement : Électro · Techno percutante
+T0180 | Karpov | Seven Goblins | actuellement : Rock · Rock énergique
+T0181 | Karrém | Mr Dynamite (Revenge Mix) | actuellement : Rap · Pays à préciser
+T0182 | Kashii | Take You Away | actuellement : Électro · Deep house planante
+T0183 | Katsuhisa Hattori | 二人だけの海 - Futaridake No Umi | actuellement : Jazz · Lounge & jazz d'ambiance
+T0184 | Kaznova | Perfect Girl (feat. Charlene Lai) | actuellement : Électro · Deep house vocale
+T0185 | Keroué | OSEF (feat. NeS) | actuellement : Rap · FR énergique
+T0186 | Kevin Di Serna | Horizons | actuellement : Électro · Nu-disco & synth
+T0187 | KEYAH/BLU | South | actuellement : Soul · R&B & neo soul posés
+T0188 | Kezo! | molly! | actuellement : Rap · Pays à préciser
+T0189 | Khaled | Detni Essekra | actuellement : Maghreb · Raï & chaâbi
+T0190 | Kid Bloom | Electric U | actuellement : Rock · Rock énergique
+T0191 | Kiko Navarro | Sonando Contigo (Tuccillo Deep Mix) | actuellement : Électro · Deep house vocale
+T0192 | KiLLOWEN | Sober | actuellement : Rap · UK
+T0193 | Klaus Veen | Poison | actuellement : Électro · House
+T0194 | Koma | Loin des rêves | actuellement : Rap · FR introspectif
+T0195 | Konfusion Kidzz | On My Mind | actuellement : Électro · Deep house vocale
+T0196 | KOTA The Friend | Oh Darling How I Love You . | actuellement : Rap · US
+T0197 | Kouz1 | Magic | actuellement : Rap · FR groovy
+T0198 | Krisy | C'EST UN MOOD | actuellement : Rap · FR groovy
+T0199 | Kumi | The Feeling | actuellement : Électro · House
+T0200 | Kx9000 | Air Dodge | actuellement : Électro · House
+T0201 | L'Algerino | Mention Max | actuellement : Rap · FR énergique
+T0202 | La Femme | Où va le monde | actuellement : Rock · Psyché & prog rêveur
+T0203 | Labess | Valérie | actuellement : Maghreb · Raï & chaâbi
+T0204 | LaChele | Sade - Room 55 (B-Side) | actuellement : Soul · R&B & neo soul posés
+T0205 | LaSignature | Boomerang | actuellement : Rap · FR énergique
+T0206 | lazulitchi | a new kind of bossa | actuellement : Brésil · Bossa nova
+T0207 | Le Blaze | La cible (feat. Seak, Bvker & La Fève) | actuellement : Rap · FR énergique
+T0208 | Le Dé, Lobo EL | Montrer l'exemple | actuellement : Rap · FR sombre
+T0209 | Le Merlu & Nordinomouk | La Vitre Du Cockpit | actuellement : Rap · FR groovy
+T0210 | Le Rabb1 | Minimum Syndical | actuellement : Rap · FR énergique
+T0211 | LEDOUBLE | CANADA | actuellement : Rap · FR introspectif
+T0212 | Léonie Pernet | Les chants de Maldoror | actuellement : Électro · Nu-disco & synth
+T0213 | Ley Soul | Intergalactic Janet | actuellement : Électro · Ambient & nappes
+T0214 | Lost in Blues | No Water No Wine | actuellement : Rock · Blues mélancolique
+T0215 | Lost Mind | Passenger | actuellement : Électro · Deep house planante
+T0216 | Louis Culture | Hanah Says Hi | actuellement : Rap · UK
+T0217 | Luca Musto | Ticon | actuellement : Électro · Deep house planante
+T0218 | Lucas Blondeau | Chin'r Ft LEBÖ - Happiness Verne City Life | actuellement : Électro · House
+T0219 | LucasGitanoFamily | Arles Romance | actuellement : Folk · Flamenco & tsigane
+T0220 | LudoWic | MULTY STRIPES | actuellement : Électro · Expérimental & IDM
+T0221 | Luidji | Palace Mafia | actuellement : Rap · FR introspectif
+T0222 | Luv Resval | MPC, Part II (La rivière) | actuellement : Rap · FR introspectif
+T0223 | Lympstyle _short | Piano improvisation | actuellement : Classique · Moderne contemplatif
+T0224 | Maes | Tmax 530 | actuellement : Rap · FR énergique
+T0225 | MaHa | Ala Shat El Nesyan | actuellement : Orient · Fairouz, tarab & chanson
+T0226 | Maison Blanche | You're Gonna Like It | actuellement : Électro · House
+T0227 | Malto | Viva Mélenchonne | actuellement : Rap · FR énergique
+T0228 | Manuel Darquart | The Vibe | actuellement : Électro · Downtempo chill
+T0229 | Mar Malade | Cabriolet | actuellement : Pop · Indie & synth-pop douce
+T0230 | Marc Cotterell | Is Love A Game | actuellement : Électro · Deep house vocale
+T0231 | Marc Rebillet | rainy sunday | actuellement : Funk · Funk, boogie & disco
+T0232 | Mariana Froes | Eu | actuellement : Brésil · MPB douce
+T0233 | Marine Neuilly | Confetti (Preview) | actuellement : Pop · Indie & synth-pop douce
+T0234 | Mark Allaway | Soul Girl | actuellement : Jazz · Bop qui swingue
+T0235 | Marlon Funaki | Murphy's Law | actuellement : Électro · Downtempo chill
+T0236 | Martin Langlo | Sunset Valley | actuellement : Électro · Downtempo chill
+T0237 | Martin Solveig | Cabo Parano (Claude Monet Remix) | actuellement : Électro · House
+T0238 | Mateo Dufour | Break It Up (Aline Umber Remix) | actuellement : Électro · Techno percutante
+T0239 | Mathieu Fiset | Chick's Pain | actuellement : Jazz · Contemporain
+T0240 | Mathilda Homer | Ready When You Are | actuellement : Pop · Indie & synth-pop douce
+T0241 | Matty | Now What (Matt's Soul Flower Mix) | actuellement : Électro · Deep house vocale
+T0242 | Matze | Vectors | actuellement : Électro · House
+T0243 | Maxi Beatz | Azul (Instrumental) | actuellement : Rap · Pays à préciser
+T0244 | MELCHYOR A | Warning (Melchyor A's Hmida Version) | actuellement : Électro · Deep house planante
+T0245 | Melodiesinfonie | Akindstream | actuellement : Électro · Downtempo chill
+T0246 | menace Santana | QLNT | actuellement : Rap · FR sombre
+T0247 | Meteor Airlines | ABRRANIY (Acoustic Version) | actuellement : Folk · Folk acoustique & traditions
+T0248 | Mézigue | Le problème frenchtouch | actuellement : Rap · FR groovy
+T0249 | Michel Petrucciani | Sahara | actuellement : Jazz · Bop qui swingue
+T0250 | Mifrankli24 | IF YOU LEAVE TONIGHT | actuellement : Soul · R&B & neo soul posés
+T0251 | Mila Journée | All the Time | actuellement : Électro · Downtempo chill
+T0252 | Miles Davis | Changes (Remastered 2025) | actuellement : Jazz · Bop qui swingue
+T0253 | Minuit 10 | Mansour | actuellement : Pop · Indie & synth-pop douce
+T0254 | Mira Ló | My Best Memory (feat. Lou Martini) | actuellement : Électro · House
+T0255 | Mirana Faiz | Mirana Faiz - Bach G minor arranged by Luo Ni | actuellement : Classique · Baroque lent
+T0256 | Mk.gee | Anabell | actuellement : Pop · Indie & synth-pop douce
+T0257 | Modjo | Acknowledgement | actuellement : Électro · House
+T0258 | Mohamed Mazouni | La tat akheri | actuellement : Maghreb · Raï & chaâbi
+T0259 | Mohamed Mounir | Kreeshendo | actuellement : Orient · Pop arabe
+T0260 | Moka Boka | Heracles (feat. Swing) | actuellement : Rap · FR groovy
+T0261 | Monk.e | Rembrandt | actuellement : Rap · Pays à préciser
+T0262 | Monster Florence | Deck Of Cards | actuellement : Électro · Downtempo chill
+T0263 | Moods | Treat U Good | actuellement : Soul · R&B & neo soul groovy
+T0264 | Mou | Sous ma couverture | actuellement : Pop · Indie & synth-pop douce
+T0265 | Mr. G | Daily Prayer | actuellement : Électro · Techno percutante
+T0266 | Mr GISCARD | Pho | actuellement : Électro · House
+T0267 | murmur | HEIDY FLY - MÄR / 12.23 | actuellement : Électro · House
+T0268 | Murphy's Law (UK) | Take My Love (Prunk Remix) | actuellement : Électro · Nu-disco & synth
+T0269 | mynameisntjmack | BUNKER/PREROLL | actuellement : Rap · US
+T0270 | Nafta | Andate | actuellement : Rap · Pays à préciser
+T0271 | Nandu | See You | actuellement : Électro · Deep house planante
+T0272 | Narciss | Fragments of a Language of Love | actuellement : Électro · Techno hypnotique
+T0273 | Narciss | Until the Day We Meet Again | actuellement : Électro · Techno percutante
+T0274 | Nasser | LEH | actuellement : Rap · Pays à préciser
+T0275 | nassím | Nymphomaniac | actuellement : Électro · Downtempo chill
+T0276 | NeedToWant - Piano | Left hand go brrrrr X2 | actuellement : Classique · Moderne tendu
+T0277 | Nekfeu | Au coeur du G | actuellement : Rap · FR énergique
+T0278 | Népal | Suga Suga | actuellement : Rap · FR groovy
+T0279 | Népal | YOLO | actuellement : Rap · FR groovy
+T0280 | Nico Play | La Ciruela | actuellement : Brésil · Bossa nova
+T0281 | NightCrawl | Lost Highway | actuellement : Électro · Expérimental & IDM
+T0282 | Ninho | Dis-moi que tu m'aimes | actuellement : Rap · FR introspectif
+T0283 | Noni | Be My Friend | actuellement : Caraïbes · Reggae, dub & dancehall
+T0284 | Nordinomouk & Bavaz | Cuir De Dragon | actuellement : Rap · FR groovy
+T0285 | Notre Dame | Eldorado | actuellement : Pop · Indie & synth-pop douce
+T0286 | nour | Wana | actuellement : Pop · Indie & synth-pop douce
+T0287 | NTBR | Island | actuellement : Électro · Deep house planante
+T0288 | Nu | SEANKEN BIMA (feat. Seanken Bima) | actuellement : Électro · Ambient & nappes
+T0289 | oakland | yes, please (feat. Ezra Skys) | actuellement : Électro · Downtempo chill
+T0290 | Odetto | BONHEUR SAMPLER | actuellement : Funk · Funk, boogie & disco
+T0291 | Ogranya | Do You (feat. T'neeya) | actuellement : Électro · Deep house vocale
+T0292 | Omai.TV/Sofia | Sofia tonight S2E5 - DJ set by Selyann Zouhir | actuellement : Électro · House
+T0293 | Othman El Kheloufi | Dog Market | actuellement : Jazz · Smooth & groovy
+T0294 | Oum | Lik Live in Marrakech | actuellement : Soul · R&B & neo soul posés
+T0295 | OUM | Lik (Mashti & Polyesta Remix For Womex 14) | actuellement : Électro · Downtempo chill
+T0296 | PANTERA BLUE | Lágrima | actuellement : Latino · Boléro, tango & ballades
+T0297 | Paoulo Music | Leo | actuellement : Électro · House
+T0298 | Pashanim | Mittelmeer | actuellement : Rap · Ailleurs
+T0299 | Patchwork Inc. | Lalalalala | actuellement : Électro · House
+T0300 | Patrick Holland | Warm Priority | actuellement : Électro · Deep house planante
+T0301 | Peven Everett | World Love | actuellement : Soul · R&B & neo soul groovy
+T0302 | Phantom Harmonics | Nocturne in E-flat Major, Op. 9 No. 2 (Jazz) | actuellement : Jazz · Lounge & jazz d'ambiance
+T0303 | Piano Beats and Jam | Fly Me to a Moon [Lethal Company Parody] | actuellement : Jazz · Lounge & jazz d'ambiance
+T0304 | Pino D'Angiò / duetto con Piera Romoli | Una notte maledetta | actuellement : Pop · City pop & disco
+T0305 | Pinty | Found It | actuellement : Électro · Broken beat & nu jazz
+T0306 | PlanetKush | Secco - Frangin (Prod. Cham808) | actuellement : Rap · FR introspectif
+T0307 | Prince Waly | Cra$h (feat. Enchantée Julia & Jazzy Bazz) | actuellement : Rap · FR groovy
+T0308 | ProOne79 | No Plan | actuellement : Rap · Pays à préciser
+T0309 | Prunk | Heat | actuellement : Électro · House
+T0310 | PXNDORA NXGHTS | Night Vegas | actuellement : Électro · Nu-disco & synth
+T0311 | R1D1 | In The Soul | actuellement : Électro · Deep house vocale
+T0312 | Rachid Aseyakhe | Fly me to the moon (Acoustic Arabic) (feat. Amine Makdad) | actuellement : Orient · Fairouz, tarab & chanson
+T0313 | Rad&Co | Unspoken Thoughts | actuellement : Rap · Pays à préciser
+T0314 | Radiq | Waiting for My Man (feat. Khansa Batma) | actuellement : Électro · Downtempo chill
+T0315 | Raffaele Attanasio | Chara | actuellement : Électro · Techno hypnotique
+T0316 | Raiun | sunkiss | actuellement : Électro · Downtempo chill
+T0317 | Rantseni | Resiliencia | actuellement : Latino · Reggaeton, cumbia & corridos
+T0318 | Rare Samples & Songs Oleg Tsoy | Nathan Davis - A Thought For Cannon | actuellement : Jazz · Bop qui swingue
+T0319 | Raste | Still Alive | actuellement : Rap · Pays à préciser
+T0320 | Red | Little bit of Liszt at the end 🫣 | actuellement : Classique · Romantique passionné
+T0321 | rémi.fr | BOSSA NOVA BOUNCE (feat. Pablo Rochat) | actuellement : Rap · FR groovy
+T0322 | Revers Gagnant | Paradis bleu | actuellement : Pop · Indie & synth-pop douce
+T0323 | Rill | Visual Numbers | actuellement : Électro · Downtempo chill
+T0324 | Roland Leesker | Respect | actuellement : Électro · Techno percutante
+T0325 | Rosenna Samson | Nostalgia | actuellement : Électro · Deep house planante
+T0326 | Rove Ranger | Millennial Millenium | actuellement : Électro · Downtempo chill
+T0327 | Ry's | ELLIPSE | actuellement : Rap · FR introspectif
+T0328 | Ryan Prewett | My Side (feat. Brian Nathan & Andriana) | actuellement : Soul · R&B & neo soul posés
+T0329 | S-Crew | J’aurais pas dû | actuellement : Rap · FR introspectif
+T0330 | S-TEE | TRUESTHONER INTERLUDE | actuellement : Rap · Pays à préciser
+T0331 | S-Tone Inc | Todo Mundo Vai | actuellement : Brésil · Bossa nova
+T0332 | Safar (FR) | Exorce | actuellement : Rap · FR sombre
+T0333 | Sameer Ahmad | Matriochka | actuellement : Rap · FR sombre
+T0334 | Samira Saïd | Rouhi | actuellement : Orient · Pop arabe
+T0335 | Santa | BOEING (feat. La Fève) | actuellement : Rap · FR énergique
+T0336 | Saul feat. Brother Portrait | No Fuss No Fight | actuellement : Rap · US
+T0337 | Saxson | Beach | actuellement : Électro · Deep house planante
+T0338 | Senamo | Fleurs du mal | actuellement : Rap · FR introspectif
+T0339 | Serane | S9 | actuellement : Rap · Pays à préciser
+T0340 | Sharon Revoal | Reaching for Our Star | actuellement : Soul · Soul groovy
+T0341 | Shawn Cartier | Lemon | actuellement : Pop · Indie & synth-pop douce
+T0342 | Shigeo Sekito | The Word 2 (Remixed by Masamichi Torii) | actuellement : Électro · Ambient & nappes
+T0343 | Sligo | Aurora (DJ IBON Remix) | actuellement : Électro · Techno percutante
+T0344 | Smino | Z4L | actuellement : Soul · R&B & neo soul groovy
+T0345 | Smockey | Le Président, Ma Moto Et Moi | actuellement : Rap · Ailleurs
+T0346 | sofiane salamane | LIYEH LIYEH (Live) | actuellement : Maghreb · Raï & chaâbi
+T0347 | Sopico | Bonne étoile | actuellement : Rap · FR introspectif
+T0348 | Soul Keita | Dusties n' 808s | actuellement : Rap · Pays à préciser
+T0349 | Sparkle | What About | actuellement : Funk · Funk, boogie & disco
+T0350 | Specter | Windtalker | actuellement : Électro · House
+T0351 | Stanis | Fractal | actuellement : Électro · Ambient & nappes
+T0352 | Stanislav Stanchev | Concert - Harp and Piano / Sofia City Art Gallery | actuellement : Classique · Moderne contemplatif
+T0353 | Stavroz | Great Day to Fly a Kite | actuellement : Électro · Deep house planante
+T0354 | Stef Mendesidis | Spectral Transmission | actuellement : Électro · Techno hypnotique
+T0355 | Stela | Piece of soul | actuellement : Soul · R&B & neo soul posés
+T0356 | Steve Lacy | Atomic Vomit | actuellement : Soul · R&B & neo soul groovy
+T0357 | Stress | Rude Gal | actuellement : Rap · FR énergique
+T0358 | Sublime | baume | actuellement : Rap · US
+T0359 | SuperMegaSuperCool Révolution | Full Shine Render | actuellement : Électro · Ambient & nappes
+T0360 | Superstar Prince Aziz | Batman | actuellement : Électro · Ambient & nappes
+T0361 | Table | Hotspot | actuellement : Électro · House
+T0362 | Tahl | Kuvira Kombat | actuellement : Électro · Breaks & drum'n'bass
+T0363 | Talos | Oh Girl (feat. Poppy Ajudha) | actuellement : Pop · Indie & synth-pop douce
+T0364 | Tekno | GO | actuellement : Électro · Breaks & drum'n'bass
+T0365 | Temudo | Meteora | actuellement : Électro · Techno percutante
+T0366 | Teuteu | Don't Doubt (Slowed + Reverb) | actuellement : Électro · Ambient & nappes
+T0367 | THIRD WIFE | Lowbird | actuellement : Électro · Downtempo chill
+T0368 | Thornato | Last Chance (feat. The Spy From Cairo) | actuellement : Électro · Broken beat & nu jazz
+T0369 | Thundercat | Walk On By (feat. Kendrick Lamar) | actuellement : Soul · R&B & neo soul posés
+T0370 | Tianmi | Soulager | actuellement : Pop · Indie & synth-pop douce
+T0371 | TIF & Flenn | S12 | actuellement : Rap · FR sombre
+T0372 | tn_490 | Traffic (with Zeu) | actuellement : Électro · House
+T0373 | Toman | Una Y Nada | actuellement : Électro · Deep house planante
+T0374 | TORYONTHEBEAT | You're in My System | actuellement : Soul · R&B & neo soul posés
+T0375 | Triniidadii | Loud Enough. | actuellement : Rap · Pays à préciser
+T0376 | Trio Ternura | Last Tango In Paris | actuellement : Brésil · MPB douce
+T0377 | Tripolism | Dope Dance | actuellement : Électro · House
+T0378 | Trixxo | Diez | actuellement : Électro · House
+T0379 | TUL8TE | Shedeeny (Jazz Edition, Live) | actuellement : Jazz · Jazz-funk & groove
+T0380 | Twilight | Give Love a Try | actuellement : Funk · Funk, boogie & disco
+T0381 | Tzii | Tzii - الحياة جميلة | actuellement : Rap · Maghreb
+T0382 | Umbraid | Into Forlorn Countryside | actuellement : Électro · Ambient & nappes
+T0383 | USG feat. Monica Elam | Life 4 Living | actuellement : Électro · Deep house vocale
+T0384 | V.I.C.A.R.I. | Pascià (Dub) | actuellement : Électro · Deep house planante
+T0385 | Vieux Père | Baby Mama | actuellement : Rap · FR groovy
+T0386 | Vinyl Mode | Shoft Alhala (Radio Edit) | actuellement : Électro · House
+T0387 | Vondkreistan | First vision (feat. iris capricorn) | actuellement : Électro · Deep house planante
+T0388 | VT | Ville de Snitch | actuellement : Rap · FR sombre
+T0389 | Vulax | Ami - Concours composition Avner (piano) | actuellement : Classique · Moderne contemplatif
+T0390 | Warp Dub Sound System | Night Places Darkness Upon The Earth | actuellement : Électro · Techno hypnotique
+T0391 | Wesley Joseph | Ur_Room | actuellement : Soul · R&B & neo soul posés
+T0392 | WILLIS | I Think I Like When It Rains | actuellement : Pop · Indie & synth-pop douce
+T0393 | WonderBag | Candy Eyes | actuellement : Pop · Indie & synth-pop douce
+T0394 | Worlen Kaizer | Contradição | actuellement : Brésil · MPB douce
+T0395 | Yellowm | WAY | actuellement : Électro · Downtempo chill
+T0396 | Yiuliusly | Papaya | actuellement : Électro · House
+T0397 | Yksteexy | untitled | actuellement : Rap · Pays à préciser
+T0398 | YL | Larlar 3 (Copenhague) | actuellement : Rap · FR sombre
+T0399 | Yoofee | Lost Papers | actuellement : Électro · Downtempo chill
+T0400 | Yuksek | The Rollercoaster (Edit) | actuellement : Électro · Nu-disco & synth
+T0401 | Zamdane | Affamé #8 - Hayati | actuellement : Rap · FR introspectif
+T0402 | Zamdane | Noum | actuellement : Rap · FR introspectif
+T0403 | Zeu | RARE | actuellement : Rap · FR énergique
+T0404 | Ziad Rahbani | Prelude Theme From Mais Al Rim | actuellement : Orient · Oud & taqsim
+T0405 | ØXYR | Calarth | actuellement : Électro · Techno percutante
+
+FORMAT DE LA RÉPONSE — À RESPECTER À LA LETTRE
+
+Ta réponse sera lue par un programme. Un bloc de code, une ligne par titre,
+CINQ colonnes : le numéro, l'artiste et le titre recopiés tels qu'ils sont
+écrits dans la liste, PUIS LA PLAYLIST CHOISIE, puis le genre trouvé.
+
+```
+CLASSEMENT
+T0001 | artiste | titre | Nom exact de la playlist | genre précis trouvé
+FIN
+```
+
+- Tous les titres, dans l'ordre, sans en sauter ni en répéter.
+- La playlist est recopiée à l'identique de la liste, « · » compris.
+- Si tout ne tient pas en un message, arrête-toi après environ 200 titres :
+  on t'écrira « continue », reprends au titre suivant dans un nouveau bloc
+  qui commence par CLASSEMENT. Après le dernier titre, une ligne FIN.
+- N'écris jamais « | » dans un nom ou un genre.

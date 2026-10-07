@@ -820,9 +820,16 @@ compris sur la liste des playlists elles-mêmes.
   rattache une ligne mal recopiée au nom le plus proche de la liste. Une
   playlist reprise garde sa description.
 
+* **Le tri complet a été abandonné** après deux relances : glissements de
+  numéros, plages oubliées, colonne playlist omise. Ce qui marche est plus
+  petit : `build_unsure` ne soumet que les titres « à vérifier » (~400),
+  à ranger dans les playlists existantes. La réponse n'a pas de section
+  PLAYLISTS : le plan reste tel quel, chaque titre classé reçoit un
+  déplacement, même à sa place actuelle.
+
 ## Tests
 
-729 tests, aucun appel réseau, y compris l'API web complète (aperçu,
+730 tests, aucun appel réseau, y compris l'API web complète (aperçu,
 application, annulation), son contrôle d'accès et les quatre voies de connexion.
 
 Quatre-vingt-onze d’entre eux chargent l’interface dans un vrai navigateur (`tests/test_ui.py`).

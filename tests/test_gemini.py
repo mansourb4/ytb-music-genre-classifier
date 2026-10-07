@@ -392,3 +392,40 @@ def test_a_retry_lists_the_tracks_to_classify_again():
     assert "T0002 | Herbie Hancock | Watermelon Man\nT0003 | Weather Report | Birdland" in text
     assert "un exemple" in text and "les 2 titres" in text and "(T0002 à T0003)" in text
     assert "- Jazz · Groove" in text and "T0001" not in text
+
+
+# ------------------------------------------------------- titres à vérifier
+
+
+def test_unsure_tracks_are_reviewed_and_placed_in_the_current_playlists(library, config):
+    verdicts.save(VerdictBook([
+        Verdict("Herbie Hancock", "Chameleon", "Jazz", "Jazz-Funk", "Groovy", 0.9),
+        Verdict("Herbie Hancock", "Watermelon Man", "Jazz", "Jazz-Funk", "Groovy", 0.2),
+        Verdict("Weather Report", "Birdland", "Jazz", "Fusion", "Groovy", 0.2),
+    ]), config.claude.verdicts_file)
+    summary = preview(library, config)
+    plan = load_plan(config.taxonomy.playlists_file, TAXONOMY)
+    prompt, rows = gemini.build_unsure(summary, plan)
+
+    # Seuls les titres peu sûrs, avec leur playlist ; les playlists en exemple.
+    assert [(r.title, r.playlist) for r in rows] == [
+        ("Watermelon Man", "Jazz · Jazz-funk"), ("Birdland", "Jazz · Fusion")]
+    assert "T0002 | Weather Report | Birdland | actuellement : Jazz · Fusion" in prompt
+    assert "- Jazz · Fusion (1 titres) : Fusion électrique." in prompt
+    assert "Chameleon |" not in prompt
+
+    # La réponse n'a pas de section PLAYLISTS : rien n'est créé ni supprimé ;
+    # un titre gardé à sa place n'est plus à vérifier, l'autre est déplacé.
+    answer = gemini.parse("""```
+CLASSEMENT
+T0001 | Herbie Hancock | Watermelon Man | Jazz Fusion | jazz-funk
+T0002 | Weather Report | Birdland | Jazz · Fusion | jazz fusion
+FIN
+```""")
+    change = gemini.apply(answer, {r.id: r for r in rows}, config, TAXONOMY, write=True)
+    assert change.deleted == [] and change.created == [] and change.renamed == {}
+    after = preview(library, config)
+    names = {p.name: sorted(t.title for t in p.tracks) for p in after.playlists}
+    assert names == {"Jazz · Fusion": ["Birdland", "Watermelon Man"],
+                     "Jazz · Jazz-funk": ["Chameleon"]}
+    assert not any(t.unsure for p in after.playlists for t in p.tracks)

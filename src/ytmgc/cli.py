@@ -640,7 +640,9 @@ def cmd_gemini_export(args: argparse.Namespace, config: Config) -> int:
     fixed = playlist_review.fixed_keys(verdicts.load(config.claude.verdicts_file),
                                        placements.load(config.taxonomy.placements_file))
     library = {t.video_id: t for t in repository.all_tracks()}
-    if args.complet:
+    if args.a_verifier:
+        prompt, rows = gemini.build_unsure(summary, plan)
+    elif args.complet:
         prompt, rows = gemini.build_complete(summary, library, plan)
     else:
         prompt, rows = gemini.build(summary, plan, library, fixed)
@@ -796,6 +798,8 @@ def build_parser() -> argparse.ArgumentParser:
     gem_export = subparsers.add_parser(
         "gemini-exporte", help="Écrire le prompt de révision complète pour Gemini")
     gem_export.add_argument("--dossier", default="gemini")
+    gem_export.add_argument("--a-verifier", action="store_true",
+                            help="Seulement les titres à vérifier, à ranger dans les playlists")
     gem_export.add_argument("--complet", action="store_true",
                             help="Tri complet : Gemini range tout, inspiré des playlists actuelles")
     gem_export.set_defaults(func=cmd_gemini_export)

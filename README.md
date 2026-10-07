@@ -517,6 +517,14 @@ jamais déplacé, sauf si sa playlist disparaît ; une playlist oubliée dans la
 réponse n'est supprimée que si tous ses titres ont une nouvelle place. Tout passe par git :
 `git diff` montre ce qui a changé, `git checkout -- config data` l'annule.
 
+**Les titres à vérifier, relus par Gemini.** `gemini-exporte --a-verifier
+--dossier gemini/a-verifier` ne lui donne que les titres au verdict peu sûr,
+avec leur playlist actuelle et la liste de tes playlists : il cherche chacun
+en ligne et le range dans l'une d'elles, sans en créer ni en supprimer.
+Chaque ligne de sa réponse recopie artiste et titre : un numéro qui glisse
+est recalé. Importe avec `gemini-importe … --dossier gemini/a-verifier` ;
+chaque titre classé est placé et n'est plus « à vérifier ».
+
 **Tri complet par Gemini — repartir de zéro.** Avec `--complet`, Gemini
 reçoit la liste des titres et, pour s'en inspirer, tes playlists actuelles
 (nom, description, quelques artistes) — sans règles ni place des titres : il

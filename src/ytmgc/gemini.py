@@ -328,6 +328,77 @@ def _inspiration(summary, plan) -> list[str]:
 INSPIRATION_ARTISTS = 6
 
 
+UNSURE_INTRO = """\
+Tu es musicologue. Une personne a rangé sa discothèque en {playlists}
+playlists. Pour {count} de ses titres, le genre est incertain : souvent des
+artistes peu connus. Vérifie chacun d'eux et range-le dans la bonne
+playlist.
+
+Ce qu'elle attend de ses playlists :
+- comprendre ce qu'elle écoute : le nom d'une playlist dit ce qu'on y entend ;
+- garder la même vibe du premier au dernier titre d'une playlist.
+
+Pour chaque titre, cherche sur internet ce qu'il est vraiment (Discogs,
+MusicBrainz, AllMusic, Bandcamp, Rate Your Music, Last.fm, YouTube…) plutôt
+que de deviner, puis choisis la playlist où il sonne juste. S'il y est déjà,
+garde-la. Range-le uniquement dans une playlist de la liste ci-dessous : n'en
+crée pas, n'en renomme pas. « (aucune) » est réservé à ce qui n'est pas de la
+musique (podcast, annonce, tutoriel, bruit) : un DJ set, un mix, une reprise
+ou une musique de jeu vidéo sont de la musique, range-les.
+
+LES PLAYLISTS (nom, taille, description, quelques artistes)
+
+{inspiration}
+"""
+
+UNSURE_FORMAT = """\
+FORMAT DE LA RÉPONSE — À RESPECTER À LA LETTRE
+
+Ta réponse sera lue par un programme. Un bloc de code, une ligne par titre,
+CINQ colonnes : le numéro, l'artiste et le titre recopiés tels qu'ils sont
+écrits dans la liste, PUIS LA PLAYLIST CHOISIE, puis le genre trouvé.
+
+```
+CLASSEMENT
+T0001 | artiste | titre | Nom exact de la playlist | genre précis trouvé
+FIN
+```
+
+- Tous les titres, dans l'ordre, sans en sauter ni en répéter.
+- La playlist est recopiée à l'identique de la liste, « · » compris.
+- Si tout ne tient pas en un message, arrête-toi après environ 200 titres :
+  on t'écrira « continue », reprends au titre suivant dans un nouveau bloc
+  qui commence par CLASSEMENT. Après le dernier titre, une ligne FIN.
+- N'écris jamais « | » dans un nom ou un genre.
+"""
+
+
+def build_unsure(summary, plan=None) -> tuple[str, list[Row]]:
+    """Le prompt de relecture des titres « à vérifier » : ces titres seulement,
+    à ranger dans les playlists actuelles, sans en créer ni en supprimer.
+
+    La réponse se lit comme un tri complet sans section PLAYLISTS : chaque
+    titre classé reçoit un déplacement et n'est plus à vérifier.
+    """
+    found: dict[str, Row] = {}
+    for playlist in summary.playlists:
+        for track in playlist.tracks:
+            if track.unsure:
+                artist = track.main_artist or track.artist
+                found.setdefault(entry_key(artist, track.title),
+                                 Row("", artist, track.title, playlist.name))
+    ordered = sorted(found.values(), key=lambda r: (fold(r.artist), fold(r.title)))
+    rows = [Row(f"T{i:04d}", r.artist, r.title, r.playlist)
+            for i, r in enumerate(ordered, start=1)]
+    lines = [" | ".join([r.id, _clean(r.artist), _clean(r.title), f"actuellement : {r.playlist}"])
+             for r in rows]
+    intro = UNSURE_INTRO.format(playlists=len(summary.playlists), count=len(rows),
+                                inspiration="\n".join(_inspiration(summary, plan)))
+    prompt = "\n".join([intro, UNSURE_FORMAT, "LES TITRES À VÉRIFIER", "", *lines, "",
+                        UNSURE_FORMAT])
+    return prompt, rows
+
+
 def build_complete(summary, tracks: dict, plan=None) -> tuple[str, list[Row]]:
     """Le prompt du tri complet : tous les titres, et les playlists actuelles en
     simple inspiration — sans dire quel titre est où, ni par quelle règle.
@@ -485,7 +556,7 @@ def parse(text: str) -> Answer:
                 answer.labelled.append((track, (fields[0], fields[1]), playlist))
             answer.moves.pop(track, None)  # une ligne reprise plus loin remplace l'ancienne
             answer.moves[track] = playlist
-    if not answer.playlists:
+    if not answer.playlists and not (answer.complete and answer.moves):
         raise GeminiError(
             "Aucune section PLAYLISTS dans cette réponse. Colle la réponse entière de "
             "Gemini, bloc de code compris."
@@ -676,6 +747,9 @@ def plan_changes(answer: Answer, rows: dict[str, Row], current: list[str],
     """
     if answer.complete:
         fixed_keys = set()
+    if not answer.playlists:
+        # Une relecture de quelques titres : les playlists restent celles du plan.
+        answer.playlists = [(name, "") for name in current]
     canonical_names(answer, current)
     realigned, rejected = realign(answer, rows)
     change = Change()
