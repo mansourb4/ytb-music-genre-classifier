@@ -310,7 +310,7 @@ nom = "Électro · Deep house classique"
 description = "Les pionniers de Chicago, Detroit et New York : son brut et samplé, kick rond, accords soul et jazz."
 genres = ["Electronic"]
 styles = ["Deep House", "House", "Chicago House", "Garage House", "Soulful House", "Lo-Fi House", "Afro House", "Tech House"]
-artistes = ["Moodymann", "Kerri Chandler", "Ron Trent", "Chez Damier", "Larry Heard", "Mr. Fingers", "Fingers Inc.", "Marshall Jefferson", "Frankie Knuckles", "Theo Parrish", "Omar S", "Fred P", "Black Jazz Consortium", "Rick Wade", "Levon Vincent", "Blaze", "Motor City Drum Ensemble", "Alton Miller", "Trus'me"]
+artistes = ["Moodymann", "Kerri Chandler", "Ron Trent", "Chez Damier", "Mr. Fingers", "Fingers Inc.", "Marshall Jefferson", "Frankie Knuckles", "Theo Parrish", "Omar S", "Fred P", "Black Jazz Consortium", "Rick Wade", "Levon Vincent", "Blaze", "Motor City Drum Ensemble", "Alton Miller", "Trus'me"]
 
 [[playlist]]
 nom = "Électro · Afro house & organique"
@@ -352,7 +352,7 @@ styles = ["French House", "Filter House", "Disco House"]
 nom = "Électro · House filtrée & French touch"
 genres = ["Electronic"]
 styles = ["House", "French House", "Filter House", "Disco House"]
-artistes = ["Daft Punk", "Cassius", "Modjo", "The Supermen Lovers", "Stardust", "Folamour", "Alastair Lane"]
+artistes = ["Daft Punk", "Cassius", "Modjo", "The Supermen Lovers", "Folamour", "Alastair Lane"]
 
 [[playlist]]
 nom = "Électro · Soulful house"
@@ -400,7 +400,7 @@ styles = ["Detroit Techno"]
 nom = "Électro · Techno de Detroit & classiques"
 genres = ["Electronic"]
 styles = ["Techno", "Detroit Techno", "Deep Techno", "Dub Techno", "Melodic Techno", "Minimal", "Minimal Techno", "Acid", "Trance"]
-artistes = ["Jeff Mills", "Laurent Garnier", "DJ Rolando", "Octave One", "Underworld", "Carl Craig", "Derrick May", "Juan Atkins", "Robert Hood", "CJ Bolland"]
+artistes = ["Jeff Mills", "Laurent Garnier", "DJ Rolando", "Octave One", "Underworld", "CJ Bolland"]
 
 [[playlist]]
 nom = "Électro · Melodic techno"
