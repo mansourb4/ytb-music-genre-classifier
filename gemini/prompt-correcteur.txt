@@ -17,6 +17,7 @@ Pour chaque titre, demande-toi s'il a sa place dans cette playlist, au vu de sa 
 RÈGLES DE JUGEMENT — IMPORTANTES
 - Juge le son et l'ambiance du morceau, pas la réputation ni l'histoire de l'artiste. Un producteur de Detroit peut faire un titre lo-fi ; un pionnier de la house peut faire un morceau ambient.
 - Juge la version précise : un remix, un edit, un live ou une reprise peut sonner tout autrement que l'original.
+- Les artistes cités ici (dans les règles comme dans les exemples) indiquent où va le gros de leur musique, pas où va chacun de leurs titres. Une règle sur un artiste n'est pas immuable : si un de ses morceaux sonne autrement — plus lent, plus chanté, plus planant, un remix qui change tout —, n'hésite pas à le déplacer, même si le reste de ses titres est bien rangé.
 - Ne déduis pas le style du seul titre ou du nom de l'invité. Si tu ne connais pas un morceau, cherche-le (Discogs, YouTube, Bandcamp, RYM…) ; si tu ne trouves pas, classe-le en « inconnu » au lieu de deviner.
 - N'invente aucun détail (instrument, sample, label, ville, BPM) que tu n'es pas sûr d'entendre ou d'avoir lu.
 - Ne propose que des playlists de la liste ci-dessous, avec leur nom exact. N'en invente pas.
