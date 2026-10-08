@@ -72,7 +72,7 @@ Altinbas	Biosfera	Électro · Deep techno, dub & minimal
 Altinbas	Radiance	Électro · Melodic techno
 Altinbas	Reshape	Électro · Techno dure & peak-time
 Altinbas	Sphære	Électro · Techno dure & peak-time
-Alton Miller	Cool but so... (Chaos In The CDB Remix [Mixed])	Électro · Deep house classique
+Alton Miller	Cool but so... (Chaos In The CDB Remix [Mixed])	Électro · Deep house jazzy & lo-fi
 Amadou & Mariam	Sabali	Pop · Indie & synth-pop dansante
 Ambiance Skandal	Offishal	Rap · FR énergique
 Aminition	Answerless Question	Électro · Deep house jazzy & lo-fi
@@ -362,7 +362,7 @@ Didaem	Varus	Rap · FR introspectif
 Dilnaz Akhmadiyeva	Shahine	Folk · Folk acoustique & traditions
 Dinos	Ciel pleure (feat. Laylow)	Rap · FR cloud & spleen
 Dinos	Helsinki	Rap · FR cloud & spleen
-Diogo Strausz	Emancipação (Ron Trent Remix)	Électro · Deep house classique
+Diogo Strausz	Emancipação (Ron Trent Remix)	Électro · Afro house & organique
 Dioscures	CINÉ CLUB (feat. Laylow)	Rap · FR posé
 Dirtytwo	Embrace	Électro · Melodic house & progressive
 DJ Center	Paradise (feat. Thalma De Freitas)	Électro · House festive
@@ -754,7 +754,7 @@ KEYAH/BLU	South	Rap · UK
 Kezo!	molly!	Rap · US
 Khaled	Detni Essekra	Maghreb · Raï & chaâbi
 Khali	Ninetynine	Rap · FR cloud & spleen
-Khruangbin	Shida (Bella Suite)	Électro · Deep house classique
+Khruangbin	Shida (Bella Suite)	Électro · Afro house & organique
 Khruangbin	White Gloves	Rock · Rock doux & mélancolique
 Kid Bloom	Electric U	Pop · Indie & synth-pop dansante
 Kiko Navarro	Sonando Contigo (Tuccillo Deep Mix)	Électro · Afro house & organique
@@ -1012,47 +1012,47 @@ Monolink	Father Ocean (Ben Böhmer Remix Edit)	Électro · Melodic house & progr
 Monsieur Nov	Dernier je t'aime (feat. Josman)	Rap · FR introspectif
 Monster Florence	Deck Of Cards	Rap · UK
 Moods	Treat U Good	Électro · Downtempo chill
-Moodymann	Back at Bakers (On Livernois)	Électro · Deep house classique
-Moodymann	Black Mahogani	Électro · Deep house classique
+Moodymann	Back at Bakers (On Livernois)	Électro · Deep house jazzy & lo-fi
+Moodymann	Black Mahogani	Électro · Deep house jazzy & lo-fi
 Moodymann	Born 2 Die	(aucune)
-Moodymann	Come 2 Me	Électro · Deep house classique
-Moodymann	Desire	Électro · Deep house classique
+Moodymann	Come 2 Me	Électro · Deep house jazzy & lo-fi
+Moodymann	Desire	Électro · Deep house jazzy & lo-fi
 Moodymann	Downtown	Électro · Broken beat & nu jazz
-Moodymann	Freeki Muthafucka	Électro · Deep house classique
-Moodymann	Girl	Électro · Deep house classique
+Moodymann	Freeki Muthafucka	Électro · Deep house jazzy & lo-fi
+Moodymann	Girl	Électro · Deep house jazzy & lo-fi
 Moodymann	Got Dem Freaks Wit Me	(aucune)
-Moodymann	Heaven	Électro · Deep house classique
-Moodymann	Hold It Down	Électro · Deep house classique
-Moodymann	Holiday (Live) (feat. Roberta Sweed)	Électro · Deep house classique
-Moodymann	How do U Get 2 Detroit	Électro · Deep house classique
-Moodymann	I Got Werk	Électro · Deep house classique
-Moodymann	I Need You so Much (feat. Roberta Sweed)	Électro · Deep house classique
-Moodymann	I Still Don't Know Yo Name	Électro · Deep house classique
-Moodymann	I'm Doing Fine (feat. Amp Dog Knight)	Électro · Deep house classique
-Moodymann	IGuessuneverbeenlonely	Électro · Deep house classique
-Moodymann	Jimmy D...Nickle	Électro · Deep house classique
-Moodymann	Lyk U Use 2 (feat. Andres)	Électro · Deep house classique
-Moodymann	Mahogani 9000	Électro · Deep house classique
-Moodymann	Mahogany Brown	Électro · Deep house classique
-Moodymann	Max Julien Jacket	Électro · Deep house classique
-Moodymann	Never Quite The Same	Électro · Deep house classique
-Moodymann	No	Électro · Deep house classique
+Moodymann	Heaven	Électro · Deep house jazzy & lo-fi
+Moodymann	Hold It Down	Électro · Deep house jazzy & lo-fi
+Moodymann	Holiday (Live) (feat. Roberta Sweed)	Électro · Deep house jazzy & lo-fi
+Moodymann	How do U Get 2 Detroit	Électro · Deep house jazzy & lo-fi
+Moodymann	I Got Werk	Électro · Deep house jazzy & lo-fi
+Moodymann	I Need You so Much (feat. Roberta Sweed)	Électro · Deep house jazzy & lo-fi
+Moodymann	I Still Don't Know Yo Name	Électro · Deep house jazzy & lo-fi
+Moodymann	I'm Doing Fine (feat. Amp Dog Knight)	Électro · Deep house jazzy & lo-fi
+Moodymann	IGuessuneverbeenlonely	Électro · Deep house jazzy & lo-fi
+Moodymann	Jimmy D...Nickle	Électro · Deep house jazzy & lo-fi
+Moodymann	Lyk U Use 2 (feat. Andres)	Électro · Deep house jazzy & lo-fi
+Moodymann	Mahogani 9000	Électro · Deep house jazzy & lo-fi
+Moodymann	Mahogany Brown	Électro · Deep house jazzy & lo-fi
+Moodymann	Max Julien Jacket	Électro · Deep house jazzy & lo-fi
+Moodymann	Never Quite The Same	Électro · Deep house jazzy & lo-fi
+Moodymann	No	Électro · Deep house jazzy & lo-fi
 Moodymann	P.B.C.	Électro · Broken beat & nu jazz
-Moodymann	PonyDownCrew	Électro · Deep house classique
-Moodymann	Radio	Électro · Deep house classique
+Moodymann	PonyDownCrew	Électro · Deep house jazzy & lo-fi
+Moodymann	Radio	Électro · Deep house jazzy & lo-fi
 Moodymann	Riley's Song	(aucune)
-Moodymann	Roberta Jean Machine (feat. Norma Jean Bell & Roberta Sweed)	Électro · Deep house classique
-Moodymann	Runaway (feat. Roberta Sweed, Norma Jean Bell & Pitch Black City)	Électro · Deep house classique
-Moodymann	Shades of Jae	Électro · Deep house classique
-Moodymann	Sloppy Cosmic	Électro · Deep house classique
+Moodymann	Roberta Jean Machine (feat. Norma Jean Bell & Roberta Sweed)	Électro · Deep house jazzy & lo-fi
+Moodymann	Runaway (feat. Roberta Sweed, Norma Jean Bell & Pitch Black City)	Électro · Deep house jazzy & lo-fi
+Moodymann	Shades of Jae	Électro · Deep house jazzy & lo-fi
+Moodymann	Sloppy Cosmic	Électro · Deep house jazzy & lo-fi
 Moodymann	Sunday Hotel	Électro · Broken beat & nu jazz
 Moodymann	The Most Fearful	(aucune)
 Moodymann	U Don't Even Lyk This Song	(aucune)
-Moodymann	Ulooklykicecreaminthesummertyme (feat. Nikki O)	Électro · Deep house classique
+Moodymann	Ulooklykicecreaminthesummertyme (feat. Nikki O)	Électro · Deep house jazzy & lo-fi
 Moodymann	Watchin U	Électro · Broken beat & nu jazz
 Moodymann	Wednesday Night People	Électro · Broken beat & nu jazz
 Moodymann	Yet Unknown	(aucune)
-Moodymann	You're 2 Moody	Électro · Deep house classique
+Moodymann	You're 2 Moody	Électro · Deep house jazzy & lo-fi
 Motor City Drum Ensemble	L.O.V.E. (Radio Edit)	Électro · Broken beat & nu jazz
 Mou	Sous ma couverture	Pop · Indie & synth-pop douce
 Move 78	Middling	Électro · Broken beat & nu jazz
@@ -1309,7 +1309,7 @@ Resident Advisor	RA Live: Laurent Garnier b2b Seth Troxler at Nuits Sonores 2018
 Revers Gagnant	Paradis bleu	Pop · Indie & synth-pop douce
 Rework	You're So Just Just (Matt Tolfrey EC1 Edit)	Électro · Tech house
 Rich Medina	The Sickness	Électro · Broken beat & nu jazz
-Rick Wade	Shinjuku Strut	Électro · Deep house classique
+Rick Wade	Shinjuku Strut	Électro · Deep house jazzy & lo-fi
 Rill	Visual Numbers	Électro · Downtempo chill
 Rioleval	Teebee03	Électro · Downtempo chill
 Risk Assessment	It’s Not Right But It’s Okay (Vocal Mix Edit) (feat. Monica Blaire)	Électro · Soulful house
@@ -1333,7 +1333,7 @@ Ron Trent	Pop, Dip and Spin	Électro · Deep house classique
 Ron Trent	Prescription	Électro · Broken beat & nu jazz
 Ron Trent	Seduction	Électro · Broken beat & nu jazz
 Ron Trent	Space Ridims	Électro · Deep house classique
-Ron Trent feat. Anthony Nicholson	Soul Samba Express	Électro · Deep house classique
+Ron Trent feat. Anthony Nicholson	Soul Samba Express	Électro · Afro house & organique
 Ron Trent feat. Chez Damier	Don't Try It	Électro · Deep house classique
 Ron Trent feat. Harry Dennis	Black Magic Woman	Électro · Deep house classique
 Rony Seikaly	Dancing Alone	Électro · Melodic house & progressive
@@ -1535,7 +1535,7 @@ tm0648	Bad and Boujee Remix (Wii x Migos)	(aucune)
 tn_490	Traffic (with Zeu)	Rap · FR sombre
 Tom Jarmey	Beach Jazz (feat. MarBlu)	Électro · Deep house jazzy & lo-fi
 Toman	Una Y Nada	Électro · Melodic house & progressive
-tonton4o	Pepe Bradock - Deep Burnt	Électro · Deep house classique
+tonton4o	Pepe Bradock - Deep Burnt	Électro · Deep house jazzy & lo-fi
 Tortured Soul	Take Me to Your House	Électro · Soulful house
 TORYONTHEBEAT	You're in My System	Électro · Nu-disco & synth
 Tour-Maubourg	Ode to Love	Électro · Deep house jazzy & lo-fi
@@ -1545,8 +1545,8 @@ Triniidadii	Loud Enough.	Rap · US
 Trio Ternura	Last Tango In Paris	Brésil · MPB douce
 Tripolism	Dope Dance	Électro · Afro house & organique
 Trixxo	Diez	Électro · House festive
-Trus'me	Can We Pretend (feat. Amp Fiddler & Kenny 'Mac' Martin)	Électro · Deep house classique
-Trus'me	Working Nights	Électro · Deep house classique
+Trus'me	Can We Pretend (feat. Amp Fiddler & Kenny 'Mac' Martin)	Électro · Deep house jazzy & lo-fi
+Trus'me	Working Nights	Électro · Deep house jazzy & lo-fi
 Tuerie	Le givre et le vent	Rap · FR sombre
 Tuerie	No More	Rap · FR groovy
 Tuerie	PRÊCHE !	Rap · FR groovy

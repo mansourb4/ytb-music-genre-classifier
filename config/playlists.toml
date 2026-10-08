@@ -310,7 +310,7 @@ nom = "Électro · Deep house classique"
 description = "Les pionniers de Chicago, Detroit et New York : son brut et samplé, kick rond, accords soul et jazz."
 genres = ["Electronic"]
 styles = ["Deep House", "House", "Chicago House", "Garage House", "Soulful House", "Lo-Fi House", "Afro House", "Tech House"]
-artistes = ["Moodymann", "Kerri Chandler", "Ron Trent", "Chez Damier", "Mr. Fingers", "Fingers Inc.", "Marshall Jefferson", "Frankie Knuckles", "Theo Parrish", "Omar S", "Fred P", "Black Jazz Consortium", "Rick Wade", "Levon Vincent", "Blaze", "Motor City Drum Ensemble", "Alton Miller", "Trus'me"]
+artistes = ["Kerri Chandler", "Ron Trent", "Chez Damier", "Mr. Fingers", "Fingers Inc.", "Marshall Jefferson", "Frankie Knuckles", "Theo Parrish", "Omar S", "Fred P", "Black Jazz Consortium", "Levon Vincent", "Blaze", "Motor City Drum Ensemble"]
 
 [[playlist]]
 nom = "Électro · Afro house & organique"
