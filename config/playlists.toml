@@ -378,18 +378,59 @@ description = "Tubes et refrains, piano des années 90, house latine : la house 
 genres = ["Electronic"]
 styles = ["House", "Euro House", "Italo House", "Tropical House", "Latin House", "Hip House"]
 
-[[playlist]]
-nom = "Électro · Techno percutante"
-description = "Techno, tech house et progressive qui frappent : pour la piste."
-genres = ["Electronic"]
-styles = ["Techno", "Deep Techno", "Minimal", "Minimal Techno", "Dub Techno", "Detroit Techno", "Melodic Techno", "Acid", "Tech House", "Progressive House", "Electro House", "Trance", "Psy-Trance"]
-ambiances = ["Énergique", "Groovy", "Sombre", "Festif"]
+# La techno est rangée par style, comme la house. Pour un titre : arpèges
+# trance ou psytrance → Trance ; fondateurs de Detroit et hymnes des années 90
+# → Detroit & classiques ; arpèges et synthés en spirale, montées épiques →
+# Melodic techno ; lent, profond, échos et silences → Deep techno, dub &
+# minimal ; sinon, kick lourd et sombre → Techno dure & peak-time.
 
 [[playlist]]
-nom = "Électro · Techno hypnotique"
-description = "Techno mélodique, minimale et dub techno : boucles qui planent."
+nom = "Électro · Trance & psytrance"
+description = "Arpèges trance qui montent, basse roulante de la psytrance : l'euphorie."
 genres = ["Electronic"]
-styles = ["Techno", "Deep Techno", "Minimal", "Minimal Techno", "Dub Techno", "Detroit Techno", "Melodic Techno", "Acid", "Tech House", "Progressive House", "Electro House", "Trance", "Psy-Trance"]
+styles = ["Trance", "Psy-Trance", "Progressive Trance", "Goa Trance"]
+
+[[playlist]]
+nom = "Électro · Techno de Detroit & classiques"
+description = "Les fondateurs de Detroit et les hymnes des années 90 : cordes, machines et énergie brute."
+genres = ["Electronic"]
+styles = ["Detroit Techno"]
+
+[[playlist]]
+nom = "Électro · Techno de Detroit & classiques"
+genres = ["Electronic"]
+styles = ["Techno", "Detroit Techno", "Deep Techno", "Dub Techno", "Melodic Techno", "Minimal", "Minimal Techno", "Acid", "Trance"]
+artistes = ["Jeff Mills", "Laurent Garnier", "DJ Rolando", "Octave One", "Underworld", "Carl Craig", "Derrick May", "Juan Atkins", "Robert Hood", "CJ Bolland"]
+
+[[playlist]]
+nom = "Électro · Melodic techno"
+description = "Arpèges et synthés en spirale, longues montées épiques : la techno qui chante."
+genres = ["Electronic"]
+styles = ["Melodic Techno"]
+
+[[playlist]]
+nom = "Électro · Melodic techno"
+genres = ["Electronic"]
+styles = ["Techno", "Detroit Techno", "Deep Techno", "Dub Techno", "Melodic Techno", "Minimal", "Minimal Techno", "Acid", "Trance"]
+artistes = ["Stephan Bodzin", "NTO", "Mathame", "Nathan Fake", "Voiski"]
+
+[[playlist]]
+nom = "Électro · Deep techno, dub & minimal"
+description = "Lent et profond : dub techno pleine d'échos, minimal dépouillée, boucles qui s'installent."
+genres = ["Electronic"]
+styles = ["Deep Techno", "Dub Techno", "Minimal", "Minimal Techno", "Acid"]
+
+[[playlist]]
+nom = "Électro · Deep techno, dub & minimal"
+genres = ["Electronic"]
+styles = ["Techno"]
+ambiances = ["Planant", "Calme"]
+
+[[playlist]]
+nom = "Électro · Techno dure & peak-time"
+description = "Kick lourd, sombre et martelé, parfois industriel : le cœur de la nuit."
+genres = ["Electronic"]
+styles = ["Techno", "Hard Techno", "Industrial Techno", "Electro House"]
 
 [[playlist]]
 nom = "Électro · Nu-disco & synth"
