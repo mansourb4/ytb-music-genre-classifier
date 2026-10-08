@@ -294,9 +294,11 @@ pays = ["?"]
 #   longues montées → Melodic house ; kick sec, basse roulante, club minimal →
 #   Tech house ; une vraie voix soul ou gospel au centre → Soulful house ;
 #   sample disco filtré → House filtrée ; tube, refrain, piano 90s, latino →
-#   House festive ; sinon deep house : pionniers
-#   américains au son rond et hypnotique → Deep house classique, boucles jazz
-#   ou soul samplées au grain poussiéreux → Deep house jazzy & lo-fi.
+#   House festive ; lent, organique, coucher de soleil → House lente &
+#   organique ; sinon deep house : house de Detroit brute et samplée
+#   (Moodymann, Theo Parrish) → Detroit house & beatdown, pionniers au son
+#   rond et hypnotique → Deep house classique, production moderne jazzy ou
+#   lo-fi → Deep house jazzy & lo-fi.
 # Les blocs vont du plus étroit au plus large, avant la techno, dont les
 # règles acceptent aussi la tech house et la progressive.
 
@@ -304,6 +306,18 @@ pays = ["?"]
 nom = "Électro · DJ sets & mixes"
 description = "Sets et mixes d'une heure et plus : à écouter d'une traite, à part des playlists de morceaux."
 manuelle = true
+
+[[playlist]]
+nom = "Électro · House lente & organique"
+description = "House lente et organique, de 100 à 115 BPM : kick doux, percussions boisées, voix chuchotées, ambiance coucher de soleil."
+manuelle = true
+
+[[playlist]]
+nom = "Électro · Detroit house & beatdown"
+description = "La house de Detroit brute et samplée : soul psychédélique, jazz et funk en boucles poisseuses, tempo lent."
+genres = ["Electronic"]
+styles = ["Deep House", "House", "Chicago House", "Detroit House"]
+artistes = ["Moodymann", "Theo Parrish", "Rick Wade"]
 
 [[playlist]]
 nom = "Électro · Deep house classique"
