@@ -287,24 +287,96 @@ pays = ["?"]
 
 # ================================================================== électro
 
-[[playlist]]
-nom = "Électro · Deep house vocale"
-description = "Deep house new-yorkaise et soulful, chantée et chaleureuse."
-genres = ["Electronic"]
-styles = ["Deep House"]
-ambiances = ["Groovy", "Festif", "Énergique"]
+# La house est rangée par style, pas par présence de voix : chaque style a sa
+# propre ambiance. Pour un titre, la première question qui répond oui :
+#   set ou mix d'une heure et plus → DJ sets & mixes ; percussions tribales,
+#   chant africain ou oriental → Afro house ; synthés et mélodie en avant,
+#   longues montées → Melodic house ; kick sec, basse roulante, club minimal →
+#   Tech house ; une vraie voix soul ou gospel au centre → Soulful house ;
+#   sample disco filtré → House filtrée ; tube, refrain, piano 90s, latino →
+#   House festive ; sinon deep house : son brut et samplé des pionniers
+#   américains → Deep house classique, production moderne jazzy ou lo-fi →
+#   Deep house jazzy & lo-fi.
+# Les blocs vont du plus étroit au plus large, avant la techno, dont les
+# règles acceptent aussi la tech house et la progressive.
 
 [[playlist]]
-nom = "Électro · Deep house planante"
-description = "Deep house rêveuse, calme ou nocturne."
-genres = ["Electronic"]
-styles = ["Deep House"]
+nom = "Électro · DJ sets & mixes"
+description = "Sets et mixes d'une heure et plus : à écouter d'une traite, à part des playlists de morceaux."
+manuelle = true
 
 [[playlist]]
-nom = "Électro · House"
-description = "House classique, garage et afro house."
+nom = "Électro · Deep house classique"
+description = "Les pionniers de Chicago, Detroit et New York : son brut et samplé, kick rond, accords soul et jazz."
 genres = ["Electronic"]
-styles = ["House", "Garage House", "Afro House", "Euro House", "Italo House", "Tropical House"]
+styles = ["Deep House", "House", "Chicago House", "Garage House", "Soulful House", "Lo-Fi House", "Afro House", "Tech House"]
+artistes = ["Moodymann", "Kerri Chandler", "Ron Trent", "Chez Damier", "Larry Heard", "Mr. Fingers", "Fingers Inc.", "Marshall Jefferson", "Frankie Knuckles", "Theo Parrish", "Omar S", "Fred P", "Black Jazz Consortium", "Rick Wade", "Levon Vincent", "Blaze", "Motor City Drum Ensemble", "Alton Miller", "Trus'me"]
+
+[[playlist]]
+nom = "Électro · Afro house & organique"
+description = "Percussions tribales, chants africains ou orientaux, transe douce : Keinemusik, Black Coffee et leurs voisins."
+genres = ["Electronic"]
+styles = ["Afro House", "Organic House"]
+
+[[playlist]]
+nom = "Électro · Afro house & organique"
+genres = ["Electronic"]
+styles = ["Deep House", "House", "Chicago House", "Garage House", "Soulful House", "Lo-Fi House", "Afro House", "Tech House"]
+artistes = ["Keinemusik", "&ME", "Adam Port", "Rampa", "Black Coffee", "Shkoon", "Stavroz"]
+
+[[playlist]]
+nom = "Électro · Tech house"
+description = "Kick sec, basse roulante, groove minimal de club : la house qui tape."
+genres = ["Electronic"]
+styles = ["Tech House"]
+
+[[playlist]]
+nom = "Électro · Melodic house & progressive"
+description = "Synthés émotionnels, nappes et longues montées : la mélodie au premier plan."
+genres = ["Electronic"]
+styles = ["Progressive House", "Melodic House"]
+
+[[playlist]]
+nom = "Électro · Melodic house & progressive"
+genres = ["Electronic"]
+styles = ["Deep House"]
+ambiances = ["Planant"]
+
+[[playlist]]
+nom = "Électro · House filtrée & French touch"
+description = "Samples disco filtrés, French touch et disco house."
+genres = ["Electronic"]
+styles = ["French House", "Filter House", "Disco House"]
+
+[[playlist]]
+nom = "Électro · House filtrée & French touch"
+genres = ["Electronic"]
+styles = ["House", "French House", "Filter House", "Disco House"]
+artistes = ["Daft Punk", "Cassius", "Modjo", "The Supermen Lovers", "Stardust", "Folamour", "Alastair Lane"]
+
+[[playlist]]
+nom = "Électro · Soulful house"
+description = "Une voix soul ou gospel au centre, piano et chœurs : la house chantée de New York et d'ailleurs."
+genres = ["Electronic"]
+styles = ["Garage House", "Soulful House"]
+
+[[playlist]]
+nom = "Électro · Soulful house"
+genres = ["Electronic"]
+styles = ["Deep House", "House", "Chicago House", "Garage House", "Soulful House", "Lo-Fi House", "Afro House", "Tech House"]
+artistes = ["Ralf GUM", "Monique Bingham", "Blue Six", "Louie Vega", "Fresh & Low", "Peven Everett"]
+
+[[playlist]]
+nom = "Électro · Deep house jazzy & lo-fi"
+description = "Deep house moderne : Rhodes, sax, accords jazz et grain poussiéreux, centrée sur le groove."
+genres = ["Electronic"]
+styles = ["Deep House", "Lo-Fi House"]
+
+[[playlist]]
+nom = "Électro · House festive"
+description = "Tubes et refrains, piano des années 90, house latine : la house pour danser."
+genres = ["Electronic"]
+styles = ["House", "Euro House", "Italo House", "Tropical House", "Latin House", "Hip House"]
 
 [[playlist]]
 nom = "Électro · Techno percutante"
@@ -611,11 +683,6 @@ manuelle = true
 [[playlist]]
 nom = "Rap · FR cloud & spleen"
 description = "Cloud rap francophone vaporeux, ambiances nocturnes et autotune."
-manuelle = true
-
-[[playlist]]
-nom = "Électro · Deep house instrumentale"
-description = "Deep house brute, jazzy ou lo-fi, centrée sur le groove."
 manuelle = true
 
 [[playlist]]
