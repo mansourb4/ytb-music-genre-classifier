@@ -349,7 +349,7 @@ David August	A Golden Rush	Électro · Melodic house & progressive
 David August	Agatha	Électro · Deep techno, dub & minimal
 DAVID AUGUST	Elysian Fields (Ron Trent Reconstruction)	Électro · Melodic house & progressive
 David August	Epikur	Électro · Deep techno, dub & minimal
-David August	J.B.Y.	Électro · Expérimental & IDM
+David August	J.B.Y.	Électro · Melodic techno
 DAVID AUGUST	Last Day (David August Revision)	Électro · Melodic house & progressive
 David Gold	Phenomena	Électro · Ambient & nappes
 David Matthews	Space Oddity	Jazz · Fusion énergique
@@ -428,6 +428,7 @@ Elpatron970	All Black	Rap · Ailleurs
 Elyon	À la recherche	Rap · FR posé
 Elysian Spring	Blue Sands	Jazz · Bop & cool nocturne
 Emanuel Satie	Don't Forget to Go Home	Électro · Melodic house & progressive
+Emptyset	Blossom	(aucune)
 Enrico Pieranunzi	Sicilyan Dream (D’après Siciliano, BWV. 1031 de Johann Sebastian Bach)	Jazz · Bop & cool nocturne
 Enzo Siffredi	Star Nights	Électro · Melodic house & progressive
 Equation	I'll Say A Prayer 4 U	Électro · Soulful house
@@ -624,7 +625,7 @@ HÖR BERLIN	DJ Balduin | HÖR - January 16 / 2024	Électro · DJ sets & mixes
 HÖR BERLIN	Keinemusik - Adam Port | HÖR - Mar 2 / 2022	Électro · DJ sets & mixes
 HÖR BERLIN	NECHTO - Stef Mendesidis (LIVE) | HÖR - May 18 / 2022	Électro · DJ sets & mixes
 I Monster	Daydream in Blue (BBC Radio 2 Session)	Électro · Downtempo chill
-I:Cube	Adore	Électro · Expérimental & IDM
+I:Cube	Adore	Électro · Downtempo chill
 Ian O'Donovan	Forever Untold (Satoshi Fumi Remix)	Électro · Melodic house & progressive
 Ian Pooley	CompuRhythm (Dixon 4/4 Treatment)	Électro · Deep house jazzy & lo-fi
 Ian Rees	Jazzy Funk Boi 3000	Jazz · Smooth & groovy
@@ -1138,6 +1139,7 @@ Nicolas Jaar	Mistress	Électro · Ambient & nappes
 Nicolas Jaar	No	Électro · Ambient & nappes
 Nicolas Jaar	No One Is Looking at U	Électro · Ambient & nappes
 Nicolas Jaar	The Fool and His Harem	Électro · Ambient & nappes
+Nicolas Jaar	The Three Sides of Audrey and Why She's All Alone Now	Électro · Ambient & nappes
 Nicolas Jaar	Why Didn't You Save Me	(aucune)
 Nicolas Jaar	Wouh	Électro · Deep techno, dub & minimal
 Nicolás Jaar	Mi Mujer	Électro · Deep techno, dub & minimal
