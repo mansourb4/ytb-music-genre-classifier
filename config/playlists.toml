@@ -295,8 +295,8 @@ pays = ["?"]
 #   Tech house ; une vraie voix soul ou gospel au centre → Soulful house ;
 #   sample disco filtré → House filtrée ; tube, refrain, piano 90s, latino →
 #   House festive ; sinon deep house : son brut et samplé des pionniers
-#   américains → Deep house classique, production moderne jazzy ou lo-fi →
-#   Deep house jazzy & lo-fi.
+#   américains au son rond et hypnotique → Deep house classique, boucles jazz
+#   ou soul samplées au grain poussiéreux → Deep house jazzy & lo-fi.
 # Les blocs vont du plus étroit au plus large, avant la techno, dont les
 # règles acceptent aussi la tech house et la progressive.
 
@@ -307,7 +307,7 @@ manuelle = true
 
 [[playlist]]
 nom = "Électro · Deep house classique"
-description = "Les pionniers de Chicago, Detroit et New York : son brut et samplé, kick rond, accords soul et jazz."
+description = "Les pionniers de Chicago, Detroit et New York et leurs héritiers : son rond et hypnotique, basses analogiques, accords soul qui tournent longtemps."
 genres = ["Electronic"]
 styles = ["Deep House", "House", "Chicago House", "Garage House", "Soulful House", "Lo-Fi House", "Afro House", "Tech House"]
 artistes = ["Kerri Chandler", "Ron Trent", "Chez Damier", "Mr. Fingers", "Fingers Inc.", "Marshall Jefferson", "Frankie Knuckles", "Theo Parrish", "Omar S", "Fred P", "Black Jazz Consortium", "Levon Vincent", "Blaze", "Motor City Drum Ensemble"]
