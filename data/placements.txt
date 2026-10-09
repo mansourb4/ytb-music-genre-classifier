@@ -7,12 +7,12 @@
 # après chaque analyse. La playlist est désignée par son nom, tel qu'écrit
 # dans le plan ; « (aucune) » tient le morceau hors de toute playlist.
 # Supprime une ligne pour rendre le morceau aux règles.
-&ME	Confusion (feat. Ali Love)	Électro · Afro house & organique
-&ME	Confusion (Laolu Remix) (feat. Ali Love)	Électro · Afro house & organique
-&ME	Discoteca (feat. Sofie)	Électro · Afro house & organique
-&ME	Feeling (feat. RY X)	Électro · Afro house & organique
+&ME	Confusion (feat. Ali Love)	Électro · Melodic house & progressive
+&ME	Confusion (Laolu Remix) (feat. Ali Love)	Électro · Melodic house & progressive
+&ME	Discoteca (feat. Sofie)	Électro · Melodic house & progressive
+&ME	Feeling (feat. RY X)	Électro · Melodic house & progressive
 &ME	Thandaza (feat. Arabic Piano)	(aucune)
-&ME	The Rapture Pt.III	Électro · Afro house & organique
+&ME	The Rapture Pt.III	Électro · Melodic house & progressive
 2 Eivissa	Oh La La La (Radio Mix)	Électro · House festive
 2666 - The Art Of Listening	Àbáse – Laroyê (2021 - Album)	Jazz · Spiritual jazz
 2nd Exit	Intro (2 Bars)	Rap · UK
@@ -25,7 +25,7 @@
 A2H	Nudes	Rap · FR introspectif
 Aaron Childs	Tangerine (Channel Tres Remix)	Électro · House festive
 Aaron Richards	Passionfruit (Instrumental)	(aucune)
-Aasi	RIDE THE SUN	Électro · Tech house
+Aasi	RIDE THE SUN	Électro · Techno dure & peak-time
 Aber Sabeel	Tafra Dak Rrami (feat. Messnawa)	Maghreb · Traditions
 ABSOLEM	Subzero	Rap · FR introspectif
 Abstract Truth	(We Had) A Thing	Électro · Soulful house
@@ -38,31 +38,31 @@ Adriatique	Deep In The Three	Électro · Melodic house & progressive
 ADTurnUp	ascension	Rap · US
 Afro Medusa	Pasilda	Électro · House festive
 Afro Medusa	Pasilda (Knee Deep Mix)	Électro · House festive
-Agoria	Scala	Électro · Melodic house & progressive
+Agoria	Scala	Électro · Melodic techno
 Agoria	Singing [Dixon Dub] (feat. Scalde)	Électro · Melodic house & progressive
 Ahmed Sirour	"Sensitive" - feat. Cleveland P. Jones (music & production by Ahmed Sirour)	Soul · Soul ballades
-Ahmed Sirour	Sade - I Couldn't Love You More (Ahmed Sirour rework)	Électro · Soulful house
-Ahmed Sirour	Sade - Kiss of Life (Ahmed Sirour rework) [Love Deluxe 30th Anniversary tribute]	Électro · Soulful house
+Ahmed Sirour	Sade - I Couldn't Love You More (Ahmed Sirour rework)	Électro · Downtempo chill
+Ahmed Sirour	Sade - Kiss of Life (Ahmed Sirour rework) [Love Deluxe 30th Anniversary tribute]	Électro · Downtempo chill
 Airelle Besson	Valse sentimentale, Op. 51 No. 6	Jazz · Bop & cool nocturne
-Ajna	Electrify	Électro · Trance & psytrance
+Ajna	Electrify	Électro · Melodic house & progressive
 Al Dobson Jr	Peru Timing	Électro · Broken beat & nu jazz
 Al Nather	Mtaktak	Rap · Ailleurs
-Al Zanders	Endcliffe Park	Électro · Afro house & organique
-Alain Ho	All Those Frqs There	Électro · Melodic house & progressive
+Al Zanders	Endcliffe Park	Électro · House lente & organique
+Alain Ho	All Those Frqs There	Électro · Deep house classique
 Alain Ho	The French Theory	Électro · Deep techno, dub & minimal
-Alain Ho	What We Had (feat. Zoé)	Électro · Melodic house & progressive
+Alain Ho	What We Had (feat. Zoé)	Électro · Deep house classique
 Alastair Lane	Libertad	Électro · House filtrée & French touch
 Alastair Lane	Roman d'Amour	Électro · House filtrée & French touch
 Alastair Lane	Roman d'Amour (Midnight Version)	Électro · House filtrée & French touch
 Alastair Lane	Rouge à lèvres	Électro · House filtrée & French touch
 Alba Marin	Stardust	(aucune)
-Aleksandir	Lowdown	Électro · Deep house jazzy & lo-fi
+Aleksandir	Lowdown	Électro · House lente & organique
 Alfonso Peduto	Binary Data IV	Classique · Moderne tendu
 Alina Simpson	what falling in love feels like | piano cover	Classique · Moderne contemplatif
 Alina Yanovna	A Secret Within	Classique · Moderne contemplatif
 Alison Limerick	Where Love Lives (Classic Club Mix - featured on the John Lewis Christmas Advert 2025)	Électro · Soulful house
 Alix Perez	Cape Reinga	Électro · Breaks & drum'n'bass
-Allies for Everyone	Allies Foot	Électro · Deep house jazzy & lo-fi
+Allies for Everyone	Allies Foot	Électro · Melodic house & progressive
 Alpha Tracks	Arise	Électro · Trance & psytrance
 Alpha Tracks	Elektra	Électro · Trance & psytrance
 Alpha Tracks	Idomeneo	Électro · Trance & psytrance
@@ -75,7 +75,7 @@ Altinbas	Sphære	Électro · Techno dure & peak-time
 Alton Miller	Cool but so... (Chaos In The CDB Remix [Mixed])	Électro · Deep house jazzy & lo-fi
 Amadou & Mariam	Sabali	Pop · Indie & synth-pop dansante
 Ambiance Skandal	Offishal	Rap · FR énergique
-Aminition	Answerless Question	Électro · Deep house jazzy & lo-fi
+Aminition	Answerless Question	Électro · Melodic techno
 AMK	Malya	Rap · FR introspectif
 Amotik	Chihattar (feat. Tina Ramamurthy)	Électro · Melodic techno
 Amy Winehouse	Just Friends	Caraïbes · Reggae, dub & dancehall
@@ -97,11 +97,11 @@ Anita Baker	Caught Up in the Rapture	Soul · Soul ballades
 antn42	[FREE] KENDRICK LAMAR X RADIOHEAD TYPE BEAT "WORDS NEVER SPOKEN"	(aucune)
 antraum	Mata (Edit)	Électro · Deep techno, dub & minimal
 Arpow	Event Horizon	Électro · Melodic house & progressive
-Arved Siara	1 Thing (Arved Siara Remix)	Électro · Deep house jazzy & lo-fi
+Arved Siara	1 Thing (Arved Siara Remix)	Électro · House festive
 Ashh	Motel	Rap · FR groovy
-Ashley Anngora	Boys Are Sluts (Dunes of Dawn Remix) (feat. CHLO)	Électro · Melodic house & progressive
-Astre	Freedom (Jesse Jacob Remix)	Électro · House festive
-Astrohertz	In My Soul (Extended Mix)	Électro · House festive
+Ashley Anngora	Boys Are Sluts (Dunes of Dawn Remix) (feat. CHLO)	Électro · Techno dure & peak-time
+Astre	Freedom (Jesse Jacob Remix)	Électro · Tech house
+Astrohertz	In My Soul (Extended Mix)	Électro · Deep house classique
 Ateyaba	French Riviera (feat. Jhené Aiko)	Rap · FR groovy
 Ateyaba	Jen Selter	Rap · FR introspectif
 Ateyaba	Niamtougou (Outro)	Rap · FR sombre
@@ -124,21 +124,21 @@ B.B. Jacques	INTÉRIEUR SCANDINAVE	Rap · FR posé
 B.B. Jacques	Odyssée	Rap · FR sombre
 Baba Ali	Cog in the Wheel	Électro · House lente & organique
 Baby Dave	Don't Ever Change	Pop · Indie & synth-pop dansante
-Backdoor Music	Locky, Aladdin   Locky | Move Around Aladdin remix outright012	Électro · Soulful house
+Backdoor Music	Locky, Aladdin   Locky | Move Around Aladdin remix outright012	Électro · Deep house classique
 Bad Channel	B	Électro · Deep techno, dub & minimal
-Bakermat	Bye Bye	Électro · House festive
+Bakermat	Bye Bye	Électro · House lente & organique
 Banda Black Rio	Na baixa do sapateiro	Jazz · Fusion brésilienne & latine
-Bantu Clan	Africa Ni Leo (Esa Extended Mix)	Électro · Afro house & organique
+Bantu Clan	Africa Ni Leo (Esa Extended Mix)	Électro · Downtempo chill
 Bassmental	2 Daye Revisit	Électro · Soulful house
 Bassmental	Just Wanna Be With U (King Street Mentality Club) (feat. Charles McDougald)	Électro · Soulful house
 bassnbeats	Black Jazz Consortium - Believe	Électro · Deep house classique
 Bekar	5.9.3	Rap · FR sombre
 Belga	Borda da Linha	Brésil · MPB douce
-Bella Boo	Boyboy	Électro · Deep house jazzy & lo-fi
-Bellaire	Brasil	Électro · House filtrée & French touch
+Bella Boo	Boyboy	Électro · Downtempo chill
+Bellaire	Brasil	Électro · House festive
 Ben Böhmer	Begin Again	Électro · Melodic house & progressive
 Ben Hauke	I Kinda Missed It (feat. Joe Armon Jones)	Électro · Deep house jazzy & lo-fi
-Ben Hauke	Installs	Électro · Deep house jazzy & lo-fi
+Ben Hauke	Installs	Électro · Detroit house & beatdown
 Ben Hauke	Nightwork (feat. Joe Armon-Jones)	Électro · Deep house jazzy & lo-fi
 Ben Hauke	The Way They Rep	Électro · Deep house jazzy & lo-fi
 Ben Klock	Subzero	Électro · Techno dure & peak-time
@@ -162,7 +162,7 @@ Black Jazz Consortium feat. Ceri B	Energies Collide	Électro · Deep house class
 Black Jazz Consortium feat. Minako	Free Your Mind	Électro · Deep house classique
 Black Jazz Consortium feat. Reno Ka	Focus	Électro · Deep house classique
 BLACKOUTT	DJ 750 INTRO	(aucune)
-Blacksheep Shelter Thessaly	The Ghetto, Laroye Rework ( Extended mix )	Électro · Afro house & organique
+Blacksheep Shelter Thessaly	The Ghetto, Laroye Rework ( Extended mix )	Électro · Soulful house
 Blame the Mono	Daddy Calls it Europop	(aucune)
 Blaze	Lovelee Dae (Radio Edit)	Électro · Deep house classique
 Blue 6	Pure [Jay's Original Vocal] (feat. Monique Bingham)	Électro · Soulful house
@@ -194,7 +194,7 @@ Breakfast TILT	BREAKFAST ||  Morning Vinyl House Mix con Loïc B2B Pato Mallet	�
 Breakfast TILT	BREAKFAST || Morning Vinyl House Mix con Etta!	Électro · DJ sets & mixes
 Buddha Bar	Yuregine Deprem	Électro · Afro house & organique
 Busta Rhymes	I Know What You Want (feat. Flipmode Squad)	Rap · US
-Butch	Just Chill	Électro · Deep house jazzy & lo-fi
+Butch	Just Chill	Électro · Soulful house
 byron	Continuum (feat. Lucia)	(aucune)
 Byron the Aquarius	Dr. Gizmo (Detroit Mix)	Électro · Deep house jazzy & lo-fi
 Byron the Aquarius	Fallenquas	Électro · Deep house jazzy & lo-fi
@@ -206,7 +206,7 @@ Captain Sky	Moon Child (The Re-Entry) (Terry Hunter Beats, Bass, Capella Mix)	É
 Carpe	silly cat	Pop · City pop & disco
 Carrion	True Love	Rap · Ailleurs
 Cassius	Cassius 1999 (Radio Edit)	Électro · House filtrée & French touch
-Cassius	Go Up (feat. Cat Power & Pharrell Williams) [Butch Remix] (feat. Cat Power & Pharrell Williams)	Électro · Tech house
+Cassius	Go Up (feat. Cat Power & Pharrell Williams) [Butch Remix] (feat. Cat Power & Pharrell Williams)	Électro · House filtrée & French touch
 Cataract	Wiretap	Électro · Techno dure & peak-time
 Cateen かてぃん	重大発表	Classique · Moderne contemplatif
 ccato	there is a woman in somalia	Rap · US
@@ -220,7 +220,7 @@ Cesar Camargo Mariano	Litoral	Jazz · Fusion brésilienne & latine
 Cesar Camargo Mariano	Metrô	Jazz · Fusion brésilienne & latine
 Cesar Camargo Mariano	Poluição	Jazz · Fusion brésilienne & latine
 CHAAMA	Munajat	Orient · Fairouz, tarab & chanson
-Chab	You And Me (Original Mix - Remastered)	Électro · House filtrée & French touch
+Chab	You And Me (Original Mix - Remastered)	Électro · Melodic house & progressive
 Chaim	Your Mulana (Trikk Numero Fim Dub)	Électro · Afro house & organique
 Channel Tres	Just Can't Get Enough	Électro · House festive
 Channel Tres	Topdown	Électro · House festive
@@ -237,7 +237,7 @@ Chaos In the CBD	Observe	Électro · Deep house jazzy & lo-fi
 Chaos In the CBD	Phantom Melodies	Électro · Deep house jazzy & lo-fi
 Chaos In the CBD	Significant Others	Électro · Deep house jazzy & lo-fi
 Chaos In the CBD	Trust Is Key	Électro · Deep house jazzy & lo-fi
-Charanjit Singh	Raga Bhairav	Électro · Techno de Detroit & classiques
+Charanjit Singh	Raga Bhairav	Électro · Expérimental & IDM
 Charlie Jeer	Her Eyes	Électro · Deep house jazzy & lo-fi
 Chassol	Birds, Pt. I	Jazz · Contemporain
 Chassol	Carnaval, Pt. II (Motor & Vuvuzuela)	Jazz · Contemporain
@@ -268,29 +268,29 @@ Chopin University Press	Mazurka	Classique · Moderne contemplatif
 Chow-Chow	Ma copine	Rap · FR énergique
 Chris Element	Eight 88 (Extended Mix)	Électro · Trance & psytrance
 Chris Luno	calming house mix	(aucune)
-Chris Luno	Calmy	Électro · Deep house jazzy & lo-fi
+Chris Luno	Calmy	Électro · Melodic house & progressive
 Chris Luno	golf car house mix	Électro · DJ sets & mixes
 Chris Luno	highway house mix	Électro · DJ sets & mixes
 Chris Luno	wavey vinyl house mix	Électro · DJ sets & mixes
 Chris Rainbow	Be Like a Woman	Rock · Yacht rock
 Chris Sedayao	Old School Deep House Mix (1993-2005)	Électro · DJ sets & mixes
-CHRIS STASSY	Seeing & Believing (Kolter Remix)	Électro · Deep house jazzy & lo-fi
-Circulation	Scarlet (Mix 2)	Électro · Tech house
-CJ Bolland	Camargue	Électro · Techno de Detroit & classiques
+CHRIS STASSY	Seeing & Believing (Kolter Remix)	Électro · Tech house
+Circulation	Scarlet (Mix 2)	Électro · Deep techno, dub & minimal
+CJ Bolland	Camargue	Électro · Trance & psytrance
 CKay	love nwantiti [North African Remix] (feat. ElGrande Toto)	Rap · Maghreb
-Claptone	No Eyes (Radio Edit) (feat. Jaw)	Électro · Melodic house & progressive
+Claptone	No Eyes (Radio Edit) (feat. Jaw)	Électro · Deep house classique
 Clara Valverde	samba do moço bonito	Brésil · MPB douce
-Claudio Ricci	The Love We Share	Électro · Soulful house
+Claudio Ricci	The Love We Share	Électro · Melodic house & progressive
 Clivillés & Cole	A Deeper Love	Électro · Soulful house
 Club des Belugas	Close Your Eyes (feat. Iain Mackenzie)	Électro · Broken beat & nu jazz
 Cobblestone Jazz	W	Électro · Deep techno, dub & minimal
 Cody Currie	Beyond the Stars (feat. Michael Acker)	Électro · Soulful house
-Cody Currie	Moves (House Mix) (feat. Eliza Rose)	Électro · Soulful house
-COEO	Coast to Coast	Électro · House filtrée & French touch
-Coeo	Timid Dancer	Électro · House filtrée & French touch
+Cody Currie	Moves (House Mix) (feat. Eliza Rose)	Électro · Deep house jazzy & lo-fi
+COEO	Coast to Coast	Électro · Deep house jazzy & lo-fi
+Coeo	Timid Dancer	Électro · Deep house jazzy & lo-fi
 ComfortCraft	Minecraft Music in Paradise	Électro · Ambient & nappes
 Common Saints	Summer Sun	Soul · Soul ballades
-Como Sea	Alicia Never Lies	Électro · House festive
+Como Sea	Alicia Never Lies	Électro · Melodic house & progressive
 Compagnie El Hashemi Nhass	Al Kaouini	Maghreb · Traditions
 Cookin Soul	The sound of 90's Hip-Hop - SP1200 Beat Making	Rap · US
 Corine	Pourquoi pourquoi	Électro · Nu-disco & synth
@@ -301,7 +301,7 @@ Cos	Nog Verder	Jazz · Fusion planante
 Cos	Sors ton pétard, Johnny	Jazz · Fusion énergique
 Cosmic Analog Ensemble	Ya3tik el 3afieh	Orient · Oud & taqsim
 Cousin	Catsu	Électro · House lente & organique
-Crackazat	Holding You Close	Électro · Soulful house
+Crackazat	Holding You Close	Électro · Deep house jazzy & lo-fi
 CRC	La vie ne vaut rien	Rap · FR introspectif
 CRC	Le sort des pétales	Rap · FR introspectif
 CRC	Ouverture	Rap · FR introspectif
@@ -311,7 +311,7 @@ CucaRafa	Reservado	Latino · Reggaeton, cumbia & corridos
 Curumin	Mistério Stereo	Brésil · Samba & groove
 D'Angello & Francis	Pump Up The Bass	Électro · Techno dure & peak-time
 D.H.C.	Price of Livin' (feat. Yoxng Jah & Kid Snap)	Rap · UK
-D.Y.A	Do It	Électro · House festive
+D.Y.A	Do It	Électro · House lente & organique
 Da Mike	Malayou (feat. Kawtar Sadik)	(aucune)
 Dada	3ADI JIDAN	Rap · Maghreb
 Daft Punk	Aerodynamic	Électro · House filtrée & French touch
@@ -332,33 +332,33 @@ Damso	Œveillé	(aucune)
 Dana and Alden	vroom vroom	Jazz · Lounge & jazz d'ambiance
 Daniel Kruglov	Emotions	Classique · Moderne contemplatif
 Daniel Vangarde	Le Tango Me Fait Pleurer	Funk · Funk, boogie & disco
-Danny Wabbit	Internal Jungle Original Mix	Électro · Tech house
-Danny Wabbit	Lost Soul	Électro · Tech house
+Danny Wabbit	Internal Jungle Original Mix	Électro · Deep techno, dub & minimal
+Danny Wabbit	Lost Soul	Électro · Techno dure & peak-time
 Dany Brillant	Dieu	Pop · Variété française
 Danya	Zone 0	Électro · Ambient & nappes
 DaRand Land	Blessings	Électro · Deep house jazzy & lo-fi
-DaRand Land	Calming Effect	Électro · Deep house jazzy & lo-fi
-DaRand Land	Edge Of The Looking Glass	Électro · Deep house jazzy & lo-fi
-DaRand Land	Marcela's Sense	Électro · Deep house jazzy & lo-fi
-DaRand Land	Portraits Of Us	Électro · Deep house jazzy & lo-fi
+DaRand Land	Calming Effect	Électro · Deep house classique
+DaRand Land	Edge Of The Looking Glass	Électro · Deep house classique
+DaRand Land	Marcela's Sense	Électro · Deep house classique
+DaRand Land	Portraits Of Us	Électro · Deep house classique
 DaRand Land	Soothe Me	Électro · Deep house jazzy & lo-fi
 Darryl Zeuja	J'marche seul	Rap · FR cloud & spleen
 Darviin	Ojos de Girasol	Latino · Boléro, tango & ballades
 Dauwd	Macadam Therapy	Électro · Deep house jazzy & lo-fi
-David August	A Golden Rush	Électro · Melodic house & progressive
+David August	A Golden Rush	Électro · Deep house classique
 David August	Agatha	Électro · Deep techno, dub & minimal
-DAVID AUGUST	Elysian Fields (Ron Trent Reconstruction)	Électro · Melodic house & progressive
+DAVID AUGUST	Elysian Fields (Ron Trent Reconstruction)	Électro · Detroit house & beatdown
 David August	Epikur	Électro · Deep techno, dub & minimal
-David August	J.B.Y.	Électro · Melodic techno
+David August	J.B.Y.	Électro · Expérimental & IDM
 DAVID AUGUST	Last Day (David August Revision)	Électro · Melodic house & progressive
 David Gold	Phenomena	Électro · Ambient & nappes
 David Matthews	Space Oddity	Jazz · Fusion énergique
 David Walters	Kryé Mwen	Afrique · Afrobeats & amapiano
-David Walters	Kryé Mwen (Patchworks Remix)	Électro · Afro house & organique
-DBO	COME 2 ME	Électro · House festive
+David Walters	Kryé Mwen (Patchworks Remix)	Électro · Deep house jazzy & lo-fi
+DBO	COME 2 ME	(aucune)
 Deema	CAN I?	Rap · UK
 Deep Xcape	After The Rain (Original Full Mix)	Électro · Deep house jazzy & lo-fi
-Deetron	Each Step (Powerhouse Extended Mix)	Électro · Tech house
+Deetron	Each Step (Powerhouse Extended Mix)	Électro · Deep house classique
 DeevoDaGenius	A Lord's Prayer	Rap · US
 DELACOUR	Dub City	Électro · Deep techno, dub & minimal
 Dele Sosimi Afrobeat Orchestra	Too Much Information (Laolu Remix (Edit))	Électro · Afro house & organique
@@ -370,22 +370,22 @@ Didaem	Varus	Rap · FR introspectif
 Dilnaz Akhmadiyeva	Shahine	Folk · Folk acoustique & traditions
 Dinos	Ciel pleure (feat. Laylow)	Rap · FR cloud & spleen
 Dinos	Helsinki	Rap · FR cloud & spleen
-Diogo Strausz	Emancipação (Ron Trent Remix)	Électro · Afro house & organique
+Diogo Strausz	Emancipação (Ron Trent Remix)	Électro · Deep house jazzy & lo-fi
 Dioscures	CINÉ CLUB (feat. Laylow)	Rap · FR posé
-Dirtytwo	Embrace	Électro · Melodic house & progressive
-DJ Center	Paradise (feat. Thalma De Freitas)	Électro · House festive
+Dirtytwo	Embrace	Électro · Deep house jazzy & lo-fi
+DJ Center	Paradise (feat. Thalma De Freitas)	Électro · Soulful house
 DJ Christos	Outta Sight [Main Mix] (feat. Monique Bingham)	Électro · Soulful house
 DJ Fudge	If I Had A Band	Électro · Soulful house
 DJ Fudge	My Love Is Pure (feat. Tasita D'Mour) [Classic Mix] (feat. Tasita D'Mour)	Électro · Soulful house
 DJ Fudge	Simpatico (feat. Omar)	Électro · Broken beat & nu jazz
 DJ Fudge	Something (Vocal Mix) (feat. Barbie Mak)	Électro · Soulful house
-DJ Jazzy Jeff	Rock Wit U (Yoruba Soul Mix - Dub) (feat. Erro)	Électro · Afro house & organique
+DJ Jazzy Jeff	Rock Wit U (Yoruba Soul Mix - Dub) (feat. Erro)	Électro · Soulful house
 DJ Pepsi	Pride (feat. Monique Bingham)	Électro · Soulful house
-DJ Rolando	Knights of the Jaguar	Électro · Techno de Detroit & classiques
+DJ Rolando	Knights of the Jaguar	Électro · Melodic techno
 DJ T.	Gorilla Hug (Nicolas Jaar Remix)	Électro · Deep techno, dub & minimal
-DJOKO	Daylight	Électro · Deep house jazzy & lo-fi
+DJOKO	Daylight	Électro · Deep house classique
 Do Your Thang	Umami (feat. White Boy, Jekesa, Rubber Soul & Alan Beez)	Rap · Ailleurs
-Dole & Kom	Phara Oh	Électro · Melodic house & progressive
+Dole & Kom	Phara Oh	Électro · House lente & organique
 Don Bigg	11 - 16/05	Rap · Maghreb
 Don. G	SILICONE	Rap · FR énergique
 DonGee	10/10	Rap · US
@@ -397,14 +397,14 @@ Drake	Amen (feat. Teezo Touchdown)	Rap · US
 Drake	Flight's Booked	Électro · House festive
 Drake	Get It Together (feat. Black Coffee & Jorja Smith)	Électro · Afro house & organique
 Drake	Passionfruit	Rap · US
-Drake	Tie That Binds	Électro · House festive
+Drake	Tie That Binds	Électro · Melodic house & progressive
 Drake	Yebba’s Heartbreak	Jazz · Vocal & ballades
 driffa	Oumou Sangaré - Ah Ndiya (K&F Edit)	Électro · Afro house & organique
 Driss Bennis	Day Drive (Thru Casablanca)	Électro · Breaks & drum'n'bass
 Driss Bennis	Networks (Prelude)	Électro · Breaks & drum'n'bass
 Droop-E	Rossi Wine (feat. Kendrick Lamar)	Rap · US
 DSK	What Would We Do (Silk Hurley Mix)	Électro · Soulful house
-Duk & Greek	And the living is Easy (Duk & Greek Edit)	Électro · House filtrée & French touch
+Duk & Greek	And the living is Easy (Duk & Greek Edit)	Électro · Deep house jazzy & lo-fi
 DunnEasy	Won't Stop [dunnEASY Club Mix] (feat. Monique Bingham)	Électro · Soulful house
 DVS1	Black Russian	Électro · Techno dure & peak-time
 Dying & Barakat	About That Promise	Électro · Melodic techno
@@ -421,16 +421,16 @@ El Zar	La Declaración	Latino · Boléro, tango & ballades
 Elan Marinho	playlist para estudar como nietzsche sobre o abismo em uma corda bamba entre o animal e o übermensch	Classique · Moderne contemplatif
 Ele A	Globo	Rap · Ailleurs
 Elevator Music	gum.mp3 (DJ Set) - Elevator Music	Électro · DJ sets & mixes
-Eleven Of July	Annihilation	Électro · Techno dure & peak-time
+Eleven Of July	Annihilation	Électro · Melodic techno
 ElGrandeToto	Haram (Pablo II)	Rap · Maghreb
 Elia Y Elizabeth	Alegria	Rock · Psyché & prog rêveur
 Elpatron970	All Black	Rap · Ailleurs
 Elyon	À la recherche	Rap · FR posé
 Elysian Spring	Blue Sands	Jazz · Bop & cool nocturne
-Emanuel Satie	Don't Forget to Go Home	Électro · Melodic house & progressive
+Emanuel Satie	Don't Forget to Go Home	Électro · Tech house
 Emptyset	Blossom	(aucune)
 Enrico Pieranunzi	Sicilyan Dream (D’après Siciliano, BWV. 1031 de Johann Sebastian Bach)	Jazz · Bop & cool nocturne
-Enzo Siffredi	Star Nights	Électro · Melodic house & progressive
+Enzo Siffredi	Star Nights	Électro · Tech house
 Equation	I'll Say A Prayer 4 U	Électro · Soulful house
 Eric Prydz	Opus	Électro · Melodic house & progressive
 Erykah Badu	Green Eyes	Soul · R&B & neo soul groovy
@@ -444,7 +444,7 @@ Fadi Mohem	Reactant	Électro · Deep techno, dub & minimal
 Far Out music for far-out people	Tangerine Dream Live At Coventry Cathedral 1975 Full Concert [HD+5.1 surround sound]	Électro · DJ sets & mixes
 Fatima Yamaha	Only Of The Universe	Électro · Nu-disco & synth
 Fatima Yamaha	What's a Girl to Do	Électro · Nu-disco & synth
-FEEL	Chico & Rita	Électro · Deep house jazzy & lo-fi
+FEEL	Chico & Rita	Pop · Indie & synth-pop douce
 Felipe Gordon	The Semimodular Bird of Jazz	Électro · Deep house jazzy & lo-fi
 Felix Laband	Falling off a Horse	Électro · Expérimental & IDM
 Femme Falafel	Depressão	Pop · Indie & synth-pop douce
@@ -458,20 +458,20 @@ Fish Go Deep	Battery Man	Électro · Soulful house
 Fish Go Deep	The Cure & The Cause (Dennis Ferrer Remix)	Électro · Soulful house
 FKJ	Losing My Way	Soul · R&B & neo soul groovy
 Flavour Trip	Chillout Jazz House Music Mix - Cozy Pancakes Brunch Bar | Relaxing Living Room Lounge	Électro · DJ sets & mixes
-Floating Points	Fast Forward	Électro · House festive
-Floating Points	King Bromeliad	Électro · Deep house jazzy & lo-fi
+Floating Points	Fast Forward	Électro · Melodic techno
+Floating Points	King Bromeliad	Électro · Expérimental & IDM
 Floating Points	Movement 4	Jazz · Spiritual jazz
 Floating Points	Movement 7	Jazz · Spiritual jazz
 Floating Points	Movement 9	Jazz · Spiritual jazz
-Floating Points	Myrtle Avenue	Électro · Deep house jazzy & lo-fi
-Floating Points	Vocoder [Club Mix]	Électro · House festive
-Folamour	After Winter Must Come Spring	Électro · House filtrée & French touch
+Floating Points	Myrtle Avenue	Électro · Broken beat & nu jazz
+Floating Points	Vocoder [Club Mix]	Électro · Expérimental & IDM
+Folamour	After Winter Must Come Spring	Électro · Deep house jazzy & lo-fi
 Folamour	Night Of Desirable Objects	Électro · House filtrée & French touch
 Four Tracks	You Mean Everything to Me	Soul · Soul ballades
 Frah Quintale	Sì può darsi	Pop · Indie & synth-pop douce
 Franc Spangler	Dreamworld	Électro · Deep house jazzy & lo-fi
 Francesco Demegni	Don't Forget	Jazz · Lounge & jazz d'ambiance
-Francis Harris	Lostfound	Électro · Deep house jazzy & lo-fi
+Francis Harris	Lostfound	Électro · House lente & organique
 Frank Houston	Life Happens (feat. Phil Davis & Terreon Gully)	Jazz · Smooth & groovy
 Frank Jade	Young Free and Single	Funk · Funk, boogie & disco
 Frank Sinatra	That's Life (2008 Remastered)	Jazz · Swing & big band
@@ -481,7 +481,7 @@ Frankie Goes To Hollywood	Including The Ballad Of 32	Pop · Indie & synth-pop do
 Frankie Goes To Hollywood	Wish (The Lads Were Here)	Pop · Indie & synth-pop dansante
 Frankie Knuckles	Your Love	Électro · Deep house classique
 François Sentinelle	Est-ce que tu regrettes ?	Pop · Variété française
-Fred B	Summer Time In Color	Électro · House festive
+Fred B	Summer Time In Color	Électro · Downtempo chill
 Fred P	Journey On	Électro · Deep house classique
 Free is in Da House	Aaron-Carl  -  Sky (Tommi White Billsticker mix)	Électro · Deep house jazzy & lo-fi
 Free is in Da House	All Good Funk Alliance  -  The Makes	Électro · Deep house jazzy & lo-fi
@@ -490,11 +490,11 @@ Free is in Da House	Blueless  -  Are You Pleased?	Électro · Deep house jazzy &
 Free is in Da House	Boobjazz  -  Leave Me	Électro · Deep house jazzy & lo-fi
 Free is in Da House	Derrick White  -  Soul 2 Let Go	Électro · Soulful house
 Free is in Da House	Freil  -  West of Motebe	Électro · Deep house jazzy & lo-fi
-Free is in Da House	Spiro Projecto feat. Josefina Sanner  -  Bluesless (Fredrik Stark Remix)	Électro · Deep house jazzy & lo-fi
+Free is in Da House	Spiro Projecto feat. Josefina Sanner  -  Bluesless (Fredrik Stark Remix)	Électro · Soulful house
 Free is in Da House	Street Corner Symphony  -  Memories Of Aphrodite	Électro · Deep house jazzy & lo-fi
 Free is in Da House	Street Corner Symphony  -  Symphomaniac (House Mix)	Électro · Deep house jazzy & lo-fi
 Free is in Da House	Ten City  -  All Loved Out (Love Serenade)	Électro · Soulful house
-Free is in Da House	The Persuader  -  Djurgårdsbron	Électro · Tech house
+Free is in Da House	The Persuader  -  Djurgårdsbron	Électro · Deep house classique
 Free is in Da House	West Bridgford Connection  -  Deep St. (Bluehouse Flava)	Électro · Deep house jazzy & lo-fi
 Free is in Da House	West Bridgford Connection  -  Up 'n' Down	Électro · Deep house jazzy & lo-fi
 Free Nationals	Shibuya (feat. Syd)	Soul · R&B & neo soul posés
@@ -530,17 +530,17 @@ George Benson	Nature Boy	Jazz · Vocal & ballades
 George Benson	The Ghetto	Soul · Soul groovy
 George Duke	Brazilian Love Affair	Jazz · Fusion brésilienne & latine
 Germannu	Fale De Mim (Mendel Edit)	Électro · Nu-disco & synth
-Get Lost	Foc	Électro · Deep house jazzy & lo-fi
-Gianni´s Humble	show me // something	Électro · Deep house jazzy & lo-fi
+Get Lost	Foc	Électro · Melodic house & progressive
+Gianni´s Humble	show me // something	Électro · Downtempo chill
 Giga Papaskiri	Lucie From Paris	Électro · Melodic house & progressive
 Gil Scott-Heron	Morning Thoughts	Soul · Soul ballades
 Gil Scott-Heron & Brian Jackson	The Bottle	Soul · Soul groovy
 Giorgi Kubaneishvili	The Color Of	Électro · Melodic house & progressive
 Giovanni Mirabassi	Convite para a Vida (feat. Gianluca Renzi & Leon Parker)	Jazz · Bop & cool nocturne
-Girls of the Internet	Sound Asleep	Électro · Deep house jazzy & lo-fi
+Girls of the Internet	Sound Asleep	Électro · Downtempo chill
 Girls of the Internet	When U Go (Edit)	Électro · Deep house jazzy & lo-fi
 Girma Hadgu	Ené Alantchi Alnorem (I Can't Live Without You)	Jazz · Spiritual jazz
-GLemix	Love Frequency	Électro · House festive
+GLemix	Love Frequency	(aucune)
 Goedi	Le sigarette (Goedi Rmx) (feat. Frah Quintale)	Pop · Indie & synth-pop dansante
 Golden Hands	Take Me Back	Funk · Funk, boogie & disco
 Goro Noguchi	21世紀箱舟の出帆 - The Departure Of 21th Century's Ark	Pop · City pop & disco
@@ -567,10 +567,10 @@ GTI	Full Contact	Électro · Nu-disco & synth
 Guillermo Portabales	Yo Te Canto Puerto Rico	Latino · Boléro, tango & ballades
 Guy Gerber	One Day In May	Électro · Melodic house & progressive
 Guy Gerber	What To Do	Électro · Melodic house & progressive
-Guy Gerber	What To Do (&ME Remix)	Électro · Afro house & organique
+Guy Gerber	What To Do (&ME Remix)	Électro · Melodic house & progressive
 H&H SoulSurvivors	Be Right There (H&H Magic T Version Extended Mix)	Électro · Soulful house
 Hadone	Taming the Passion	Électro · Techno dure & peak-time
-Haipe Music	SMOU7AT (HAIPE RE-EDIT)	Électro · Afro house & organique
+Haipe Music	SMOU7AT (HAIPE RE-EDIT)	(aucune)
 Halba x Foldino	Frisk (feat. Masamasa)	Rap · Ailleurs
 Hamed Al Shaeri	Maktob Aleina	Orient · Pop arabe
 Hameed El Shaery	Ya Saheb	Orient · Pop arabe
@@ -616,8 +616,8 @@ Hologram Lo'	Le biff et moi	Rap · FR sombre
 Hotel Ugly	The Ballad of Eddie Jabuley	Pop · Indie & synth-pop douce
 House Six	Fantastic Man - A Little Bit More	Électro · Deep house jazzy & lo-fi
 Howling	Bind	Électro · Melodic house & progressive
-Howling	Bind (Rampa Remix)	Électro · Afro house & organique
-Hraach	Deep Strings	Électro · Melodic house & progressive
+Howling	Bind (Rampa Remix)	Électro · Melodic house & progressive
+Hraach	Deep Strings	Électro · House lente & organique
 Human Experiments	Persistence	Électro · Techno dure & peak-time
 Human Safari	Fragments	Électro · Techno dure & peak-time
 Human Safari	Jazz Affair	Électro · Techno dure & peak-time
@@ -626,8 +626,8 @@ HÖR BERLIN	Keinemusik - Adam Port | HÖR - Mar 2 / 2022	Électro · DJ sets & m
 HÖR BERLIN	NECHTO - Stef Mendesidis (LIVE) | HÖR - May 18 / 2022	Électro · DJ sets & mixes
 I Monster	Daydream in Blue (BBC Radio 2 Session)	Électro · Downtempo chill
 I:Cube	Adore	Électro · Downtempo chill
-Ian O'Donovan	Forever Untold (Satoshi Fumi Remix)	Électro · Melodic house & progressive
-Ian Pooley	CompuRhythm (Dixon 4/4 Treatment)	Électro · Deep house jazzy & lo-fi
+Ian O'Donovan	Forever Untold (Satoshi Fumi Remix)	Électro · Deep techno, dub & minimal
+Ian Pooley	CompuRhythm (Dixon 4/4 Treatment)	Électro · Melodic house & progressive
 Ian Rees	Jazzy Funk Boi 3000	Jazz · Smooth & groovy
 IASAM	Copernic	Électro · Ambient & nappes
 Ichika Nito	I Play 14 String Guitar	Rock · Psyché & prog nerveux
@@ -637,11 +637,11 @@ Ignez	Oceanid	Électro · Deep techno, dub & minimal
 Ignez	Seraphic	Électro · Deep techno, dub & minimal
 Ignez	Telomere	Électro · Deep techno, dub & minimal
 Igor Levit	Klavierstück in B Minor	Classique · Romantique tendre
-Ilario Alicante	Vacaciones En Chile	Électro · Tech house
+Ilario Alicante	Vacaciones En Chile	Électro · Deep techno, dub & minimal
 illi	Escale	Pop · Indie & synth-pop douce
 Iman Europe	masterpiece.	Soul · R&B & neo soul groovy
 Incognito	1975 (feat. Joy Rose)	Jazz · Smooth & groovy
-Ino Casablanca	DIMA RAVE	Électro · Techno dure & peak-time
+Ino Casablanca	DIMA RAVE	Rap · FR énergique
 Intercell	Stef Mendesidis [live] at Intercell x BCCO | ADE 2023	Électro · DJ sets & mixes
 Isaac Carter	Calling on Me	Électro · Deep house jazzy & lo-fi
 ISAO SUZUKI	LOVING LASH	Jazz · Bop & cool nocturne
@@ -651,7 +651,7 @@ J9ueve	Margiela	Rap · FR introspectif
 J9ueve	Sans toi (feat. Zamdane)	Rap · FR cloud & spleen
 J9ueve	Tous Mes États (feat. La Fève)	Rap · FR groovy
 Jack Harlow	Wasted Youth (feat. Shloob)	Rap · US
-Jack J	Something (On My Mind)	Électro · House filtrée & French touch
+Jack J	Something (On My Mind)	Électro · Deep house jazzy & lo-fi
 Jack McDuff	Summer Dream	Jazz · Bop & cool nocturne
 Jackson Homer	IDEA OF US	Pop · Indie & synth-pop douce
 Jacob Gurevitsch	Lovers in Paris (Willie May Remix)	Électro · House lente & organique
@@ -680,14 +680,14 @@ jazzbois	Song of Hope	Électro · Broken beat & nu jazz
 Jazzy Bazz	.RAW Spleen (feat. Laylow)	Rap · FR cloud & spleen
 JeanJass	Pippo inzaghi	Rap · FR groovy
 JeanJass & Le Seize	Veillée	Rap · FR posé
-Jeff Mills	Metropolis Metropolis	Électro · Techno de Detroit & classiques
-JEFF MILLS	The Bells	Électro · Techno de Detroit & classiques
+Jeff Mills	Metropolis Metropolis	Électro · Ambient & nappes
+JEFF MILLS	The Bells	Électro · Techno dure & peak-time
 Jerry Ropero	Coraçao (Club Mix) (feat. Jaqueline)	Électro · House festive
 Jeunesaint	Pu$$y Tsunami	Rap · FR groovy
 Jhelisa	Friendly Pressure	Électro · Broken beat & nu jazz
 Jhelisa	Friendly Pressure (Into The Sunshine Mix)	Jazz · Jazz-funk & groove
 Jim Morrison	Ghost Song	Rock · Psyché & prog rêveur
-Jimmy Sax	No Man No Cry	Électro · Melodic house & progressive
+Jimmy Sax	No Man No Cry	Électro · House festive
 Jitwam	Back to My Place	Électro · House lente & organique
 Jitwam	I'm a Rock	Soul · R&B & neo soul posés
 Jitwam	Opendoors	Électro · Broken beat & nu jazz
@@ -705,7 +705,7 @@ John McDuffy "Brother Jack McDuff"	The Shadow of Your Smile	Jazz · Vocal & ball
 Johnny Heyward	「もし君が･････」　草刈正雄	Pop · City pop & disco
 Jon Cutler	It's Yours (Distant Music Mix) (feat. E-Man)	Électro · Soulful house
 Jon Cutler	It's Yours (Radio Edit) (feat. E-Man)	Électro · Soulful house
-Jon Sable	Imperfect Circuit	Électro · Tech house
+Jon Sable	Imperfect Circuit	Électro · Deep house classique
 Jordan Lee	In Between Feelings (feat. HolyBrune)	Soul · R&B & neo soul groovy
 Josman	Ailleurs	Rap · FR groovy
 Josman	Dans Le Ciel	Rap · FR posé
@@ -718,7 +718,7 @@ Josman	Un Zder, Un Thé	Rap · FR posé
 Josman	Yacht & Champagne (Skit)	Rap · FR énergique
 Joss Moog	Wil	Électro · Deep house jazzy & lo-fi
 José Vicentes	Cautela	Latino · Boléro, tango & ballades
-JP Munii	I look left	Électro · House festive
+JP Munii	I look left	Rap · UK
 Juan Antonio Canta	Rap de los 40 limones	Pop · Pop rock & pop dansante
 Jungle	Candle Flame	Pop · Indie & synth-pop dansante
 Jungle	I've Been In Love (feat. Channel Tres)	Pop · Indie & synth-pop dansante
@@ -727,12 +727,12 @@ Jungle Jack	JUNGLE PACK	Rap · FR groovy
 Jungle Jack	KABUKI	Rap · FR groovy
 Justin Timberlake	Rock Your Body	Pop · Pop rock & pop dansante
 Jürgen Paape	Whisper Echo	Électro · Deep techno, dub & minimal
-Kadhem	Phula	Électro · Deep house jazzy & lo-fi
+Kadhem	Phula	Électro · Melodic house & progressive
 Kadoc	The Nighttrain	Électro · House festive
 KAFFKIEZ	Nie Allein	Rock · Rock énergique
 KAGAMI	Perfect Wave	Électro · Techno dure & peak-time
-Kalabrese	Is This	Électro · House filtrée & French touch
-Kalabrese	Kafi Lied (feat. Palinstar)	Électro · House filtrée & French touch
+Kalabrese	Is This	Électro · House lente & organique
+Kalabrese	Kafi Lied (feat. Palinstar)	Électro · House lente & organique
 Kali Uchis	Igual Que Un Ángel (feat. Peso Pluma)	Pop · Indie & synth-pop dansante
 Karizma	Good Morning (feat. Monique Bingham)	Électro · Soulful house
 Karl Soon	Gett Low	Électro · Tech house
@@ -740,9 +740,9 @@ Karpov	Seven Goblins	Jazz · Fusion énergique
 Karrém	Mr Dynamite (Revenge Mix)	Rap · US
 Kashii	Take You Away	Électro · Deep house jazzy & lo-fi
 Katsuhisa Hattori	二人だけの海 - Futaridake No Umi	Jazz · Lounge & jazz d'ambiance
-KAYTRANADA	Dance Dance Dance Dance	Électro · House festive
+KAYTRANADA	Dance Dance Dance Dance	(aucune)
 Kaznova	Perfect Girl (feat. Charlene Lai)	Électro · Soulful house
-Keinemusik (Rampa, Adam Port, &ME)	Muyè	Électro · Afro house & organique
+Keinemusik (Rampa, Adam Port, &ME)	Muyè	Électro · Melodic house & progressive
 Keinemusik (Rampa, Adam Port, &ME)	Muyè (Black Coffee Remix) (feat. Adam Port)	Électro · Afro house & organique
 Kendrick Lamar	LOVE. (feat. Zacari)	Rap · US
 Keroué	OSEF (feat. NeS)	Rap · FR énergique
@@ -765,28 +765,28 @@ Kerri Chandler	Where Is Love (Kerri Chandler Remaster)	Électro · Deep house cl
 Kerri Chandler	Where's The Love In The World?	Électro · Soulful house
 Kerri Chandler	You Are In My System (feat. Mic Murphy) (Original Deluxe) (feat. Mic Murphy)	Électro · Soulful house
 Kevin Di Serna	Horizons	Électro · Melodic house & progressive
-Key Tronics Ensemble	Calypso of House (Paradise Mix)	Électro · House festive
+Key Tronics Ensemble	Calypso of House (Paradise Mix)	Électro · Deep house classique
 KEYAH/BLU	South	Rap · UK
 Kezo!	molly!	Rap · US
 Khaled	Detni Essekra	Maghreb · Raï & chaâbi
 Khali	Ninetynine	Rap · FR cloud & spleen
-Khruangbin	Shida (Bella Suite)	Électro · Afro house & organique
+Khruangbin	Shida (Bella Suite)	Électro · House lente & organique
 Khruangbin	White Gloves	Rock · Rock doux & mélancolique
 Kid Bloom	Electric U	Pop · Indie & synth-pop dansante
-Kiko Navarro	Sonando Contigo (Tuccillo Deep Mix)	Électro · Afro house & organique
+Kiko Navarro	Sonando Contigo (Tuccillo Deep Mix)	Électro · House lente & organique
 Kiko Navarro	Soñando Contigo (Kiko's Rework Of Yotam Avni Remix Edit) (feat. Concha Buika)	Électro · Afro house & organique
 KiLLOWEN	Sober	Rap · UK
 King Crimson	The Court of the Crimson King - Including "The Return of the Fire Witch" and "The Dance of the Puppets"	Rock · Psyché & prog rêveur
-KLANGPLANET	Good	Électro · Deep house jazzy & lo-fi
+KLANGPLANET	Good	Électro · Downtempo chill
 Klaus Veen	Poison	Électro · House festive
 Kleintierschaukel	Motomia	Électro · House lente & organique
 Koen de Bruyne	Observations	Électro · Ambient & nappes
 Kokoroko	Abusey Junction	Jazz · Lounge & jazz d'ambiance
-Kollektiv Turmstrasse	Deine Distanz	Électro · Melodic house & progressive
+Kollektiv Turmstrasse	Deine Distanz	Électro · Deep techno, dub & minimal
 Kollektiv Turmstrasse	Jupiter Sunrise	Électro · Melodic house & progressive
 Kollektiv Turmstrasse	Last Day	Électro · Deep techno, dub & minimal
 Koma	Loin des rêves	Rap · FR introspectif
-Kondi Band	Yeanoh (Powe'hande Binga'dbe)	Électro · Afro house & organique
+Kondi Band	Yeanoh (Powe'hande Binga'dbe)	Afrique · Folk, blues & mandingue
 Konfusion Kidzz	On My Mind	Électro · Soulful house
 Kool & The Gang	Summer Madness	Soul · Soul ballades
 Kool & The Gang	Summer Madness (Live At The Rainbow Theatre, London/1976)	Soul · Soul ballades
@@ -802,7 +802,7 @@ Kumi	The Feeling	Électro · House festive
 kuribo98	NSMB Overworld theme but in minor	Électro · Expérimental & IDM
 kuribo98	NSMB Versus Overworld theme but in minor	(aucune)
 kuribo98	Super Bell Hill theme but in minor (using audio manipulation)	Jazz · Smooth & groovy
-Kx9000	Air Dodge	Électro · House festive
+Kx9000	Air Dodge	Électro · Broken beat & nu jazz
 L'Algerino	Mention Max	Rap · FR énergique
 L'Impératrice	Everything Eventually Ends	Électro · Nu-disco & synth
 L'Impératrice	Peur des filles	Électro · Nu-disco & synth
@@ -816,11 +816,11 @@ LaChele	Sade - Room 55 (B-Side)	Jazz · Smooth & groovy
 Lars Huismann	Sounds from the Past I	Électro · Techno dure & peak-time
 LaSignature	Boomerang	Rap · FR énergique
 Laura Itandehui	Yo no Necesito de Mucho	Latino · Boléro, tango & ballades
-Laurent Garnier	Breathless	Électro · Techno de Detroit & classiques
+Laurent Garnier	Breathless	Électro · Trance & psytrance
 Laurent Garnier	Go to Sleep	Électro · Deep techno, dub & minimal
-Laurent Garnier	Resonances From The D (Bonus Track)	Électro · Techno de Detroit & classiques
-Laurent Garnier	Wake Up	Électro · Techno de Detroit & classiques
-Laurent Garnier	Wake Up (Baloo Mix)	Électro · Techno de Detroit & classiques
+Laurent Garnier	Resonances From The D (Bonus Track)	Électro · Melodic techno
+Laurent Garnier	Wake Up	Électro · Techno dure & peak-time
+Laurent Garnier	Wake Up (Baloo Mix)	Électro · Trance & psytrance
 LAUSSE THE CAT	Belle Bouteille	Rap · UK
 LAUSSE THE CAT	Coco Channel (feat. B-Ahwe)	Rap · UK
 LAUSSE THE CAT	Drink With The Leaves (feat. The Young Wizard)	Rap · UK
@@ -847,10 +847,10 @@ LEDOUBLE	CANADA	Rap · FR introspectif
 Ledé Markson	4zoo	Rap · FR posé
 Ledé Markson	ALZ	Rap · FR groovy
 Ledé Markson	PS	Rap · FR posé
-Leo Pol	This must be illegal	Électro · House filtrée & French touch
+Leo Pol	This must be illegal	Électro · Deep house jazzy & lo-fi
 Leon Thomas	MUTT	Soul · R&B & neo soul posés
-Les Sins	Grind (Moodymann edit / mixed)	Électro · House filtrée & French touch
-Levitation	More Than Ever People (feat. Cathy Battistessa)	Électro · Soulful house
+Les Sins	Grind (Moodymann edit / mixed)	Électro · Detroit house & beatdown
+Levitation	More Than Ever People (feat. Cathy Battistessa)	Électro · Downtempo chill
 Levon Vincent	UK Spring Vibes	Électro · Deep house classique
 Ley Soul	Intergalactic Janet	Soul · R&B & neo soul groovy
 Light Of The World	I Shot the Sheriff	Funk · Funk, boogie & disco
@@ -861,23 +861,23 @@ Loleatta Holloway	Can't Let You Go (Louie Vega & Josh Milan Truth Dub 1)	Électr
 London Philharmonic Orchestra	Les noces de figaro	Classique · Baroque vif
 Lonnie Liston Smith	Summer Nights	Jazz · Spiritual jazz
 Lost in Blues	No Water No Wine	Rock · Blues mélancolique
-Lost Mind	Passenger	Électro · Melodic house & progressive
+Lost Mind	Passenger	Électro · Melodic techno
 Louie Vega	Diamond Life [Dance Ritual Radio Edit] (feat. Julie McKnight)	Électro · Soulful house
 Louie Vega	Elevator (Going Up) [Louie Vega Mix] (feat. Monique Bingham)	Électro · Soulful house
-Louie Vega	Feel So Right [DJ Deep Remix] (feat. Honey Dijon)	Électro · Soulful house
+Louie Vega	Feel So Right [DJ Deep Remix] (feat. Honey Dijon)	Électro · Deep house classique
 Louie Vega	Gimme Some Love (Album Mix) (feat. Vikter Duplaix)	Électro · Soulful house
 Louie Vega	Holidaze (Daze Dub) (feat. Cindy Mizelle, Fonzi Thornton & Patricia Lacy)	Électro · Soulful house
-Louie Vega	Love & Happiness (Yemaya Y Ochùn) (Dream Sequence) (feat. India)	Électro · Afro house & organique
+Louie Vega	Love & Happiness (Yemaya Y Ochùn) (Dream Sequence) (feat. India)	Électro · Soulful house
 Louie Vega	Seven Mile (feat. Moodymann)	Électro · Soulful house
 Louis Culture	Hanah Says Hi	Rap · UK
 Loure	In the Evenings (Hidden Spheres Remix)	Électro · Deep house jazzy & lo-fi
 Loure	Smooth Talk	Électro · Deep house jazzy & lo-fi
-Lovebirds	Icarus (feat. Galliano)	Électro · Soulful house
-Lovebirds	This Time (Gorge Remix)	Électro · Tech house
+Lovebirds	Icarus (feat. Galliano)	Électro · Downtempo chill
+Lovebirds	This Time (Gorge Remix)	Électro · Deep techno, dub & minimal
 Lovebirds	Want You In My Soul	Électro · Soulful house
 Lovebirds, Syncopix	Soul Conversation (Main Mix)	Électro · Soulful house
 Luca Musto	Ticon	Électro · House lente & organique
-Lucas Blondeau	Chin'r Ft LEBÖ -  Happiness Verne City Life	Électro · House festive
+Lucas Blondeau	Chin'r Ft LEBÖ -  Happiness Verne City Life	Électro · Melodic house & progressive
 LucasGitanoFamily	Arles Romance	Folk · Flamenco & tsigane
 Lucky People Center	Sundance	Électro · Trance & psytrance
 LudoWic	MULTY STRIPES	Électro · Expérimental & IDM
@@ -904,7 +904,7 @@ Maceo Plex	Gravy Train (Nicolas Jaar Remix)	Électro · Nu-disco & synth
 Madcat	Call Me Ishmael	Électro · House filtrée & French touch
 Maes	Tmax 530	Rap · FR énergique
 MaHa	Ala Shat El Nesyan	Orient · Fairouz, tarab & chanson
-Maison Blanche	You're Gonna Like It	Électro · House festive
+Maison Blanche	You're Gonna Like It	Électro · House filtrée & French touch
 Makèz	Downstream	Électro · Deep techno, dub & minimal
 MalcoMix Fusion	Weather Report - Live at Montreux (1976)	Jazz · Fusion énergique
 Malo	MÉDICATION	Rap · FR sombre
@@ -928,12 +928,12 @@ Marine Neuilly	Confetti (Preview)	Pop · Indie & synth-pop douce
 Mark Allaway	Soul Girl	Jazz · Bop qui swingue
 Marlon Funaki	Murphy's Law	Rock · Rock doux & mélancolique
 Marshall Jefferson	Mushrooms (Timewriter Mix)	Électro · Deep house classique
-Martin Buttrich	Enough Love To Hate It	Électro · Tech house
-Martin Buttrich	Tripping In The 16Th	Électro · Tech house
+Martin Buttrich	Enough Love To Hate It	Électro · Deep techno, dub & minimal
+Martin Buttrich	Tripping In The 16Th	Électro · Deep techno, dub & minimal
 Martin Langlo	Sunset Valley	(aucune)
 Martin Solveig	Cabo Parano (Claude Monet Remix)	Électro · House filtrée & French touch
-Martine Girault	Revival (Japanese LP Mix)	Électro · Soulful house
-Mas Tono	Michael Jackson - Jam (E-Smoove's Jazzy Jam) 1991	Électro · House filtrée & French touch
+Martine Girault	Revival (Japanese LP Mix)	Électro · Downtempo chill
+Mas Tono	Michael Jackson - Jam (E-Smoove's Jazzy Jam) 1991	Électro · Soulful house
 Masayoshi Takanaka	An Insatiable High	Jazz · Fusion énergique
 Masayoshi Takanaka	Bamboo Vender	Pop · City pop & disco
 Masayoshi Takanaka	Birdisland Kyuukou	Jazz · Fusion énergique
@@ -968,11 +968,11 @@ Masayoshi Takanaka	トーキョーレギー - Tokyo Reggie	Jazz · Fusion énerg
 Masayoshi Takanaka	リオの夢 - Rio No Yume	Jazz · Fusion énergique
 Masayoshi Takanaka	伊豆甘夏納豆売り - Izu Amanatsu Nattou Uri	Jazz · Fusion énergique
 Masayoshi Takanaka	空ド白ソ - Sorado Shiraso	Jazz · Fusion énergique
-Mateo Dufour	Break It Up (Aline Umber Remix)	Électro · Tech house
+Mateo Dufour	Break It Up (Aline Umber Remix)	Électro · Deep techno, dub & minimal
 Mathame	Skywalking	Électro · Melodic techno
 Mathieu Fiset	Chick's Pain	Jazz · Contemporain
 Mathilda Homer	Ready When You Are	Pop · Indie & synth-pop douce
-Matt Early	Get To Me Once (Radio Edit) (feat. Abi Flynn)	Électro · House festive
+Matt Early	Get To Me Once (Radio Edit) (feat. Abi Flynn)	Électro · Soulful house
 Matt french	Italian House Mix 1989 - 1993	Électro · DJ sets & mixes
 Matthew Dear	You Put A Smell On Me (Nicolas Jaar Remix)	Électro · Deep techno, dub & minimal
 Matthew Dekay	Lost In A Moment	Électro · Melodic house & progressive
@@ -980,12 +980,12 @@ Matthew Dekay	Lost In A Moment (Dixon Rework)	Électro · Melodic house & progre
 Matthew Herbert	I Hadn't Known (I only heard) (Bonus Track)	Électro · Deep house jazzy & lo-fi
 Matthias Heilbronn	Go Getter (Soulflower Mix) (feat. Monique Bingham)	Électro · Soulful house
 Matty	Now What (Matt's Soul Flower Mix)	Électro · Soulful house
-Matze	Vectors	Électro · Tech house
+Matze	Vectors	Électro · Deep techno, dub & minimal
 Max Graef & Muff Deep	Am Fenster	Électro · Deep house jazzy & lo-fi
 Maxi Beatz	Azul (Instrumental)	(aucune)
 Maximilian Schairer	Piano Sonatina in C Major, op.55, No.1: I. Allegro	Classique · Baroque vif
 MayanWarrior	Sainte Vie (Live) - Mayan Warrior x Robot Heart - Burning Man 2019	Électro · DJ sets & mixes
-Maz	Jolie Fille (feat. Layefa)	Électro · Afro house & organique
+Maz	Jolie Fille (feat. Layefa)	(aucune)
 MEDHOUSE	AFRO/DEEP HOUSE MIX - A chill Sunday in Casablanca, Morocco (MedHouse Radio #2)	Électro · DJ sets & mixes
 MEDHOUSE	AFRO/DEEP HOUSE MIX - Adventure of a soul (MedHouse Radio #3)	Électro · DJ sets & mixes
 MELCHYOR A	Warning (Melchyor A's Hmida Version)	Électro · Afro house & organique
@@ -1008,7 +1008,7 @@ Milanezie	Cute Face (feat. thaHomey & Jäde)	Rap · FR posé
 Miles Davis	Changes (Remastered 2025)	Jazz · Bop qui swingue
 Miles Davis	Miles Runs the Voodoo Down (feat. Wayne Shorter, Bennie Maupin, John McLaughlin & Chick Corea)	Jazz · Spiritual jazz
 Minuit 10	Mansour	Pop · Indie & synth-pop douce
-Mira Ló	My Best Memory (feat. Lou Martini)	Électro · House festive
+Mira Ló	My Best Memory (feat. Lou Martini)	Électro · Nu-disco & synth
 Mirana Faiz	Mirana Faiz - Bach G minor arranged by Luo Ni	Classique · Baroque lent
 Mk.gee	Anabell	Pop · Indie & synth-pop douce
 Mochakk	Jealous	Électro · Tech house
@@ -1021,9 +1021,9 @@ Moji x Sboy	LA LUNE À DÉCROCHER	Rap · FR sombre
 Moji x Sboy	Ma go	Rap · FR introspectif
 Moji x Sboy	VIVIENNE WESTWOOD	Rap · FR groovy
 Moka Boka	Heracles (feat. Swing)	Rap · FR groovy
-Moloko	Forever More (Can 7 Safari Club Mix)	Électro · House festive
-Moloko	Sing It Back (Boris Dlugosch Musical Mix)	Électro · House festive
-Moloko	Sing It Back (Herbert's Tasteful Dub)	Électro · Deep house jazzy & lo-fi
+Moloko	Forever More (Can 7 Safari Club Mix)	Électro · Soulful house
+Moloko	Sing It Back (Boris Dlugosch Musical Mix)	Électro · Soulful house
+Moloko	Sing It Back (Herbert's Tasteful Dub)	Électro · Downtempo chill
 Monique Bingham	Bloody Lucky (Chymamusique Remix)	Électro · Soulful house
 Monique Bingham	Deep In The Bottom (of Africa)	Électro · Afro house & organique
 Monique Bingham	Gets You Off	Électro · Soulful house
@@ -1081,14 +1081,14 @@ Move 78	Middling	Électro · Broken beat & nu jazz
 Move D	Bossa #1 (The Late Night Dance Remix by Le Rubrique)	Électro · House lente & organique
 Move D	Things Will Come... (...for Those Who Wait)	Électro · House lente & organique
 Mr GISCARD	Pho	Pop · Indie & synth-pop douce
-Mr V	Jus Dance	Électro · House festive
+Mr V	Jus Dance	Électro · Deep house classique
 Mr. Fingers	Can You Feel It	Électro · Deep house classique
 Mr. Fingers	Praise to the Vibes (Mr. Fingers Alternate Version)	Électro · Deep house classique
 Mr. Fingers	What About This Love? (Extended Version)	Électro · Deep house classique
-Mr. G	Daily Prayer	Électro · Tech house
+Mr. G	Daily Prayer	Électro · Deep house classique
 Mr. G	U Feel Mi (Kai Alce's New Feel)	Électro · Deep house classique
 Mr. ID	Salat Al Nabina (Sifa Remix) (feat. Kawtar Sidik)	Électro · Afro house & organique
-Mr. V	Jus Dance (Christian Nielsen Remix)	Électro · House festive
+Mr. V	Jus Dance (Christian Nielsen Remix)	Électro · Tech house
 Mulatu Astatke	Dèwèl (Bell)	Jazz · Fusion brésilienne & latine
 Mulatu Astatke	Gubèlyé (My Gubel)	Jazz · Spiritual jazz
 Mulatu Astatke	Kasalèfkut Hulu (From All the Time I Have Passed)	Jazz · Fusion brésilienne & latine
@@ -1102,7 +1102,7 @@ Mulatu Astatke	Yègellé Tezeta (My Own Memory)	Jazz · Spiritual jazz
 Mulatu Astatke	Yèkatit (February)	Jazz · Spiritual jazz
 Mulatu Astatke	Yèkèrmo Sèw (A Man of Experience and Wisdom)	Jazz · Spiritual jazz
 murmur	HEIDY FLY - MÄR | 12.23	Électro · DJ sets & mixes
-Murphy's Law (UK)	Take My Love (Prunk Remix)	Électro · House filtrée & French touch
+Murphy's Law (UK)	Take My Love (Prunk Remix)	Électro · Tech house
 Music for Meditation and Relaxation	Simple Soul (Tranquil)	(aucune)
 mynameisntjmack	BUNKER/PREROLL	Rap · US
 Myth Syzer	Le code (feat. Bonnie Banane, Ichon & Muddy Monk)	Rap · FR posé
@@ -1148,7 +1148,7 @@ NightCrawl	Lost Highway	Électro · Expérimental & IDM
 Nikosf.	Solution Illusion	Électro · Deep techno, dub & minimal
 Ninho	De l'autre côté (feat. Nekfeu)	Rap · FR cloud & spleen
 Ninho	Dis-moi que tu m'aimes	Rap · FR introspectif
-Noir	Around (Solomun Vox)	Électro · Melodic house & progressive
+Noir	Around (Solomun Vox)	Électro · Deep house classique
 Noni	Be My Friend	Caraïbes · Reggae, dub & dancehall
 Nordinomouk & Bavaz	Cuir De Dragon	Rap · FR groovy
 Nordinomouk & Bavaz	Gore-Tex	Rap · FR groovy
@@ -1157,7 +1157,7 @@ Notre Dame	Eldorado	Électro · Afro house & organique
 Notre Dame	Yumi	Électro · Melodic house & progressive
 nour	Wana	Pop · Indie & synth-pop douce
 Nox Vahn	Come Together (Extended Mix)	Électro · Melodic house & progressive
-NTBR	Island	Électro · Melodic house & progressive
+NTBR	Island	Électro · Techno dure & peak-time
 NTO	Alter Ego	Électro · Melodic techno
 NTO	Ayahuasca	Électro · Melodic techno
 NTO	Charlie	Électro · Melodic techno
@@ -1181,12 +1181,12 @@ Népal	YOLO	Rap · FR groovy
 O'Donel Levy	Love Story (2024 Remastered Version)	Jazz · Lounge & jazz d'ambiance
 oakland	yes, please (feat. Ezra Skys)	Rap · UK
 Oceanvs Orientalis	Tarlabasi (Be Svendsen Remix)	Électro · House lente & organique
-Octave One	Blackwater (128 full strings vocal mix)	Électro · Techno de Detroit & classiques
+Octave One	Blackwater (128 full strings vocal mix)	Électro · Melodic techno
 Odeal	Patience	Afrique · Afrobeats & amapiano
 Oden & Fatzo	Lauren	Électro · House festive
 Odetto	BONHEUR SAMPLER	Funk · Funk, boogie & disco
 Ogranya	Do You (feat. T'neeya)	Afrique · Afrobeats & amapiano
-Oliver Dollar	Doin' Ya Thang	Électro · Tech house
+Oliver Dollar	Doin' Ya Thang	Électro · Detroit house & beatdown
 Omai.TV/Sofia	Sofia tonight S2E5 - DJ set by Selyann Zouhir	Électro · DJ sets & mixes
 Omar S	Seen Was Set (feat. Big Strick & Norm Talley)	Électro · Deep house classique
 Ornette	Crazy (Nôze Remix)	Électro · Deep techno, dub & minimal
@@ -1198,10 +1198,10 @@ p-rallel	Vibes (feat. Sam Wise & Venna)	Rap · UK
 Pachanga Boys	Time	Électro · Deep techno, dub & minimal
 Pages	If I Saw You Again (2024 Remaster)	Rock · Yacht rock
 PANTERA BLUE	Lágrima	Latino · Boléro, tango & ballades
-Paoulo Music	Leo	Électro · House festive
-Parallelle	How Can I Resist (Dub Version)	Électro · Deep house jazzy & lo-fi
+Paoulo Music	Leo	Rap · Maghreb
+Parallelle	How Can I Resist (Dub Version)	Électro · Melodic house & progressive
 Pashanim	Mittelmeer	Rap · Ailleurs
-Patchwork Inc.	Lalalalala	Électro · House festive
+Patchwork Inc.	Lalalalala	Soul · R&B & neo soul posés
 Patrick Holland	Warm Priority	Électro · Deep house jazzy & lo-fi
 Paul Simon	Diamonds on the Soles of Her Shoes	(aucune)
 PAWSA	PICK UP THE PHONE (feat. Nate Dogg)	Électro · Tech house
@@ -1216,7 +1216,7 @@ Phantom Harmonics	Nocturne in E-flat Major, Op. 9 No. 2 (Jazz)	Jazz · Lounge & 
 Phara	Unfold	Électro · Deep techno, dub & minimal
 Phazers	The Herbie Hancock Group on Danish TV, 1976	Jazz · Fusion planante
 Phil Berg	Menace	Électro · Deep techno, dub & minimal
-Phonique	For The Time Being (feat. Erlend Øye)	Électro · Melodic house & progressive
+Phonique	For The Time Being (feat. Erlend Øye)	Électro · Deep house classique
 Piano Beats and Jam	Fly Me to a Moon [Lethal Company Parody]	Jazz · Lounge & jazz d'ambiance
 Piero Umiliani	Borgo montano	(aucune)
 Piero Umiliani	Lungo il canale	(aucune)
@@ -1290,9 +1290,9 @@ Quincy Jones	Tribute To A.F. - RO	Soul · Soul groovy
 Quincy Jones	You Put A Move On My Heart (feat. Tamia)	Soul · Soul ballades
 Quincy Jones	You've Got It Bad Girl	Soul · Soul ballades
 Quinn Oulton	100 Degrees	Soul · R&B & neo soul posés
-R1D1	In The Soul	Électro · Soulful house
+R1D1	In The Soul	Électro · Deep house classique
 Rachid Aseyakhe	Fly me to the moon (Acoustic Arabic) (feat. Amine Makdad)	Orient · Fairouz, tarab & chanson
-Rad&Co	Unspoken Thoughts	Électro · Deep house jazzy & lo-fi
+Rad&Co	Unspoken Thoughts	Électro · Deep house classique
 Radiohead	15 Step	Rock · Rock énergique
 Radiohead	All I Need	Rock · Rock doux & mélancolique
 Radiohead	Backdrifts	Rock · Psyché & prog nerveux
@@ -1307,7 +1307,7 @@ Radiohead	Videotape	Rock · Rock doux & mélancolique
 Radiohead	Weird Fishes / Arpeggi	Rock · Psyché & prog nerveux
 Radiohead	You And Whose Army?	Rock · Rock doux & mélancolique
 Radiq	Waiting for My Man (feat. Khansa Batma)	Électro · Deep techno, dub & minimal
-Raffaele Attanasio	Chara	Électro · Melodic techno
+Raffaele Attanasio	Chara	Électro · Techno dure & peak-time
 Ragheb Alama	Nasini El Donya	Orient · Fairouz, tarab & chanson
 Raiun	sunkiss	Électro · Downtempo chill
 Ralf GUM	After Midnight (feat. Portia Monique)	Électro · Soulful house
@@ -1319,21 +1319,21 @@ Ralf Gum	Little W. 12th St. [Ralf GUM Main Mix] (feat. Monique Bingham)	Électro
 Ralf Gum	Take Me To My Love [Main Mix] (feat. Monique Bingham)	Électro · Soulful house
 Ralf Gum	The Pap [Ralf GUM Main Mix] (feat. Monique Bingham)	Électro · Soulful house
 Ramp	Everybody Loves The Sunshine	Soul · Soul groovy
-Rampa	Fluke	Électro · Tech house
-Rampa	Necessity	Électro · Afro house & organique
+Rampa	Fluke	Électro · Deep techno, dub & minimal
+Rampa	Necessity	Électro · Melodic house & progressive
 Randy George	Daft Punk - Something About Us - Randy George Theremin	Électro · Nu-disco & synth
 Rantseni	Resiliencia	Latino · Reggaeton, cumbia & corridos
 Raphael Saadiq	Get Involved	Soul · Soul groovy
 Rare Samples & Songs Oleg Tsoy	Nathan Davis - A Thought For Cannon	Jazz · Bop qui swingue
-Rasch	Aleph	Électro · Melodic house & progressive
-Rasch	Kaligo	Électro · Melodic house & progressive
+Rasch	Aleph	Électro · Melodic techno
+Rasch	Kaligo	Électro · Melodic techno
 Raste	Still Alive	Rap · Maghreb
 rebug	run run run	Électro · Expérimental & IDM
 rebug	run run run (slowed + reverb)	Électro · Expérimental & IDM
 rebug	run run run (sped up)	Électro · Expérimental & IDM
 Recondite	Tie In	Électro · Deep techno, dub & minimal
 Red	Little bit of Liszt at the end 🫣	Classique · Romantique passionné
-Redig	Syrup	Électro · Deep house jazzy & lo-fi
+Redig	Syrup	Électro · Melodic techno
 Resident Advisor	RA Live: Laurent Garnier b2b Seth Troxler at Nuits Sonores 2018	Électro · DJ sets & mixes
 Revers Gagnant	Paradis bleu	Pop · Indie & synth-pop douce
 Rework	You're So Just Just (Matt Tolfrey EC1 Edit)	Électro · Tech house
@@ -1344,7 +1344,7 @@ Rioleval	Teebee03	Électro · Deep house classique
 Risk Assessment	It’s Not Right But It’s Okay (Vocal Mix Edit) (feat. Monica Blaire)	Électro · Soulful house
 RiskSoundSystem	The Sound Is Yours (Kerri Chandler Remix)	Électro · Deep house classique
 Rocco	Saharien Child	Électro · Afro house & organique
-Rodrigo Gallardo	Ay Que Sera Del Sol	Électro · Deep house jazzy & lo-fi
+Rodrigo Gallardo	Ay Que Sera Del Sol	Électro · House lente & organique
 Roland Leesker	Respect	Électro · Tech house
 Roméo Elvis	Drôle de question	Rap · FR posé
 Roméo Elvis	Soleil	Rap · FR énergique
@@ -1365,7 +1365,7 @@ Ron Trent	Space Ridims	Électro · Deep house classique
 Ron Trent feat. Anthony Nicholson	Soul Samba Express	Électro · Afro house & organique
 Ron Trent feat. Chez Damier	Don't Try It	Électro · Deep house classique
 Ron Trent feat. Harry Dennis	Black Magic Woman	Électro · Deep house classique
-Rony Seikaly	Dancing Alone	Électro · Melodic house & progressive
+Rony Seikaly	Dancing Alone	Électro · Deep house classique
 Room 5 Feat. Oliver Cheatham	Make Luv (Radio Version)	Électro · House filtrée & French touch
 Rosenna Samson	Nostalgia	Électro · Melodic house & progressive
 Rounhaa	Dubaï	Rap · FR cloud & spleen
@@ -1421,7 +1421,7 @@ Sean McCabe feat. Jennifer Wallace	Something About You	Électro · Soulful house
 Seb Wildblood	Jazz, Vol. 1	Électro · Deep house jazzy & lo-fi
 Seb Wildblood	Jazz, Vol. 1 (Christopher Rau Remix)	Électro · Deep house jazzy & lo-fi
 Seb Wildblood	Seal of Approval	Électro · Deep house jazzy & lo-fi
-Sebastien Casanova	Cloudy Others (feat. Arthur Alfocea)	Électro · Melodic house & progressive
+Sebastien Casanova	Cloudy Others (feat. Arthur Alfocea)	Électro · House lente & organique
 Secret Value Orchestra	Serious Intentions	Électro · Deep house jazzy & lo-fi
 Selug	Léon (feat. Luther)	Rap · FR cloud & spleen
 Senamo	Fleurs du mal	Rap · FR introspectif
@@ -1453,19 +1453,19 @@ sofiane salamane	LIYEH LIYEH (Live)	Maghreb · Raï & chaâbi
 Solar House	Got 2 B U	Électro · Soulful house
 Soldiers Of Twilight	Believe (Extended Mix)	Électro · Soulful house
 Soldiers Of Twilight	Ready E	Électro · Soulful house
-Solomun	Never Sleep Again (Keinemusik Remix)	Électro · Afro house & organique
+Solomun	Never Sleep Again (Keinemusik Remix)	Électro · Melodic house & progressive
 Some of Us Festival	Some of Us Extended - People's Choice Soundsystem	(aucune)
 Some of Us Festival	Some of Us Extended II - Nathabes	(aucune)
 Some of Us Festival	Some of Us Extended II - Yaya	(aucune)
 Son Little	bbbaby	Soul · Soul ballades
 Sopico	Bonne étoile	Rap · FR introspectif
-Soul Button	Paramour	Électro · Melodic house & progressive
+Soul Button	Paramour	Électro · Melodic techno
 Soul Keita	Democracy, I Was Thirsty (Orginal Mix) (feat. Nicolas Jaar)	Électro · Deep techno, dub & minimal
-Soul Keita	Dusties n' 808s	Électro · Deep house jazzy & lo-fi
+Soul Keita	Dusties n' 808s	Électro · Downtempo chill
 Soul Saver	Another Day	Électro · Deep house jazzy & lo-fi
-Soulstance	Blue Grassland	Électro · Deep house jazzy & lo-fi
+Soulstance	Blue Grassland	(aucune)
 Sparkle	What About	Soul · Soul ballades
-Specter	Windtalker	Électro · Tech house
+Specter	Windtalker	Électro · Deep techno, dub & minimal
 Spider ZED	envie de rien	Rap · FR cloud & spleen
 Spirit of Ecstasy	Ateyaba - metacultivation	Rap · FR posé
 Squall p	Amsterdame	Rap · FR sombre
@@ -1477,10 +1477,10 @@ Stanis	Fractal	Électro · Ambient & nappes
 Stanislav Stanchev	Concert - Harp and Piano | Sofia City Art Gallery	Classique · Moderne contemplatif
 Stavroz	Designer Eggs im Garten	Électro · Afro house & organique
 Stavroz	Great Day to Fly a Kite	Électro · House lente & organique
-Stavroz	The Finishing	Électro · Afro house & organique
-Stavroz	The Finishing (Viken Arman Remix)	Électro · Afro house & organique
-Stavroz	The Ginning	Électro · Afro house & organique
-Stazzia	You Can't Stop the Groove	Électro · House filtrée & French touch
+Stavroz	The Finishing	Électro · Deep house jazzy & lo-fi
+Stavroz	The Finishing (Viken Arman Remix)	Électro · Deep house jazzy & lo-fi
+Stavroz	The Ginning	Électro · House lente & organique
+Stazzia	You Can't Stop the Groove	Électro · Deep house jazzy & lo-fi
 Steely Dan	Godwhacker	Rock · Yacht rock
 Steely Dan	Green Earrings (2025 Remaster)	Rock · Yacht rock
 Stef Mendesidis	Spectral Transmission	Électro · Melodic techno
@@ -1490,9 +1490,9 @@ Stephan Bodzin	Collider	Électro · Melodic techno
 Stephan Bodzin	Singularity	Électro · Melodic techno
 Steve Lacy	Atomic Vomit	Soul · R&B & neo soul posés
 Stimming	Bright Star (Sunset Mix)	Électro · House lente & organique
-Stimming	Prepare	Électro · Melodic house & progressive
+Stimming	Prepare	Électro · House lente & organique
 Stormy	Africain	Rap · Maghreb
-Strath	Mutual Attraction	Électro · Deep house jazzy & lo-fi
+Strath	Mutual Attraction	Électro · Deep house classique
 Stress	Rude Gal	Rap · FR énergique
 Studio Apartment	10 Flight [Nulife Vocal Mix] (feat. Monique Bingham)	Électro · Soulful house
 Sublime	baume	Pop · Indie & synth-pop douce
@@ -1508,8 +1508,8 @@ Sweetheart504	D'Angelo- Everybody Loves The Sunshine	Soul · R&B & neo soul groo
 Swing	Rivage	Rap · FR posé
 Sébastien Léger	KissShower	Électro · Melodic house & progressive
 T-Hum	Hocus Pocus - Keep it movin'	Rap · FR groovy
-T_Pazos	Superego	Électro · Deep house jazzy & lo-fi
-Table	Hotspot	Électro · House festive
+T_Pazos	Superego	Électro · Melodic techno
+Table	Hotspot	Électro · Deep house jazzy & lo-fi
 Tahl	Kuvira Kombat	Électro · Breaks & drum'n'bass
 Tal Fussman	Burning Bridges	Électro · Melodic house & progressive
 Tal Fussman	Children Of 95	Électro · Melodic house & progressive
@@ -1536,12 +1536,12 @@ The Alan Parsons Project	I Wouldn't Want to Be Like You	Rock · Yacht rock
 The Alan Parsons Project	Sirius	Rock · Psyché & prog nerveux
 The Beach Boys	Good Vibrations (Remastered 2001)	Rock · Psyché & prog rêveur
 The Believers	Who Dares to Believe in Me?	Électro · Soulful house
-The Boyz from Brazil	O nosso amor (Armada mix)	Électro · House festive
+The Boyz from Brazil	O nosso amor (Armada mix)	Brésil · Samba & groove
 The Colours That Rise feat. Yazmin Lacey	Atmosphere	Électro · Broken beat & nu jazz
 The Doors	Riders on the Storm	Rock · Psyché & prog rêveur
 The Lot Radio	Adam Port (Keinemusik) @TheLotRadio 02-21-2024	Électro · DJ sets & mixes
 The Lot Radio	Barry Can't Swim @TheLotRadio 02-14-2024	Électro · DJ sets & mixes
-The Magician	Love Break	Électro · House filtrée & French touch
+The Magician	Love Break	Rap · FR énergique
 The Silhouettes Project	Closer	Soul · R&B & neo soul groovy
 The Silhouettes Project	Standing There (feat. Asher Kosher & Paya)	Rap · US
 The Silhouettes Project	What U Need (feat. Purple Cloud)	Rap · US
@@ -1566,7 +1566,7 @@ tm0648	Bad and Boujee Remix (Wii x Migos)	(aucune)
 tn_490	Traffic (with Zeu)	Rap · FR sombre
 Tom & Joy	Meditation	Jazz · Lounge & jazz d'ambiance
 Tom Jarmey	Beach Jazz (feat. MarBlu)	Électro · Deep house jazzy & lo-fi
-Toman	Una Y Nada	Électro · Melodic house & progressive
+Toman	Una Y Nada	Électro · Tech house
 tonton4o	Pepe Bradock - Deep Burnt	Électro · Deep house jazzy & lo-fi
 Tortured Soul	Take Me to Your House	Électro · Soulful house
 TORYONTHEBEAT	You're in My System	Électro · Nu-disco & synth
@@ -1576,9 +1576,9 @@ TRAVA BEATS	AFRO HOUSE DRUM KIT 2026 | Drum Kit Download	(aucune)
 treedmusic	Sade - Surrender Your Love (Kenny Larkin Remix)	Électro · Soulful house
 Triniidadii	Loud Enough.	Rap · US
 Trio Ternura	Last Tango In Paris	Brésil · MPB douce
-Tripolism	Dope Dance	Électro · Afro house & organique
-Trixxo	Diez	Électro · House festive
-Trus'me	Can We Pretend (feat. Amp Fiddler & Kenny 'Mac' Martin)	Électro · Deep house jazzy & lo-fi
+Tripolism	Dope Dance	Électro · Melodic house & progressive
+Trixxo	Diez	(aucune)
+Trus'me	Can We Pretend (feat. Amp Fiddler & Kenny 'Mac' Martin)	Électro · Soulful house
 Trus'me	Working Nights	Électro · Deep house jazzy & lo-fi
 Tuerie	Le givre et le vent	Rap · FR sombre
 Tuerie	No More	Rap · FR groovy
@@ -1598,10 +1598,10 @@ Tyler, The Creator	See You Again (feat. Kali Uchis)	Rap · US
 Tyler, The Creator	Tomorrow	Rap · US
 Tzii	Tzii - الحياة جميلة	Électro · Ambient & nappes
 Umbraid	Into Forlorn Countryside	Électro · Ambient & nappes
-Underworld	Born Slippy (Nuxx) (Radio Edit)	Électro · Techno de Detroit & classiques
+Underworld	Born Slippy (Nuxx) (Radio Edit)	Électro · Techno dure & peak-time
 Underworld	Dark And Long (Dark Train)	Électro · Melodic house & progressive
 USG feat. Monica Elam	Life 4 Living	Électro · Soulful house
-V.I.C.A.R.I.	Pascià (Dub)	Électro · Melodic house & progressive
+V.I.C.A.R.I.	Pascià (Dub)	Électro · Deep house jazzy & lo-fi
 Varnish La Piscine	ADIOS, TORNADO'S EFFECT	Pop · Indie & synth-pop dansante
 Varnish La Piscine	FACE TO FACE (feat. Bonnie Banane)	Pop · Indie & synth-pop dansante
 Varnish La Piscine	ILLUSION SUR MAUNA LOA	Pop · Indie & synth-pop dansante
@@ -1610,7 +1610,7 @@ Vieux Père	Baby Mama	Rap · FR groovy
 Vinicius Honorio	Stabbed In The Heart	Électro · Techno dure & peak-time
 Vinyl Mode	Shoft Alhala (Radio Edit)	Électro · Afro house & organique
 Voices	Can You See The Light? (K.O.T. Classic Mix)	Électro · Soulful house
-Voiski	On The Edge Of Adhesion	Électro · Melodic techno
+Voiski	On The Edge Of Adhesion	Électro · Techno dure & peak-time
 Vondkreistan	First vision (feat. iris capricorn)	Électro · House lente & organique
 VT	Ville de Snitch	Rap · FR sombre
 Vulax	Ami - Concours composition Avner (piano)	Classique · Moderne contemplatif
@@ -1626,7 +1626,7 @@ Wes Montgomery	Canadian Sunset	Jazz · Bop qui swingue
 Wes Montgomery Trio	Yesterday's Child	Jazz · Bop & cool nocturne
 Wesley Joseph	Ur_Room	Rap · UK
 West Code	Street Funk	Électro · Techno dure & peak-time
-West Code	That Civic Has A Laptop	Électro · Tech house
+West Code	That Civic Has A Laptop	Électro · Techno dure & peak-time
 WILLIS	I Think I Like When It Rains	Pop · Indie & synth-pop douce
 WonderBag	Candy Eyes	Pop · Indie & synth-pop douce
 Worakls	Porto	Électro · Melodic house & progressive
@@ -1643,7 +1643,7 @@ Yiuliusly	Papaya	Électro · House festive
 Yksteexy	untitled	(aucune)
 YL	Larlar 3 (Copenhague)	Rap · FR sombre
 Yoofee	Lost Papers	Électro · Broken beat & nu jazz
-Youandewan	Be Good To Me Poly	Électro · Deep house jazzy & lo-fi
+Youandewan	Be Good To Me Poly	Électro · Broken beat & nu jazz
 Youandewan	Happiness Machine	Électro · Deep techno, dub & minimal
 Ysos	IL FAUT QUE DRAKE POSE SUR CETTE INSTRU ! (c'est si doux)	Rap · FR posé
 Yuksek	The Rollercoaster (Edit)	Électro · Nu-disco & synth
@@ -1661,7 +1661,7 @@ Zakes Bantwini	Osama	(aucune)
 Zamdane	Affamé #8 - Hayati	Rap · FR introspectif
 Zamdane	Naïf	Rap · FR cloud & spleen
 Zamdane	Noum	Rap · FR introspectif
-Zed Bias	The Music (Shur-I-Kan Vocal Mix Edit)	Électro · House festive
+Zed Bias	The Music (Shur-I-Kan Vocal Mix Edit)	Électro · Soulful house
 Zeu	RARE	Rap · FR énergique
 Ziad Rahbani	Prelude Theme From Mais Al Rim	Orient · Oud & taqsim
 Zuukou Mayzie	Je t'aime si je peux (Interlude)	Rap · FR posé
