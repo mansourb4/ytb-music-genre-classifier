@@ -207,7 +207,7 @@ Carpe	silly cat	Pop · City pop & disco
 Carrion	True Love	Rap · Ailleurs
 Cassius	Cassius 1999 (Radio Edit)	Électro · House filtrée & French touch
 Cassius	Go Up (feat. Cat Power & Pharrell Williams) [Butch Remix] (feat. Cat Power & Pharrell Williams)	Électro · House filtrée & French touch
-Cataract	Wiretap	Électro · Techno dure & peak-time
+Cataract	Wiretap	Électro · Tech house
 Cateen かてぃん	重大発表	Classique · Moderne contemplatif
 ccato	there is a woman in somalia	Rap · US
 Cercle	Christian Löffler live @ Fontaine de Vaucluse in France for Cercle	Électro · DJ sets & mixes
@@ -730,7 +730,7 @@ Jürgen Paape	Whisper Echo	Électro · Deep techno, dub & minimal
 Kadhem	Phula	Électro · Melodic house & progressive
 Kadoc	The Nighttrain	Électro · House festive
 KAFFKIEZ	Nie Allein	Rock · Rock énergique
-KAGAMI	Perfect Wave	Électro · Techno dure & peak-time
+KAGAMI	Perfect Wave	Électro · Nu-disco & synth
 Kalabrese	Is This	Électro · House lente & organique
 Kalabrese	Kafi Lied (feat. Palinstar)	Électro · House lente & organique
 Kali Uchis	Igual Que Un Ángel (feat. Peso Pluma)	Pop · Indie & synth-pop dansante
@@ -1445,7 +1445,7 @@ Shy High	formula (feat. Garrett Sparrow)	Rap · US
 Shy High	independent films	Rap · US
 Sir Piers	Don't You Love Me [Original Full Length Main Mix] (feat. Monique Bingham)	Électro · Soulful house
 Sköne	À la poursuite d'un oiseau bleu	Rap · FR posé
-Sligo	Aurora (DJ IBON Remix)	Électro · Techno dure & peak-time
+Sligo	Aurora (DJ IBON Remix)	Électro · Trance & psytrance
 Smino	Z4L	Rap · US
 Smockey	Le Président, Ma Moto Et Moi	(aucune)
 Snoh Aalegra	Nothing Burns Like The Cold (feat. Vince Staples)	Soul · Soul ballades
@@ -1514,11 +1514,11 @@ Tahl	Kuvira Kombat	Électro · Breaks & drum'n'bass
 Tal Fussman	Burning Bridges	Électro · Melodic house & progressive
 Tal Fussman	Children Of 95	Électro · Melodic house & progressive
 Tal Fussman	Even Rome Wasn't Built In a Day	Électro · Melodic house & progressive
-Tal Fussman	Here To There	Électro · Deep techno, dub & minimal
+Tal Fussman	Here To There	Électro · Melodic techno
 Tal Fussman	It Was Misunderstood	Électro · Melodic house & progressive
 Tal Fussman	Memo	Électro · Deep techno, dub & minimal
-Tal Fussman	Oh, Ok	Électro · Deep techno, dub & minimal
-Tal Fussman	The Dawn	Électro · Deep techno, dub & minimal
+Tal Fussman	Oh, Ok	Électro · Melodic techno
+Tal Fussman	The Dawn	Électro · Melodic techno
 Tale Of Us	Discochord	Électro · Deep techno, dub & minimal
 TALE$	Perico y Escama	Rap · Ailleurs
 Talos	Oh Girl (feat. Poppy Ajudha)	Pop · Indie & synth-pop douce
