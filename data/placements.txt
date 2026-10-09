@@ -68,10 +68,10 @@ Alpha Tracks	Elektra	Électro · Trance & psytrance
 Alpha Tracks	Idomeneo	Électro · Trance & psytrance
 Alpha Tracks	Mind Over Mayhem	Électro · Trance & psytrance
 Alpha Wann	Saint-Domingue	Rap · FR groovy
-Altinbas	Biosfera	Électro · Deep techno, dub & minimal
+Altinbas	Biosfera	Électro · Techno hypnotique
 Altinbas	Radiance	Électro · Techno hypnotique
-Altinbas	Reshape	Électro · Techno dure & peak-time
-Altinbas	Sphære	Électro · Techno dure & peak-time
+Altinbas	Reshape	Électro · Techno hypnotique
+Altinbas	Sphære	Électro · Techno hypnotique
 Alton Miller	Cool but so... (Chaos In The CDB Remix [Mixed])	Électro · Deep house jazzy & lo-fi
 Amadou & Mariam	Sabali	Pop · Indie & synth-pop dansante
 Ambiance Skandal	Offishal	Rap · FR énergique
@@ -406,7 +406,7 @@ Droop-E	Rossi Wine (feat. Kendrick Lamar)	Rap · US
 DSK	What Would We Do (Silk Hurley Mix)	Électro · Soulful house
 Duk & Greek	And the living is Easy (Duk & Greek Edit)	Électro · Deep house jazzy & lo-fi
 DunnEasy	Won't Stop [dunnEASY Club Mix] (feat. Monique Bingham)	Électro · Soulful house
-DVS1	Black Russian	Électro · Techno dure & peak-time
+DVS1	Black Russian	Électro · Melodic techno
 Dying & Barakat	About That Promise	Électro · Techno dure & peak-time
 Earth Boys	Canal St. Blues	Électro · Deep house jazzy & lo-fi
 Earth, Wind & Fire	Beijo (Interlude)	Jazz · Smooth & groovy
@@ -440,7 +440,7 @@ Ezhel	Bazen (feat. Emel)	Rap · Ailleurs
 Ezéchiel Pailhès	Éternel été	Électro · Downtempo chill
 Fabrizio Chiovetta	Piano Sonata No. 32 in C Minor, Op. 111: II. Arietta. Adagio molto semplice e cantabile	Classique · Romantique tendre
 FaceSoul	Love	Soul · Soul ballades
-Fadi Mohem	Reactant	Électro · Deep techno, dub & minimal
+Fadi Mohem	Reactant	Électro · Techno hypnotique
 Far Out music for far-out people	Tangerine Dream Live At Coventry Cathedral 1975 Full Concert [HD+5.1 surround sound]	Électro · DJ sets & mixes
 Fatima Yamaha	Only Of The Universe	Électro · Nu-disco & synth
 Fatima Yamaha	What's a Girl to Do	Électro · Nu-disco & synth
@@ -619,7 +619,7 @@ Howling	Bind	Électro · Melodic house & progressive
 Howling	Bind (Rampa Remix)	Électro · Melodic house & progressive
 Hraach	Deep Strings	Électro · House lente & organique
 Human Experiments	Persistence	Électro · Techno dure & peak-time
-Human Safari	Fragments	Électro · Techno dure & peak-time
+Human Safari	Fragments	Électro · Techno hypnotique
 Human Safari	Jazz Affair	Électro · Techno dure & peak-time
 HÖR BERLIN	DJ Balduin | HÖR - January 16 / 2024	Électro · DJ sets & mixes
 HÖR BERLIN	Keinemusik - Adam Port | HÖR - Mar 2 / 2022	Électro · DJ sets & mixes
@@ -633,9 +633,9 @@ IASAM	Copernic	Électro · Ambient & nappes
 Ichika Nito	I Play 14 String Guitar	Rock · Psyché & prog nerveux
 Ida Engberg	Disco Volante (Sébastien Léger Remix)	Électro · Melodic house & progressive
 Ignez	Aventurine	Électro · Deep techno, dub & minimal
-Ignez	Oceanid	Électro · Deep techno, dub & minimal
-Ignez	Seraphic	Électro · Deep techno, dub & minimal
-Ignez	Telomere	Électro · Deep techno, dub & minimal
+Ignez	Oceanid	Électro · Techno dure & peak-time
+Ignez	Seraphic	Électro · Techno hypnotique
+Ignez	Telomere	Électro · Techno hypnotique
 Igor Levit	Klavierstück in B Minor	Classique · Romantique tendre
 Ilario Alicante	Vacaciones En Chile	Électro · Deep techno, dub & minimal
 illi	Escale	Pop · Indie & synth-pop douce
@@ -813,7 +813,7 @@ La Fève	LYELE OUTRO	Rap · FR posé
 La Fève	NO HOOK	Rap · FR énergique
 Labess	Valérie	Maghreb · Raï & chaâbi
 LaChele	Sade - Room 55 (B-Side)	Jazz · Smooth & groovy
-Lars Huismann	Sounds from the Past I	Électro · Techno dure & peak-time
+Lars Huismann	Sounds from the Past I	Électro · Techno hypnotique
 LaSignature	Boomerang	Rap · FR énergique
 Laura Itandehui	Yo no Necesito de Mucho	Latino · Boléro, tango & ballades
 Laurent Garnier	Breathless	Électro · Trance & psytrance
@@ -1215,7 +1215,7 @@ Peven Everett	World Love	Soul · Soul groovy
 Phantom Harmonics	Nocturne in E-flat Major, Op. 9 No. 2 (Jazz)	Jazz · Lounge & jazz d'ambiance
 Phara	Unfold	Électro · Deep techno, dub & minimal
 Phazers	The Herbie Hancock Group on Danish TV, 1976	Jazz · Fusion planante
-Phil Berg	Menace	Électro · Deep techno, dub & minimal
+Phil Berg	Menace	Électro · Techno dure & peak-time
 Phonique	For The Time Being (feat. Erlend Øye)	Électro · Deep house classique
 Piano Beats and Jam	Fly Me to a Moon [Lethal Company Parody]	Jazz · Lounge & jazz d'ambiance
 Piero Umiliani	Borgo montano	(aucune)
@@ -1339,7 +1339,7 @@ Revers Gagnant	Paradis bleu	Pop · Indie & synth-pop douce
 Rework	You're So Just Just (Matt Tolfrey EC1 Edit)	Électro · Tech house
 Rich Medina	The Sickness	Électro · Deep house classique
 Rick Wade	Shinjuku Strut	Électro · Detroit house & beatdown
-Rill	Visual Numbers	Électro · Techno dure & peak-time
+Rill	Visual Numbers	Électro · Techno hypnotique
 Rioleval	Teebee03	Électro · Deep house classique
 Risk Assessment	It’s Not Right But It’s Okay (Vocal Mix Edit) (feat. Monica Blaire)	Électro · Soulful house
 RiskSoundSystem	The Sound Is Yours (Kerri Chandler Remix)	Électro · Deep house classique
@@ -1371,7 +1371,7 @@ Rosenna Samson	Nostalgia	Électro · Melodic house & progressive
 Rounhaa	Dubaï	Rap · FR cloud & spleen
 Rousing Chamber	SOFF | Afro House & Indie Dance Mix by @rousingchamber	Électro · DJ sets & mixes
 Rousseau	Minecraft (C418)	Classique · Moderne contemplatif
-Rove Ranger	Millennial Millenium	Électro · Techno dure & peak-time
+Rove Ranger	Millennial Millenium	Électro · Techno hypnotique
 Roy Ayers Ubiquity	Everybody Loves The Sunshine	Soul · Soul groovy
 Roy Ayers Ubiquity	Gotta Find A Lover	Soul · Soul groovy
 Roy Ayers Ubiquity	Mystic Voyage	Soul · Soul groovy
@@ -1527,7 +1527,7 @@ Tamango	Rosso così	Pop · Indie & synth-pop douce
 Tame Impala	The Less I Know The Better	Pop · Indie & synth-pop dansante
 Techno Music H2R	DAngello & Francis - Blade (Extended) Techno	Électro · Techno dure & peak-time
 Tekno	GO	Afrique · Afrobeats & amapiano
-Temudo	Meteora	Électro · Techno dure & peak-time
+Temudo	Meteora	Électro · Techno hypnotique
 Terrence Parker	Love's Got Me High (Marc Romboy's Systematic Soul Mix)	Électro · Soulful house
 Terrence Parker	Something Here for the Club (Vocal)	Électro · Soulful house
 Teuteu	Don't Doubt (Slowed + Reverb)	Électro · Ambient & nappes
@@ -1607,7 +1607,7 @@ Varnish La Piscine	FACE TO FACE (feat. Bonnie Banane)	Pop · Indie & synth-pop d
 Varnish La Piscine	ILLUSION SUR MAUNA LOA	Pop · Indie & synth-pop dansante
 Vega	London Roots (Main Mix) (feat. jOHNNYDANGEROUs)	Électro · Soulful house
 Vieux Père	Baby Mama	Rap · FR groovy
-Vinicius Honorio	Stabbed In The Heart	Électro · Techno dure & peak-time
+Vinicius Honorio	Stabbed In The Heart	Électro · Techno hypnotique
 Vinyl Mode	Shoft Alhala (Radio Edit)	Électro · Afro house & organique
 Voices	Can You See The Light? (K.O.T. Classic Mix)	Électro · Soulful house
 Voiski	On The Edge Of Adhesion	Électro · Techno dure & peak-time
@@ -1666,6 +1666,6 @@ Zeu	RARE	Rap · FR énergique
 Ziad Rahbani	Prelude Theme From Mais Al Rim	Orient · Oud & taqsim
 Zuukou Mayzie	Je t'aime si je peux (Interlude)	Rap · FR posé
 Zuukou Mayzie	Vincent	Rap · FR introspectif
-Åre:gone	Above Us	Électro · Deep techno, dub & minimal
+Åre:gone	Above Us	Électro · Techno hypnotique
 Åre:gone	Latin Lover	Électro · Techno dure & peak-time
-ØXYR	Calarth	Électro · Techno dure & peak-time
+ØXYR	Calarth	Électro · Melodic house & progressive
