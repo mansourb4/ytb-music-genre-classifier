@@ -25,3 +25,6 @@ headers_auth.json
 oauth.json
 oauth_client.json
 browser.json
+
+# Fichiers système macOS
+.DS_Store
