@@ -69,7 +69,7 @@ Alpha Tracks	Idomeneo	Électro · Trance & psytrance
 Alpha Tracks	Mind Over Mayhem	Électro · Trance & psytrance
 Alpha Wann	Saint-Domingue	Rap · FR groovy
 Altinbas	Biosfera	Électro · Deep techno, dub & minimal
-Altinbas	Radiance	Électro · Melodic techno
+Altinbas	Radiance	Électro · Techno hypnotique
 Altinbas	Reshape	Électro · Techno dure & peak-time
 Altinbas	Sphære	Électro · Techno dure & peak-time
 Alton Miller	Cool but so... (Chaos In The CDB Remix [Mixed])	Électro · Deep house jazzy & lo-fi
@@ -77,7 +77,7 @@ Amadou & Mariam	Sabali	Pop · Indie & synth-pop dansante
 Ambiance Skandal	Offishal	Rap · FR énergique
 Aminition	Answerless Question	Électro · Melodic techno
 AMK	Malya	Rap · FR introspectif
-Amotik	Chihattar (feat. Tina Ramamurthy)	Électro · Melodic techno
+Amotik	Chihattar (feat. Tina Ramamurthy)	Électro · Techno hypnotique
 Amy Winehouse	Just Friends	Caraïbes · Reggae, dub & dancehall
 Amy Winehouse	The Girl From Ipanema	Jazz · Vocal & ballades
 Ana Mazzotti	Agora ou Nunca Mais	Brésil · Samba & groove
@@ -407,7 +407,7 @@ DSK	What Would We Do (Silk Hurley Mix)	Électro · Soulful house
 Duk & Greek	And the living is Easy (Duk & Greek Edit)	Électro · Deep house jazzy & lo-fi
 DunnEasy	Won't Stop [dunnEASY Club Mix] (feat. Monique Bingham)	Électro · Soulful house
 DVS1	Black Russian	Électro · Techno dure & peak-time
-Dying & Barakat	About That Promise	Électro · Melodic techno
+Dying & Barakat	About That Promise	Électro · Techno dure & peak-time
 Earth Boys	Canal St. Blues	Électro · Deep house jazzy & lo-fi
 Earth, Wind & Fire	Beijo (Interlude)	Jazz · Smooth & groovy
 Eboni Band	Fasso	Funk · Afrobeat
@@ -1110,12 +1110,12 @@ Myth Syzer	Sans toi (feat. Hamza Al Farissi & Hamza)	Rap · FR introspectif
 Mézigue	Le problème frenchtouch	Électro · House filtrée & French touch
 Nafta	Andate	Soul · R&B & neo soul groovy
 Nandu	See You	Électro · Melodic house & progressive
-Narciss	Fragments of a Language of Love	Électro · Melodic techno
+Narciss	Fragments of a Language of Love	Électro · Trance & psytrance
 Narciss	Tall People	Pop · Indie & synth-pop douce
 Narciss	Until the Day We Meet Again	Électro · Trance & psytrance
 Nasser	LEH	Rap · Maghreb
 nassím	Nymphomaniac	Pop · Indie & synth-pop douce
-Nathan Fake	Hypercube	Électro · Melodic techno
+Nathan Fake	Hypercube	Électro · Expérimental & IDM
 NeedToWant - Piano	Left hand go brrrrr X2	Classique · Moderne tendu
 Negrocan	Cada Vez (Grant Nelson Radio Edit)	Électro · House festive
 Nekfeu	Au coeur du G	Rap · FR énergique
@@ -1159,7 +1159,7 @@ nour	Wana	Pop · Indie & synth-pop douce
 Nox Vahn	Come Together (Extended Mix)	Électro · Melodic house & progressive
 NTBR	Island	Électro · Techno dure & peak-time
 NTO	Alter Ego	Électro · Melodic techno
-NTO	Ayahuasca	Électro · Melodic techno
+NTO	Ayahuasca	Électro · House lente & organique
 NTO	Charlie	Électro · Melodic techno
 NTO	Croche	Électro · Melodic techno
 NTO	La clé des champs	Électro · Melodic house & progressive
@@ -1307,7 +1307,7 @@ Radiohead	Videotape	Rock · Rock doux & mélancolique
 Radiohead	Weird Fishes / Arpeggi	Rock · Psyché & prog nerveux
 Radiohead	You And Whose Army?	Rock · Rock doux & mélancolique
 Radiq	Waiting for My Man (feat. Khansa Batma)	Électro · Deep techno, dub & minimal
-Raffaele Attanasio	Chara	Électro · Techno dure & peak-time
+Raffaele Attanasio	Chara	Électro · Techno hypnotique
 Ragheb Alama	Nasini El Donya	Orient · Fairouz, tarab & chanson
 Raiun	sunkiss	Électro · Downtempo chill
 Ralf GUM	After Midnight (feat. Portia Monique)	Électro · Soulful house
@@ -1483,7 +1483,7 @@ Stavroz	The Ginning	Électro · House lente & organique
 Stazzia	You Can't Stop the Groove	Électro · Deep house jazzy & lo-fi
 Steely Dan	Godwhacker	Rock · Yacht rock
 Steely Dan	Green Earrings (2025 Remaster)	Rock · Yacht rock
-Stef Mendesidis	Spectral Transmission	Électro · Melodic techno
+Stef Mendesidis	Spectral Transmission	Électro · Techno hypnotique
 Stef Mendesidis	Techno	Électro · Techno dure & peak-time
 Stela	Piece of soul	Soul · R&B & neo soul posés
 Stephan Bodzin	Collider	Électro · Melodic techno

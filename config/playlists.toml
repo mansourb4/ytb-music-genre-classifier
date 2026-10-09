@@ -395,8 +395,10 @@ styles = ["House", "Euro House", "Italo House", "Tropical House", "Latin House",
 # La techno est rangée par style, comme la house. Pour un titre : arpèges
 # trance ou psytrance → Trance ; fondateurs de Detroit et hymnes des années 90
 # → Detroit & classiques ; arpèges et synthés en spirale, montées épiques →
-# Melodic techno ; lent, profond, échos et silences → Deep techno, dub &
-# minimal ; sinon, kick lourd et sombre → Techno dure & peak-time.
+# Melodic techno ; boucles qui tournent de 135 à 145 BPM, nappes, peu de
+# mélodie → Techno hypnotique ; lent, profond, échos et silences → Deep
+# techno, dub & minimal ; sinon, kick lourd et sombre → Techno dure &
+# peak-time.
 
 [[playlist]]
 nom = "Électro · Trance & psytrance"
@@ -426,7 +428,12 @@ styles = ["Melodic Techno"]
 nom = "Électro · Melodic techno"
 genres = ["Electronic"]
 styles = ["Techno", "Detroit Techno", "Deep Techno", "Dub Techno", "Melodic Techno", "Minimal", "Minimal Techno", "Acid", "Trance"]
-artistes = ["Stephan Bodzin", "NTO", "Mathame", "Nathan Fake", "Voiski"]
+artistes = ["Stephan Bodzin", "NTO", "Mathame"]
+
+[[playlist]]
+nom = "Électro · Techno hypnotique"
+description = "Techno de 135 à 145 BPM qui tourne en boucle : kick roulant, nappes et textures, peu de mélodie, on se laisse emporter."
+manuelle = true
 
 [[playlist]]
 nom = "Électro · Deep techno, dub & minimal"

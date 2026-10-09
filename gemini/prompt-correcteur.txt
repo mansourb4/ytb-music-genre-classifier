@@ -50,9 +50,10 @@ COMMENT CHOISIR DANS LA HOUSE (prends la première réponse « oui »)
 COMMENT CHOISIR DANS LA TECHNO (prends la première réponse « oui »)
 1. Arpèges trance ou psytrance → Électro · Trance & psytrance
 2. Fondateurs de Detroit, hymnes des années 90 → Électro · Techno de Detroit & classiques
-3. Arpèges et synthés en spirale, montées épiques → Électro · Melodic techno
-4. Lent, profond, échos dub, minimal dépouillée → Électro · Deep techno, dub & minimal
-5. Sinon, kick lourd, sombre, martelé → Électro · Techno dure & peak-time
+3. Arpèges et synthés en spirale, montées épiques, 120 à 127 BPM → Électro · Melodic techno
+4. Boucles qui tournent de 135 à 145 BPM, kick roulant, nappes, peu de mélodie → Électro · Techno hypnotique
+5. Lent, profond, échos dub, minimal dépouillée → Électro · Deep techno, dub & minimal
+6. Sinon, kick lourd, sombre, martelé → Électro · Techno dure & peak-time
 
 AUTRES CHOIX DE RANGEMENT
 - Le rap se range d'abord par pays (FR, US, UK, Maghreb, Ailleurs), puis le rap français par ambiance.
@@ -78,7 +79,7 @@ FUNK
 - Funk · Latin funk — Funk aux couleurs latines : congas, cuivres et basses rondes, du latin soul new-yorkais au groove brésilien des années 70. Ex. : Masayoshi Takanaka.
 
 ORIENT
-- Orient · Oud & taqsim — Oud et improvisations sur les maqâms : musique savante instrumentale. Ex. : Munir Bachir, Abdallah Chahine, Naseer Shamma, Riyad Sunbati, Ziad Rahbani.
+- Orient · Oud & taqsim — Oud et improvisations sur les maqâms : musique savante instrumentale. Ex. : Munir Bachir, Abdallah Chahine, Cosmic Analog Ensemble, Naseer Shamma, Riyad Sunbati.
 - Orient · Pop arabe — Al jeel et pop arabe dansante. Ex. : Hamid El Shaeri, Hameed El Shaery, Bedouin Burger, Hamed Al Shaeri, Hany Shenoda Ferqet Masr.
 - Orient · Fairouz, tarab & chanson — Fairouz et les Rahbani, Warda, Marcel Khalife : la grande chanson arabe, tendre et nostalgique. Ex. : Fairuz, El Shab Arrab, Fairouz, Marcel Khalife, Warda El Gazaerya.
 
@@ -112,7 +113,7 @@ SOUL
 POP
 - Pop · Variété française — Chanson et variété françaises. Ex. : Charles Aznavour, Dany Brillant, Eva sur Seine, Joe Dassin, Sacha Distel.
 - Pop · Indie & synth-pop dansante — Pop indépendante, synth-pop et new wave qui bougent. Ex. : Frankie Goes To Hollywood, Varnish La Piscine, Jungle, The Whitest Boy Alive, Amadou & Mariam.
-- Pop · Indie & synth-pop douce — Pop indépendante, dream pop et synth-pop douces ou mélancoliques. Ex. : Frankie Goes To Hollywood, Men I Trust, Cigarettes After Sex, Tamango, Vendredi sur Mer.
+- Pop · Indie & synth-pop douce — Pop indépendante, dream pop et synth-pop douces ou mélancoliques. Ex. : Frankie Goes To Hollywood, Men I Trust, Cigarettes After Sex, Daft Punk, Tamango.
 - Pop · City pop & disco — City pop japonaise, AOR et pop disco. Ex. : Goro Noguchi, Makoto Matsushita, Masayoshi Takanaka, Pino D'Angiò, Shigeru Suzuki.
 - Pop · Ballades — Ballades pop, voix et piano. Ex. : The Beatles, Julio Iglesias, Mina, Piero Piccioni, 10cc.
 - Pop · Pop rock & pop dansante — Pop rock, europop et pop entraînante. Ex. : 24kGoldn, Bratisla Boys, Frankie Goes To Hollywood, Juan Antonio Canta, Justin Timberlake.
@@ -142,27 +143,27 @@ RAP
 
 ÉLECTRO
 - Électro · DJ sets & mixes — Sets et mixes d'une heure et plus : à écouter d'une traite, à part des playlists de morceaux. Ex. : HÖR BERLIN, Breakfast TILT, Book Club Radio, Cercle, Chris Sedayao.
-- Électro · House lente & organique — House lente et organique, de 100 à 115 BPM : kick doux, percussions boisées, voix chuchotées, ambiance coucher de soleil. Ex. : Move D, Nu, Abundance, Cesar B., Cousin.
-- Électro · Detroit house & beatdown — La house de Detroit brute et samplée : soul psychédélique, jazz et funk en boucles poisseuses, tempo lent. Ex. : Moodymann, Rick Wade, Theo Parrish.
-- Électro · Deep house classique — Les pionniers de Chicago, Detroit et New York et leurs héritiers : son rond et hypnotique, basses analogiques, accords soul qui tournent longtemps. Ex. : Kerri Chandler, Ron Trent, Black Jazz Consortium, Chez Damier feat. Ron Trent, Mr. Fingers.
-- Électro · Afro house & organique — Percussions tribales, chants africains ou orientaux, transe douce : Keinemusik, Black Coffee et leurs voisins. Ex. : &ME, Stavroz, Kiko Navarro, Al Zanders, Bantu Clan.
-- Électro · Tech house — Kick sec, basse roulante, groove minimal de club : la house qui tape. Ex. : Danny Wabbit, Martin Buttrich, PAWSA, Aasi, Cassius.
-- Électro · Melodic house & progressive — Synthés émotionnels, nappes et longues montées : la mélodie au premier plan. Ex. : Tal Fussman, Agoria, Alain Ho, DAVID AUGUST, Guy Gerber.
-- Électro · House filtrée & French touch — Samples disco filtrés, French touch et disco house. Ex. : Alastair Lane, Daft Punk, Folamour, Kalabrese, Modjo.
+- Électro · House lente & organique — House lente et organique, de 100 à 115 BPM : kick doux, percussions boisées, voix chuchotées, ambiance coucher de soleil. Ex. : Kalabrese, Move D, Nu, Stavroz, Stimming.
+- Électro · Detroit house & beatdown — La house de Detroit brute et samplée : soul psychédélique, jazz et funk en boucles poisseuses, tempo lent. Ex. : Moodymann, Ben Hauke, DAVID AUGUST, Les Sins, Oliver Dollar.
+- Électro · Deep house classique — Les pionniers de Chicago, Detroit et New York et leurs héritiers : son rond et hypnotique, basses analogiques, accords soul qui tournent longtemps. Ex. : Kerri Chandler, Ron Trent, Black Jazz Consortium, Chez Damier feat. Ron Trent, DaRand Land.
+- Électro · Afro house & organique — Percussions tribales, chants africains ou orientaux, transe douce : Keinemusik, Black Coffee et leurs voisins. Ex. : Black Coffee, Buddha Bar, Chaim, Drake, driffa.
+- Électro · Tech house — Kick sec, basse roulante, groove minimal de club : la house qui tape. Ex. : PAWSA, Astre, CHRIS STASSY, Emanuel Satie, Enzo Siffredi.
+- Électro · Melodic house & progressive — Synthés émotionnels, nappes et longues montées : la mélodie au premier plan. Ex. : &ME, Tal Fussman, Guy Gerber, Howling, Matthew Dekay.
+- Électro · House filtrée & French touch — Samples disco filtrés, French touch et disco house. Ex. : Alastair Lane, Daft Punk, Cassius, Modjo, Folamour.
 - Électro · Soulful house — Une voix soul ou gospel au centre, piano et chœurs : la house chantée de New York et d'ailleurs. Ex. : Blue Six, Kerri Chandler, Louie Vega, Fresh & Low, Monique Bingham.
-- Électro · Deep house jazzy & lo-fi — Deep house moderne : Rhodes, sax, accords jazz et grain poussiéreux, centrée sur le groove. Ex. : Chaos In the CBD, DaRand Land, Ben Hauke, berlioz, Seb Wildblood.
-- Électro · House festive — Tubes et refrains, piano des années 90, house latine : la house pour danser. Ex. : Afro Medusa, Channel Tres, Drake, Floating Points, Moloko.
-- Électro · Trance & psytrance — Arpèges trance qui montent, basse roulante de la psytrance : l'euphorie. Ex. : Alpha Tracks, Ajna, Chris Element, Grand V, Lucky People Center.
-- Électro · Techno de Detroit & classiques — Les fondateurs de Detroit et les hymnes des années 90 : cordes, machines et énergie brute. Ex. : Laurent Garnier, Charanjit Singh, CJ Bolland, DJ Rolando, Jeff Mills.
-- Électro · Melodic techno — Arpèges et synthés en spirale, longues montées épiques : la techno qui chante. Ex. : NTO, Stephan Bodzin, Altinbas, Amotik, Dying & Barakat.
-- Électro · Deep techno, dub & minimal — Lent et profond : dub techno pleine d'échos, minimal dépouillée, boucles qui s'installent. Ex. : Ignez, Tal Fussman, David August, Nicolas Jaar, Alain Ho.
-- Électro · Techno dure & peak-time — Kick lourd, sombre et martelé, parfois industriel : le cœur de la nuit. Ex. : Altinbas, Human Safari, Anetha, Åre:gone, Ben Klock.
+- Électro · Deep house jazzy & lo-fi — Deep house moderne : Rhodes, sax, accords jazz et grain poussiéreux, centrée sur le groove. Ex. : Chaos In the CBD, berlioz, Ben Hauke, Seb Wildblood, 4th Sign.
+- Électro · House festive — Tubes et refrains, piano des années 90, house latine : la house pour danser. Ex. : Afro Medusa, Channel Tres, 2 Eivissa, Aaron Childs, Arved Siara.
+- Électro · Trance & psytrance — Arpèges trance qui montent, basse roulante de la psytrance : l'euphorie. Ex. : Alpha Tracks, Laurent Garnier, Narciss, Chris Element, CJ Bolland.
+- Électro · Melodic techno — Arpèges et synthés en spirale, longues montées épiques : la techno qui chante. Ex. : NTO, Rasch, Stephan Bodzin, Agoria, Aminition.
+- Électro · Techno hypnotique — Techno de 135 à 145 BPM qui tourne en boucle : kick roulant, nappes et textures, peu de mélodie, on se laisse emporter. Ex. : Altinbas, Amotik, Raffaele Attanasio, Stef Mendesidis.
+- Électro · Deep techno, dub & minimal — Lent et profond : dub techno pleine d'échos, minimal dépouillée, boucles qui s'installent. Ex. : Ignez, Tal Fussman, David August, Kollektiv Turmstrasse, Martin Buttrich.
+- Électro · Techno dure & peak-time — Kick lourd, sombre et martelé, parfois industriel : le cœur de la nuit. Ex. : Altinbas, Human Safari, West Code, Aasi, Anetha.
 - Électro · Nu-disco & synth — Nu-disco, italo, synth-pop et synthwave. Ex. : Daft Punk, L'Impératrice, Yuksek, Frankie Goes To Hollywood, Crazy P.
 - Électro · Broken beat & nu jazz — Broken beat, nu jazz et UK garage : rythmes cassés et chaleur jazz-soul. Ex. : Al Dobson Jr, Loure, Dan Kye, Duke Hugh, Jhelisa.
 - Électro · Breaks & drum'n'bass — Breakbeat, electro, jungle, drum & bass et footwork : rapide et nerveux. Ex. : Driss Bennis, Daft Punk, Alix Perez, Alpha Tracks, Detroit's Filthiest.
 - Électro · Ambient & nappes — Ambient, drone et downtempo planants : nappes, espace, apesanteur. Ex. : Nicolas Jaar, Ron Trent, Daft Punk, Acid Pauli, Air.
-- Électro · Downtempo chill — Downtempo, trip hop et lounge : calme, mélancolique ou doucement groovy. Ex. : Daft Punk, kuribo98, Melodiesinfonie, Nicolas Jaar, rebug.
-- Électro · Expérimental & IDM — IDM, glitch, leftfield et électronique expérimentale. Ex. : Nicolas Jaar, Daft Punk, Burnt Friedman, David August, Emptyset.
+- Électro · Downtempo chill — Downtempo, trip hop et lounge : calme, mélancolique ou doucement groovy. Ex. : Melodiesinfonie, Ron Trent, Ahmed Sirour, Portishead, Air.
+- Électro · Expérimental & IDM — IDM, glitch, leftfield et électronique expérimentale. Ex. : Nicolas Jaar, rebug, Daft Punk, Floating Points, Burnt Friedman.
 
 CLASSIQUE
 - Classique · Baroque vif — Baroque et classique allègres : allegros, fugues, concertos. Ex. : Julia Cload, YUNDI, Rousseau, Maximilian Schairer, Alicia de Larrocha.
