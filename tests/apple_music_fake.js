@@ -20,7 +20,12 @@ function Path(path) {
 // Collection à la façon JXA : appeler une propriété en renvoie le tableau, un
 // indice renvoie l'élément.
 function collection(getItems, wrap) {
-  return new Proxy({}, {
+  // Appelée, la collection renvoie ses éléments ; une propriété appelée
+  // renvoie la liste de ses valeurs ; un indice renvoie un élément.
+  return new Proxy(function () {}, {
+    apply() {
+      return getItems().map(wrap);
+    },
     get(_, prop) {
       if (typeof prop === 'string' && /^\d+$/.test(prop)) return wrap(getItems()[Number(prop)]);
       if (prop === 'length') return getItems().length;
@@ -81,8 +86,6 @@ function addFile(path) {
   return trackObject(track);
 }
 
-const userPlaylists = collection(() => state.playlists.map((p) => ({ ...p, persistentID: p.pid, _p: p })),
-  (p) => playlistObject(p._p));
 
 const Music = {
   libraryPlaylists: [{
@@ -98,14 +101,20 @@ const Music = {
     if (object._entry) {
       const { playlist, pid } = object._entry;
       playlist.tracks.splice(playlist.tracks.indexOf(pid), 1);
+    } else if (object._playlist) {
+      state.playlists = state.playlists.filter((p) => p !== object._playlist);
     } else if (object._track) {
       state.tracks = state.tracks.filter((t) => t !== object._track);
     }
   },
-  folderPlaylists: () => state.playlists.filter((p) => p.folder).map(playlistObject),
-  userPlaylists: Object.assign(() => state.playlists.map(playlistObject), {
-    whose: (filter) => state.playlists.filter((p) => p.pid === filter.persistentID).map(playlistObject),
-  }),
+  // Comme Music : pas de « folderPlaylists » ni de « userPlaylists » au niveau
+  // de l'application (-1708) ; seulement « playlists », dont la bibliothèque.
+  playlists: collection(
+    () => [{ pid: 'LIB', name: 'Bibliothèque', kind: 'libraryPlaylist', tracks: [] }]
+      .concat(state.playlists)
+      .map((p) => ({ ...p, persistentID: p.pid, _p: p,
+        class: p.kind || (p.folder ? 'folderPlaylist' : 'userPlaylist') })),
+    (p) => playlistObject(p._p)),
   make({ new: kind, withProperties }) {
     const playlist = { pid: newPid(), name: withProperties.name, folder: kind === 'folderPlaylist',
       parent: null, tracks: [] };
@@ -119,7 +128,6 @@ const Music = {
     to._playlist.tracks.push(track._track.pid);
   },
 };
-void userPlaylists;
 
 global.Application = (name) => {
   if (name !== 'Music') throw new Error('application inattendue : ' + name);

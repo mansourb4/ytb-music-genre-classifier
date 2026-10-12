@@ -187,30 +187,50 @@ function run(argv) {
   const plannedFamilies = {};
   for (const playlist of input.playlists) plannedFamilies[playlist.family] = true;
 
-  const folders = {};
-  for (const folder of Music.folderPlaylists()) {
-    const name = folder.name();
-    if (families[name] && !folders[name]) folders[name] = folder;
-  }
-  for (const family of Object.keys(plannedFamilies)) {
-    if (!family || folders[family]) continue;
-    report.createdFolders.push(family);
-    if (!input.dryRun) {
-      folders[family] = makePlaylist(Music, 'folderPlaylist', family);
-    }
+  // Music ne liste pas « les dossiers » ni « les playlists d'utilisateur »
+  // au niveau de l'application : on part de toutes les playlists, et on les
+  // désigne ensuite par leur identifiant, stable quand on en crée d'autres.
+  const all = Music.playlists;
+  const classes = every(all, 'class');
+  const names = every(all, 'name');
+  const ids = every(all, 'persistentID');
+  const playlistById = function (pid) {
+    return Music.playlists.whose({ persistentID: pid })[0];
+  };
+
+  const folderIds = {};
+  const folderNames = {};
+  for (let i = 0; i < ids.length; i++) {
+    if (classes[i] !== 'folderPlaylist') continue;
+    folderNames[ids[i]] = names[i];
+    if (families[names[i]] && !folderIds[names[i]]) folderIds[names[i]] = ids[i];
   }
 
   // Playlists déjà rangées dans un dossier de famille : « Famille/Nom ».
   const existing = {};
-  for (const playlist of Music.userPlaylists()) {
-    if (playlist.class() === 'folderPlaylist') continue;
+  for (let i = 0; i < ids.length; i++) {
+    if (classes[i] !== 'userPlaylist') continue;
     let parent = null;
     try {
-      parent = playlist.parent().name();
+      parent = folderNames[all[i].parent().persistentID()];
     } catch (error) {
       continue;
     }
-    if (families[parent]) existing[parent + '/' + playlist.name()] = playlist;
+    if (parent && folderIds[parent] && families[parent]) {
+      existing[parent + '/' + names[i]] = ids[i];
+    }
+  }
+
+  const folders = {};
+  for (const family of Object.keys(plannedFamilies)) {
+    if (folderIds[family]) {
+      folders[family] = playlistById(folderIds[family]);
+      continue;
+    }
+    report.createdFolders.push(family);
+    if (!input.dryRun) {
+      folders[family] = playlistById(makePlaylist(Music, 'folderPlaylist', family).persistentID());
+    }
   }
 
   const planned = {};
@@ -218,7 +238,7 @@ function run(argv) {
     const key = wanted.family + '/' + wanted.name;
     planned[key] = true;
     const ids = wanted.ids.filter(function (id) { return pidOf[id]; });
-    let playlist = existing[key];
+    let playlist = existing[key] ? playlistById(existing[key]) : null;
     if (!playlist) {
       report.createdPlaylists.push(key);
       if (input.dryRun) {
@@ -228,7 +248,7 @@ function run(argv) {
       const made = makePlaylist(Music, 'userPlaylist', wanted.name);
       const madeId = made.persistentID();
       Music.move(made, { to: folders[wanted.family] });
-      playlist = Music.userPlaylists.whose({ persistentID: madeId })[0];
+      playlist = playlistById(madeId);
       // Une playlist restée hors de son dossier ne serait pas retrouvée au
       // lancement suivant, et serait recréée à chaque fois : mieux vaut
       // s'arrêter tout de suite.
