@@ -17,6 +17,7 @@ Le pipeline est découpé en étapes reprenables, chacune persistée en base :
     ytmgc importe    # lit une réponse de Claude.ai
     ytmgc suivi      # ce qui est jugé, ce qui reste
     ytmgc purge      # supprime les playlists générées (annulation complète)
+    ytmgc telecharge # copie locale : un dossier par playlist, un m4a par titre
     ytmgc web        # interface locale : connexion, aperçu, application
 
 `apply` est en mode « à blanc » par défaut : il faut `--execute` pour écrire.
@@ -553,6 +554,90 @@ def cmd_purge(args: argparse.Namespace, config: Config) -> int:
     return 0
 
 
+def cmd_telecharge(args: argparse.Namespace, config: Config) -> int:
+    """Copie locale des playlists : dossiers, déplacements, téléchargements."""
+    from ytmgc import download
+    from ytmgc.preview import build_preview
+
+    root = Path(args.dossier).expanduser()
+    repository = _repository(config)
+    tracks = {track.video_id: track for track in repository.all_tracks()}
+    _, plans, _ = build_preview(repository, apply_sort_mode(config, args.tri), sort_mode=args.tri)
+    wanted = download.targets(plans, tracks)
+    if not wanted:
+        print("Aucune playlist : rien à télécharger.")
+        return 0
+    local = download.organise(wanted, download.existing(root))
+    todo = list(local.downloads)
+    if args.playlist:
+        home = {}
+        for plan in plans:
+            for video_id in plan.video_ids:
+                home.setdefault(video_id, plan.name)
+        todo = [(v, path) for v, path in todo if args.playlist.lower() in home[v].lower()]
+    if args.limite:
+        todo = todo[: args.limite]
+
+    print(f"Dossier : {root}")
+    print(f"  {len(plans)} playlist(s), {len(wanted)} titre(s)")
+    print(f"  {local.up_to_date} déjà en place, {len(local.moves)} à déplacer, "
+          f"{len(local.downloads)} à télécharger"
+          + (f" (dont {len(todo)} cette fois)" if len(todo) != len(local.downloads) else ""))
+
+    if args.essai:
+        for move in local.moves:
+            print(f"  déplacer  {move.source}  →  {move.target.parent}")
+        for _, path in todo[:20]:
+            print(f"  télécharger  {path}")
+        if len(todo) > 20:
+            print(f"  … et {len(todo) - 20} autre(s)")
+        print("\nEssai : rien n'a été modifié.")
+        return 0
+
+    if local.moves:
+        download.apply_moves(root, local.moves)
+        print(f"{len(local.moves)} fichier(s) déplacé(s).")
+    if not todo:
+        print("Tout est déjà téléchargé.")
+        return 0
+
+    ytdlp = download.find_tool("yt-dlp", args.yt_dlp)
+    if ytdlp is None:
+        print(
+            "yt-dlp introuvable. Installe-le (brew install yt-dlp ffmpeg), ou indique "
+            "celui de Stacher avec --yt-dlp CHEMIN (Stacher → Réglages → Avancé).",
+            file=sys.stderr,
+        )
+        return 1
+    ffmpeg = download.find_tool("ffmpeg", args.ffmpeg)
+    if ffmpeg is None:
+        print("Attention : ffmpeg introuvable, yt-dlp risque d'échouer "
+              "(brew install ffmpeg, ou --ffmpeg CHEMIN).")
+    print(f"yt-dlp : {ytdlp}\nTéléchargement de {len(todo)} titre(s), un par un. "
+          "Ctrl+C pour arrêter : la reprise repart de là où tu en es.\n")
+
+    def progress(index: int, total: int, track: Track, error: str | None) -> None:
+        state = f"ÉCHEC : {error}" if error else "ok"
+        print(f"  [{index}/{total}] {track.label()} — {state}", flush=True)
+
+    report = download.download(
+        root, todo, tracks, ytdlp, ffmpeg=ffmpeg,
+        cookies_browser=args.cookies_navigateur, pause=args.pause, on_progress=progress,
+    )
+    print(f"\n{report.downloaded} titre(s) téléchargé(s), {len(report.failed)} échec(s).")
+    failures = download.write_failures(root, report.failed)
+    if failures:
+        print(f"Les échecs sont listés dans : {failures}")
+    if report.stopped:
+        print(
+            f"\nArrêt après {download.MAX_CONSECUTIVE_FAILURES} échecs d'affilée : YouTube "
+            "bloque sans doute pour l'instant. Réessaie dans quelques heures, ou mets à "
+            "jour yt-dlp (brew upgrade yt-dlp, ou bouton de mise à jour dans Stacher)."
+        )
+        return 1
+    return 0
+
+
 def cmd_web(args: argparse.Namespace, config: Config) -> int:
     """Sert l'interface locale."""
     try:
@@ -782,6 +867,28 @@ def build_parser() -> argparse.ArgumentParser:
     purge_cmd = subparsers.add_parser("purge", help="Supprimer les playlists générées par l'outil")
     purge_cmd.add_argument("--execute", action="store_true", help="Supprimer réellement (sinon : à blanc)")
     purge_cmd.set_defaults(func=cmd_purge)
+
+    telecharge_cmd = subparsers.add_parser(
+        "telecharge", help="Télécharger les playlists en m4a, un dossier par playlist")
+    telecharge_cmd.add_argument("--dossier", default="~/Music/Playlists",
+                                help="Dossier racine (défaut : %(default)s)")
+    telecharge_cmd.add_argument("--tri", default=DEFAULT_SORT_MODE, choices=[m.key for m in SORT_MODES],
+                                help="Type de tri, comme dans l'aperçu (défaut : %(default)s)")
+    telecharge_cmd.add_argument("--essai", action="store_true",
+                                help="Montrer ce qui serait fait, sans rien toucher")
+    telecharge_cmd.add_argument("--playlist", default=None,
+                                help="Ne télécharger que les playlists dont le nom contient ce texte")
+    telecharge_cmd.add_argument("--limite", type=int, default=0,
+                                help="Ne télécharger que ce nombre de titres (pour tester)")
+    telecharge_cmd.add_argument("--pause", type=float, default=2.0,
+                                help="Secondes d'attente entre deux titres (défaut : %(default)s)")
+    telecharge_cmd.add_argument("--yt-dlp", dest="yt_dlp", default=None,
+                                help="Chemin de yt-dlp (sinon : cherché automatiquement)")
+    telecharge_cmd.add_argument("--ffmpeg", default=None,
+                                help="Chemin de ffmpeg (sinon : cherché automatiquement)")
+    telecharge_cmd.add_argument("--cookies-navigateur", default=None,
+                                help="Utiliser la session YouTube d'un navigateur (safari, chrome…)")
+    telecharge_cmd.set_defaults(func=cmd_telecharge)
 
     web = subparsers.add_parser("web", help="Lancer l'interface locale")
     web.add_argument("--host", default=None, help="Interface d'écoute (défaut : locale uniquement)")

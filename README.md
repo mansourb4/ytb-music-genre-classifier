@@ -606,6 +606,7 @@ ytmgc export     # tous les titres à juger, en fichiers pour Claude.ai (gratuit
 ytmgc importe    # lit une réponse de Claude.ai
 ytmgc suivi      # ce qui est jugé, ce qui reste, où sont les résultats
 ytmgc purge --execute   # supprime les playlists générées (annulation complète)
+ytmgc telecharge # copie locale en m4a, un dossier par playlist
 ```
 
 `enrich` annonce son coût et demande confirmation. `--essai` se limite à une
@@ -619,6 +620,28 @@ deux.
 `ytmgc plan --tri sans-doublon`.
 
 `apply` est **en mode simulation par défaut** : il faut `--execute` pour écrire.
+
+### Copie locale des playlists
+
+`ytmgc telecharge` range les playlists de l'aperçu dans
+`~/Music/Playlists/Famille/Nom/`, un fichier m4a par titre, nommé
+`Artiste - Titre [videoId].m4a`. Il passe par yt-dlp, le moteur de Stacher
+(`brew install yt-dlp ffmpeg`, ou `--yt-dlp` vers celui de Stacher). L'artiste,
+le titre et l'album écrits dans le fichier viennent de la base, la pochette est
+recadrée au carré.
+
+C'est reprenable et incrémental : un titre déjà là n'est pas retéléchargé, un
+titre qui a changé de playlist est déplacé, un titre sorti de toutes les
+playlists part dans `_Hors playlists` (rien n'est supprimé). Les échecs sont
+listés dans `_échecs.txt` ; après cinq échecs d'affilée, l'outil s'arrête,
+YouTube bloquant sans doute pour un temps.
+
+```bash
+ytmgc telecharge --essai                 # ce qui serait fait, sans rien toucher
+ytmgc telecharge --limite 3              # trois titres, pour vérifier
+ytmgc telecharge --playlist "Ballades"   # une seule playlist
+ytmgc telecharge                         # tout le reste
+```
 
 ## Garanties
 
