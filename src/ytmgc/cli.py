@@ -593,8 +593,11 @@ def cmd_telecharge(args: argparse.Namespace, config: Config) -> int:
     if args.remplacer_sous:
         # Fichiers au son trop pauvre : retéléchargés à leur place définitive,
         # une fois les déplacements faits.
+        # Un fichier déjà pris connecté au compte est au mieux de ce que
+        # YouTube donne : le refaire ne servirait qu'à perdre du temps.
         low = sorted(v for v, path in present.items()
-                     if v in wanted and (download.kbps(root / path) or 0) < args.remplacer_sous)
+                     if v in wanted and (download.kbps(root / path) or 0) < args.remplacer_sous
+                     and not download.signed_in(root / path))
         todo += [(v, wanted[v].path) for v in low]
         if low:
             print(f"  {len(low)} fichier(s) sous {args.remplacer_sous} kbps, à retélécharger")
@@ -672,6 +675,7 @@ def cmd_telecharge(args: argparse.Namespace, config: Config) -> int:
             root, batch, tracks, wanted, ytdlp, ffmpeg=ffmpeg,
             cookies_browser=args.cookies_navigateur, cookies_file=cookies_file,
             pause=args.pause, workers=args.parallele, search=search, report=report,
+            mark=download.mark_signed_in if (args.cookies_navigateur or args.cookies) else None,
             on_progress=progress,
         )
         if not report.rate_limited or pauses >= args.attentes_max:

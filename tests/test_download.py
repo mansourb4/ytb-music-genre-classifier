@@ -435,3 +435,18 @@ def test_rate_limiting_stops_and_keeps_the_rest_for_later(tmp_path):
     assert searched == []  # pas de recherche d'autre version : le titre n'y est pour rien
     assert download.rate_limited(RATE_LIMITED)
     assert not download.rate_limited("ERROR: [youtube] x: Video unavailable")
+
+
+def test_files_taken_while_signed_in_are_marked(tmp_path):
+    ids = ["aaaaaaaaaaa", "bbbbbbbbbbb"]
+    tracks = {v: _track(v, title=v) for v in ids}
+    wanted = {v: download.Wanted(Path("Soul", f"{v}.m4a"), _tags()) for v in ids}
+    download.download(tmp_path, [(ids[0], wanted[ids[0]].path)], tracks, wanted, Path("yt-dlp"),
+                      run=_fake_run(set()), sleep=lambda _: None, mark=download.mark_signed_in)
+    download.download(tmp_path, [(ids[1], wanted[ids[1]].path)], tracks, wanted, Path("yt-dlp"),
+                      run=_fake_run(set()), sleep=lambda _: None)
+    assert download.signed_in(tmp_path / wanted[ids[0]].path)
+    assert not download.signed_in(tmp_path / wanted[ids[1]].path)
+    # La mise à jour des propriétés ne l'efface pas.
+    download.write_tags(tmp_path / wanted[ids[0]].path, ids[0], _tags("Jazz · Modal"))
+    assert download.signed_in(tmp_path / wanted[ids[0]].path)

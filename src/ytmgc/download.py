@@ -325,6 +325,9 @@ def _remove_empty(folder: Path, root: Path) -> None:
 
 #: Propriété maison : Apple Music l'ignore, l'outil s'en sert pour s'y retrouver.
 _ID_KEY = "----:com.apple.iTunes:YouTube ID"
+#: Téléchargé connecté au compte : c'est déjà le meilleur son que YouTube
+#: donne pour ce titre, inutile de le refaire pour viser plus haut.
+_SIGNED_IN_KEY = "----:com.apple.iTunes:YTMGC connecté"
 _TAG_KEYS = {"title": "\xa9nam", "artist": "\xa9ART", "album": "\xa9alb",
              "genre": "\xa9gen", "grouping": "\xa9grp"}
 
@@ -337,6 +340,25 @@ def _mp4(path: Path):
             "Le module mutagen manque : lance « pip install mutagen » puis recommence."
         ) from exc
     return MP4(path)
+
+
+def mark_signed_in(path: Path) -> None:
+    from mutagen.mp4 import MP4FreeForm
+
+    audio = _mp4(path)
+    if audio.tags is None:
+        audio.add_tags()
+    audio.tags[_SIGNED_IN_KEY] = [MP4FreeForm(b"1")]
+    audio.save()
+
+
+def signed_in(path: Path) -> bool:
+    from mutagen import MutagenError
+
+    try:
+        return _SIGNED_IN_KEY in (_mp4(path).tags or {})
+    except MutagenError:
+        return False
 
 
 def read_id(path: Path) -> str | None:
@@ -569,6 +591,7 @@ def _fetch(
     root: Path, video_id: str, relative: Path, track: Track, tags: Tags, cmd: list[str],
     *, run: Callable[..., subprocess.CompletedProcess], sleep: Callable[[float], None],
     tag: Callable[[Path, str, Tags], None], search: Search | None = None,
+    mark: Callable[[Path], None] | None = None,
 ) -> tuple[str | None, str | None]:
     """Un titre : téléchargé en transit, doté de ses propriétés puis rangé.
 
@@ -589,6 +612,8 @@ def _fetch(
                 break
     if error is None:
         tag(transit, video_id, tags)
+        if mark is not None:
+            mark(transit)
         destination = root / relative
         destination.parent.mkdir(parents=True, exist_ok=True)
         os.replace(transit, destination)
@@ -613,6 +638,7 @@ def download(
     run: Callable[..., subprocess.CompletedProcess] = subprocess.run,
     sleep: Callable[[float], None] = time.sleep,
     tag: Callable[[Path, str, Tags], None] = write_tags,
+    mark: Callable[[Path], None] | None = None,
 ) -> Report:
     """Télécharge les titres, `workers` à la fois ; s'arrête si YouTube bloque.
 
@@ -644,7 +670,7 @@ def download(
                       ffmpeg=ffmpeg, cookies_browser=cookies_browser, cookies_file=jar)
         try:
             error, used = _fetch(root, video_id, relative, track, wanted[video_id].tags, cmd,
-                                 run=run, sleep=sleep, tag=tag, search=search)
+                                 run=run, sleep=sleep, tag=tag, search=search, mark=mark)
         finally:
             if jar is not None:
                 jar.unlink(missing_ok=True)
