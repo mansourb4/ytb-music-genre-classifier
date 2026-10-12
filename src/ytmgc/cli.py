@@ -665,6 +665,9 @@ def cmd_telecharge(args: argparse.Namespace, config: Config) -> int:
     if failures:
         print(f"Les échecs sont listés dans : {failures}")
         print("Ils seront retentés au prochain lancement.")
+    if not args.cookies_navigateur and any("Premium" in e for _, e in report.failed):
+        print("Titres réservés à Premium : relance avec --cookies-navigateur chrome (ou "
+              "firefox, safari), le navigateur où tu es connecté à YouTube Music.")
     if any("403" in error for _, error in report.failed):
         print("Erreurs 403 : mets yt-dlp à jour (brew upgrade yt-dlp) et vérifie que deno "
               "est installé (brew install deno).")
