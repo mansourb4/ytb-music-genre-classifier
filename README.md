@@ -607,6 +607,7 @@ ytmgc importe    # lit une réponse de Claude.ai
 ytmgc suivi      # ce qui est jugé, ce qui reste, où sont les résultats
 ytmgc purge --execute   # supprime les playlists générées (annulation complète)
 ytmgc telecharge # copie locale en m4a, un dossier par playlist
+ytmgc apple-music # range ces fichiers dans Apple Music (Mac)
 ```
 
 `enrich` annonce son coût et demande confirmation. `--essai` se limite à une
@@ -668,6 +669,31 @@ compte : à garder hors du dépôt (`cookies*.txt` est ignoré par git).
 
 ```bash
 ytmgc telecharge --cookies ~/youtube-cookies.txt
+```
+
+### Apple Music
+
+`ytmgc apple-music` (sur un Mac) range les fichiers téléchargés dans Apple
+Music : un dossier par famille (Électro, Jazz…), une playlist par nom, chaque
+titre dans ses playlists, avec son genre et son regroupement.
+
+Avant le premier lancement, dans **Music → Réglages → Fichiers**, décocher
+« Copier les fichiers dans le dossier Music Media lors de l'ajout à la
+bibliothèque » : Apple Music référence alors les fichiers de
+`~/Music/Playlists` au lieu de les dupliquer. L'outil le vérifie sur un
+premier fichier et s'arrête sinon.
+
+Relancer est sans risque, et c'est ainsi qu'on suit un changement de
+classement : après `ytmgc telecharge` (qui déplace les fichiers), `ytmgc
+apple-music` retrouve les fichiers déplacés, met à jour les genres et les
+playlists. Seules les playlists rangées dans les dossiers des familles sont
+touchées ; rien n'est supprimé de la bibliothèque, et une playlist sortie du
+plan est seulement signalée. La correspondance entre titres YouTube et titres
+d'Apple Music est retenue dans `~/Music/Playlists/.apple-music.json`.
+
+```bash
+ytmgc apple-music --essai   # ce qui serait fait, sans rien toucher
+ytmgc apple-music
 ```
 
 ## Garanties

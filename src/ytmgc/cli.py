@@ -18,6 +18,7 @@ Le pipeline est découpé en étapes reprenables, chacune persistée en base :
     ytmgc suivi      # ce qui est jugé, ce qui reste
     ytmgc purge      # supprime les playlists générées (annulation complète)
     ytmgc telecharge # copie locale : un dossier par playlist, un m4a par titre
+    ytmgc apple-music # range ces fichiers dans Apple Music (dossiers, playlists)
     ytmgc web        # interface locale : connexion, aperçu, application
 
 `apply` est en mode « à blanc » par défaut : il faut `--execute` pour écrire.
@@ -720,6 +721,67 @@ def cmd_telecharge(args: argparse.Namespace, config: Config) -> int:
     return 0
 
 
+def cmd_apple_music(args: argparse.Namespace, config: Config) -> int:
+    """Range les fichiers téléchargés dans Apple Music : dossiers et playlists."""
+    from ytmgc import apple_music, download
+    from ytmgc.preview import build_preview
+
+    root = Path(args.dossier).expanduser().resolve()
+    repository = _repository(config)
+    tracks = {track.video_id: track for track in repository.all_tracks()}
+    _, plans, _ = build_preview(repository, apply_sort_mode(config, args.tri), sort_mode=args.tri)
+    styles = {item.video_id: item.styles for item in repository.classifications()}
+    wanted = download.targets(plans, tracks, styles)
+    print("Lecture des fichiers téléchargés…", flush=True)
+    present = download.existing(root, download.read_id)
+    state = apple_music.load_state(root)
+    payload = apple_music.build_input(root, plans, wanted, present, state, dry_run=args.essai)
+    if not payload["items"]:
+        print(f"Aucun fichier dans {root} : lance d'abord « ytmgc telecharge ».")
+        return 0
+    print(f"{len(payload['items'])} titre(s), {len(payload['playlists'])} playlist(s). "
+          "La première fois, macOS demande l'autorisation de piloter Music : accepte.\n",
+          flush=True)
+
+    result = apple_music.run_script(payload, on_line=lambda line: print(line, flush=True))
+    if result.copied:
+        print(
+            "\nArrêt : Apple Music copie les fichiers ajoutés dans son propre dossier\n"
+            f"  ({result.copied_to}),\n"
+            "ce qui doublerait la place prise. Dans Music → Réglages → Fichiers, décoche\n"
+            "« Copier les fichiers dans le dossier Music Media lors de l'ajout à la\n"
+            "bibliothèque », puis relance. Le fichier de test a été retiré de la\n"
+            "bibliothèque ; sa copie peut être supprimée de ce dossier.",
+            file=sys.stderr,
+        )
+        return 1
+    if not args.essai:
+        state.known.update(result.known)
+        state.families.update(payload["families"])
+        apple_music.save_state(root, state)
+
+    print("\nEssai : rien n'a été modifié. Ce qui serait fait :" if args.essai else "\nTerminé :")
+    print(f"  {result.added} titre(s) ajouté(s) à la bibliothèque")
+    if result.relocated:
+        print(f"  {result.relocated} fichier(s) déplacé(s) retrouvé(s)")
+    if result.retagged:
+        print(f"  {result.retagged} genre(s) mis à jour")
+    if result.created_folders:
+        print(f"  dossiers créés : {', '.join(result.created_folders)}")
+    if result.created_playlists:
+        print(f"  {len(result.created_playlists)} playlist(s) créée(s)")
+    print(f"  {result.track_adds} ajout(s) et {result.track_removals} retrait(s) dans les playlists")
+    if result.missing:
+        print(f"  {len(result.missing)} fichier(s) qu'Apple Music n'a pas pris, par exemple :")
+        for path in result.missing[:5]:
+            print(f"    {path}")
+    if result.stale:
+        print("  Playlists qui ne sont plus dans le plan, laissées telles quelles :")
+        for key in result.stale:
+            print(f"    {key}")
+    return 0
+
+
 def cmd_web(args: argparse.Namespace, config: Config) -> int:
     """Sert l'interface locale."""
     try:
@@ -986,6 +1048,16 @@ def build_parser() -> argparse.ArgumentParser:
     telecharge_cmd.add_argument("--cookies-navigateur", default=None,
                                 help="Utiliser la session YouTube d'un navigateur (safari, chrome…)")
     telecharge_cmd.set_defaults(func=cmd_telecharge)
+
+    apple_cmd = subparsers.add_parser(
+        "apple-music", help="Ranger les fichiers téléchargés dans Apple Music (Mac)")
+    apple_cmd.add_argument("--dossier", default="~/Music/Playlists",
+                           help="Dossier des fichiers (défaut : %(default)s)")
+    apple_cmd.add_argument("--tri", default=DEFAULT_SORT_MODE, choices=[m.key for m in SORT_MODES],
+                           help="Type de tri, comme dans l'aperçu (défaut : %(default)s)")
+    apple_cmd.add_argument("--essai", action="store_true",
+                           help="Montrer ce qui serait fait, sans rien toucher")
+    apple_cmd.set_defaults(func=cmd_apple_music)
 
     web = subparsers.add_parser("web", help="Lancer l'interface locale")
     web.add_argument("--host", default=None, help="Interface d'écoute (défaut : locale uniquement)")

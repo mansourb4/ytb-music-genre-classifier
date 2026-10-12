@@ -37,7 +37,7 @@ ytmgc = "ytmgc.cli:main"
 where = ["src"]
 
 [tool.setuptools.package-data]
-ytmgc = ["taxonomy/*.toml", "web/static/*.html"]
+ytmgc = ["taxonomy/*.toml", "web/static/*.html", "apple_music.js"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
