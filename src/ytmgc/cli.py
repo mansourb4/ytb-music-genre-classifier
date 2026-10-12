@@ -555,38 +555,47 @@ def cmd_purge(args: argparse.Namespace, config: Config) -> int:
 
 
 def cmd_telecharge(args: argparse.Namespace, config: Config) -> int:
-    """Copie locale des playlists : dossiers, déplacements, téléchargements."""
+    """Copie locale des playlists : dossiers, propriétés, téléchargements."""
     from ytmgc import download
     from ytmgc.preview import build_preview
+
+    try:
+        import mutagen  # noqa: F401
+    except ImportError:
+        print("Il manque le module mutagen : lance « pip install mutagen » puis recommence.",
+              file=sys.stderr)
+        return 1
 
     root = Path(args.dossier).expanduser()
     repository = _repository(config)
     tracks = {track.video_id: track for track in repository.all_tracks()}
     _, plans, _ = build_preview(repository, apply_sort_mode(config, args.tri), sort_mode=args.tri)
-    wanted = download.targets(plans, tracks)
+    styles = {item.video_id: item.styles for item in repository.classifications()}
+    wanted = download.targets(plans, tracks, styles)
     if not wanted:
         print("Aucune playlist : rien à télécharger.")
         return 0
-    local = download.organise(wanted, download.existing(root))
+    print("Lecture des fichiers déjà téléchargés…", flush=True)
+    present = download.existing(root, download.read_id)
+    local = download.organise(wanted, present)
+    to_retag = [v for v, path in present.items()
+                if v in wanted and download.needs_tags(root / path, v, wanted[v].tags)]
     todo = list(local.downloads)
     if args.playlist:
-        home = {}
-        for plan in plans:
-            for video_id in plan.video_ids:
-                home.setdefault(video_id, plan.name)
+        home = {v: item.tags.genre for v, item in wanted.items()}
         todo = [(v, path) for v, path in todo if args.playlist.lower() in home[v].lower()]
     if args.limite:
         todo = todo[: args.limite]
 
     print(f"Dossier : {root}")
     print(f"  {len(plans)} playlist(s), {len(wanted)} titre(s)")
-    print(f"  {local.up_to_date} déjà en place, {len(local.moves)} à déplacer, "
-          f"{len(local.downloads)} à télécharger"
+    print(f"  {local.up_to_date} déjà en place, {len(local.moves)} à déplacer ou renommer, "
+          f"{len(to_retag)} aux propriétés à mettre à jour, {len(local.downloads)} à télécharger"
           + (f" (dont {len(todo)} cette fois)" if len(todo) != len(local.downloads) else ""))
 
     if args.essai:
         for move in local.moves:
-            print(f"  déplacer  {move.source}  →  {move.target.parent}")
+            print(f"  déplacer  {move.source}  →  {move.target}")
         for _, path in todo[:20]:
             print(f"  télécharger  {path}")
         if len(todo) > 20:
@@ -594,9 +603,12 @@ def cmd_telecharge(args: argparse.Namespace, config: Config) -> int:
         print("\nEssai : rien n'a été modifié.")
         return 0
 
+    changed = download.retag(root, wanted, present)
+    if changed:
+        print(f"Propriétés mises à jour sur {changed} fichier(s).")
     if local.moves:
         download.apply_moves(root, local.moves)
-        print(f"{len(local.moves)} fichier(s) déplacé(s).")
+        print(f"{len(local.moves)} fichier(s) déplacé(s) ou renommé(s).")
     if not todo:
         print("Tout est déjà téléchargé.")
         return 0
@@ -621,7 +633,7 @@ def cmd_telecharge(args: argparse.Namespace, config: Config) -> int:
         print(f"  [{index}/{total}] {track.label()} — {state}", flush=True)
 
     report = download.download(
-        root, todo, tracks, ytdlp, ffmpeg=ffmpeg,
+        root, todo, tracks, wanted, ytdlp, ffmpeg=ffmpeg,
         cookies_browser=args.cookies_navigateur, pause=args.pause, on_progress=progress,
     )
     print(f"\n{report.downloaded} titre(s) téléchargé(s), {len(report.failed)} échec(s).")

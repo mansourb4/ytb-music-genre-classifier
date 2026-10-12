@@ -625,16 +625,21 @@ deux.
 
 `ytmgc telecharge` range les playlists de l'aperçu dans
 `~/Music/Playlists/Famille/Nom/`, un fichier m4a par titre, nommé
-`Artiste - Titre [videoId].m4a`. Il passe par yt-dlp, le moteur de Stacher
-(`brew install yt-dlp ffmpeg`, ou `--yt-dlp` vers celui de Stacher). L'artiste,
-le titre et l'album écrits dans le fichier viennent de la base, la pochette est
-recadrée au carré.
+`Artiste - Titre.m4a`. Il passe par yt-dlp, le moteur de Stacher
+(`brew install yt-dlp ffmpeg`, ou `--yt-dlp` vers celui de Stacher), et par
+mutagen pour les propriétés.
+
+Les propriétés visibles dans Apple Music viennent de la base : titre, artiste,
+album, **genre** (la playlist, « Électro · Deep techno ») et **regroupement**
+(le style précis retenu au classement). La pochette est recadrée au carré.
+L'identifiant YouTube est rangé dans une propriété que l'outil seul lit : c'est
+ainsi qu'il reconnaît ses fichiers, même renommés.
 
 C'est reprenable et incrémental : un titre déjà là n'est pas retéléchargé, un
-titre qui a changé de playlist est déplacé, un titre sorti de toutes les
-playlists part dans `_Hors playlists` (rien n'est supprimé). Les échecs sont
-listés dans `_échecs.txt` ; après cinq échecs d'affilée, l'outil s'arrête,
-YouTube bloquant sans doute pour un temps.
+titre qui a changé de playlist est déplacé et son genre mis à jour, un titre
+sorti de toutes les playlists part dans `_Hors playlists` (rien n'est
+supprimé). Les échecs sont listés dans `_échecs.txt` ; après cinq échecs
+d'affilée, l'outil s'arrête, YouTube bloquant sans doute pour un temps.
 
 ```bash
 ytmgc telecharge --essai                 # ce qui serait fait, sans rien toucher

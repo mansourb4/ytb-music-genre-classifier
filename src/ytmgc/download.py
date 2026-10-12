@@ -1,16 +1,18 @@
 """Copie locale des playlists : un dossier par playlist, un fichier m4a par titre.
 
-    ~/Music/Playlists/Électro/Deep techno/Artiste - Titre [videoId].m4a
+    ~/Music/Playlists/Électro/Deep techno/Artiste - Titre.m4a
 
-« Famille · Nom » devient « Famille/Nom ». L'identifiant YouTube, entre
-crochets à la fin du nom de fichier, est ce qui relie un fichier à son titre :
-quand un titre change de playlist, son fichier est déplacé au lieu d'être
-téléchargé à nouveau, et un titre qui ne figure plus dans aucune playlist part
-dans « _Hors playlists » plutôt qu'à la corbeille.
+« Famille · Nom » devient « Famille/Nom ». Chaque fichier porte dans ses
+propriétés l'identifiant YouTube de son titre : c'est ce qui le relie à la
+bibliothèque, quel que soit son nom. Quand un titre change de playlist, son
+fichier est déplacé au lieu d'être téléchargé à nouveau ; un titre qui ne
+figure plus dans aucune playlist part dans « _Hors playlists » plutôt qu'à la
+corbeille.
 
 Le téléchargement passe par yt-dlp, le moteur dont Stacher n'est qu'une
-interface. Les infos écrites dans le fichier (artiste, titre, album) viennent
-de la base, déjà propres, et non du titre de la vidéo YouTube.
+interface. Les propriétés visibles dans Apple Music (titre, artiste, album,
+genre, regroupement) sont écrites par l'outil depuis la base, déjà propre, et
+réécrites quand le classement change.
 """
 
 from __future__ import annotations
@@ -30,13 +32,17 @@ from ytmgc.models import PlaylistPlan, Track
 DEFAULT_ROOT = Path.home() / "Music" / "Playlists"
 #: Titres qui ne sont plus dans aucune playlist : gardés, jamais supprimés.
 OUT_OF_PLAYLISTS = "_Hors playlists"
+#: Transit : un fichier y arrive nommé par son identifiant, y reçoit ses
+#: propriétés, puis rejoint sa playlist. Interrompu, il y est retrouvé.
+STAGING = ".en-cours"
 FAILURES_FILE = "_échecs.txt"
 EXTENSION = ".m4a"
 #: Au-delà, YouTube bloque sans doute (« Sign in to confirm you're not a bot ») :
 #: insister ne ferait qu'aggraver le blocage.
 MAX_CONSECUTIVE_FAILURES = 5
 
-_ID_IN_NAME = re.compile(r"\[([A-Za-z0-9_-]{11})\]$")
+#: Ancien nommage, « Artiste - Titre [videoId].m4a » : reconnu pour être renommé.
+_ID_IN_NAME = re.compile(r" ?\[([A-Za-z0-9_-]{11})\]$")
 _UNSAFE = re.compile(r'[/\\:*?"<>|\x00-\x1f]')
 _MAX_STEM = 150
 
@@ -48,8 +54,12 @@ _SQUARE_THUMBNAIL = (
 )
 
 
+def _nfc(text: str) -> str:
+    return unicodedata.normalize("NFC", text)
+
+
 def _clean(text: str) -> str:
-    text = _UNSAFE.sub("-", unicodedata.normalize("NFC", text))
+    text = _UNSAFE.sub("-", _nfc(text))
     return re.sub(r"\s+", " ", text).strip().lstrip(".").strip()
 
 
@@ -59,44 +69,92 @@ def folder_for(playlist_name: str) -> Path:
     return Path(*[part for part in parts if part] or ["Sans nom"])
 
 
-def file_name(track: Track) -> str:
+def stem_for(track: Track) -> str:
     stem = _clean(f"{track.artist} - {track.title}" if track.artist else track.title)
-    if len(stem) > _MAX_STEM:
-        stem = stem[:_MAX_STEM].rstrip()
-    return f"{stem or 'Sans titre'} [{track.video_id}]{EXTENSION}"
+    return stem[:_MAX_STEM].rstrip() or "Sans titre"
 
 
-def targets(plans: Iterable[PlaylistPlan], tracks: Mapping[str, Track]) -> dict[str, Path]:
-    """Chemin relatif attendu pour chaque titre planifié.
+def _unique(folder: Path, stem: str, taken: set[str]) -> Path:
+    """Nom libre dans le dossier, « (2) » à la clé en cas d'homonyme.
+
+    La comparaison ignore la casse et les accents décomposés, comme le
+    système de fichiers du Mac.
+    """
+    candidate, n = stem, 1
+    while (str(folder / candidate)).casefold() in taken:
+        n += 1
+        candidate = f"{stem} ({n})"
+    taken.add(str(folder / candidate).casefold())
+    return folder / f"{candidate}{EXTENSION}"
+
+
+@dataclass(frozen=True, slots=True)
+class Tags:
+    """Propriétés écrites dans le fichier, telles qu'Apple Music les affiche."""
+
+    title: str
+    artist: str
+    album: str | None
+    #: Genre : la playlist, « Électro · Deep techno ».
+    genre: str
+    #: Regroupement : le style précis du titre, « Minimal Techno ».
+    grouping: str | None = None
+
+
+@dataclass(frozen=True, slots=True)
+class Wanted:
+    path: Path
+    tags: Tags
+
+
+def targets(
+    plans: Iterable[PlaylistPlan],
+    tracks: Mapping[str, Track],
+    styles: Mapping[str, Iterable[str]] | None = None,
+) -> dict[str, Wanted]:
+    """Chemin et propriétés attendus pour chaque titre planifié.
 
     Un titre présent dans plusieurs playlists (selon le type de tri) n'a
     qu'un fichier : celui de la première playlist qui le contient.
     """
-    wanted: dict[str, Path] = {}
+    styles = styles or {}
+    wanted: dict[str, Wanted] = {}
+    taken: set[str] = set()
     for plan in plans:
         folder = folder_for(plan.name)
         for video_id in plan.video_ids:
             track = tracks.get(video_id)
-            if track is not None and video_id not in wanted:
-                wanted[video_id] = folder / file_name(track)
+            if track is None or video_id in wanted:
+                continue
+            grouping = ", ".join(list(styles.get(video_id, ()))[:2]) or None
+            wanted[video_id] = Wanted(
+                _unique(folder, stem_for(track), taken),
+                Tags(track.title, ", ".join(track.artists), track.album, plan.name, grouping),
+            )
     return wanted
 
 
-def existing(root: Path) -> dict[str, Path]:
+def existing(root: Path, read_id: Callable[[Path], str | None]) -> dict[str, Path]:
     """Fichiers déjà présents, par identifiant (chemins relatifs à `root`).
 
-    macOS rend les noms décomposés (« E » + accent) : ils sont recomposés pour
-    se comparer aux chemins attendus, sans quoi chaque fichier accentué
-    paraîtrait à déplacer.
+    L'identifiant se lit dans les propriétés du fichier ; à défaut, dans son
+    nom (ancien nommage). Un fichier sans l'un ni l'autre n'est pas à l'outil :
+    il est laissé tranquille. macOS rend les noms
+    décomposés (« E » + accent) : ils sont recomposés pour se comparer aux
+    chemins attendus.
     """
     found: dict[str, Path] = {}
     if not root.is_dir():
         return found
     for path in sorted(root.rglob(f"*{EXTENSION}")):
-        match = _ID_IN_NAME.search(path.stem)
-        if match:
-            relative = unicodedata.normalize("NFC", str(path.relative_to(root)))
-            found.setdefault(match.group(1), Path(relative))
+        relative = Path(_nfc(str(path.relative_to(root))))
+        video_id = read_id(path)
+        if video_id is None:
+            match = _ID_IN_NAME.search(path.stem)
+            if match:
+                video_id = match.group(1)
+        if video_id:
+            found.setdefault(video_id, relative)
     return found
 
 
@@ -114,32 +172,49 @@ class LocalPlan:
     up_to_date: int
 
 
-def organise(wanted: Mapping[str, Path], present: Mapping[str, Path]) -> LocalPlan:
+def organise(wanted: Mapping[str, Wanted], present: Mapping[str, Path]) -> LocalPlan:
     """Ce qu'il faut déplacer et télécharger pour coller aux playlists."""
     moves: list[Move] = []
     downloads: list[tuple[str, Path]] = []
     up_to_date = 0
-    for video_id, target in wanted.items():
+    for video_id, item in wanted.items():
         source = present.get(video_id)
         if source is None:
-            downloads.append((video_id, target))
-        elif source != target:
-            moves.append(Move(video_id, source, target))
+            downloads.append((video_id, item.path))
+        elif source != item.path:
+            moves.append(Move(video_id, source, item.path))
         else:
             up_to_date += 1
+    aside = Path(OUT_OF_PLAYLISTS)
+    taken = {
+        p.with_suffix("").as_posix().casefold()
+        for v, p in present.items() if v not in wanted and p.parts[0] == OUT_OF_PLAYLISTS
+    }
     for video_id, source in present.items():
-        if video_id not in wanted and source.parts[0] != OUT_OF_PLAYLISTS:
-            moves.append(Move(video_id, source, Path(OUT_OF_PLAYLISTS) / source.name))
+        if video_id in wanted or source.parts[0] == OUT_OF_PLAYLISTS:
+            continue
+        stem = _ID_IN_NAME.sub("", source.stem) if source.parts[0] != STAGING else video_id
+        moves.append(Move(video_id, source, _unique(aside, stem, taken)))
     return LocalPlan(tuple(moves), tuple(downloads), up_to_date)
 
 
 def apply_moves(root: Path, moves: Iterable[Move]) -> None:
+    """Déplace en deux temps, par le dossier de transit : deux titres qui
+    échangent leur nom ne s'écrasent pas."""
+    moves = list(moves)
+    staging = root / STAGING
+    staging.mkdir(parents=True, exist_ok=True)
     emptied: set[Path] = set()
+    for move in moves:
+        transit = staging / f"{move.video_id}{EXTENSION}"
+        if root / move.source != transit:
+            os.replace(root / move.source, transit)
+            emptied.add((root / move.source).parent)
     for move in moves:
         target = root / move.target
         target.parent.mkdir(parents=True, exist_ok=True)
-        os.replace(root / move.source, target)
-        emptied.add((root / move.source).parent)
+        os.replace(staging / f"{move.video_id}{EXTENSION}", target)
+    emptied.add(staging)
     for folder in sorted(emptied, key=lambda p: len(p.parts), reverse=True):
         _remove_empty(folder, root)
 
@@ -154,6 +229,87 @@ def _remove_empty(folder: Path, root: Path) -> None:
             p.unlink()
         folder.rmdir()
         folder = folder.parent
+
+
+# ------------------------------------------------------------- propriétés
+
+#: Propriété maison : Apple Music l'ignore, l'outil s'en sert pour s'y retrouver.
+_ID_KEY = "----:com.apple.iTunes:YouTube ID"
+_TAG_KEYS = {"title": "\xa9nam", "artist": "\xa9ART", "album": "\xa9alb",
+             "genre": "\xa9gen", "grouping": "\xa9grp"}
+
+
+def _mp4(path: Path):
+    try:
+        from mutagen.mp4 import MP4
+    except ImportError as exc:  # pragma: no cover - dépend de l'installation
+        raise RuntimeError(
+            "Le module mutagen manque : lance « pip install mutagen » puis recommence."
+        ) from exc
+    return MP4(path)
+
+
+def read_id(path: Path) -> str | None:
+    from mutagen import MutagenError
+
+    try:
+        values = (_mp4(path).tags or {}).get(_ID_KEY)
+    except MutagenError:  # fichier abîmé (téléchargement coupé) : ignoré
+        return None
+    return bytes(values[0]).decode("utf-8") if values else None
+
+
+def needs_tags(path: Path, video_id: str, tags: Tags) -> bool:
+    current = _mp4(path).tags or {}
+    for name, key in _TAG_KEYS.items():
+        wanted = getattr(tags, name)
+        if (current.get(key) or [None])[0] != wanted:
+            return True
+    return read_id(path) != video_id
+
+
+def write_tags(path: Path, video_id: str, tags: Tags | None) -> None:
+    """Écrit les propriétés, ou seulement l'identifiant si `tags` vaut None."""
+    from mutagen.mp4 import MP4FreeForm
+
+    audio = _mp4(path)
+    if audio.tags is None:
+        audio.add_tags()
+    for name, key in _TAG_KEYS.items() if tags else ():
+        value = getattr(tags, name)
+        if value:
+            audio.tags[key] = [value]
+        else:
+            audio.tags.pop(key, None)
+    audio.tags[_ID_KEY] = [MP4FreeForm(video_id.encode("utf-8"))]
+    audio.save()
+
+
+def retag(
+    root: Path,
+    wanted: Mapping[str, Wanted],
+    present: Mapping[str, Path],
+    *,
+    needs: Callable[[Path, str, Tags], bool] = needs_tags,
+    tag: Callable[[Path, str, Tags | None], None] = write_tags,
+    has_id: Callable[[Path], str | None] = read_id,
+) -> int:
+    """Met à jour les propriétés des fichiers présents, là où ils sont.
+
+    À faire avant les déplacements : un fichier en transit porte ainsi déjà
+    son identifiant, et reste reconnu si l'outil est interrompu.
+    """
+    changed = 0
+    for video_id, relative in present.items():
+        path = root / relative
+        item = wanted.get(video_id)
+        if item is not None:
+            if needs(path, video_id, item.tags):
+                tag(path, video_id, item.tags)
+                changed += 1
+        elif has_id(path) is None:
+            tag(path, video_id, None)
+    return changed
 
 
 # ------------------------------------------------------------- yt-dlp
@@ -190,16 +346,6 @@ def find_tool(name: str, explicit: str | None = None) -> Path | None:
     return None
 
 
-def _literal(field: str, value: str) -> list[str]:
-    """Impose une valeur à une métadonnée, via --parse-metadata.
-
-    Le préfixe `%(id)s|` empêche yt-dlp de prendre un mot seul (« Moderat »)
-    pour un nom de champ ; `%` et `:` doivent être échappés.
-    """
-    escaped = value.replace("%", "%%").replace(":", "\\:")
-    return ["--parse-metadata", f"%(id)s|{escaped}:^[^|]*\\|(?P<meta_{field}>.+)$"]
-
-
 def command(
     ytdlp: Path, track: Track, destination: Path, *,
     ffmpeg: Path | None = None, cookies_browser: str | None = None,
@@ -214,11 +360,6 @@ def command(
         "--postprocessor-args", _SQUARE_THUMBNAIL,
         "--output", str(destination.parent / (stem.replace("%", "%%") + ".%(ext)s")),
     ]
-    cmd += _literal("title", track.title)
-    if track.artists:
-        cmd += _literal("artist", ", ".join(track.artists))
-    if track.album:
-        cmd += _literal("album", track.album)
     if ffmpeg is not None:
         cmd += ["--ffmpeg-location", str(ffmpeg)]
     if cookies_browser:
@@ -240,6 +381,7 @@ def download(
     root: Path,
     downloads: Iterable[tuple[str, Path]],
     tracks: Mapping[str, Track],
+    wanted: Mapping[str, Wanted],
     ytdlp: Path,
     *,
     ffmpeg: Path | None = None,
@@ -248,26 +390,39 @@ def download(
     on_progress: Callable[[int, int, Track, str | None], None] | None = None,
     run: Callable[..., subprocess.CompletedProcess] = subprocess.run,
     sleep: Callable[[float], None] = time.sleep,
+    tag: Callable[[Path, str, Tags], None] = write_tags,
 ) -> Report:
-    """Télécharge un titre après l'autre ; s'arrête si YouTube bloque."""
+    """Télécharge un titre après l'autre ; s'arrête si YouTube bloque.
+
+    Le fichier arrive dans le dossier de transit, nommé par son identifiant,
+    y reçoit ses propriétés, puis seulement rejoint sa playlist : un fichier
+    rangé est toujours un fichier complet et reconnaissable.
+    """
     todo = list(downloads)
     report = Report()
     consecutive = 0
+    staging = root / STAGING
     for index, (video_id, relative) in enumerate(todo, 1):
         track = tracks[video_id]
-        destination = root / relative
-        destination.parent.mkdir(parents=True, exist_ok=True)
+        transit = staging / f"{video_id}{EXTENSION}"
+        staging.mkdir(parents=True, exist_ok=True)
+        # Reste d'une tentative coupée : yt-dlp le croirait déjà téléchargé.
+        transit.unlink(missing_ok=True)
         result = run(
-            command(ytdlp, track, destination, ffmpeg=ffmpeg, cookies_browser=cookies_browser),
+            command(ytdlp, track, transit, ffmpeg=ffmpeg, cookies_browser=cookies_browser),
             capture_output=True, text=True,
         )
         error = None
-        if result.returncode != 0 or not destination.is_file():
+        if result.returncode != 0 or not transit.is_file():
             lines = (result.stderr or result.stdout or "").strip().splitlines()
             error = lines[-1] if lines else f"code de sortie {result.returncode}"
             report.failed.append((track.label(), error))
             consecutive += 1
         else:
+            tag(transit, video_id, wanted[video_id].tags)
+            destination = root / relative
+            destination.parent.mkdir(parents=True, exist_ok=True)
+            os.replace(transit, destination)
             report.downloaded += 1
             consecutive = 0
         if on_progress:
@@ -277,6 +432,7 @@ def download(
             break
         if index < len(todo) and pause > 0:
             sleep(pause)
+    _remove_empty(staging, root)
     return report
 
 

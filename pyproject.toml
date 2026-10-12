@@ -10,6 +10,8 @@ requires-python = ">=3.11"
 dependencies = [
     "ytmusicapi>=1.7",
     "requests>=2.31",
+    # Propriétés des fichiers téléchargés (genre, identifiant YouTube).
+    "mutagen>=1.47",
 ]
 
 [project.optional-dependencies]
