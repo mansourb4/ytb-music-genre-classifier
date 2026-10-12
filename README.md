@@ -651,9 +651,21 @@ ytmgc telecharge --remplacer-sous 100    # refait les fichiers au son trop pauvr
 ```
 
 Le son retenu est le meilleur AAC proposé par YouTube : 128 kbps, ou 256 kbps
-pour un compte Premium (avec `--cookies-navigateur`). Faute de mieux, le flux
+pour un compte Premium (avec `--cookies` ou `--cookies-navigateur`). Faute de mieux, le flux
 Opus est réencodé en AAC à 192 kbps ; l'AAC au rabais (48 kbps) ne sert qu'en
 dernier recours. Le débit de chaque fichier s'affiche au téléchargement.
+
+Pour un compte Premium, la méthode la plus stable est un fichier de cookies
+exporté d'une fenêtre de navigation privée (extension « Get cookies.txt
+LOCALLY », autorisée en navigation privée) : s'y connecter à YouTube Music,
+ouvrir `https://www.youtube.com/robots.txt` dans le même onglet, exporter,
+puis fermer la fenêtre sans se déconnecter. YouTube ne fait alors plus tourner
+ces cookies, qui restent valables longtemps. Le fichier est une session de
+compte : à garder hors du dépôt (`cookies*.txt` est ignoré par git).
+
+```bash
+ytmgc telecharge --cookies ~/youtube-cookies.txt
+```
 
 ## Garanties
 

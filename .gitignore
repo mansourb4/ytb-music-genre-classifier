@@ -28,3 +28,7 @@ browser.json
 
 # Fichiers système macOS
 .DS_Store
+
+# Cookies YouTube exportés pour yt-dlp : une session de compte, à ne jamais publier.
+cookies*.txt
+*cookies.txt

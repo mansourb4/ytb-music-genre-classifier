@@ -21,6 +21,7 @@ import os
 import re
 import shutil
 import subprocess
+import tempfile
 import threading
 import time
 import unicodedata
@@ -438,6 +439,7 @@ def find_tool(name: str, explicit: str | None = None) -> Path | None:
 def command(
     ytdlp: Path, track: Track, destination: Path, *,
     ffmpeg: Path | None = None, cookies_browser: str | None = None,
+    cookies_file: Path | None = None,
 ) -> list[str]:
     stem = destination.name[: -len(EXTENSION)]
     cmd = [
@@ -453,6 +455,8 @@ def command(
         cmd += ["--ffmpeg-location", str(ffmpeg)]
     if cookies_browser:
         cmd += ["--cookies-from-browser", cookies_browser]
+    if cookies_file is not None:
+        cmd += ["--cookies", str(cookies_file)]
     cmd.append(f"https://music.youtube.com/watch?v={track.video_id}")
     return cmd
 
@@ -504,6 +508,7 @@ def download(
     *,
     ffmpeg: Path | None = None,
     cookies_browser: str | None = None,
+    cookies_file: Path | None = None,
     pause: float = 2.0,
     workers: int = 1,
     on_progress: Callable[[int, int, Track, str | None], None] | None = None,
@@ -527,10 +532,21 @@ def download(
         if stop.is_set():
             return
         track = tracks[video_id]
+        jar = None
+        if cookies_file is not None:
+            # yt-dlp réécrit le fichier de cookies en partant : chaque
+            # téléchargement a sa copie, pour que les fils ne se marchent
+            # pas dessus. Les copies restent hors du dossier de musique.
+            jar = Path(private) / f"{video_id}.txt"
+            shutil.copyfile(cookies_file, jar)
         cmd = command(ytdlp, track, root / STAGING / f"{video_id}{EXTENSION}",
-                      ffmpeg=ffmpeg, cookies_browser=cookies_browser)
-        error = _fetch(root, video_id, relative, track, wanted[video_id].tags, cmd,
-                       run=run, sleep=sleep, tag=tag)
+                      ffmpeg=ffmpeg, cookies_browser=cookies_browser, cookies_file=jar)
+        try:
+            error = _fetch(root, video_id, relative, track, wanted[video_id].tags, cmd,
+                           run=run, sleep=sleep, tag=tag)
+        finally:
+            if jar is not None:
+                jar.unlink(missing_ok=True)
         with lock:
             state["done"] += 1
             if error is None:
@@ -547,6 +563,16 @@ def download(
         if pause > 0 and not stop.is_set():
             sleep(pause)
 
+    private = tempfile.mkdtemp(prefix="ytmgc-cookies-")
+    try:
+        _run_all(one, todo, workers, stop)
+    finally:
+        shutil.rmtree(private, ignore_errors=True)
+    _remove_empty(root / STAGING, root)
+    return report
+
+
+def _run_all(one, todo, workers: int, stop: threading.Event) -> None:
     with ThreadPoolExecutor(max_workers=max(1, workers)) as pool:
         futures = [pool.submit(one, video_id, relative) for video_id, relative in todo]
         try:
@@ -558,8 +584,6 @@ def download(
             for future in futures:
                 future.cancel()
             raise
-    _remove_empty(root / STAGING, root)
-    return report
 
 
 def write_failures(root: Path, failed: list[tuple[str, str]]) -> Path | None:

@@ -631,6 +631,10 @@ def cmd_telecharge(args: argparse.Namespace, config: Config) -> int:
         print("Tout est déjà téléchargé.")
         return 0
 
+    cookies_file = Path(args.cookies).expanduser() if args.cookies else None
+    if cookies_file is not None and not cookies_file.is_file():
+        print(f"Fichier de cookies introuvable : {cookies_file}", file=sys.stderr)
+        return 1
     ytdlp = download.find_tool("yt-dlp", args.yt_dlp)
     if ytdlp is None:
         print(
@@ -657,7 +661,8 @@ def cmd_telecharge(args: argparse.Namespace, config: Config) -> int:
 
     report = download.download(
         root, todo, tracks, wanted, ytdlp, ffmpeg=ffmpeg,
-        cookies_browser=args.cookies_navigateur, pause=args.pause, workers=args.parallele,
+        cookies_browser=args.cookies_navigateur, cookies_file=cookies_file,
+        pause=args.pause, workers=args.parallele,
         on_progress=progress,
     )
     print(f"\n{report.downloaded} titre(s) téléchargé(s), {len(report.failed)} échec(s).")
@@ -665,9 +670,10 @@ def cmd_telecharge(args: argparse.Namespace, config: Config) -> int:
     if failures:
         print(f"Les échecs sont listés dans : {failures}")
         print("Ils seront retentés au prochain lancement.")
-    if not args.cookies_navigateur and any("Premium" in e for _, e in report.failed):
-        print("Titres réservés à Premium : relance avec --cookies-navigateur chrome (ou "
-              "firefox, safari), le navigateur où tu es connecté à YouTube Music.")
+    if not (args.cookies_navigateur or args.cookies) and any(
+            "Premium" in e for _, e in report.failed):
+        print("Titres réservés à Premium : relance avec --cookies FICHIER (cookies exportés "
+              "d'une fenêtre privée) ou --cookies-navigateur chrome.")
     if any("403" in error for _, error in report.failed):
         print("Erreurs 403 : mets yt-dlp à jour (brew upgrade yt-dlp) et vérifie que deno "
               "est installé (brew install deno).")
@@ -935,6 +941,9 @@ def build_parser() -> argparse.ArgumentParser:
                                 help="Chemin de yt-dlp (sinon : cherché automatiquement)")
     telecharge_cmd.add_argument("--ffmpeg", default=None,
                                 help="Chemin de ffmpeg (sinon : cherché automatiquement)")
+    telecharge_cmd.add_argument("--cookies", default=None, metavar="FICHIER",
+                                help="Fichier cookies.txt exporté d'une fenêtre de navigation "
+                                     "privée connectée à YouTube Music")
     telecharge_cmd.add_argument("--cookies-navigateur", default=None,
                                 help="Utiliser la session YouTube d'un navigateur (safari, chrome…)")
     telecharge_cmd.set_defaults(func=cmd_telecharge)

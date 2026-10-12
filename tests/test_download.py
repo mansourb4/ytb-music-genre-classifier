@@ -314,3 +314,30 @@ def test_bitrate_is_read(tmp_path):
     assert isinstance(download.kbps(_file(tmp_path, "x.m4a")), int)
     (tmp_path / "abîmé.m4a").write_bytes(b"pas du son")
     assert download.kbps(tmp_path / "abîmé.m4a") is None
+
+
+def test_each_download_gets_its_own_cookie_copy(tmp_path):
+    original = tmp_path / "cookies.txt"
+    original.write_text("# Netscape HTTP Cookie File\n")
+    ids = [f"{i:011d}" for i in range(6)]
+    tracks = {v: _track(v, title=v) for v in ids}
+    wanted = {v: download.Wanted(Path("Soul", f"{v}.m4a"), _tags()) for v in ids}
+    seen = []
+    fake = _fake_run(set())
+
+    def run(cmd, **kwargs):
+        jar = Path(cmd[cmd.index("--cookies") + 1])
+        assert jar.read_text() == original.read_text()
+        jar.write_text("réécrit par yt-dlp")
+        seen.append(jar)
+        return fake(cmd, **kwargs)
+
+    root = tmp_path / "Music"
+    report = download.download(root, [(v, wanted[v].path) for v in ids], tracks, wanted,
+                               Path("yt-dlp"), cookies_file=original, workers=3, run=run,
+                               sleep=lambda _: None)
+    assert report.downloaded == 6
+    assert len(set(seen)) == 6
+    assert not any(jar.exists() for jar in seen)
+    assert not any(root in jar.parents for jar in seen)
+    assert original.read_text() == "# Netscape HTTP Cookie File\n"
