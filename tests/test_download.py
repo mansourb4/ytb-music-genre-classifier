@@ -193,8 +193,10 @@ def test_download_stops_when_youtube_blocks(tmp_path):
     ids = [f"{i:011d}" for i in range(10)]
     tracks = {v: _track(v) for v in ids}
     wanted = {v: download.Wanted(Path("Soul", f"{v}.m4a"), _tags()) for v in ids}
+    blocked = "ERROR: [youtube] x: Sign in to confirm you're not a bot"
     report = download.download(tmp_path, [(v, wanted[v].path) for v in ids], tracks, wanted,
-                               Path("yt-dlp"), run=_fake_run(set(ids)), sleep=lambda _: None)
+                               Path("yt-dlp"), run=_fake_run(set(ids), blocked),
+                               sleep=lambda _: None)
     assert report.stopped
     assert len(report.failed) == download.MAX_CONSECUTIVE_FAILURES
 
@@ -341,3 +343,17 @@ def test_each_download_gets_its_own_cookie_copy(tmp_path):
     assert not any(jar.exists() for jar in seen)
     assert not any(root in jar.parents for jar in seen)
     assert original.read_text() == "# Netscape HTTP Cookie File\n"
+
+
+def test_unavailable_titles_do_not_stop_the_run(tmp_path):
+    ids = [f"{i:011d}" for i in range(10)]
+    tracks = {v: _track(v, title=v) for v in ids}
+    wanted = {v: download.Wanted(Path("Soul", f"{v}.m4a"), _tags()) for v in ids}
+    report = download.download(
+        tmp_path, [(v, wanted[v].path) for v in ids], tracks, wanted, Path("yt-dlp"),
+        run=_fake_run(set(ids[:8]), "ERROR: [youtube] x: Video unavailable. This video is "
+                                     "not available"),
+        sleep=lambda _: None,
+    )
+    assert not report.stopped
+    assert report.downloaded == 2 and len(report.failed) == 8

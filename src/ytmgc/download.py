@@ -48,6 +48,11 @@ MAX_CONSECUTIVE_FAILURES = 5
 #: répond parfois 403 à une demande qu'il accepte quelques secondes après.
 RETRY_DELAYS = (10.0, 30.0)
 _TRANSIENT = re.compile(r"HTTP Error (403|429|5\d\d)|timed out|Connection|Errno", re.I)
+#: Erreurs propres à un titre (retiré, réservé, bloqué dans le pays) : elles
+#: ne disent rien d'un blocage, et n'entrent pas dans le compte des échecs
+#: d'affilée.
+_TRACK_ONLY = re.compile(r"Video unavailable|not available|Premium members|Private video|"
+                         r"removed|copyright|country", re.I)
 
 #: Ancien nommage, « Artiste - Titre [videoId].m4a » : reconnu pour être renommé.
 _ID_IN_NAME = re.compile(r" ?\[([A-Za-z0-9_-]{11})\]$")
@@ -554,7 +559,8 @@ def download(
                 state["consecutive"] = 0
             else:
                 report.failed.append((track.label(), error))
-                state["consecutive"] += 1
+                if not _TRACK_ONLY.search(error):
+                    state["consecutive"] += 1
                 if state["consecutive"] >= MAX_CONSECUTIVE_FAILURES:
                     report.stopped = True
                     stop.set()
