@@ -40,6 +40,10 @@ EXTENSION = ".m4a"
 #: Au-delà, YouTube bloque sans doute (« Sign in to confirm you're not a bot ») :
 #: insister ne ferait qu'aggraver le blocage.
 MAX_CONSECUTIVE_FAILURES = 5
+#: Attentes avant de retenter un titre refusé par erreur passagère : YouTube
+#: répond parfois 403 à une demande qu'il accepte quelques secondes après.
+RETRY_DELAYS = (10.0, 30.0)
+_TRANSIENT = re.compile(r"HTTP Error (403|429|5\d\d)|timed out|Connection|Errno", re.I)
 
 #: Ancien nommage, « Artiste - Titre [videoId].m4a » : reconnu pour être renommé.
 _ID_IN_NAME = re.compile(r" ?\[([A-Za-z0-9_-]{11})\]$")
@@ -406,16 +410,19 @@ def download(
         track = tracks[video_id]
         transit = staging / f"{video_id}{EXTENSION}"
         staging.mkdir(parents=True, exist_ok=True)
-        # Reste d'une tentative coupée : yt-dlp le croirait déjà téléchargé.
-        transit.unlink(missing_ok=True)
-        result = run(
-            command(ytdlp, track, transit, ffmpeg=ffmpeg, cookies_browser=cookies_browser),
-            capture_output=True, text=True,
-        )
-        error = None
-        if result.returncode != 0 or not transit.is_file():
-            lines = (result.stderr or result.stdout or "").strip().splitlines()
-            error = lines[-1] if lines else f"code de sortie {result.returncode}"
+        cmd = command(ytdlp, track, transit, ffmpeg=ffmpeg, cookies_browser=cookies_browser)
+        for delay in (*RETRY_DELAYS, None):
+            # Reste d'une tentative coupée : yt-dlp le croirait déjà téléchargé.
+            transit.unlink(missing_ok=True)
+            result = run(cmd, capture_output=True, text=True)
+            error = None
+            if result.returncode != 0 or not transit.is_file():
+                lines = (result.stderr or result.stdout or "").strip().splitlines()
+                error = lines[-1] if lines else f"code de sortie {result.returncode}"
+            if error is None or delay is None or not _TRANSIENT.search(error):
+                break
+            sleep(delay)
+        if error is not None:
             report.failed.append((track.label(), error))
             consecutive += 1
         else:

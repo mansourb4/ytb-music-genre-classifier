@@ -156,11 +156,14 @@ def test_decomposed_accents_are_not_a_move(tmp_path):
     assert download.organise(wanted, present).up_to_date == 1
 
 
-def _fake_run(fail: set[str]):
+def _fake_run(fail: set[str], error: str = "ERROR: Video unavailable", flaky: int = 0):
+    calls = {"n": 0}
+
     def run(cmd, **_):
         video_id = cmd[-1].rsplit("=", 1)[1]
-        if video_id in fail:
-            return subprocess.CompletedProcess(cmd, 1, "", "ERROR: Video unavailable")
+        calls["n"] += 1
+        if video_id in fail or calls["n"] <= flaky:
+            return subprocess.CompletedProcess(cmd, 1, "", error)
         output = cmd[cmd.index("--output") + 1].replace("%(ext)s", "m4a").replace("%%", "%")
         Path(output).write_bytes(SILENCE)
         return subprocess.CompletedProcess(cmd, 0, "", "")
@@ -190,3 +193,28 @@ def test_download_stops_when_youtube_blocks(tmp_path):
                                Path("yt-dlp"), run=_fake_run(set(ids)), sleep=lambda _: None)
     assert report.stopped
     assert len(report.failed) == download.MAX_CONSECUTIVE_FAILURES
+
+
+def test_a_passing_403_is_retried(tmp_path):
+    tracks = {"aaaaaaaaaaa": _track("aaaaaaaaaaa")}
+    wanted = {"aaaaaaaaaaa": download.Wanted(Path("Soul", "a.m4a"), _tags())}
+    waits = []
+    report = download.download(
+        tmp_path, [("aaaaaaaaaaa", wanted["aaaaaaaaaaa"].path)], tracks, wanted, Path("yt-dlp"),
+        run=_fake_run(set(), "ERROR: unable to download video data: HTTP Error 403: Forbidden",
+                      flaky=2),
+        sleep=waits.append,
+    )
+    assert report.downloaded == 1 and not report.failed
+    assert waits == list(download.RETRY_DELAYS)
+
+
+def test_a_lasting_error_is_not_retried(tmp_path):
+    tracks = {"aaaaaaaaaaa": _track("aaaaaaaaaaa")}
+    wanted = {"aaaaaaaaaaa": download.Wanted(Path("Soul", "a.m4a"), _tags())}
+    waits = []
+    report = download.download(
+        tmp_path, [("aaaaaaaaaaa", wanted["aaaaaaaaaaa"].path)], tracks, wanted, Path("yt-dlp"),
+        run=_fake_run({"aaaaaaaaaaa"}), sleep=waits.append,
+    )
+    assert len(report.failed) == 1 and waits == []

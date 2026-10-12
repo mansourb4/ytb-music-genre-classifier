@@ -625,6 +625,9 @@ def cmd_telecharge(args: argparse.Namespace, config: Config) -> int:
     if ffmpeg is None:
         print("Attention : ffmpeg introuvable, yt-dlp risque d'échouer "
               "(brew install ffmpeg, ou --ffmpeg CHEMIN).")
+    if download.find_tool("deno") is None:
+        print("Attention : deno introuvable. yt-dlp en a besoin pour que YouTube accepte "
+              "les téléchargements (sinon : erreurs 403). Installe-le : brew install deno")
     print(f"yt-dlp : {ytdlp}\nTéléchargement de {len(todo)} titre(s), un par un. "
           "Ctrl+C pour arrêter : la reprise repart de là où tu en es.\n")
 
@@ -640,6 +643,10 @@ def cmd_telecharge(args: argparse.Namespace, config: Config) -> int:
     failures = download.write_failures(root, report.failed)
     if failures:
         print(f"Les échecs sont listés dans : {failures}")
+        print("Ils seront retentés au prochain lancement.")
+    if any("403" in error for _, error in report.failed):
+        print("Erreurs 403 : mets yt-dlp à jour (brew upgrade yt-dlp) et vérifie que deno "
+              "est installé (brew install deno).")
     if report.stopped:
         print(
             f"\nArrêt après {download.MAX_CONSECUTIVE_FAILURES} échecs d'affilée : YouTube "
