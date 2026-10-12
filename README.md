@@ -645,7 +645,8 @@ d'affilée, l'outil s'arrête, YouTube bloquant sans doute pour un temps.
 ytmgc telecharge --essai                 # ce qui serait fait, sans rien toucher
 ytmgc telecharge --limite 3              # trois titres, pour vérifier
 ytmgc telecharge --playlist "Ballades"   # une seule playlist
-ytmgc telecharge                         # tout le reste
+ytmgc telecharge                         # tout le reste, 3 titres à la fois
+ytmgc telecharge --parallele 1           # un par un, si YouTube bloque
 ```
 
 ## Garanties

@@ -21,8 +21,10 @@ import os
 import re
 import shutil
 import subprocess
+import threading
 import time
 import unicodedata
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Callable, Iterable, Mapping
@@ -381,6 +383,35 @@ class Report:
     stopped: bool = False
 
 
+def _fetch(
+    root: Path, video_id: str, relative: Path, track: Track, tags: Tags, cmd: list[str],
+    *, run: Callable[..., subprocess.CompletedProcess], sleep: Callable[[float], None],
+    tag: Callable[[Path, str, Tags], None],
+) -> str | None:
+    """Un titre : téléchargé en transit, retenté si l'erreur est passagère,
+    doté de ses propriétés puis rangé. Renvoie l'erreur, ou None."""
+    transit = root / STAGING / f"{video_id}{EXTENSION}"
+    transit.parent.mkdir(parents=True, exist_ok=True)
+    error = None
+    for delay in (*RETRY_DELAYS, None):
+        # Reste d'une tentative coupée : yt-dlp le croirait déjà téléchargé.
+        transit.unlink(missing_ok=True)
+        result = run(cmd, capture_output=True, text=True)
+        error = None
+        if result.returncode != 0 or not transit.is_file():
+            lines = (result.stderr or result.stdout or "").strip().splitlines()
+            error = lines[-1] if lines else f"code de sortie {result.returncode}"
+        if error is None or delay is None or not _TRANSIENT.search(error):
+            break
+        sleep(delay)
+    if error is None:
+        tag(transit, video_id, tags)
+        destination = root / relative
+        destination.parent.mkdir(parents=True, exist_ok=True)
+        os.replace(transit, destination)
+    return error
+
+
 def download(
     root: Path,
     downloads: Iterable[tuple[str, Path]],
@@ -391,12 +422,13 @@ def download(
     ffmpeg: Path | None = None,
     cookies_browser: str | None = None,
     pause: float = 2.0,
+    workers: int = 1,
     on_progress: Callable[[int, int, Track, str | None], None] | None = None,
     run: Callable[..., subprocess.CompletedProcess] = subprocess.run,
     sleep: Callable[[float], None] = time.sleep,
     tag: Callable[[Path, str, Tags], None] = write_tags,
 ) -> Report:
-    """Télécharge un titre après l'autre ; s'arrête si YouTube bloque.
+    """Télécharge les titres, `workers` à la fois ; s'arrête si YouTube bloque.
 
     Le fichier arrive dans le dossier de transit, nommé par son identifiant,
     y reçoit ses propriétés, puis seulement rejoint sa playlist : un fichier
@@ -404,42 +436,46 @@ def download(
     """
     todo = list(downloads)
     report = Report()
-    consecutive = 0
-    staging = root / STAGING
-    for index, (video_id, relative) in enumerate(todo, 1):
+    stop = threading.Event()
+    lock = threading.Lock()
+    state = {"done": 0, "consecutive": 0}
+
+    def one(video_id: str, relative: Path) -> None:
+        if stop.is_set():
+            return
         track = tracks[video_id]
-        transit = staging / f"{video_id}{EXTENSION}"
-        staging.mkdir(parents=True, exist_ok=True)
-        cmd = command(ytdlp, track, transit, ffmpeg=ffmpeg, cookies_browser=cookies_browser)
-        for delay in (*RETRY_DELAYS, None):
-            # Reste d'une tentative coupée : yt-dlp le croirait déjà téléchargé.
-            transit.unlink(missing_ok=True)
-            result = run(cmd, capture_output=True, text=True)
-            error = None
-            if result.returncode != 0 or not transit.is_file():
-                lines = (result.stderr or result.stdout or "").strip().splitlines()
-                error = lines[-1] if lines else f"code de sortie {result.returncode}"
-            if error is None or delay is None or not _TRANSIENT.search(error):
-                break
-            sleep(delay)
-        if error is not None:
-            report.failed.append((track.label(), error))
-            consecutive += 1
-        else:
-            tag(transit, video_id, wanted[video_id].tags)
-            destination = root / relative
-            destination.parent.mkdir(parents=True, exist_ok=True)
-            os.replace(transit, destination)
-            report.downloaded += 1
-            consecutive = 0
-        if on_progress:
-            on_progress(index, len(todo), track, error)
-        if consecutive >= MAX_CONSECUTIVE_FAILURES:
-            report.stopped = True
-            break
-        if index < len(todo) and pause > 0:
+        cmd = command(ytdlp, track, root / STAGING / f"{video_id}{EXTENSION}",
+                      ffmpeg=ffmpeg, cookies_browser=cookies_browser)
+        error = _fetch(root, video_id, relative, track, wanted[video_id].tags, cmd,
+                       run=run, sleep=sleep, tag=tag)
+        with lock:
+            state["done"] += 1
+            if error is None:
+                report.downloaded += 1
+                state["consecutive"] = 0
+            else:
+                report.failed.append((track.label(), error))
+                state["consecutive"] += 1
+                if state["consecutive"] >= MAX_CONSECUTIVE_FAILURES:
+                    report.stopped = True
+                    stop.set()
+            if on_progress:
+                on_progress(state["done"], len(todo), track, error)
+        if pause > 0 and not stop.is_set():
             sleep(pause)
-    _remove_empty(staging, root)
+
+    with ThreadPoolExecutor(max_workers=max(1, workers)) as pool:
+        futures = [pool.submit(one, video_id, relative) for video_id, relative in todo]
+        try:
+            for future in as_completed(futures):
+                future.result()
+        except BaseException:
+            # Ctrl+C : les titres pas encore commencés sont abandonnés.
+            stop.set()
+            for future in futures:
+                future.cancel()
+            raise
+    _remove_empty(root / STAGING, root)
     return report
 
 

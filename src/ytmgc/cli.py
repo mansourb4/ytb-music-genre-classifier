@@ -628,7 +628,8 @@ def cmd_telecharge(args: argparse.Namespace, config: Config) -> int:
     if download.find_tool("deno") is None:
         print("Attention : deno introuvable. yt-dlp en a besoin pour que YouTube accepte "
               "les téléchargements (sinon : erreurs 403). Installe-le : brew install deno")
-    print(f"yt-dlp : {ytdlp}\nTéléchargement de {len(todo)} titre(s), un par un. "
+    print(f"yt-dlp : {ytdlp}\nTéléchargement de {len(todo)} titre(s), "
+          f"{'un par un' if args.parallele <= 1 else f'{args.parallele} à la fois'}. "
           "Ctrl+C pour arrêter : la reprise repart de là où tu en es.\n")
 
     def progress(index: int, total: int, track: Track, error: str | None) -> None:
@@ -637,7 +638,8 @@ def cmd_telecharge(args: argparse.Namespace, config: Config) -> int:
 
     report = download.download(
         root, todo, tracks, wanted, ytdlp, ffmpeg=ffmpeg,
-        cookies_browser=args.cookies_navigateur, pause=args.pause, on_progress=progress,
+        cookies_browser=args.cookies_navigateur, pause=args.pause, workers=args.parallele,
+        on_progress=progress,
     )
     print(f"\n{report.downloaded} titre(s) téléchargé(s), {len(report.failed)} échec(s).")
     failures = download.write_failures(root, report.failed)
@@ -901,6 +903,9 @@ def build_parser() -> argparse.ArgumentParser:
                                 help="Ne télécharger que ce nombre de titres (pour tester)")
     telecharge_cmd.add_argument("--pause", type=float, default=2.0,
                                 help="Secondes d'attente entre deux titres (défaut : %(default)s)")
+    telecharge_cmd.add_argument("--parallele", type=int, default=3,
+                                help="Titres téléchargés en même temps (défaut : %(default)s ; "
+                                     "1 si YouTube bloque)")
     telecharge_cmd.add_argument("--yt-dlp", dest="yt_dlp", default=None,
                                 help="Chemin de yt-dlp (sinon : cherché automatiquement)")
     telecharge_cmd.add_argument("--ffmpeg", default=None,

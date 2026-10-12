@@ -203,7 +203,7 @@ def test_a_passing_403_is_retried(tmp_path):
         tmp_path, [("aaaaaaaaaaa", wanted["aaaaaaaaaaa"].path)], tracks, wanted, Path("yt-dlp"),
         run=_fake_run(set(), "ERROR: unable to download video data: HTTP Error 403: Forbidden",
                       flaky=2),
-        sleep=waits.append,
+        sleep=waits.append, pause=0,
     )
     assert report.downloaded == 1 and not report.failed
     assert waits == list(download.RETRY_DELAYS)
@@ -215,6 +215,21 @@ def test_a_lasting_error_is_not_retried(tmp_path):
     waits = []
     report = download.download(
         tmp_path, [("aaaaaaaaaaa", wanted["aaaaaaaaaaa"].path)], tracks, wanted, Path("yt-dlp"),
-        run=_fake_run({"aaaaaaaaaaa"}), sleep=waits.append,
+        run=_fake_run({"aaaaaaaaaaa"}), sleep=waits.append, pause=0,
     )
     assert len(report.failed) == 1 and waits == []
+
+
+def test_parallel_downloads_get_everything(tmp_path):
+    ids = [f"{i:011d}" for i in range(12)]
+    tracks = {v: _track(v) for v in ids}
+    wanted = {v: download.Wanted(Path("Soul", f"{v}.m4a"), _tags()) for v in ids}
+    seen = []
+    report = download.download(
+        tmp_path, [(v, wanted[v].path) for v in ids], tracks, wanted, Path("yt-dlp"),
+        workers=4, run=_fake_run({ids[3]}), sleep=lambda _: None,
+        on_progress=lambda done, total, track, error: seen.append(done),
+    )
+    assert report.downloaded == 11 and len(report.failed) == 1
+    assert seen == list(range(1, 13))
+    assert set(download.existing(tmp_path, download.read_id)) == set(ids) - {ids[3]}
