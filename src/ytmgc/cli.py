@@ -38,7 +38,7 @@ from ytmgc.planner import plan_playlists
 from ytmgc.store import Repository, connect
 from ytmgc.sorting import DEFAULT_SORT_MODE, SORT_MODES, apply_sort_mode
 from ytmgc.sync import apply as apply_actions
-from ytmgc.sync import diff, managed_by_key, purge
+from ytmgc.sync import adopt_matches, diff, managed_by_key, purge
 from ytmgc.taxonomy import load_taxonomy
 from ytmgc import verdicts
 
@@ -161,6 +161,8 @@ def cmd_apply(args: argparse.Namespace, config: Config) -> int:
         client.list_playlists(), config.sync.marker,
         known=known, names={plan.name: plan.key for plan in plans},
     )
+    if args.execute:
+        adopt_matches(remote, (plan.key for plan in plans), repository.remember_playlist)
     actions = diff(plans, remote, config)
     if not actions:
         print("YouTube Music est déjà à jour.")

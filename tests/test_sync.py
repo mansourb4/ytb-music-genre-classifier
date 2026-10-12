@@ -1,7 +1,7 @@
 from fakes import FakePlaylistClient
 
 from ytmgc.models import Op, PlaylistPlan, RemotePlaylist
-from ytmgc.sync import apply, diff, extract_key, managed_by_key
+from ytmgc.sync import adopt_matches, apply, diff, extract_key, managed_by_key
 
 MARKER = "[ytmgc]"
 
@@ -187,3 +187,13 @@ def test_an_up_to_date_playlist_is_not_rewritten(config):
     existing = current("PL1", "Rock — Grunge", ["a"])
     plan = PlaylistPlan("rock/grunge", "Rock — Grunge", plan_description, ("a",))
     assert diff([plan], {"rock/grunge": existing}, config) == []
+
+
+def test_existing_playlists_matched_by_name_are_remembered():
+    remote = {
+        "plan/jazz-modal": RemotePlaylist("PL1", "Jazz · Modal", "✱"),
+        "plan/ancienne": RemotePlaylist("PL2", "Ancienne", "✱"),
+    }
+    remembered = []
+    adopt_matches(remote, ["plan/jazz-modal"], lambda *row: remembered.append(row))
+    assert remembered == [("plan/jazz-modal", "PL1", "Jazz · Modal")]

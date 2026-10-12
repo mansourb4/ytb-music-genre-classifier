@@ -10,7 +10,7 @@ Deux garde-fous structurent ce module :
 from __future__ import annotations
 
 import re
-from typing import Collection, Iterable, Mapping, Protocol
+from typing import Callable, Collection, Iterable, Mapping, Protocol
 
 from ytmgc.config import LEGACY_MARKER, Config
 from ytmgc.models import Op, PlaylistPlan, RemotePlaylist, SyncAction
@@ -102,6 +102,23 @@ def managed_by_key(
         if key is not None:
             index[key] = playlist
     return index
+
+
+def adopt_matches(
+    remote: Mapping[str, RemotePlaylist],
+    planned: Iterable[str],
+    remember: Callable[[str, str, str], None],
+) -> None:
+    """Retient en base les playlists existantes reconnues à leur nom.
+
+    Sans cela, seules les playlists créées par l'outil y figurent : une
+    playlist reprise d'une version antérieure ne serait retrouvée que par son
+    nom, et un renommage dans `playlists.toml` en créerait une seconde.
+    """
+    wanted = set(planned)
+    for key, playlist in remote.items():
+        if key in wanted:
+            remember(key, playlist.playlist_id, playlist.title)
 
 
 def diff(
