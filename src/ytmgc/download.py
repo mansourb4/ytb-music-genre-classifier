@@ -31,6 +31,7 @@ from pathlib import Path
 from typing import Callable, Iterable, Mapping
 
 from ytmgc.matching.normalize import fold
+from ytmgc.matching.normalize import song_key as same_song
 from ytmgc.models import PlaylistPlan, Track
 
 DEFAULT_ROOT = Path.home() / "Music" / "Playlists"
@@ -51,6 +52,12 @@ _TRANSIENT = re.compile(r"HTTP Error (403|429|5\d\d)|timed out|Connection|Errno"
 #: Erreurs propres à un titre (retiré, réservé, bloqué dans le pays) : elles
 #: ne disent rien d'un blocage, et n'entrent pas dans le compte des échecs
 #: d'affilée.
+#: Le titre de la bibliothèque n'est plus servi ; une autre publication du
+#: même morceau l'est peut-être (c'est ce que fait l'appli YouTube Music).
+_UNAVAILABLE = re.compile(r"Video unavailable|not available", re.I)
+#: Écart de durée toléré pour une autre version : au-delà, c'est un live,
+#: un remix ou un montage, pas le même enregistrement.
+MAX_DURATION_GAP = 10
 _TRACK_ONLY = re.compile(r"Video unavailable|not available|Premium members|Private video|"
                          r"removed|copyright|country", re.I)
 
@@ -473,17 +480,63 @@ class Report:
     failed: list[tuple[str, str]] = field(default_factory=list)
     #: Arrêt anticipé : trop d'échecs d'affilée.
     stopped: bool = False
+    #: Titres indisponibles remplacés par une autre version : identifiant
+    #: de la bibliothèque → identifiant téléchargé.
+    alternates: dict[str, str] = field(default_factory=dict)
 
 
-def _fetch(
-    root: Path, video_id: str, relative: Path, track: Track, tags: Tags, cmd: list[str],
-    *, run: Callable[..., subprocess.CompletedProcess], sleep: Callable[[float], None],
-    tag: Callable[[Path, str, Tags], None],
+Search = Callable[[str, str], list[dict]]
+
+
+def alternatives(track: Track, search: Search, limit: int = 3) -> list[str]:
+    """Autres publications du même morceau, les plus sûres d'abord.
+
+    Même artiste et même titre une fois le bruit retiré (« Official Video »,
+    chaîne « - Topic »…), et durée à dix secondes près quand elle est connue.
+    Les titres d'album passent avant les clips.
+    """
+    wanted = same_song(track.artist, track.title)
+    found: list[str] = []
+    for kind in ("songs", "videos"):
+        try:
+            results = search(f"{track.artist} {track.title}", kind)
+        except Exception:  # noqa: BLE001 - recherche impossible : pas d'autre version
+            continue
+        for result in results or ():
+            video_id = result.get("videoId")
+            if not video_id or video_id == track.video_id or video_id in found:
+                continue
+            names = [a.get("name") or "" for a in result.get("artists") or ()]
+            if not any(same_song(name, result.get("title") or "") == wanted for name in names):
+                continue
+            duration = result.get("duration_seconds")
+            if track.duration_s and duration and abs(duration - track.duration_s) > MAX_DURATION_GAP:
+                continue
+            found.append(video_id)
+            if len(found) >= limit:
+                return found
+    return found
+
+
+def ytmusic_search() -> Search:
+    """Recherche YouTube Music anonyme, partagée entre les fils."""
+    from ytmusicapi import YTMusic
+
+    client = YTMusic()
+    lock = threading.Lock()
+
+    def search(query: str, kind: str) -> list[dict]:
+        with lock:
+            return client.search(query, filter=kind, limit=10)
+
+    return search
+
+
+def _attempt(
+    transit: Path, cmd: list[str], *,
+    run: Callable[..., subprocess.CompletedProcess], sleep: Callable[[float], None],
 ) -> str | None:
-    """Un titre : téléchargé en transit, retenté si l'erreur est passagère,
-    doté de ses propriétés puis rangé. Renvoie l'erreur, ou None."""
-    transit = root / STAGING / f"{video_id}{EXTENSION}"
-    transit.parent.mkdir(parents=True, exist_ok=True)
+    """Lance yt-dlp, en retentant les erreurs passagères. Renvoie l'erreur."""
     error = None
     for delay in (*RETRY_DELAYS, None):
         # Reste d'une tentative coupée : yt-dlp le croirait déjà téléchargé.
@@ -496,12 +549,36 @@ def _fetch(
         if error is None or delay is None or not _TRANSIENT.search(error):
             break
         sleep(delay)
+    return error
+
+
+def _fetch(
+    root: Path, video_id: str, relative: Path, track: Track, tags: Tags, cmd: list[str],
+    *, run: Callable[..., subprocess.CompletedProcess], sleep: Callable[[float], None],
+    tag: Callable[[Path, str, Tags], None], search: Search | None = None,
+) -> tuple[str | None, str | None]:
+    """Un titre : téléchargé en transit, doté de ses propriétés puis rangé.
+
+    Indisponible, il est cherché sous une autre publication ; le fichier garde
+    l'identifiant de la bibliothèque, qui reste celui du titre pour l'outil.
+    Renvoie (erreur ou None, identifiant de l'autre version ou None).
+    """
+    transit = root / STAGING / f"{video_id}{EXTENSION}"
+    transit.parent.mkdir(parents=True, exist_ok=True)
+    error = _attempt(transit, cmd, run=run, sleep=sleep)
+    used = None
+    if error is not None and search is not None and _UNAVAILABLE.search(error):
+        for other in alternatives(track, search):
+            other_cmd = [*cmd[:-1], f"https://music.youtube.com/watch?v={other}"]
+            if _attempt(transit, other_cmd, run=run, sleep=sleep) is None:
+                error, used = None, other
+                break
     if error is None:
         tag(transit, video_id, tags)
         destination = root / relative
         destination.parent.mkdir(parents=True, exist_ok=True)
         os.replace(transit, destination)
-    return error
+    return error, used
 
 
 def download(
@@ -516,6 +593,8 @@ def download(
     cookies_file: Path | None = None,
     pause: float = 2.0,
     workers: int = 1,
+    search: Search | None = None,
+    report: Report | None = None,
     on_progress: Callable[[int, int, Track, str | None], None] | None = None,
     run: Callable[..., subprocess.CompletedProcess] = subprocess.run,
     sleep: Callable[[float], None] = time.sleep,
@@ -528,7 +607,7 @@ def download(
     rangé est toujours un fichier complet et reconnaissable.
     """
     todo = list(downloads)
-    report = Report()
+    report = report if report is not None else Report()
     stop = threading.Event()
     lock = threading.Lock()
     state = {"done": 0, "consecutive": 0}
@@ -547,8 +626,8 @@ def download(
         cmd = command(ytdlp, track, root / STAGING / f"{video_id}{EXTENSION}",
                       ffmpeg=ffmpeg, cookies_browser=cookies_browser, cookies_file=jar)
         try:
-            error = _fetch(root, video_id, relative, track, wanted[video_id].tags, cmd,
-                           run=run, sleep=sleep, tag=tag)
+            error, used = _fetch(root, video_id, relative, track, wanted[video_id].tags, cmd,
+                                 run=run, sleep=sleep, tag=tag, search=search)
         finally:
             if jar is not None:
                 jar.unlink(missing_ok=True)
@@ -557,6 +636,8 @@ def download(
             if error is None:
                 report.downloaded += 1
                 state["consecutive"] = 0
+                if used:
+                    report.alternates[video_id] = used
             else:
                 report.failed.append((track.label(), error))
                 if not _TRACK_ONLY.search(error):

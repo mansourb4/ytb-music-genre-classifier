@@ -657,15 +657,22 @@ def cmd_telecharge(args: argparse.Namespace, config: Config) -> int:
     def progress(index: int, total: int, track: Track, error: str | None) -> None:
         rate = None if error else download.kbps(root / wanted[track.video_id].path)
         state = f"ÉCHEC : {error}" if error else (f"ok, {rate} kbps" if rate else "ok")
+        if not error and track.video_id in report.alternates:
+            state += ", autre version"
         print(f"  [{index}/{total}] {track.label()} — {state}", flush=True)
 
-    report = download.download(
+    report = download.Report()
+    download.download(
         root, todo, tracks, wanted, ytdlp, ffmpeg=ffmpeg,
         cookies_browser=args.cookies_navigateur, cookies_file=cookies_file,
         pause=args.pause, workers=args.parallele,
+        search=None if args.sans_autre_version else download.ytmusic_search(), report=report,
         on_progress=progress,
     )
     print(f"\n{report.downloaded} titre(s) téléchargé(s), {len(report.failed)} échec(s).")
+    if report.alternates:
+        print(f"{len(report.alternates)} titre(s) indisponible(s) remplacé(s) par une autre "
+              "version du même morceau.")
     failures = download.write_failures(root, report.failed)
     if failures:
         print(f"Les échecs sont listés dans : {failures}")
@@ -937,6 +944,8 @@ def build_parser() -> argparse.ArgumentParser:
     telecharge_cmd.add_argument("--remplacer-sous", type=int, default=0, metavar="KBPS",
                                 help="Retélécharger les fichiers déjà là dont le son est "
                                      "sous ce débit (ex. 100)")
+    telecharge_cmd.add_argument("--sans-autre-version", action="store_true",
+                                help="Ne pas chercher d'autre version d'un titre indisponible")
     telecharge_cmd.add_argument("--yt-dlp", dest="yt_dlp", default=None,
                                 help="Chemin de yt-dlp (sinon : cherché automatiquement)")
     telecharge_cmd.add_argument("--ffmpeg", default=None,

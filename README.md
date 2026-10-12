@@ -638,7 +638,10 @@ ainsi qu'il reconnaît ses fichiers, même renommés.
 C'est reprenable et incrémental : un titre déjà là n'est pas retéléchargé, un
 titre qui a changé de playlist est déplacé et son genre mis à jour, un titre
 sorti de toutes les playlists part dans `_Hors playlists` (rien n'est
-supprimé). Les échecs sont listés dans `_échecs.txt` ; après cinq échecs
+supprimé). Un titre devenu indisponible est cherché sous une autre
+publication du même morceau (même artiste, même titre, durée à dix secondes
+près), comme le fait l'appli YouTube Music ; `--sans-autre-version` l'évite.
+Les échecs sont listés dans `_échecs.txt` ; après cinq échecs
 d'affilée, l'outil s'arrête, YouTube bloquant sans doute pour un temps.
 
 ```bash

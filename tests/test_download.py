@@ -357,3 +357,57 @@ def test_unavailable_titles_do_not_stop_the_run(tmp_path):
     )
     assert not report.stopped
     assert report.downloaded == 2 and len(report.failed) == 8
+
+
+def _result(video_id, title, artist, seconds=None):
+    return {"videoId": video_id, "title": title, "artists": [{"name": artist}],
+            "duration_seconds": seconds}
+
+
+def test_alternatives_keep_only_the_same_recording():
+    track = Track("A11bABJeKVE", "2 Much", ("Qendresa",), "Album", duration_s=180)
+    results = {
+        "songs": [
+            _result("A11bABJeKVE", "2 Much", "Qendresa", 180),          # lui-même
+            _result("remix000001", "2 Much (Remix)", "Qendresa", 240),  # un remix
+            _result("other000001", "2 Much", "Quelqu'un d'autre", 180),  # homonyme
+            _result("good0000001", "2 Much", "Qendresa", 183),
+        ],
+        "videos": [
+            _result("live0000001", "Qendresa - 2 Much (Live)", "Qendresa", 260),
+            _result("clip0000001", "Qendresa - 2 Much (Official Video)", "QendresaVEVO", 186),
+        ],
+    }
+    found = download.alternatives(track, lambda query, kind: results[kind])
+    assert found == ["good0000001", "clip0000001"]
+
+
+def test_a_failing_search_gives_no_alternative():
+    def broken(query, kind):
+        raise ConnectionError("hors ligne")
+    assert download.alternatives(_track("aaaaaaaaaaa"), broken) == []
+
+
+def test_an_unavailable_title_is_replaced_by_another_version(tmp_path):
+    track = Track("A11bABJeKVE", "2 Much", ("Qendresa",), "Album")
+    tracks = {track.video_id: track}
+    wanted = {track.video_id: download.Wanted(Path("RnB", "Qendresa - 2 Much.m4a"), _tags())}
+    fake = _fake_run({"A11bABJeKVE"}, "ERROR: [youtube] A11bABJeKVE: Video unavailable. "
+                                      "This video is not available")
+    asked = []
+
+    def run(cmd, **kwargs):
+        asked.append(cmd[-1].rsplit("=", 1)[1])
+        return fake(cmd, **kwargs)
+
+    report = download.download(
+        tmp_path, [(track.video_id, wanted[track.video_id].path)], tracks, wanted,
+        Path("yt-dlp"), run=run, sleep=lambda _: None,
+        search=lambda q, kind: [_result("good0000001", "2 Much", "Qendresa")] if kind == "songs"
+        else [],
+    )
+    assert asked == ["A11bABJeKVE", "good0000001"]
+    assert report.downloaded == 1 and not report.failed
+    assert report.alternates == {"A11bABJeKVE": "good0000001"}
+    # Le fichier reste celui du titre de la bibliothèque : pas retéléchargé ensuite.
+    assert download.read_id(tmp_path / "RnB" / "Qendresa - 2 Much.m4a") == "A11bABJeKVE"
