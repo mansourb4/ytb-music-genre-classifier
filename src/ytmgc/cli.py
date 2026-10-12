@@ -571,12 +571,17 @@ def cmd_telecharge(args: argparse.Namespace, config: Config) -> int:
     tracks = {track.video_id: track for track in repository.all_tracks()}
     _, plans, _ = build_preview(repository, apply_sort_mode(config, args.tri), sort_mode=args.tri)
     styles = {item.video_id: item.styles for item in repository.classifications()}
-    wanted = download.targets(plans, tracks, styles)
+    duplicates: list[str] = []
+    wanted = download.targets(plans, tracks, styles, duplicates=duplicates)
     if not wanted:
         print("Aucune playlist : rien à télécharger.")
         return 0
-    print("Lecture des fichiers déjà téléchargés…", flush=True)
-    present = download.existing(root, download.read_id)
+    print("Lecture des fichiers déjà présents…", flush=True)
+    unknown: list[Path] = []
+    present = download.existing(root, download.read_id, unknown=unknown)
+    adopted = download.adopt(wanted, tracks, present, unknown,
+                             readable=lambda relative: download.readable(root / relative))
+    present = {**present, **adopted}
     local = download.organise(wanted, present)
     to_retag = [v for v, path in present.items()
                 if v in wanted and download.needs_tags(root / path, v, wanted[v].tags)]
@@ -588,7 +593,12 @@ def cmd_telecharge(args: argparse.Namespace, config: Config) -> int:
         todo = todo[: args.limite]
 
     print(f"Dossier : {root}")
-    print(f"  {len(plans)} playlist(s), {len(wanted)} titre(s)")
+    print(f"  {len(plans)} playlist(s), {len(wanted)} titre(s)"
+          + (f" ({len(duplicates)} doublon(s) écarté(s) : même artiste, même titre)"
+             if duplicates else ""))
+    if adopted:
+        print(f"  {len(adopted)} fichier(s) venus d'ailleurs reconnus à leur nom : "
+              "rangés au lieu d'être retéléchargés")
     print(f"  {local.up_to_date} déjà en place, {len(local.moves)} à déplacer ou renommer, "
           f"{len(to_retag)} aux propriétés à mettre à jour, {len(local.downloads)} à télécharger"
           + (f" (dont {len(todo)} cette fois)" if len(todo) != len(local.downloads) else ""))

@@ -57,18 +57,22 @@ def test_folder_splits_family_and_name():
 
 
 def test_file_names_are_clean_and_unique():
+    long = "x" * 200
     tracks = {
         "aaaaaaaaaaa": _track("aaaaaaaaaaa", title="Live: 1/2", artist="AC/DC"),
-        "bbbbbbbbbbb": _track("bbbbbbbbbbb", title="Live- 1-2", artist="ac-dc"),
+        "bbbbbbbbbbb": _track("bbbbbbbbbbb", title=long + " A"),
+        "ccccccccccc": _track("ccccccccccc", title=long.upper() + " B"),
     }
-    wanted = download.targets([_plan("Rock", "aaaaaaaaaaa", "bbbbbbbbbbb")], tracks)
+    wanted = download.targets([_plan("Rock", *tracks)], tracks)
     assert wanted["aaaaaaaaaaa"].path == Path("Rock", "AC-DC - Live- 1-2.m4a")
-    # Même nom au détail de la casse près : le Mac les confondrait.
-    assert wanted["bbbbbbbbbbb"].path == Path("Rock", "ac-dc - Live- 1-2 (2).m4a")
+    # Deux morceaux distincts, même nom une fois tronqué, au détail de la
+    # casse près : le Mac les confondrait.
+    assert wanted["ccccccccccc"].path.stem == "Artiste - " + "X" * 140 + " (2)"
 
 
 def test_targets_carry_genre_and_style():
-    tracks = {"aaaaaaaaaaa": _track("aaaaaaaaaaa"), "bbbbbbbbbbb": _track("bbbbbbbbbbb")}
+    tracks = {"aaaaaaaaaaa": _track("aaaaaaaaaaa", title="A"),
+              "bbbbbbbbbbb": _track("bbbbbbbbbbb", title="B")}
     wanted = download.targets(
         [_plan("Soul · Ballades", "aaaaaaaaaaa"), _plan("Jazz · Modal", "aaaaaaaaaaa", "bbbbbbbbbbb")],
         tracks,
@@ -233,3 +237,57 @@ def test_parallel_downloads_get_everything(tmp_path):
     assert report.downloaded == 11 and len(report.failed) == 1
     assert seen == list(range(1, 13))
     assert set(download.existing(tmp_path, download.read_id)) == set(ids) - {ids[3]}
+
+
+def test_a_second_run_downloads_nothing(tmp_path):
+    ids = ["aaaaaaaaaaa", "bbbbbbbbbbb"]
+    tracks = {v: _track(v, title=v) for v in ids}
+    wanted = download.targets([_plan("Électro · Deep techno", *ids)], tracks)
+    first = download.organise(wanted, download.existing(tmp_path, download.read_id))
+    download.download(tmp_path, first.downloads, tracks, wanted, Path("yt-dlp"),
+                      run=_fake_run(set()), sleep=lambda _: None)
+    again = download.organise(wanted, download.existing(tmp_path, download.read_id))
+    assert again.downloads == () and again.moves == () and again.up_to_date == 2
+
+
+def test_the_same_song_twice_is_downloaded_once():
+    tracks = {
+        "aaaaaaaaaaa": _track("aaaaaaaaaaa", title="Aquarela do Brasil", artist="João Gilberto"),
+        "bbbbbbbbbbb": _track("bbbbbbbbbbb", title="Aquarela Do Brasil", artist="Joao Gilberto"),
+    }
+    duplicates = []
+    wanted = download.targets(
+        [_plan("Brésil · Bossa nova", "aaaaaaaaaaa"), _plan("Jazz · Modal", "bbbbbbbbbbb")],
+        tracks, duplicates=duplicates,
+    )
+    assert list(wanted) == ["aaaaaaaaaaa"]
+    assert duplicates == ["bbbbbbbbbbb"]
+
+
+def test_files_from_elsewhere_are_adopted_by_name(tmp_path):
+    tracks = {
+        "aaaaaaaaaaa": _track("aaaaaaaaaaa", title="The Girl From Ipanema", artist="Stan Getz"),
+        "bbbbbbbbbbb": _track("bbbbbbbbbbb", title="Insensatez", artist="Toquinho"),
+        "ccccccccccc": _track("ccccccccccc", title="Solo", artist="Roméo Elvis"),
+        "ddddddddddd": _track("ddddddddddd", title="Solo", artist="Autre"),
+    }
+    wanted = download.targets([_plan("Brésil · Bossa nova", *tracks)], tracks)
+    _file(tmp_path, "Stacher/Stan Getz - The Girl from Ipanema.m4a")
+    _file(tmp_path, "Stacher/Insensatez (2).m4a")
+    _file(tmp_path, "Stacher/Solo.m4a")  # deux « Solo » : ambigu, laissé tranquille
+    unknown = []
+    present = download.existing(tmp_path, download.read_id, unknown=unknown)
+    adopted = download.adopt(wanted, tracks, present, unknown)
+    assert adopted == {
+        "aaaaaaaaaaa": Path("Stacher/Stan Getz - The Girl from Ipanema.m4a"),
+        "bbbbbbbbbbb": Path("Stacher/Insensatez (2).m4a"),
+    }
+
+    present = {**present, **adopted}
+    local = download.organise(wanted, present)
+    assert {v for v, _ in local.downloads} == {"ccccccccccc", "ddddddddddd"}
+    download.retag(tmp_path, wanted, present)
+    download.apply_moves(tmp_path, local.moves)
+    target = tmp_path / wanted["aaaaaaaaaaa"].path
+    assert download.read_id(target) == "aaaaaaaaaaa"
+    assert (tmp_path / "Stacher" / "Solo.m4a").is_file()

@@ -29,6 +29,7 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Callable, Iterable, Mapping
 
+from ytmgc.matching.normalize import fold
 from ytmgc.models import PlaylistPlan, Track
 
 DEFAULT_ROOT = Path.home() / "Music" / "Playlists"
@@ -113,25 +114,41 @@ class Wanted:
     tags: Tags
 
 
+def song_key(track: Track) -> str:
+    """Même artiste, même titre, à la casse et aux accents près."""
+    return f"{fold(track.artist)} {fold(track.title)}".strip()
+
+
 def targets(
     plans: Iterable[PlaylistPlan],
     tracks: Mapping[str, Track],
     styles: Mapping[str, Iterable[str]] | None = None,
+    *,
+    duplicates: list[str] | None = None,
 ) -> dict[str, Wanted]:
     """Chemin et propriétés attendus pour chaque titre planifié.
 
-    Un titre présent dans plusieurs playlists (selon le type de tri) n'a
-    qu'un fichier : celui de la première playlist qui le contient.
+    Un morceau n'a qu'un fichier, dans la première playlist qui le contient :
+    qu'il figure dans plusieurs playlists (selon le type de tri), ou que la
+    bibliothèque l'ait en double sous deux identifiants YouTube (même
+    artiste, même titre). Les doublons écartés sont ajoutés à `duplicates`.
     """
     styles = styles or {}
     wanted: dict[str, Wanted] = {}
     taken: set[str] = set()
+    songs: set[str] = set()
     for plan in plans:
         folder = folder_for(plan.name)
         for video_id in plan.video_ids:
             track = tracks.get(video_id)
             if track is None or video_id in wanted:
                 continue
+            key = song_key(track)
+            if key in songs:
+                if duplicates is not None:
+                    duplicates.append(video_id)
+                continue
+            songs.add(key)
             grouping = ", ".join(list(styles.get(video_id, ()))[:2]) or None
             wanted[video_id] = Wanted(
                 _unique(folder, stem_for(track), taken),
@@ -140,12 +157,14 @@ def targets(
     return wanted
 
 
-def existing(root: Path, read_id: Callable[[Path], str | None]) -> dict[str, Path]:
+def existing(
+    root: Path, read_id: Callable[[Path], str | None], *, unknown: list[Path] | None = None,
+) -> dict[str, Path]:
     """Fichiers déjà présents, par identifiant (chemins relatifs à `root`).
 
     L'identifiant se lit dans les propriétés du fichier ; à défaut, dans son
     nom (ancien nommage). Un fichier sans l'un ni l'autre n'est pas à l'outil :
-    il est laissé tranquille. macOS rend les noms
+    il est laissé tranquille, et ajouté à `unknown`. macOS rend les noms
     décomposés (« E » + accent) : ils sont recomposés pour se comparer aux
     chemins attendus.
     """
@@ -161,7 +180,42 @@ def existing(root: Path, read_id: Callable[[Path], str | None]) -> dict[str, Pat
                 video_id = match.group(1)
         if video_id:
             found.setdefault(video_id, relative)
+        elif unknown is not None:
+            unknown.append(relative)
     return found
+
+
+_COPY_SUFFIX = re.compile(r" \(\d+\)$")
+
+
+def adopt(
+    wanted: Mapping[str, Wanted],
+    tracks: Mapping[str, Track],
+    present: Mapping[str, Path],
+    unknown: Iterable[Path],
+    readable: Callable[[Path], bool] = lambda _: True,
+) -> dict[str, Path]:
+    """Fichiers venus d'ailleurs (Stacher…) reconnus à leur nom.
+
+    Un m4a sans identifiant, nommé « Artiste - Titre » ou seulement « Titre »,
+    tient lieu du titre manquant qui porte ce nom : il sera renommé, rangé et
+    doté de ses propriétés au lieu d'être téléchargé à nouveau. Un « Titre »
+    seul n'est retenu que s'il ne désigne qu'un morceau.
+    """
+    missing = [v for v in wanted if v not in present and v in tracks]
+    by_song = {song_key(tracks[v]): v for v in missing}
+    titles: dict[str, list[str]] = {}
+    for v in missing:
+        titles.setdefault(fold(tracks[v].title), []).append(v)
+    adopted: dict[str, Path] = {}
+    for relative in unknown:
+        name = fold(_COPY_SUFFIX.sub("", relative.stem))
+        video_id = by_song.get(name)
+        if video_id is None and len(titles.get(name, ())) == 1:
+            video_id = titles[name][0]
+        if video_id and video_id not in adopted and readable(relative):
+            adopted[video_id] = relative
+    return adopted
 
 
 @dataclass(frozen=True, slots=True)
@@ -263,6 +317,17 @@ def read_id(path: Path) -> str | None:
     except MutagenError:  # fichier abîmé (téléchargement coupé) : ignoré
         return None
     return bytes(values[0]).decode("utf-8") if values else None
+
+
+def readable(path: Path) -> bool:
+    """Un vrai m4a, complet : pas un téléchargement coupé."""
+    from mutagen import MutagenError
+
+    try:
+        _mp4(path)
+    except MutagenError:
+        return False
+    return True
 
 
 def needs_tags(path: Path, video_id: str, tags: Tags) -> bool:
