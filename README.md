@@ -647,7 +647,13 @@ ytmgc telecharge --limite 3              # trois titres, pour vérifier
 ytmgc telecharge --playlist "Ballades"   # une seule playlist
 ytmgc telecharge                         # tout le reste, 3 titres à la fois
 ytmgc telecharge --parallele 1           # un par un, si YouTube bloque
+ytmgc telecharge --remplacer-sous 100    # refait les fichiers au son trop pauvre
 ```
+
+Le son retenu est le meilleur AAC proposé par YouTube : 128 kbps, ou 256 kbps
+pour un compte Premium (avec `--cookies-navigateur`). Faute de mieux, le flux
+Opus est réencodé en AAC à 192 kbps ; l'AAC au rabais (48 kbps) ne sert qu'en
+dernier recours. Le débit de chaque fichier s'affiche au téléchargement.
 
 ## Garanties
 

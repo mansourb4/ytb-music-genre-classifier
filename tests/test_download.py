@@ -291,3 +291,26 @@ def test_files_from_elsewhere_are_adopted_by_name(tmp_path):
     target = tmp_path / wanted["aaaaaaaaaaa"].path
     assert download.read_id(target) == "aaaaaaaaaaa"
     assert (tmp_path / "Stacher" / "Solo.m4a").is_file()
+
+
+def test_low_bitrate_streams_come_last():
+    yt_dlp = pytest.importorskip("yt_dlp")
+    pick = yt_dlp.YoutubeDL({"quiet": True}).build_format_selector(download.AUDIO_FORMAT)
+
+    def chosen(*formats):
+        available = [{"format_id": f, "ext": e, "acodec": "x", "vcodec": "none", "abr": a,
+                      "url": "u", "protocol": "https"} for f, e, a in formats]
+        return [f["format_id"] for f in pick({"formats": available})]
+
+    low, aac, opus, premium = ("139", "m4a", 48), ("140", "m4a", 129), ("251", "webm", 135), \
+        ("141", "m4a", 256)
+    assert chosen(low, aac, opus) == ["140"]
+    assert chosen(low, aac, opus, premium) == ["141"]
+    assert chosen(low, opus) == ["251"]  # plutôt que l'AAC à 48 kbps
+    assert chosen(low) == ["139"]
+
+
+def test_bitrate_is_read(tmp_path):
+    assert isinstance(download.kbps(_file(tmp_path, "x.m4a")), int)
+    (tmp_path / "abîmé.m4a").write_bytes(b"pas du son")
+    assert download.kbps(tmp_path / "abîmé.m4a") is None

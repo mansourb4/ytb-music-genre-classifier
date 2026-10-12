@@ -589,6 +589,14 @@ def cmd_telecharge(args: argparse.Namespace, config: Config) -> int:
     if args.playlist:
         home = {v: item.tags.genre for v, item in wanted.items()}
         todo = [(v, path) for v, path in todo if args.playlist.lower() in home[v].lower()]
+    if args.remplacer_sous:
+        # Fichiers au son trop pauvre : retéléchargés à leur place définitive,
+        # une fois les déplacements faits.
+        low = sorted(v for v, path in present.items()
+                     if v in wanted and (download.kbps(root / path) or 0) < args.remplacer_sous)
+        todo += [(v, wanted[v].path) for v in low]
+        if low:
+            print(f"  {len(low)} fichier(s) sous {args.remplacer_sous} kbps, à retélécharger")
     if args.limite:
         todo = todo[: args.limite]
 
@@ -643,7 +651,8 @@ def cmd_telecharge(args: argparse.Namespace, config: Config) -> int:
           "Ctrl+C pour arrêter : la reprise repart de là où tu en es.\n")
 
     def progress(index: int, total: int, track: Track, error: str | None) -> None:
-        state = f"ÉCHEC : {error}" if error else "ok"
+        rate = None if error else download.kbps(root / wanted[track.video_id].path)
+        state = f"ÉCHEC : {error}" if error else (f"ok, {rate} kbps" if rate else "ok")
         print(f"  [{index}/{total}] {track.label()} — {state}", flush=True)
 
     report = download.download(
@@ -916,6 +925,9 @@ def build_parser() -> argparse.ArgumentParser:
     telecharge_cmd.add_argument("--parallele", type=int, default=3,
                                 help="Titres téléchargés en même temps (défaut : %(default)s ; "
                                      "1 si YouTube bloque)")
+    telecharge_cmd.add_argument("--remplacer-sous", type=int, default=0, metavar="KBPS",
+                                help="Retélécharger les fichiers déjà là dont le son est "
+                                     "sous ce débit (ex. 100)")
     telecharge_cmd.add_argument("--yt-dlp", dest="yt_dlp", default=None,
                                 help="Chemin de yt-dlp (sinon : cherché automatiquement)")
     telecharge_cmd.add_argument("--ffmpeg", default=None,

@@ -53,6 +53,13 @@ _ID_IN_NAME = re.compile(r" ?\[([A-Za-z0-9_-]{11})\]$")
 _UNSAFE = re.compile(r'[/\\:*?"<>|\x00-\x1f]')
 _MAX_STEM = 150
 
+#: Meilleur AAC proposé (256 kbps avec Premium, 128 sinon), à défaut le
+#: meilleur son tout court, réencodé en AAC à 192 kbps. Les flux
+#: au rabais (48 kbps) ne passent qu'en dernier recours.
+AUDIO_FORMAT = (
+    "bestaudio[ext=m4a][abr>=100]/bestaudio[abr>=100]/bestaudio[ext=m4a]/bestaudio"
+)
+
 #: Pochette recadrée au carré : les vignettes YouTube sont en 16:9, l'image
 #: de l'album occupant le centre.
 _SQUARE_THUMBNAIL = (
@@ -319,6 +326,17 @@ def read_id(path: Path) -> str | None:
     return bytes(values[0]).decode("utf-8") if values else None
 
 
+def kbps(path: Path) -> int | None:
+    """Débit du son, en kbit/s : 128 pour l'AAC standard de YouTube."""
+    from mutagen import MutagenError
+
+    try:
+        bitrate = _mp4(path).info.bitrate
+    except MutagenError:
+        return None
+    return round(bitrate / 1000) if bitrate else None
+
+
 def readable(path: Path) -> bool:
     """Un vrai m4a, complet : pas un téléchargement coupé."""
     from mutagen import MutagenError
@@ -425,8 +443,8 @@ def command(
     cmd = [
         str(ytdlp),
         "--no-playlist", "--quiet", "--no-warnings", "--no-progress",
-        "--format", "bestaudio[ext=m4a]/bestaudio",
-        "--extract-audio", "--audio-format", "m4a",
+        "--format", AUDIO_FORMAT,
+        "--extract-audio", "--audio-format", "m4a", "--audio-quality", "192K",
         "--embed-metadata", "--embed-thumbnail", "--convert-thumbnails", "jpg",
         "--postprocessor-args", _SQUARE_THUMBNAIL,
         "--output", str(destination.parent / (stem.replace("%", "%%") + ".%(ext)s")),
