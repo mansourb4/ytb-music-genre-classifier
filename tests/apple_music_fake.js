@@ -23,15 +23,21 @@ function collection(getItems, wrap) {
   return new Proxy({}, {
     get(_, prop) {
       if (typeof prop === 'string' && /^\d+$/.test(prop)) return wrap(getItems()[Number(prop)]);
+      if (prop === 'length') return getItems().length;
       if (prop === 'whose') {
         return (filter) => getItems()
           .filter((item) => Object.keys(filter).every((k) => item[k] === filter[k]))
           .map(wrap);
       }
-      return () => getItems().map((item) => {
+      // Comme Music : lire une propriété de « tous les éléments » d'une
+      // collection vide échoue au lieu de renvoyer une liste vide.
+      return () => {
+        if (!getItems().length) throw new Error("Il est impossible d’obtenir l’objet. (-1728)");
+        return getItems().map((item) => {
         const value = item[prop];
         return prop === 'location' ? (value ? Path(value) : null) : value;
-      });
+        });
+      };
     },
   });
 }

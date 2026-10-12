@@ -30,6 +30,28 @@ function nfc(text) {
 
 const CHUNK = 50;
 
+// Propriété de tous les éléments d'une collection, en un seul échange avec
+// Music. Une collection vide fait échouer la demande groupée (« impossible
+// d'obtenir l'objet ») : on compte d'abord. Si la demande groupée échoue
+// quand même (un élément illisible), on lit élément par élément.
+function every(items, property) {
+  const count = items.length;
+  if (!count) return [];
+  try {
+    return items[property]();
+  } catch (error) {
+    const values = [];
+    for (let i = 0; i < count; i++) {
+      try {
+        values.push(items[i][property]());
+      } catch (inner) {
+        values.push(null);
+      }
+    }
+    return values;
+  }
+}
+
 // Création d'une playlist ou d'un dossier, sous les deux écritures que JXA
 // accepte selon les versions de macOS.
 function makePlaylist(Music, kind, name) {
@@ -56,10 +78,10 @@ function run(argv) {
 
   function inventory() {
     const tracks = library.fileTracks;
-    const pids = tracks.persistentID();
-    const locations = tracks.location();
-    const genres = tracks.genre();
-    const groupings = tracks.grouping();
+    const pids = every(tracks, 'persistentID');
+    const locations = every(tracks, 'location');
+    const genres = every(tracks, 'genre');
+    const groupings = every(tracks, 'grouping');
     const byPid = {};
     const byPath = {};
     for (let i = 0; i < pids.length; i++) {
@@ -222,7 +244,7 @@ function run(argv) {
     const wantedPids = ids.map(function (id) { return pidOf[id]; });
     const wantedSet = {};
     for (const pid of wantedPids) wantedSet[pid] = true;
-    const current = playlist.tracks.persistentID();
+    const current = every(playlist.tracks, 'persistentID');
     const currentSet = {};
     for (const pid of current) currentSet[pid] = true;
 
