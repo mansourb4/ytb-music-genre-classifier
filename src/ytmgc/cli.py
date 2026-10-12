@@ -27,6 +27,7 @@ from __future__ import annotations
 
 import argparse
 import sys
+import time
 from pathlib import Path
 
 from ytmgc import __version__
@@ -657,18 +658,33 @@ def cmd_telecharge(args: argparse.Namespace, config: Config) -> int:
     def progress(index: int, total: int, track: Track, error: str | None) -> None:
         rate = None if error else download.kbps(root / wanted[track.video_id].path)
         state = f"ÉCHEC : {error}" if error else (f"ok, {rate} kbps" if rate else "ok")
+        if error and download.rate_limited(error):
+            state = "limité par YouTube : repris après la pause"
         if not error and track.video_id in report.alternates:
             state += ", autre version"
         print(f"  [{index}/{total}] {track.label()} — {state}", flush=True)
 
     report = download.Report()
-    download.download(
-        root, todo, tracks, wanted, ytdlp, ffmpeg=ffmpeg,
-        cookies_browser=args.cookies_navigateur, cookies_file=cookies_file,
-        pause=args.pause, workers=args.parallele,
-        search=None if args.sans_autre_version else download.ytmusic_search(), report=report,
-        on_progress=progress,
-    )
+    search = None if args.sans_autre_version else download.ytmusic_search()
+    batch, pauses = todo, 0
+    while True:
+        download.download(
+            root, batch, tracks, wanted, ytdlp, ffmpeg=ffmpeg,
+            cookies_browser=args.cookies_navigateur, cookies_file=cookies_file,
+            pause=args.pause, workers=args.parallele, search=search, report=report,
+            on_progress=progress,
+        )
+        if not report.rate_limited or pauses >= args.attentes_max:
+            break
+        # YouTube a limité le compte pour une heure au plus : on attend la levée
+        # au lieu de faire échouer tous les titres restants.
+        pauses += 1
+        batch, report.pending, report.rate_limited = report.pending, [], False
+        resume = time.localtime(time.time() + args.attente * 60)
+        print(f"\nYouTube limite ton compte pour l'instant. Pause de {args.attente} min, "
+              f"reprise vers {time.strftime('%H:%M', resume)} ({len(batch)} titre(s) "
+              f"restant(s)). Laisse tourner, ou Ctrl+C pour reprendre plus tard.", flush=True)
+        time.sleep(args.attente * 60)
     print(f"\n{report.downloaded} titre(s) téléchargé(s), {len(report.failed)} échec(s).")
     if report.alternates:
         print(f"{len(report.alternates)} titre(s) indisponible(s) remplacé(s) par une autre "
@@ -684,6 +700,10 @@ def cmd_telecharge(args: argparse.Namespace, config: Config) -> int:
     if any("403" in error for _, error in report.failed):
         print("Erreurs 403 : mets yt-dlp à jour (brew upgrade yt-dlp) et vérifie que deno "
               "est installé (brew install deno).")
+    if report.rate_limited:
+        print(f"\nYouTube limite encore ton compte : {len(report.pending)} titre(s) non "
+              "tentés. Relance dans une heure, avec --parallele 1 et --pause 5.")
+        return 1
     if report.stopped:
         print(
             f"\nArrêt après {download.MAX_CONSECUTIVE_FAILURES} échecs d'affilée : YouTube "
@@ -944,6 +964,10 @@ def build_parser() -> argparse.ArgumentParser:
     telecharge_cmd.add_argument("--remplacer-sous", type=int, default=0, metavar="KBPS",
                                 help="Retélécharger les fichiers déjà là dont le son est "
                                      "sous ce débit (ex. 100)")
+    telecharge_cmd.add_argument("--attente", type=int, default=65, metavar="MINUTES",
+                                help="Pause quand YouTube limite le compte (défaut : %(default)s)")
+    telecharge_cmd.add_argument("--attentes-max", type=int, default=4,
+                                help="Nombre de pauses avant d'abandonner (défaut : %(default)s)")
     telecharge_cmd.add_argument("--sans-autre-version", action="store_true",
                                 help="Ne pas chercher d'autre version d'un titre indisponible")
     telecharge_cmd.add_argument("--yt-dlp", dest="yt_dlp", default=None,

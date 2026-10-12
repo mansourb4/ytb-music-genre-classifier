@@ -58,6 +58,16 @@ _UNAVAILABLE = re.compile(r"Video unavailable|not available", re.I)
 #: Écart de durée toléré pour une autre version : au-delà, c'est un live,
 #: un remix ou un montage, pas le même enregistrement.
 MAX_DURATION_GAP = 10
+#: YouTube limite le compte ou l'adresse pour un temps : rien à voir avec le
+#: titre. Tout s'arrête, les titres restants attendent la levée.
+_RATE_LIMITED = re.compile(r"rate-limited|rate limit|try again later|not a bot|"
+                           r"HTTP Error 429", re.I)
+
+
+def rate_limited(error: str) -> bool:
+    return bool(_RATE_LIMITED.search(error))
+
+
 _TRACK_ONLY = re.compile(r"Video unavailable|not available|Premium members|Private video|"
                          r"removed|copyright|country", re.I)
 
@@ -480,6 +490,9 @@ class Report:
     failed: list[tuple[str, str]] = field(default_factory=list)
     #: Arrêt anticipé : trop d'échecs d'affilée.
     stopped: bool = False
+    #: YouTube a limité le compte : les titres restants sont dans `pending`.
+    rate_limited: bool = False
+    pending: list[tuple[str, Path]] = field(default_factory=list)
     #: Titres indisponibles remplacés par une autre version : identifiant
     #: de la bibliothèque → identifiant téléchargé.
     alternates: dict[str, str] = field(default_factory=dict)
@@ -567,7 +580,8 @@ def _fetch(
     transit.parent.mkdir(parents=True, exist_ok=True)
     error = _attempt(transit, cmd, run=run, sleep=sleep)
     used = None
-    if error is not None and search is not None and _UNAVAILABLE.search(error):
+    if (error is not None and search is not None and _UNAVAILABLE.search(error)
+            and not _RATE_LIMITED.search(error)):
         for other in alternatives(track, search):
             other_cmd = [*cmd[:-1], f"https://music.youtube.com/watch?v={other}"]
             if _attempt(transit, other_cmd, run=run, sleep=sleep) is None:
@@ -614,6 +628,9 @@ def download(
 
     def one(video_id: str, relative: Path) -> None:
         if stop.is_set():
+            if report.rate_limited:
+                with lock:
+                    report.pending.append((video_id, relative))
             return
         track = tracks[video_id]
         jar = None
@@ -638,6 +655,11 @@ def download(
                 state["consecutive"] = 0
                 if used:
                     report.alternates[video_id] = used
+            elif _RATE_LIMITED.search(error):
+                # Pas un échec du titre : il sera repris après la pause.
+                report.rate_limited = True
+                report.pending.append((video_id, relative))
+                stop.set()
             else:
                 report.failed.append((track.label(), error))
                 if not _TRACK_ONLY.search(error):

@@ -193,7 +193,7 @@ def test_download_stops_when_youtube_blocks(tmp_path):
     ids = [f"{i:011d}" for i in range(10)]
     tracks = {v: _track(v) for v in ids}
     wanted = {v: download.Wanted(Path("Soul", f"{v}.m4a"), _tags()) for v in ids}
-    blocked = "ERROR: [youtube] x: Sign in to confirm you're not a bot"
+    blocked = "ERROR: unable to download video data: HTTP Error 403: Forbidden"
     report = download.download(tmp_path, [(v, wanted[v].path) for v in ids], tracks, wanted,
                                Path("yt-dlp"), run=_fake_run(set(ids), blocked),
                                sleep=lambda _: None)
@@ -411,3 +411,27 @@ def test_an_unavailable_title_is_replaced_by_another_version(tmp_path):
     assert report.alternates == {"A11bABJeKVE": "good0000001"}
     # Le fichier reste celui du titre de la bibliothèque : pas retéléchargé ensuite.
     assert download.read_id(tmp_path / "RnB" / "Qendresa - 2 Much.m4a") == "A11bABJeKVE"
+
+
+RATE_LIMITED = ("ERROR: [youtube] x: Video unavailable. This content isn't available, try again "
+                "later. Your account has been rate-limited by YouTube for up to an hour.")
+
+
+def test_rate_limiting_stops_and_keeps_the_rest_for_later(tmp_path):
+    ids = [f"{i:011d}" for i in range(8)]
+    tracks = {v: _track(v, title=v) for v in ids}
+    wanted = {v: download.Wanted(Path("Soul", f"{v}.m4a"), _tags()) for v in ids}
+    fake = _fake_run(set(ids[2:]), RATE_LIMITED)
+    searched = []
+
+    report = download.download(
+        tmp_path, [(v, wanted[v].path) for v in ids], tracks, wanted, Path("yt-dlp"),
+        run=fake, sleep=lambda _: None,
+        search=lambda q, kind: searched.append(q) or [],
+    )
+    assert report.downloaded == 2
+    assert report.rate_limited and not report.failed
+    assert sorted(v for v, _ in report.pending) == ids[2:]
+    assert searched == []  # pas de recherche d'autre version : le titre n'y est pour rien
+    assert download.rate_limited(RATE_LIMITED)
+    assert not download.rate_limited("ERROR: [youtube] x: Video unavailable")
