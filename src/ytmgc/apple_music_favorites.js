@@ -9,9 +9,9 @@
 // ancien. Apple Music présente ses favoris du plus récemment ajouté au plus
 // ancien : on les ajoute donc en partant de la fin, le plus récent en dernier,
 // avec `interval` secondes entre deux pour que leurs dates se suivent.
-// `reorder` retire puis remet un favori déjà là, pour le replacer dans
-// l'ordre ; sans lui, seuls les nouveaux favoris sont ajoutés. Seuls les titres
-// de `pids` sont touchés.
+// `reorder` retire d'abord tous ces favoris, puis les remet un à un dans
+// l'ordre ; sans lui, seuls les nouveaux favoris sont ajoutés. Seuls les
+// titres de `pids` sont touchés.
 
 ObjC.import('Foundation');
 
@@ -43,25 +43,34 @@ function run(argv) {
   const Music = Application('Music');
   const tracks = Music.libraryPlaylists[0].fileTracks;
   const report = { favorited: 0, already: 0, gone: 0 };
-  const ordered = input.pids.slice().reverse();
-  let done = 0;
+
+  // Titres présents, du like le plus ancien au plus récent.
+  const ordered = [];
+  input.pids.slice().reverse().forEach(function (pid) {
+    const found = tracks.whose({ persistentID: pid });
+    if (found.length) ordered.push(found[0]);
+    else report.gone++;
+  });
+
+  if (input.reorder) {
+    // Tous retirés d'abord, en une passe : remettre chacun aussitôt après
+    // l'avoir retiré ne suffit pas à Music pour changer sa place.
+    console.log('Retrait des favoris : ' + ordered.length + ' titre(s)…');
+    ordered.forEach(function (track) {
+      if (!input.dryRun && isFavorite(track)) setFavorite(track, false);
+    });
+    if (!input.dryRun && input.interval > 0) delay(Math.max(3, input.interval));
+  }
 
   console.log('Favoris, du like le plus ancien au plus récent : ' + ordered.length +
     ' titre(s)…');
-  ordered.forEach(function (pid, index) {
-    const found = tracks.whose({ persistentID: pid });
-    if (!found.length) {
-      report.gone++;
-      return;
-    }
-    const track = found[0];
-    const already = isFavorite(track);
-    if (already && !input.reorder) {
+  let done = 0;
+  ordered.forEach(function (track, index) {
+    if (!input.reorder && isFavorite(track)) {
       report.already++;
     } else {
       if (!input.dryRun) {
         if (done > 0 && input.interval > 0) delay(input.interval);
-        if (already) setFavorite(track, false);
         setFavorite(track, true);
       }
       done++;
