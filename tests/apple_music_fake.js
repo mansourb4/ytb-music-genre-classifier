@@ -47,6 +47,18 @@ function collection(getItems, wrap) {
   });
 }
 
+// Date de mise en favori, comme celle sur laquelle Music trie ses favoris :
+// un compteur qui avance à chaque ajout.
+function setFavorite(track, value) {
+  track.favorite = value;
+  if (value) {
+    state.clock = (state.clock || 0) + 1;
+    track.favoriteAt = state.clock;
+  } else {
+    delete track.favoriteAt;
+  }
+}
+
 // Comme en JXA, une propriété se lit en l'appelant et s'écrit en l'affectant.
 function trackObject(track) {
   return {
@@ -67,10 +79,10 @@ function trackObject(track) {
     },
     set favorited(value) {
       if (state.ancienMacOS) throw new Error('Message incompréhensible. (-1708)');
-      track.favorite = value;
+      setFavorite(track, value);
     },
     get loved() { return () => Boolean(track.favorite); },
-    set loved(value) { track.favorite = value; },
+    set loved(value) { setFavorite(track, value); },
   };
 }
 
@@ -147,6 +159,7 @@ global.Application = (name) => {
   return Music;
 };
 global.Path = Path;
+global.delay = (seconds) => { state.delays = (state.delays || 0) + seconds; };
 global.ObjC = { import: () => {}, unwrap: (value) => value };
 global.$ = {
   NSUTF8StringEncoding: 4,

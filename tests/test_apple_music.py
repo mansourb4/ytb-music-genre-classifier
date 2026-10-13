@@ -165,9 +165,15 @@ def test_state_round_trip(tmp_path):
 
 # ------------------------------------------------------------------ favoris
 
-def _favorites(library, pids, dry_run=False):
-    return apple_music.run_favorites(pids, dry_run=dry_run, on_line=lambda line: None,
-                                     popen=library.popen)
+def _favorites(library, pids, dry_run=False, reorder=False):
+    return apple_music.run_favorites(pids, dry_run=dry_run, reorder=reorder,
+                                     on_line=lambda line: None, popen=library.popen)
+
+
+def _shown(library):
+    """Les favoris tels qu'Apple Music les montre : le plus récent d'abord."""
+    favorites = [t for t in library.state["tracks"] if t.get("favorite")]
+    return [t["pid"] for t in sorted(favorites, key=lambda t: -t["favoriteAt"])]
 
 
 def test_liked_titles_become_favorites(tmp_path):
@@ -252,3 +258,34 @@ def test_absent_titles_are_grouped_by_reason():
         apple_music.LIKED_NOT_IN_LIBRARY: ["B – Perso"],
         apple_music.LIKED_REMOVED: ["Grisé"],
     }
+
+
+def test_favorites_show_in_the_order_of_the_likes(tmp_path):
+    library = Library(tmp_path)
+    wanted, plans, present = _setup()
+    known = library.run(plans, wanted, present).known
+    likes = [known["a"], known["b"], known["c"]]          # « a » liké le plus récemment
+    _favorites(library, likes)
+    assert _shown(library) == likes
+    assert library.state["delays"] == 2                    # une pause entre deux favoris
+
+
+def test_a_new_like_lands_on_top_without_redoing_the_others(tmp_path):
+    library = Library(tmp_path)
+    wanted, plans, present = _setup()
+    known = library.run(plans, wanted, present).known
+    _favorites(library, [known["b"], known["c"]])
+    result = _favorites(library, [known["a"], known["b"], known["c"]])
+    assert (result.favorited, result.already) == (1, 2)
+    assert _shown(library) == [known["a"], known["b"], known["c"]]
+
+
+def test_reordering_fixes_favorites_added_in_the_wrong_order(tmp_path):
+    library = Library(tmp_path)
+    wanted, plans, present = _setup()
+    known = library.run(plans, wanted, present).known
+    likes = [known["a"], known["b"], known["c"]]
+    _favorites(library, likes[::-1])                       # l'ordre inverse
+    assert _shown(library) == likes[::-1]
+    assert _favorites(library, likes, reorder=True).favorited == 3
+    assert _shown(library) == likes

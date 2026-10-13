@@ -233,12 +233,17 @@ class FavoritesResult:
 def run_favorites(
     pids: list[str],
     *,
+    reorder: bool = False,
+    interval: float = 1.0,
     dry_run: bool = False,
     on_line: Callable[[str], None] = print,
     popen: Callable[..., subprocess.Popen] = subprocess.Popen,
 ) -> FavoritesResult:
-    data = _osascript(FAVORITES_SCRIPT, {"pids": pids, "dryRun": dry_run},
-                      on_line=on_line, popen=popen)
+    """Met en favoris, dans l'ordre des likes : `pids` va du plus récent au
+    plus ancien, et Apple Music affiche ses favoris du plus récemment ajouté
+    au plus ancien. `reorder` refait aussi ceux qui y sont déjà."""
+    payload = {"pids": pids, "reorder": reorder, "interval": interval, "dryRun": dry_run}
+    data = _osascript(FAVORITES_SCRIPT, payload, on_line=on_line, popen=popen)
     return FavoritesResult(data.get("favorited", 0), data.get("already", 0), data.get("gone", 0))
 
 

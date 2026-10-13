@@ -715,8 +715,11 @@ ytmgc apple-music
 
 `ytmgc apple-music-likes` met en favoris (« J'adore ») dans Apple Music les
 titres likés sur YouTube Music, reconnus par leur identifiant ou, pour un
-doublon, par le morceau. Il n'ajoute que des favoris, n'en retire aucun ;
-`--essai` compte sans rien toucher.
+doublon, par le morceau. Apple Music présentant ses favoris du plus récemment
+ajouté au plus ancien, ils sont ajoutés du like le plus ancien au plus récent,
+une seconde d'écart entre deux (`--intervalle`) : la liste suit l'ordre de
+YouTube Music. `--reordonner` refait les favoris déjà posés pour les remettre
+dans cet ordre. `--essai` compte sans rien toucher.
 
 ## Garanties
 

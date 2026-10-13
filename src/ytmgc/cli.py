@@ -849,10 +849,17 @@ def cmd_apple_music_likes(args: argparse.Namespace, config: Config) -> int:
     print(f"{len(liked)} titre(s) liké(s), dont {len(pids)} présent(s) dans Apple Music.",
           flush=True)
 
-    result = apple_music.run_favorites(pids, dry_run=args.essai,
+    if args.reordonner and not args.essai:
+        minutes = round(len(pids) * (args.intervalle + 0.1) / 60)
+        print(f"Remise dans l'ordre : environ {minutes} min. Laisse Music ouvert.", flush=True)
+    result = apple_music.run_favorites(pids, reorder=args.reordonner, interval=args.intervalle,
+                                       dry_run=args.essai,
                                        on_line=lambda line: print(line, flush=True))
     print("\nEssai : rien n'a été modifié. Ce qui serait fait :" if args.essai else "\nTerminé :")
-    print(f"  {result.favorited} titre(s) mis en favoris, {result.already} l'étaient déjà")
+    if args.reordonner:
+        print(f"  {result.favorited} favori(s) remis dans l'ordre de YouTube Music")
+    else:
+        print(f"  {result.favorited} titre(s) mis en favoris, {result.already} l'étaient déjà")
     if result.gone:
         print(f"  {result.gone} titre(s) retiré(s) de la bibliothèque Music depuis : relance "
               "« ytmgc apple-music »")
@@ -1187,6 +1194,12 @@ def build_parser() -> argparse.ArgumentParser:
                            help="Dossier des fichiers (défaut : %(default)s)")
     likes_cmd.add_argument("--essai", action="store_true",
                            help="Compter ce qui serait fait, sans rien toucher")
+    likes_cmd.add_argument("--reordonner", action="store_true",
+                           help="Refaire tous les favoris, pour qu'Apple Music les montre "
+                                "dans l'ordre des likes de YouTube Music")
+    likes_cmd.add_argument("--intervalle", type=float, default=1.0,
+                           help="Secondes entre deux favoris, pour que leurs dates se "
+                                "suivent (défaut : %(default)s)")
     likes_cmd.set_defaults(func=cmd_apple_music_likes)
 
     absents_cmd = subparsers.add_parser(
