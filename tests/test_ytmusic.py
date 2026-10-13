@@ -131,11 +131,12 @@ def test_playlist_entries_carry_the_like_status():
         {"videoId": None, "title": "Indisponible"},
     ]}})
     entries = YouTubeMusicClient("unused", api=api).playlist_entries("PL1")
-    assert entries == [
-        {"video_id": "a", "label": "Moderat – Rain", "liked": True},
-        {"video_id": "b", "label": "Solo", "liked": False},
-        {"video_id": None, "label": "Indisponible", "liked": False},
+    assert [(e["video_id"], e["label"], e["liked"]) for e in entries] == [
+        ("a", "Moderat – Rain", True),
+        ("b", "Solo", False),
+        (None, "Indisponible", False),
     ]
+    assert (entries[0]["title"], entries[0]["artists"]) == ("Rain", ["Moderat"])
 
 
 def test_like_rates_the_song():

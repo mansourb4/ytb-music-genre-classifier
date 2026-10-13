@@ -23,7 +23,7 @@ from pathlib import Path
 from typing import Callable, Iterable, Mapping
 
 from ytmgc.download import Wanted
-from ytmgc.models import PlaylistPlan
+from ytmgc.models import PlaylistPlan, Track
 
 SCRIPT = Path(__file__).with_name("apple_music.js")
 STATE_FILE = ".apple-music.json"
@@ -133,13 +133,14 @@ class Result:
         )
 
 
-def run_script(
+def _osascript(
+    script: Path,
     payload: dict,
     *,
-    on_line: Callable[[str], None] = print,
-    popen: Callable[..., subprocess.Popen] = subprocess.Popen,
-) -> Result:
-    """Lance le script Apple Music et relaie son avancement ligne à ligne."""
+    on_line: Callable[[str], None],
+    popen: Callable[..., subprocess.Popen],
+) -> dict:
+    """Lance un script JXA sur `payload`, relaie son avancement, rend sa sortie."""
     if sys.platform != "darwin" and popen is subprocess.Popen:
         raise RuntimeError("Apple Music ne se pilote que depuis un Mac.")
     with tempfile.NamedTemporaryFile("w", suffix=".json", encoding="utf-8",
@@ -152,7 +153,7 @@ def run_script(
     try:
         with open(output_path, "w", encoding="utf-8") as output_file:
             process = popen(
-                ["osascript", "-l", "JavaScript", str(SCRIPT), input_path],
+                ["osascript", "-l", "JavaScript", str(script), input_path],
                 stdout=output_file, stderr=subprocess.PIPE, text=True,
             )
             errors: list[str] = []
@@ -164,8 +165,78 @@ def run_script(
         if code != 0:
             detail = errors[-1] if errors else f"code de sortie {code}"
             raise RuntimeError(f"Le script Apple Music a échoué : {detail}")
-        output = Path(output_path).read_text(encoding="utf-8")
+        return json.loads(Path(output_path).read_text(encoding="utf-8"))
     finally:
         Path(input_path).unlink(missing_ok=True)
         Path(output_path).unlink(missing_ok=True)
-    return Result.from_json(json.loads(output))
+
+
+def run_script(
+    payload: dict,
+    *,
+    on_line: Callable[[str], None] = print,
+    popen: Callable[..., subprocess.Popen] = subprocess.Popen,
+) -> Result:
+    """Lance le script Apple Music et relaie son avancement ligne à ligne."""
+    return Result.from_json(_osascript(SCRIPT, payload, on_line=on_line, popen=popen))
+
+
+# ----------------------------------------------------------------- favoris
+
+FAVORITES_SCRIPT = Path(__file__).with_name("apple_music_favorites.js")
+
+
+def favorite_ids(
+    liked: Iterable[dict],
+    tracks: Mapping[str, "Track"],
+    known: Mapping[str, str],
+) -> tuple[list[str], list[str]]:
+    """Titres d'Apple Music à mettre en favoris, et likés introuvables dans Music.
+
+    Un titre liké sur YouTube correspond à un titre d'Apple Music par son
+    identifiant, ou à défaut par le morceau (même artiste, même titre) : c'est
+    le cas des doublons, téléchargés sous l'autre version.
+    """
+    from ytmgc.download import song_key
+
+    by_song: dict[str, str] = {}
+    for video_id, pid in known.items():
+        track = tracks.get(video_id)
+        if track is not None:
+            by_song.setdefault(song_key(track), pid)
+    pids: list[str] = []
+    absent: list[str] = []
+    for entry in liked:
+        video_id = entry.get("video_id")
+        if not video_id:
+            continue
+        pid = known.get(video_id)
+        if pid is None:
+            track = tracks.get(video_id) or Track(
+                video_id, entry.get("title") or "", tuple(entry.get("artists") or ()))
+            pid = by_song.get(song_key(track))
+        if pid is None:
+            absent.append(entry.get("label") or video_id)
+        elif pid not in pids:
+            pids.append(pid)
+    return pids, absent
+
+
+@dataclass(slots=True)
+class FavoritesResult:
+    favorited: int = 0
+    already: int = 0
+    #: Identifiants retenus qui ne sont plus dans la bibliothèque Music.
+    gone: int = 0
+
+
+def run_favorites(
+    pids: list[str],
+    *,
+    dry_run: bool = False,
+    on_line: Callable[[str], None] = print,
+    popen: Callable[..., subprocess.Popen] = subprocess.Popen,
+) -> FavoritesResult:
+    data = _osascript(FAVORITES_SCRIPT, {"pids": pids, "dryRun": dry_run},
+                      on_line=on_line, popen=popen)
+    return FavoritesResult(data.get("favorited", 0), data.get("already", 0), data.get("gone", 0))

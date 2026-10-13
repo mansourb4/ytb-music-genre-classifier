@@ -58,6 +58,19 @@ function trackObject(track) {
     set genre(value) { track.genre = value; },
     get grouping() { return () => track.grouping; },
     set grouping(value) { track.grouping = value; },
+    // « favorited » depuis macOS 14 ; « loved » avant (état « ancienMacOS »).
+    get favorited() {
+      return () => {
+        if (state.ancienMacOS) throw new Error('Message incompréhensible. (-1708)');
+        return Boolean(track.favorite);
+      };
+    },
+    set favorited(value) {
+      if (state.ancienMacOS) throw new Error('Message incompréhensible. (-1708)');
+      track.favorite = value;
+    },
+    get loved() { return () => Boolean(track.favorite); },
+    set loved(value) { track.favorite = value; },
   };
 }
 

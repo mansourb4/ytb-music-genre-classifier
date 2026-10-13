@@ -20,6 +20,7 @@ Le pipeline est découpé en étapes reprenables, chacune persistée en base :
     ytmgc telecharge # copie locale : un dossier par playlist, un m4a par titre
     ytmgc apple-music # range ces fichiers dans Apple Music (dossiers, playlists)
     ytmgc like --playlist NOM   # like tous les titres d'une playlist
+    ytmgc apple-music-likes     # titres likés → favoris dans Apple Music
     ytmgc web        # interface locale : connexion, aperçu, application
 
 `apply` est en mode « à blanc » par défaut : il faut `--execute` pour écrire.
@@ -822,6 +823,38 @@ def cmd_like(args: argparse.Namespace, config: Config) -> int:
     return 0
 
 
+def cmd_apple_music_likes(args: argparse.Namespace, config: Config) -> int:
+    """Met en favoris dans Apple Music les titres likés sur YouTube Music."""
+    from ytmgc import apple_music
+
+    root = Path(args.dossier).expanduser().resolve()
+    state = apple_music.load_state(root)
+    if not state.known:
+        print("Apple Music ne connaît encore aucun titre de l'outil : lance d'abord "
+              "« ytmgc apple-music ».", file=sys.stderr)
+        return 1
+    print("Lecture des titres likés sur YouTube Music…", flush=True)
+    liked = _youtube(config).playlist_entries("LM")
+    tracks = {track.video_id: track for track in _repository(config).all_tracks()}
+    pids, absent = apple_music.favorite_ids(liked, tracks, state.known)
+    print(f"{len(liked)} titre(s) liké(s), dont {len(pids)} présent(s) dans Apple Music.",
+          flush=True)
+
+    result = apple_music.run_favorites(pids, dry_run=args.essai,
+                                       on_line=lambda line: print(line, flush=True))
+    print("\nEssai : rien n'a été modifié. Ce qui serait fait :" if args.essai else "\nTerminé :")
+    print(f"  {result.favorited} titre(s) mis en favoris, {result.already} l'étaient déjà")
+    if result.gone:
+        print(f"  {result.gone} titre(s) retiré(s) de la bibliothèque Music depuis : relance "
+              "« ytmgc apple-music »")
+    if absent:
+        print(f"  {len(absent)} titre(s) liké(s) absent(s) d'Apple Music (pas téléchargés, "
+              "hors playlists ou indisponibles), par exemple :")
+        for label in absent[:10]:
+            print(f"    {label}")
+    return 0
+
+
 def cmd_web(args: argparse.Namespace, config: Config) -> int:
     """Sert l'interface locale."""
     try:
@@ -1107,6 +1140,14 @@ def build_parser() -> argparse.ArgumentParser:
     like_cmd.add_argument("--pause", type=float, default=1.0,
                           help="Secondes entre deux likes (défaut : %(default)s)")
     like_cmd.set_defaults(func=cmd_like)
+
+    likes_cmd = subparsers.add_parser(
+        "apple-music-likes", help="Mettre en favoris dans Apple Music les titres likés (Mac)")
+    likes_cmd.add_argument("--dossier", default="~/Music/Playlists",
+                           help="Dossier des fichiers (défaut : %(default)s)")
+    likes_cmd.add_argument("--essai", action="store_true",
+                           help="Compter ce qui serait fait, sans rien toucher")
+    likes_cmd.set_defaults(func=cmd_apple_music_likes)
 
     web = subparsers.add_parser("web", help="Lancer l'interface locale")
     web.add_argument("--host", default=None, help="Interface d'écoute (défaut : locale uniquement)")

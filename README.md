@@ -701,6 +701,11 @@ ytmgc apple-music --essai   # ce qui serait fait, sans rien toucher
 ytmgc apple-music
 ```
 
+`ytmgc apple-music-likes` met en favoris (« J'adore ») dans Apple Music les
+titres likés sur YouTube Music, reconnus par leur identifiant ou, pour un
+doublon, par le morceau. Il n'ajoute que des favoris, n'en retire aucun ;
+`--essai` compte sans rien toucher.
+
 ## Garanties
 
 - **Tes playlists manuelles ne sont jamais touchées.** L'outil ne modifie que

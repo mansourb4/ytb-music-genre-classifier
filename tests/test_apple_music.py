@@ -161,3 +161,65 @@ def test_state_round_trip(tmp_path):
     apple_music.save_state(tmp_path, apple_music.State({"a": "P1"}, {"Jazz"}))
     assert apple_music.load_state(tmp_path) == apple_music.State({"a": "P1"}, {"Jazz"})
     assert apple_music.load_state(tmp_path / "absent") == apple_music.State()
+
+
+# ------------------------------------------------------------------ favoris
+
+def _favorites(library, pids, dry_run=False):
+    return apple_music.run_favorites(pids, dry_run=dry_run, on_line=lambda line: None,
+                                     popen=library.popen)
+
+
+def test_liked_titles_become_favorites(tmp_path):
+    library = Library(tmp_path)
+    wanted, plans, present = _setup()
+    known = library.run(plans, wanted, present).known
+
+    result = _favorites(library, [known["a"], known["c"], "DISPARU"])
+    assert (result.favorited, result.already, result.gone) == (2, 0, 1)
+    favorites = {t["pid"] for t in library.state["tracks"] if t.get("favorite")}
+    assert favorites == {known["a"], known["c"]}
+
+    again = _favorites(library, [known["a"], known["c"]])
+    assert (again.favorited, again.already) == (0, 2)
+
+
+def test_favorites_on_an_older_macos(tmp_path):
+    library = Library(tmp_path)
+    wanted, plans, present = _setup()
+    known = library.run(plans, wanted, present).known
+    state = library.state
+    state["ancienMacOS"] = True
+    library.path.write_text(json.dumps(state))
+    assert _favorites(library, [known["b"]]).favorited == 1
+    assert [t["pid"] for t in library.state["tracks"] if t.get("favorite")] == [known["b"]]
+
+
+def test_a_dry_run_sets_no_favorite(tmp_path):
+    library = Library(tmp_path)
+    wanted, plans, present = _setup()
+    known = library.run(plans, wanted, present).known
+    assert _favorites(library, [known["a"]], dry_run=True).favorited == 1
+    assert not any(t.get("favorite") for t in library.state["tracks"])
+
+
+def test_liked_titles_are_matched_by_id_then_by_song():
+    from ytmgc.models import Track
+
+    tracks = {
+        "a": Track("a", "Rain", ("Moderat",)),
+        "b": Track("b", "Aquarela do Brasil", ("João Gilberto",)),
+    }
+    known = {"a": "P1", "b": "P2"}
+    liked = [
+        {"video_id": "a", "label": "Moderat – Rain"},
+        # Doublon : l'autre version du morceau, téléchargée sous « b ».
+        {"video_id": "z", "label": "Joao Gilberto – Aquarela Do Brasil",
+         "title": "Aquarela Do Brasil", "artists": ["Joao Gilberto"]},
+        {"video_id": "y", "label": "Inconnu – Rien", "title": "Rien", "artists": ["Inconnu"]},
+        {"video_id": None, "label": "Grisé"},
+        {"video_id": "a", "label": "Moderat – Rain"},
+    ]
+    pids, absent = apple_music.favorite_ids(liked, tracks, known)
+    assert pids == ["P1", "P2"]
+    assert absent == ["Inconnu – Rien"]
