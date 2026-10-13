@@ -122,3 +122,27 @@ def test_write_operations_are_no_ops_when_empty():
     client.remove_items("PL1", {})
     client.edit_playlist("PL1")
     assert api.calls == []
+
+
+def test_playlist_entries_carry_the_like_status():
+    api = FakeApi(details={"PL1": {"tracks": [
+        {"videoId": "a", "title": "Rain", "artists": [{"name": "Moderat"}], "likeStatus": "LIKE"},
+        {"videoId": "b", "title": "Solo", "artists": [], "likeStatus": "INDIFFERENT"},
+        {"videoId": None, "title": "Indisponible"},
+    ]}})
+    entries = YouTubeMusicClient("unused", api=api).playlist_entries("PL1")
+    assert entries == [
+        {"video_id": "a", "label": "Moderat – Rain", "liked": True},
+        {"video_id": "b", "label": "Solo", "liked": False},
+    ]
+
+
+def test_like_rates_the_song():
+    rated = []
+
+    class Api(FakeApi):
+        def rate_song(self, video_id, rating):
+            rated.append((video_id, str(getattr(rating, "value", rating))))
+
+    YouTubeMusicClient("unused", api=Api()).like("a")
+    assert rated == [("a", "LIKE")]

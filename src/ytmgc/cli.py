@@ -19,6 +19,7 @@ Le pipeline est découpé en étapes reprenables, chacune persistée en base :
     ytmgc purge      # supprime les playlists générées (annulation complète)
     ytmgc telecharge # copie locale : un dossier par playlist, un m4a par titre
     ytmgc apple-music # range ces fichiers dans Apple Music (dossiers, playlists)
+    ytmgc like --playlist NOM   # like tous les titres d'une playlist
     ytmgc web        # interface locale : connexion, aperçu, application
 
 `apply` est en mode « à blanc » par défaut : il faut `--execute` pour écrire.
@@ -782,6 +783,43 @@ def cmd_apple_music(args: argparse.Namespace, config: Config) -> int:
     return 0
 
 
+def cmd_like(args: argparse.Namespace, config: Config) -> int:
+    """Like chaque titre d'une playlist YouTube Music."""
+    from ytmgc import likes
+
+    client = _youtube(config)
+    matches = likes.find_playlists(client.list_playlist_summaries(), args.playlist)
+    if not matches:
+        print(f"Aucune playlist dont le nom contient « {args.playlist} ».", file=sys.stderr)
+        return 1
+    if len(matches) > 1:
+        print(f"Plusieurs playlists correspondent à « {args.playlist} », précise :")
+        for match in matches:
+            print(f"  {match['title']}")
+        return 1
+    playlist = matches[0]
+    entries = client.playlist_entries(playlist["playlist_id"])
+    print(f"Playlist « {playlist['title']} » : {len(entries)} titre(s).", flush=True)
+
+    def progress(index: int, total: int, entry: dict, error: str | None) -> None:
+        state = f"ÉCHEC : {error}" if error else "liké"
+        print(f"  [{index}/{total}] {entry['label']} — {state}", flush=True)
+
+    report = likes.like_all(entries, client.like, pause=args.pause, dry_run=args.essai,
+                            on_progress=progress)
+    if args.essai:
+        print(f"Essai : {report.liked} titre(s) à liker, {report.already} déjà liké(s). "
+              "Rien n'a été modifié.")
+        return 0
+    print(f"\n{report.liked} titre(s) liké(s), {report.already} déjà liké(s), "
+          f"{len(report.failed)} échec(s).")
+    if report.stopped:
+        print(f"Arrêt après {likes.MAX_CONSECUTIVE_FAILURES} échecs d'affilée : YouTube refuse "
+              "sans doute pour l'instant. Relance plus tard, les titres déjà likés seront sautés.")
+        return 1
+    return 0
+
+
 def cmd_web(args: argparse.Namespace, config: Config) -> int:
     """Sert l'interface locale."""
     try:
@@ -1058,6 +1096,15 @@ def build_parser() -> argparse.ArgumentParser:
     apple_cmd.add_argument("--essai", action="store_true",
                            help="Montrer ce qui serait fait, sans rien toucher")
     apple_cmd.set_defaults(func=cmd_apple_music)
+
+    like_cmd = subparsers.add_parser("like", help="Liker tous les titres d'une playlist")
+    like_cmd.add_argument("--playlist", required=True,
+                          help="Nom de la playlist (ou une partie du nom)")
+    like_cmd.add_argument("--essai", action="store_true",
+                          help="Compter ce qui serait liké, sans rien toucher")
+    like_cmd.add_argument("--pause", type=float, default=1.0,
+                          help="Secondes entre deux likes (défaut : %(default)s)")
+    like_cmd.set_defaults(func=cmd_like)
 
     web = subparsers.add_parser("web", help="Lancer l'interface locale")
     web.add_argument("--host", default=None, help="Interface d'écoute (défaut : locale uniquement)")

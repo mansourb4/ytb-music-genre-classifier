@@ -608,7 +608,12 @@ ytmgc suivi      # ce qui est jugé, ce qui reste, où sont les résultats
 ytmgc purge --execute   # supprime les playlists générées (annulation complète)
 ytmgc telecharge # copie locale en m4a, un dossier par playlist
 ytmgc apple-music # range ces fichiers dans Apple Music (Mac)
+ytmgc like --playlist "Nom"   # like tous les titres d'une playlist
 ```
+
+`like` saute les titres déjà likés et marque une pause d'une seconde entre deux
+likes (`--pause`) ; `--essai` compte sans rien toucher. Une relance reprend où
+la précédente s'est arrêtée.
 
 `enrich` annonce son coût et demande confirmation. `--essai` se limite à une
 poignée de titres (`claude.pilot_size`, 50 par défaut), `--dry-run` s'arrête à

@@ -208,7 +208,33 @@ class YouTubeMusicClient:
         self._playlist_cache[playlist_id] = playlist
         return playlist
 
+    def playlist_entries(self, playlist_id: str) -> list[dict[str, Any]]:
+        """Titres d'une playlist, avec leur note : {video_id, label, liked}."""
+        data = self._api.get_playlist(playlist_id, limit=None)
+        entries = []
+        for t in data.get("tracks") or []:
+            if not t.get("videoId"):
+                continue
+            artists = ", ".join(a.get("name", "") for a in t.get("artists") or [] if a)
+            title = t.get("title") or ""
+            entries.append({
+                "video_id": t["videoId"],
+                "label": f"{artists} – {title}" if artists else title,
+                "liked": t.get("likeStatus") == "LIKE",
+            })
+        return entries
+
     # ------------------------------------------------------------ écriture
+
+    def like(self, video_id: str) -> None:
+        """Pouce levé : le titre rejoint « Titres likés »."""
+        try:
+            from ytmusicapi.models.content.enums import LikeStatus
+
+            rating: Any = LikeStatus.LIKE
+        except ImportError:  # anciennes versions : la chaîne suffit
+            rating = "LIKE"
+        self._api.rate_song(video_id, rating)
 
     def create_playlist(
         self, title: str, description: str, *, privacy: str, video_ids: Iterable[str]
