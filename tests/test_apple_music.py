@@ -334,3 +334,44 @@ def test_remove_then_favorite_again_in_order(tmp_path):
     assert _shown(library) == []                           # l'iPhone se vide ici
     assert _favorites(library, likes).favorited == 3
     assert _shown(library) == likes
+
+
+def _by_date_added(library):
+    """Les favoris triés par date d'ajout, le plus récent d'abord : la vue de Music."""
+    favorites = [t for t in library.state["tracks"] if t.get("favorite")]
+    return [t["path"] for t in sorted(favorites, key=lambda t: -t["addedAt"])]
+
+
+def test_reimport_puts_favorites_in_the_order_of_the_likes(tmp_path):
+    library = Library(tmp_path)
+    wanted, plans, present = _setup()
+    known = library.run(plans, wanted, present).known
+    likes = [known["c"], known["a"], known["b"]]                # « c » liké le plus récemment
+    _favorites(library, likes)
+
+    result = apple_music.run_favorites(likes, reimport=True, on_line=lambda line: None,
+                                       popen=library.popen)
+    assert set(result.reimported) == set(likes)
+    assert not set(result.reimported.values()) & set(likes)     # nouveaux identifiants
+    assert len(library.state["tracks"]) == 3                   # pas de doublon
+    paths = {v: str(ROOT / wanted[v].path) for v in "abc"}
+    assert _by_date_added(library) == [paths["c"], paths["a"], paths["b"]]
+
+    # Les nouveaux identifiants retenus, apple-music remet les titres dans leurs playlists.
+    renumbered = {v: result.reimported[pid] for v, pid in known.items()}
+    again = library.run(plans, wanted, present, renumbered)
+    assert again.added == 0
+    assert library.playlist("Électro", "Deep techno") == ["A", "B"]
+    assert library.playlist("Jazz", "Modal") == ["C"]
+
+
+def test_reimport_stops_if_a_file_vanishes(tmp_path):
+    library = Library(tmp_path)
+    wanted, plans, present = _setup()
+    known = library.run(plans, wanted, present).known
+    state = library.state
+    state["fichiersPerdus"] = True
+    library.path.write_text(json.dumps(state))
+    with pytest.raises(RuntimeError, match="fichier disparu"):
+        apple_music.run_favorites([known["a"]], reimport=True, on_line=lambda line: None,
+                                  popen=library.popen)

@@ -235,6 +235,8 @@ class FavoritesResult:
     gone: int = 0
     #: Favoris retirés (option « retirer »).
     removed: int = 0
+    #: Réimport : ancien identifiant Music → nouveau.
+    reimported: dict[str, str] = field(default_factory=dict)
 
 
 def run_favorites(
@@ -242,6 +244,7 @@ def run_favorites(
     *,
     reorder: bool = False,
     remove: bool = False,
+    reimport: bool = False,
     interval: float = 1.0,
     dry_run: bool = False,
     on_line: Callable[[str], None] = print,
@@ -250,11 +253,11 @@ def run_favorites(
     """Met en favoris, dans l'ordre des likes : `pids` va du plus récent au
     plus ancien, et Apple Music affiche ses favoris du plus récemment ajouté
     au plus ancien. `reorder` refait aussi ceux qui y sont déjà."""
-    payload = {"pids": pids, "reorder": reorder, "remove": remove, "interval": interval,
-               "dryRun": dry_run}
+    payload = {"pids": pids, "reorder": reorder, "remove": remove, "reimport": reimport,
+               "interval": interval, "dryRun": dry_run}
     data = _osascript(FAVORITES_SCRIPT, payload, on_line=on_line, popen=popen)
     return FavoritesResult(data.get("favorited", 0), data.get("already", 0), data.get("gone", 0),
-                           data.get("removed", 0))
+                           data.get("removed", 0), dict(data.get("reimported") or {}))
 
 
 # ----------------------------------------------------------------- absents

@@ -10,8 +10,11 @@
 const fs = require('fs');
 const [scriptPath, statePath, inputPath] = process.argv.slice(2);
 const state = JSON.parse(fs.readFileSync(statePath, 'utf8'));
-let counter = 1000;
-const newPid = () => 'P' + (counter++);
+// Identifiants jamais réutilisés d'un lancement à l'autre, comme dans Music.
+const newPid = () => {
+  state.nextPid = (state.nextPid || 1000) + 1;
+  return 'P' + state.nextPid;
+};
 
 function Path(path) {
   return { toString: () => path, _path: path };
@@ -106,7 +109,9 @@ function playlistObject(playlist) {
 
 function addFile(path) {
   const copied = state.copies ? '/Users/x/Music/Music/Media.localized/' + path.split('/').pop() : path;
-  const track = { pid: newPid(), path: copied, genre: '', grouping: '' };
+  // Date d'ajout : un compteur, comme celle sur laquelle Music trie.
+  state.clock = (state.clock || 0) + 1;
+  const track = { pid: newPid(), path: copied, genre: '', grouping: '', addedAt: state.clock };
   state.tracks.push(track);
   return trackObject(track);
 }
@@ -163,6 +168,7 @@ global.Path = Path;
 global.delay = (seconds) => { state.delays = (state.delays || 0) + seconds; };
 global.ObjC = { import: () => {}, unwrap: (value) => value };
 global.$ = {
+  NSFileManager: { defaultManager: { fileExistsAtPath: () => !state.fichiersPerdus } },
   NSUTF8StringEncoding: 4,
   NSString: { stringWithContentsOfFileEncodingError: (path) => fs.readFileSync(path, 'utf8') },
 };
@@ -170,6 +176,13 @@ console.log = (message) => process.stderr.write(message + '\n');
 
 const source = fs.readFileSync(scriptPath, 'utf8');
 const run = new Function(source + '\nreturn run;')();
-const output = run([inputPath]);
+let output;
+try {
+  output = run([inputPath]);
+} catch (error) {
+  // Comme osascript : une ligne d'erreur, et un code de sortie non nul.
+  process.stderr.write('apple_music.js: execution error: Error: ' + error.message + '\n');
+  process.exit(1);
+}
 fs.writeFileSync(statePath, JSON.stringify(state));
 process.stdout.write(output);

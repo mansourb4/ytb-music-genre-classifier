@@ -7,6 +7,12 @@
 // `remove` ne fait que retirer ces favoris, sans les remettre : pour vider
 // l'iPhone d'abord, avant de les reposer dans l'ordre.
 //
+// `reimport` retire chaque titre de la bibliothèque puis l'y rajoute (le
+// fichier ne bouge pas), du like le plus ancien au plus récent, `interval`
+// secondes entre deux : Apple Music trie ses favoris par date d'ajout, que
+// seul un nouvel ajout change. La sortie porte alors `reimported`, l'ancien
+// identifiant Music de chaque titre → le nouveau.
+//
 // `pids` est dans l'ordre des likes de YouTube Music, du plus récent au plus
 // ancien. Apple Music présente ses favoris du plus récemment ajouté au plus
 // ancien : on les ajoute donc en partant de la fin, le plus récent en dernier,
@@ -54,6 +60,8 @@ function run(argv) {
     else report.gone++;
   });
 
+  if (input.reimport) return reimport(Music, ordered, input, report);
+
   if (input.remove) {
     console.log('Retrait des favoris : ' + ordered.length + ' titre(s)…');
     ordered.forEach(function (track) {
@@ -89,6 +97,37 @@ function run(argv) {
       done++;
       report.favorited++;
     }
+    if ((index + 1) % 50 === 0) console.log('  ' + (index + 1) + '/' + ordered.length);
+  });
+  return JSON.stringify(report);
+}
+
+function fileExists(path) {
+  return $.NSFileManager.defaultManager.fileExistsAtPath(path);
+}
+
+function reimport(Music, ordered, input, report) {
+  report.reimported = {};
+  console.log('Réimport, du like le plus ancien au plus récent : ' + ordered.length +
+    ' titre(s)…');
+  ordered.forEach(function (track, index) {
+    const oldPid = track.persistentID();
+    const path = track.location().toString();
+    if (input.dryRun) {
+      report.reimported[oldPid] = oldPid;
+      return;
+    }
+    if (index > 0 && input.interval > 0) delay(input.interval);
+    Music.delete(track);
+    if (!fileExists(path)) {
+      // Music ne doit retirer que l'entrée de la bibliothèque, jamais le
+      // fichier : s'il a disparu, tout s'arrête (il est dans la corbeille).
+      throw new Error('fichier disparu après retrait de la bibliothèque, arrêt : ' + path);
+    }
+    const added = Music.add(Path(path));
+    setFavorite(added, true);
+    report.reimported[oldPid] = added.persistentID();
+    report.favorited++;
     if ((index + 1) % 50 === 0) console.log('  ' + (index + 1) + '/' + ordered.length);
   });
   return JSON.stringify(report);

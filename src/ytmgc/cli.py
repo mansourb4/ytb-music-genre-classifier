@@ -859,6 +859,25 @@ def cmd_apple_music_likes(args: argparse.Namespace, config: Config) -> int:
         for rank, pid in enumerate(pids, 1):
             track = tracks.get(by_pid.get(pid, ""))
             print(f"  {rank}. {track.label() if track else pid}")
+    if args.reimporter:
+        print(f"Réimport de {len(pids)} titre(s) : retirés de la bibliothèque Music puis "
+              "rajoutés dans l'ordre des likes (les fichiers ne bougent pas).", flush=True)
+        result = apple_music.run_favorites(pids, reimport=True, interval=args.intervalle,
+                                           dry_run=args.essai,
+                                           on_line=lambda line: print(line, flush=True))
+        if args.essai:
+            print(f"\nEssai : {len(result.reimported)} titre(s) seraient réimportés.")
+            return 0
+        # Nouveaux identifiants Music : à retenir avant toute autre chose.
+        by_pid = {pid: video_id for video_id, pid in state.known.items()}
+        for old, new in result.reimported.items():
+            if old in by_pid:
+                state.known[by_pid[old]] = new
+        apple_music.save_state(root, state)
+        print(f"\n{len(result.reimported)} titre(s) réimporté(s) et remis en favoris. "
+              "Retour dans leurs playlists…", flush=True)
+        step = build_parser().parse_args(["apple-music", "--dossier", str(root)])
+        return step.func(step, config)
     if args.retirer:
         result = apple_music.run_favorites(pids, remove=True, dry_run=args.essai,
                                            on_line=lambda line: print(line, flush=True))
@@ -1487,6 +1506,10 @@ def build_parser() -> argparse.ArgumentParser:
                            help="Compter ce qui serait fait, sans rien toucher")
     likes_cmd.add_argument("--limite", type=int, default=0,
                            help="Seulement les N likes les plus récents (pour tester l'ordre)")
+    likes_cmd.add_argument("--reimporter", action="store_true",
+                           help="Retirer puis rajouter les titres likés à la bibliothèque, "
+                                "dans l'ordre des likes : Music trie ses favoris par date "
+                                "d'ajout")
     likes_cmd.add_argument("--retirer", action="store_true",
                            help="Seulement retirer ces favoris (pour vider l'iPhone avant de "
                                 "les remettre dans l'ordre)")
