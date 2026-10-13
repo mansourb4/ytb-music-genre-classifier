@@ -851,6 +851,14 @@ def cmd_apple_music_likes(args: argparse.Namespace, config: Config) -> int:
     print(f"{len(liked)} titre(s) liké(s), dont {len(pids)} présent(s) dans Apple Music.",
           flush=True)
 
+    if args.limite:
+        # Les N likes les plus récents : de quoi vérifier l'ordre sur peu de titres.
+        pids = pids[: args.limite]
+        by_pid = {pid: video_id for video_id, pid in state.known.items()}
+        print("Ordre attendu dans les favoris d'Apple Music, du plus récent au plus ancien :")
+        for rank, pid in enumerate(pids, 1):
+            track = tracks.get(by_pid.get(pid, ""))
+            print(f"  {rank}. {track.label() if track else pid}")
     if args.retirer:
         result = apple_music.run_favorites(pids, remove=True, dry_run=args.essai,
                                            on_line=lambda line: print(line, flush=True))
@@ -1477,6 +1485,8 @@ def build_parser() -> argparse.ArgumentParser:
                            help="Dossier des fichiers (défaut : %(default)s)")
     likes_cmd.add_argument("--essai", action="store_true",
                            help="Compter ce qui serait fait, sans rien toucher")
+    likes_cmd.add_argument("--limite", type=int, default=0,
+                           help="Seulement les N likes les plus récents (pour tester l'ordre)")
     likes_cmd.add_argument("--retirer", action="store_true",
                            help="Seulement retirer ces favoris (pour vider l'iPhone avant de "
                                 "les remettre dans l'ordre)")
