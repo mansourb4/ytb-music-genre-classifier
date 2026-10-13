@@ -848,10 +848,10 @@ def cmd_apple_music_likes(args: argparse.Namespace, config: Config) -> int:
         print(f"  {result.gone} titre(s) retiré(s) de la bibliothèque Music depuis : relance "
               "« ytmgc apple-music »")
     if absent:
-        print(f"  {len(absent)} titre(s) liké(s) absent(s) d'Apple Music (pas téléchargés, "
-              "hors playlists ou indisponibles), par exemple :")
-        for label in absent[:10]:
-            print(f"    {label}")
+        print(f"\n{len(absent)} titre(s) liké(s) absent(s) d'Apple Music (pas téléchargés, "
+              "hors playlists ou indisponibles) :")
+        for label in sorted(absent, key=str.casefold):
+            print(f"  {label}")
     return 0
 
 
