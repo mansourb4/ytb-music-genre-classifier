@@ -1,0 +1,13 @@
+# Autres versions ytmgc — titres dont la version de la bibliothèque a disparu
+# de YouTube, avec le lien d'une version qui marche.
+#
+# Une ligne par morceau, colonnes séparées par des tabulations :
+#   artiste  |  titre  |  lien YouTube Music (ou identifiant)
+#
+# L'artiste et le titre sont ceux de la bibliothèque (tels qu'affichés par
+# `ytmgc absents`) ; le fichier téléchargé garde l'identifiant d'origine, et
+# reste rangé à la place du titre.
+Gannein	Semantic Satiation	https://music.youtube.com/watch?v=694Qi5daDNQ
+Roméo Elvis & Le Motel	Copain	https://music.youtube.com/watch?v=EdFAvH4k0lw
+tojiramasaavv	SOLID SLIDER - Tatsuro Yamashita	https://music.youtube.com/watch?v=o39iaNlPse4
+照井順政	一緒なら	https://music.youtube.com/watch?v=7hkI43oPIxk

@@ -450,3 +450,44 @@ def test_files_taken_while_signed_in_are_marked(tmp_path):
     # La mise à jour des propriétés ne l'efface pas.
     download.write_tags(tmp_path / wanted[ids[0]].path, ids[0], _tags("Jazz · Modal"))
     assert download.signed_in(tmp_path / wanted[ids[0]].path)
+
+
+def test_alternatives_file_maps_titles_to_other_versions(tmp_path):
+    path = tmp_path / "autres-versions.txt"
+    path.write_text(
+        "# commentaire\n"
+        "Roméo Elvis & Le Motel\tCopain\thttps://music.youtube.com/watch?v=EdFAvH4k0lw&si=x\n"
+        "照井順政\t一緒なら\thttps://youtu.be/7hkI43oPIxk\n"
+        "Nu\tId\t694Qi5daDNQ\n"
+        "Cassé\tLien\tpas un lien\n",
+        encoding="utf-8",
+    )
+    alternatives = download.load_alternatives(path)
+    assert len(alternatives) == 3
+    tracks = [
+        Track("orig0000001", "Copain", ("Roméo Elvis & Le Motel",)),
+        Track("orig0000002", "一緒なら", ("照井順政",)),
+        Track("orig0000003", "Autre", ("Quelqu'un",)),
+    ]
+    assert download.sources_for(tracks, alternatives) == {
+        "orig0000001": "EdFAvH4k0lw", "orig0000002": "7hkI43oPIxk"}
+    assert download.load_alternatives(tmp_path / "absent.txt") == {}
+
+
+def test_a_chosen_version_is_downloaded_under_the_original_id(tmp_path):
+    track = Track("orig0000001", "Copain", ("Roméo Elvis & Le Motel",), "Album")
+    tracks = {track.video_id: track}
+    wanted = {track.video_id: download.Wanted(Path("Pop", "Copain.m4a"), _tags())}
+    asked = []
+    fake = _fake_run(set())
+
+    def run(cmd, **kwargs):
+        asked.append(cmd[-1])
+        return fake(cmd, **kwargs)
+
+    report = download.download(tmp_path, [(track.video_id, wanted[track.video_id].path)],
+                               tracks, wanted, Path("yt-dlp"), run=run, sleep=lambda _: None,
+                               sources={track.video_id: "EdFAvH4k0lw"})
+    assert asked == ["https://music.youtube.com/watch?v=EdFAvH4k0lw"]
+    assert report.downloaded == 1
+    assert download.read_id(tmp_path / "Pop" / "Copain.m4a") == "orig0000001"

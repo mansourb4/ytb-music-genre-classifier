@@ -19,6 +19,8 @@ data/*
 !data/propositions.txt
 # Le pays des artistes : une connaissance, pas un cache.
 !data/pays.txt
+# Les autres versions choisies à la main pour les titres disparus.
+!data/autres-versions.txt
 *.db
 *.db-journal
 headers_auth.json

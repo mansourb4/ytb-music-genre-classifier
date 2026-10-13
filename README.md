@@ -653,6 +653,10 @@ sorti de toutes les playlists part dans `_Hors playlists` (rien n'est
 supprimé). Un titre devenu indisponible est cherché sous une autre
 publication du même morceau (même artiste, même titre, durée à dix secondes
 près), comme le fait l'appli YouTube Music ; `--sans-autre-version` l'évite.
+Quand cette recherche ne trouve rien, `data/autres-versions.txt` indique à la
+main où prendre le titre : artiste, titre et lien d'une version qui marche,
+séparés par des tabulations. Le fichier téléchargé garde l'identifiant
+d'origine et reste rangé à sa place.
 Les échecs sont listés dans `_échecs.txt` ; après cinq échecs
 d'affilée, l'outil s'arrête, YouTube bloquant sans doute pour un temps.
 

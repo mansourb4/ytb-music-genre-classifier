@@ -673,6 +673,12 @@ def cmd_telecharge(args: argparse.Namespace, config: Config) -> int:
             state += ", autre version"
         print(f"  [{index}/{total}] {track.label()} — {state}", flush=True)
 
+    alternatives = download.load_alternatives(
+        Path(config.taxonomy.placements_file).with_name(download.ALTERNATIVES_FILE))
+    sources = download.sources_for((tracks[v] for v, _ in todo), alternatives)
+    if sources:
+        print(f"{len(sources)} titre(s) pris depuis la version indiquée dans "
+              f"{download.ALTERNATIVES_FILE}.\n")
     report = download.Report()
     search = None if args.sans_autre_version else download.ytmusic_search()
     batch, pauses = todo, 0
@@ -680,7 +686,8 @@ def cmd_telecharge(args: argparse.Namespace, config: Config) -> int:
         download.download(
             root, batch, tracks, wanted, ytdlp, ffmpeg=ffmpeg,
             cookies_browser=args.cookies_navigateur, cookies_file=cookies_file,
-            pause=args.pause, workers=args.parallele, search=search, report=report,
+            pause=args.pause, workers=args.parallele, search=search, sources=sources,
+            report=report,
             mark=download.mark_signed_in if (args.cookies_navigateur or args.cookies) else None,
             on_progress=progress,
         )

@@ -446,6 +446,54 @@ def retag(
     return changed
 
 
+# ------------------------------------------------------ autres versions
+
+#: Titres dont la version de la bibliothèque a disparu de YouTube, avec le
+#: lien d'une version qui marche, choisie à la main. Même clé que les
+#: déplacements : l'artiste principal et le titre.
+ALTERNATIVES_FILE = "autres-versions.txt"
+_LINK_ID = re.compile(r"(?:[?&]v=|youtu\.be/)([A-Za-z0-9_-]{11})")
+
+
+def video_id_from(link: str) -> str | None:
+    """Identifiant d'un lien YouTube (watch?v=, youtu.be/) ou identifiant nu."""
+    link = link.strip()
+    match = _LINK_ID.search(link)
+    if match:
+        return match.group(1)
+    return link if re.fullmatch(r"[A-Za-z0-9_-]{11}", link) else None
+
+
+def load_alternatives(path: Path) -> dict[str, str]:
+    """Clé du morceau → identifiant de la version à télécharger à la place."""
+    from ytmgc.verdicts import entry_key
+
+    book: dict[str, str] = {}
+    try:
+        lines = path.read_text(encoding="utf-8").splitlines()
+    except OSError:
+        return book
+    for line in lines:
+        if not line.strip() or line.lstrip().startswith("#"):
+            continue
+        parts = line.split("\t")
+        if len(parts) >= 3:
+            video_id = video_id_from(parts[2])
+            if video_id:
+                book[entry_key(parts[0].strip(), parts[1].strip())] = video_id
+    return book
+
+
+def sources_for(tracks: Iterable[Track], alternatives: Mapping[str, str]) -> dict[str, str]:
+    """Identifiant de la bibliothèque → version à télécharger à sa place."""
+    from ytmgc.verdicts import track_key
+
+    if not alternatives:
+        return {}
+    return {t.video_id: alternatives[track_key(t)] for t in tracks
+            if track_key(t) in alternatives}
+
+
 # ------------------------------------------------------------- yt-dlp
 
 def _candidates(name: str) -> list[Path]:
@@ -483,7 +531,7 @@ def find_tool(name: str, explicit: str | None = None) -> Path | None:
 def command(
     ytdlp: Path, track: Track, destination: Path, *,
     ffmpeg: Path | None = None, cookies_browser: str | None = None,
-    cookies_file: Path | None = None,
+    cookies_file: Path | None = None, source_id: str | None = None,
 ) -> list[str]:
     stem = destination.name[: -len(EXTENSION)]
     cmd = [
@@ -501,7 +549,7 @@ def command(
         cmd += ["--cookies-from-browser", cookies_browser]
     if cookies_file is not None:
         cmd += ["--cookies", str(cookies_file)]
-    cmd.append(f"https://music.youtube.com/watch?v={track.video_id}")
+    cmd.append(f"https://music.youtube.com/watch?v={source_id or track.video_id}")
     return cmd
 
 
@@ -633,6 +681,7 @@ def download(
     pause: float = 2.0,
     workers: int = 1,
     search: Search | None = None,
+    sources: Mapping[str, str] | None = None,
     report: Report | None = None,
     on_progress: Callable[[int, int, Track, str | None], None] | None = None,
     run: Callable[..., subprocess.CompletedProcess] = subprocess.run,
@@ -667,7 +716,8 @@ def download(
             jar = Path(private) / f"{video_id}.txt"
             shutil.copyfile(cookies_file, jar)
         cmd = command(ytdlp, track, root / STAGING / f"{video_id}{EXTENSION}",
-                      ffmpeg=ffmpeg, cookies_browser=cookies_browser, cookies_file=jar)
+                      ffmpeg=ffmpeg, cookies_browser=cookies_browser, cookies_file=jar,
+                      source_id=(sources or {}).get(video_id))
         try:
             error, used = _fetch(root, video_id, relative, track, wanted[video_id].tags, cmd,
                                  run=run, sleep=sleep, tag=tag, search=search, mark=mark)
