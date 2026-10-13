@@ -807,12 +807,14 @@ def cmd_like(args: argparse.Namespace, config: Config) -> int:
 
     report = likes.like_all(entries, client.like, pause=args.pause, dry_run=args.essai,
                             on_progress=progress)
+    unavailable = (f", {report.unavailable} indisponible(s) sur YouTube (grisés, "
+                   "impossibles à liker)" if report.unavailable else "")
     if args.essai:
-        print(f"Essai : {report.liked} titre(s) à liker, {report.already} déjà liké(s). "
-              "Rien n'a été modifié.")
+        print(f"Essai : {report.liked} titre(s) à liker, {report.already} déjà liké(s)"
+              f"{unavailable}. Rien n'a été modifié.")
         return 0
     print(f"\n{report.liked} titre(s) liké(s), {report.already} déjà liké(s), "
-          f"{len(report.failed)} échec(s).")
+          f"{len(report.failed)} échec(s){unavailable}.")
     if report.stopped:
         print(f"Arrêt après {likes.MAX_CONSECUTIVE_FAILURES} échecs d'affilée : YouTube refuse "
               "sans doute pour l'instant. Relance plus tard, les titres déjà likés seront sautés.")

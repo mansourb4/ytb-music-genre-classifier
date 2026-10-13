@@ -39,3 +39,9 @@ def test_a_pause_separates_likes():
     waits = []
     likes.like_all([_entry(v) for v in "abc"], lambda v: None, pause=1.5, sleep=waits.append)
     assert waits == [1.5, 1.5]
+
+
+def test_titles_removed_from_youtube_are_counted_apart():
+    done = []
+    report = likes.like_all([_entry("a"), _entry(None)], done.append, sleep=lambda _: None)
+    assert done == ["a"] and report.unavailable == 1

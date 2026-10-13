@@ -28,6 +28,8 @@ def find_playlists(summaries: Iterable[dict[str, Any]], text: str) -> list[dict[
 class Report:
     liked: int = 0
     already: int = 0
+    #: Titres retirés de YouTube, grisés dans la playlist : impossibles à liker.
+    unavailable: int = 0
     failed: list[tuple[str, str]] = field(default_factory=list)
     stopped: bool = False
 
@@ -45,6 +47,9 @@ def like_all(
     todo = []
     seen: set[str] = set()
     for entry in entries:
+        if not entry["video_id"]:
+            report.unavailable += 1
+            continue
         if entry["video_id"] in seen:
             continue
         seen.add(entry["video_id"])

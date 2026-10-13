@@ -134,6 +134,7 @@ def test_playlist_entries_carry_the_like_status():
     assert entries == [
         {"video_id": "a", "label": "Moderat – Rain", "liked": True},
         {"video_id": "b", "label": "Solo", "liked": False},
+        {"video_id": None, "label": "Indisponible", "liked": False},
     ]
 
 

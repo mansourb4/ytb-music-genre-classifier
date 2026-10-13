@@ -209,16 +209,18 @@ class YouTubeMusicClient:
         return playlist
 
     def playlist_entries(self, playlist_id: str) -> list[dict[str, Any]]:
-        """Titres d'une playlist, avec leur note : {video_id, label, liked}."""
+        """Titres d'une playlist, avec leur note : {video_id, label, liked}.
+
+        Un titre retiré de YouTube reste affiché, grisé, mais n'a plus
+        d'identifiant : il figure avec `video_id` à None, pour être compté.
+        """
         data = self._api.get_playlist(playlist_id, limit=None)
         entries = []
         for t in data.get("tracks") or []:
-            if not t.get("videoId"):
-                continue
             artists = ", ".join(a.get("name", "") for a in t.get("artists") or [] if a)
             title = t.get("title") or ""
             entries.append({
-                "video_id": t["videoId"],
+                "video_id": t.get("videoId"),
                 "label": f"{artists} – {title}" if artists else title,
                 "liked": t.get("likeStatus") == "LIKE",
             })
