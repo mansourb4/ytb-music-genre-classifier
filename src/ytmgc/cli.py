@@ -22,6 +22,7 @@ Le pipeline est découpé en étapes reprenables, chacune persistée en base :
     ytmgc like --playlist NOM   # like tous les titres d'une playlist
     ytmgc apple-music-likes     # titres likés → favoris dans Apple Music
     ytmgc absents    # ce qui manque dans Apple Music, et pourquoi
+    ytmgc synchro    # Apple Music maître : ses changements partout, puis les nouveautés
     ytmgc web        # interface locale : connexion, aperçu, application
 
 `apply` est en mode « à blanc » par défaut : il faut `--execute` pour écrire.
@@ -30,6 +31,7 @@ Le pipeline est découpé en étapes reprenables, chacune persistée en base :
 from __future__ import annotations
 
 import argparse
+import subprocess
 import sys
 import time
 from pathlib import Path
@@ -902,6 +904,280 @@ def cmd_absents(args: argparse.Namespace, config: Config) -> int:
     return 0
 
 
+def _ask(prompt: str, choices: list[str]) -> int | None:
+    """Question au clavier : indice du choix, ou None (Entrée seule, ou pas de clavier)."""
+    print(prompt)
+    for number, choice in enumerate(choices, 1):
+        print(f"    {number}. {choice}")
+    while True:
+        try:
+            raw = input("  Ton choix (Entrée pour passer) : ").strip()
+        except EOFError:
+            return None
+        if not raw:
+            return None
+        if raw.isdigit() and 1 <= int(raw) <= len(choices):
+            return int(raw) - 1
+        print("  Réponds par un numéro de la liste.")
+
+
+def _agree(prompt: str, assume_yes: bool) -> bool:
+    if assume_yes:
+        return True
+    try:
+        return input(f"{prompt} [o/N] ").strip().lower() in {"o", "oui", "y", "yes"}
+    except EOFError:
+        return False
+
+
+def _pick_playlist(names: list[str]) -> str | None:
+    """Choisit une playlist du plan en tapant une partie de son nom."""
+    while True:
+        try:
+            text = input("  Nom (ou partie du nom) de la playlist : ").strip().casefold()
+        except EOFError:
+            return None
+        if not text:
+            return None
+        matches = [n for n in names if text in n.casefold()]
+        if len(matches) == 1:
+            return matches[0]
+        if not matches:
+            print("  Aucune playlist ne correspond.")
+            continue
+        index = _ask("  Laquelle ?", matches[:15])
+        if index is not None:
+            return matches[index]
+
+
+def cmd_synchro(args: argparse.Namespace, config: Config) -> int:
+    """Apple Music maître : ses changements reportés partout, puis les nouveautés."""
+    from ytmgc import apple_music, master, placements
+    from ytmgc.matching.normalize import slugify
+    from ytmgc.playlist_plan import load_plan
+
+    root = Path(args.dossier).expanduser().resolve()
+    state = apple_music.load_state(root)
+    if not state.known:
+        print("Apple Music ne connaît encore aucun titre de l'outil : lance d'abord "
+              "« ytmgc apple-music ».", file=sys.stderr)
+        return 1
+    repository = _repository(config)
+    tracks = {track.video_id: track for track in repository.all_tracks()}
+    say = lambda line: print(line, flush=True)  # noqa: E731
+
+    def photograph() -> "master.Photo":
+        raw = apple_music._osascript(master.READ_SCRIPT, {}, on_line=say,
+                                     popen=subprocess.Popen)
+        tracked = (state.photo or {}).get("playlists", {}).keys()
+        return master.photo_from_music(raw, state.known, state.families, tracked)
+
+    def label(video_id: str) -> str:
+        track = tracks.get(video_id)
+        return track.label() if track else video_id
+
+    after = photograph()
+    if state.photo is None:
+        print("Première synchro : je prends la photo d'Apple Music. Les synchros suivantes "
+              "y compareront tes changements.")
+    else:
+        before = master.Photo.from_json(state.photo)
+        changes = master.compare(before, after)
+        if not changes:
+            print("Aucun changement dans Apple Music depuis la dernière synchro.")
+        else:
+            decisions = _synchro_decide(changes, before, after, label, args, config)
+            if decisions is None:
+                return 1
+            if args.essai:
+                print("\nEssai : rien n'a été modifié.")
+                return 0
+            _synchro_apply(decisions, tracks, repository, config, slugify, placements,
+                           master, load_plan)
+    if args.essai:
+        print("\nEssai : rien n'a été modifié.")
+        return 0
+
+    # La photo d'abord : si la suite échoue, tes changements ne seront pas
+    # redemandés à la prochaine synchro.
+    state.photo = after.to_json()
+    apple_music.save_state(root, state)
+
+    print("\n== Nouveautés de YouTube Music ==", flush=True)
+    steps = [["scan"], ["classify"], ["apply", "--tri", args.tri]]
+    for step in steps:
+        parsed = build_parser().parse_args(step)
+        if step[0] == "apply":
+            parsed.func(parsed, config)  # aperçu, sans rien écrire
+            if not _agree("Appliquer ces changements sur YouTube Music ?", args.oui):
+                print("YouTube Music laissé tel quel.")
+                continue
+            parsed = build_parser().parse_args(step + ["--execute"])
+        if parsed.func(parsed, config):
+            print(f"Arrêt : l'étape « {step[0]} » a échoué.", file=sys.stderr)
+            return 1
+
+    download = ["telecharge", "--dossier", str(root), "--tri", args.tri]
+    if args.cookies_navigateur:
+        download += ["--cookies-navigateur", args.cookies_navigateur]
+    for step in (download, ["apple-music", "--dossier", str(root), "--tri", args.tri],
+                 ["apple-music-likes", "--dossier", str(root)]):
+        parsed = build_parser().parse_args(step)
+        if parsed.func(parsed, config):
+            print(f"Arrêt : l'étape « {step[0]} » a échoué.", file=sys.stderr)
+            return 1
+
+    # Nouvelle photo, après les ajouts : ils ne sont pas des changements à toi.
+    state = apple_music.load_state(root)
+    state.photo = photograph().to_json()
+    apple_music.save_state(root, state)
+    print("\nSynchro terminée.")
+    return 0
+
+
+def _synchro_decide(changes, before, after, label, args, config):
+    """Présente les changements, pose les questions, demande confirmation."""
+    from ytmgc import master
+    from ytmgc.playlist_plan import load_plan
+    from ytmgc.taxonomy import load_taxonomy
+
+    print("\n== Changements faits dans Apple Music ==")
+    if changes.deleted:
+        print(f"Supprimés de la bibliothèque ({len(changes.deleted)}) : retirés aussi de "
+              "YouTube Music (bibliothèque, likes, playlists) et de la base.")
+        for video_id in changes.deleted:
+            print(f"  {label(video_id)}")
+    for name in changes.created:
+        print(f"Playlist créée : {name}")
+    for old, new in changes.renamed:
+        print(f"Playlist renommée : {old} → {new}")
+    if changes.moves:
+        print(f"Titres rangés ailleurs ({len(changes.moves)}) :")
+        for video_id, name in changes.moves.items():
+            print(f"  {label(video_id)} → {name}")
+    if changes.favorites_added:
+        print(f"Nouveaux favoris ({len(changes.favorites_added)}) : likés sur YouTube Music.")
+        for video_id in changes.favorites_added:
+            print(f"  {label(video_id)}")
+    if changes.favorites_removed:
+        print(f"Favoris retirés ({len(changes.favorites_removed)}) : like retiré sur "
+              "YouTube Music.")
+        for video_id in changes.favorites_removed:
+            print(f"  {label(video_id)}")
+
+    names = sorted({p.name for p in load_plan(config.taxonomy.playlists_file,
+                                              load_taxonomy()).playlists}
+                   | set(changes.created) | {new for _, new in changes.renamed})
+    answers: dict[int, str] = {}
+    if changes.questions:
+        print(f"\n{len(changes.questions)} question(s) :")
+    for index, question in enumerate(changes.questions):
+        if args.essai:
+            what = question.before[0] if question.video_id is None else label(question.video_id)
+            print(f"  ? {question.kind} : {what}")
+            continue
+        if question.kind == "playlist supprimée":
+            choice = _ask(f"\nLa playlist « {question.before[0]} » a été supprimée d'Apple Music.",
+                          ["La supprimer aussi du plan et de YouTube Music (ses titres "
+                           "sortent de toute playlist)",
+                           "La recréer à la prochaine synchro"])
+            if choice is not None:
+                answers[index] = ["supprimer", "recréer"][choice]
+        elif question.kind == "retiré":
+            choice = _ask(f"\n« {label(question.video_id)} » a été retiré de "
+                          f"« {', '.join(question.before)} » sans être rangé ailleurs.",
+                          ["Le sortir de toute playlist « (aucune) »",
+                           f"Le remettre dans « {question.before[0]} »",
+                           "Le ranger dans une autre playlist"])
+            if choice == 0:
+                answers[index] = master.NOWHERE
+            elif choice == 1:
+                answers[index] = question.before[0]
+            elif choice == 2:
+                picked = _pick_playlist(names)
+                if picked:
+                    answers[index] = picked
+        else:
+            choice = _ask(f"\n« {label(question.video_id)} » est maintenant dans "
+                          f"{' et '.join(question.after)}. Une seule playlist par titre : "
+                          "laquelle garder ?", question.after)
+            if choice is not None:
+                answers[index] = question.after[choice]
+    unanswered = sum(1 for i in range(len(changes.questions)) if i not in answers)
+    if unanswered and not args.essai:
+        print(f"\n{unanswered} question(s) sans réponse : ces titres reprendront leur place "
+              "d'avant à la fin de la synchro.")
+
+    decisions = master.decide(changes, before, after, answers)
+    if args.essai:
+        return decisions
+    if not _agree("\nReporter ces changements sur YouTube Music et dans tes classements ?",
+                  args.oui):
+        print("Rien n'a été modifié. Relance la synchro quand tu veux.")
+        return None
+    return decisions
+
+
+def _synchro_apply(decisions, tracks, repository, config, slugify, placements, master,
+                   load_plan):
+    """Écrit les décisions : plan, déplacements, base, likes et bibliothèque YouTube."""
+    from ytmgc.taxonomy import load_taxonomy
+
+    plan_file = Path(config.taxonomy.playlists_file)
+    existing = {p.name for p in load_plan(str(plan_file), load_taxonomy()).playlists}
+    for name in decisions.created:
+        if name not in existing:
+            master.add_playlist(plan_file, name, "Créée dans Apple Music.")
+    managed = repository.managed_playlists()
+    book = placements.load(config.taxonomy.placements_file)
+    for old, new in decisions.renamed:
+        master.rename_playlist(plan_file, old, new)
+        # La playlist YouTube garde son identifiant : seule sa clé change, et
+        # l'application la renommera au lieu d'en créer une autre.
+        row = managed.get("plan/" + slugify(old))
+        if row:
+            repository.forget_playlist(row[0])
+            repository.remember_playlist("plan/" + slugify(new), row[0], new)
+        for entry in list(book):
+            if entry.playlist == old:
+                book.put(_track_of(entry), new)
+    for name in decisions.removed:
+        master.remove_playlist(plan_file, name)
+    missing = 0
+    for video_id, target in decisions.placements.items():
+        track = tracks.get(video_id)
+        if track is None:
+            missing += 1
+            continue
+        book.put(track, target)
+    placements.save(book, config.taxonomy.placements_file)
+    if missing:
+        print(f"{missing} titre(s) inconnu(s) de la base : déplacement non inscrit.")
+
+    client = _youtube(config)
+    for video_id in decisions.like:
+        client.like(video_id)
+    for video_id in decisions.unlike:
+        try:
+            client.unlike(video_id)
+        except Exception as exc:  # noqa: BLE001 - un like absent n'arrête rien
+            print(f"  like non retiré pour {video_id} : {exc}")
+    if decisions.deleted:
+        removed = client.remove_from_library(decisions.deleted)
+        repository.remove_tracks(list(decisions.deleted))
+        print(f"{removed} titre(s) retiré(s) de la bibliothèque YouTube Music, "
+              f"{len(decisions.deleted)} de la base.")
+    print(f"Classements mis à jour : {len(decisions.placements)} titre(s), "
+          f"{len(decisions.created)} playlist(s) créée(s), {len(decisions.renamed)} renommée(s), "
+          f"{len(decisions.removed)} supprimée(s). Likes : +{len(decisions.like)} "
+          f"−{len(decisions.unlike)}.")
+
+
+def _track_of(entry) -> Track:
+    """Titre minimal tiré d'une ligne de placements, pour la réécrire."""
+    return Track("", entry.title, (entry.artist,))
+
+
 def cmd_web(args: argparse.Namespace, config: Config) -> int:
     """Sert l'interface locale."""
     try:
@@ -1212,6 +1488,21 @@ def build_parser() -> argparse.ArgumentParser:
     absents_cmd.add_argument("--sans-likes", action="store_true",
                              help="Ne pas lire les titres likés (hors ligne)")
     absents_cmd.set_defaults(func=cmd_absents)
+
+    synchro_cmd = subparsers.add_parser(
+        "synchro", help="Apple Music maître : reporter ses changements, puis les nouveautés")
+    synchro_cmd.add_argument("--dossier", default="~/Music/Playlists",
+                             help="Dossier des fichiers (défaut : %(default)s)")
+    synchro_cmd.add_argument("--tri", default=DEFAULT_SORT_MODE,
+                             choices=[m.key for m in SORT_MODES],
+                             help="Type de tri, comme dans l'aperçu (défaut : %(default)s)")
+    synchro_cmd.add_argument("--cookies-navigateur", default=None,
+                             help="Session YouTube d'un navigateur pour les téléchargements")
+    synchro_cmd.add_argument("--essai", action="store_true",
+                             help="Montrer les changements détectés, sans rien modifier")
+    synchro_cmd.add_argument("--oui", action="store_true",
+                             help="Ne pas demander de confirmation (les questions restent)")
+    synchro_cmd.set_defaults(func=cmd_synchro)
 
     web = subparsers.add_parser("web", help="Lancer l'interface locale")
     web.add_argument("--host", default=None, help="Interface d'écoute (défaut : locale uniquement)")

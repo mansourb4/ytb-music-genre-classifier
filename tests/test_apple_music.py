@@ -289,3 +289,35 @@ def test_reordering_fixes_favorites_added_in_the_wrong_order(tmp_path):
     assert _shown(library) == likes[::-1]
     assert _favorites(library, likes, reorder=True).favorited == 3
     assert _shown(library) == likes
+
+
+# ------------------------------------------------------------ synchro
+
+def test_reading_music_then_spotting_a_hand_move(tmp_path):
+    from ytmgc import master
+
+    library = Library(tmp_path)
+    wanted, plans, present = _setup()
+    known = library.run(plans, wanted, present).known
+    _favorites(library, [known["c"]])
+
+    def photo():
+        raw = apple_music._osascript(master.READ_SCRIPT, {}, on_line=lambda line: None,
+                                     popen=library.popen)
+        return master.photo_from_music(raw, known, {"Électro", "Jazz"})
+
+    before = photo()
+    assert before.library == {"a", "b", "c"} and before.favorites == {"c"}
+    assert sorted(name for name, _ in before.playlists.values()) == [
+        "Jazz · Modal", "Électro · Deep techno"]
+
+    # À la main dans Music : « b » glissé de Deep techno vers Modal.
+    state = library.state
+    by_name = {p["name"]: p for p in state["playlists"]}
+    by_name["Deep techno"]["tracks"].remove(known["b"])
+    by_name["Modal"]["tracks"].append(known["b"])
+    library.path.write_text(json.dumps(state))
+
+    changes = master.compare(before, photo())
+    assert changes.moves == {"b": "Jazz · Modal"}
+    assert not changes.questions and not changes.deleted

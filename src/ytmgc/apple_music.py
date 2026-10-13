@@ -83,6 +83,8 @@ class State:
     known: dict[str, str] = field(default_factory=dict)
     #: Dossiers de familles déjà gérés par l'outil.
     families: set[str] = field(default_factory=set)
+    #: Photo d'Apple Music à la fin de la dernière synchro (voir `master`).
+    photo: dict | None = None
 
 
 def load_state(root: Path) -> State:
@@ -90,11 +92,14 @@ def load_state(root: Path) -> State:
         data = json.loads((root / STATE_FILE).read_text(encoding="utf-8"))
     except (OSError, ValueError):
         return State()
-    return State(dict(data.get("titres") or {}), set(data.get("familles") or ()))
+    return State(dict(data.get("titres") or {}), set(data.get("familles") or ()),
+                 data.get("photo"))
 
 
 def save_state(root: Path, state: State) -> None:
     data = {"familles": sorted(state.families), "titres": state.known}
+    if state.photo is not None:
+        data["photo"] = state.photo
     (root / STATE_FILE).write_text(json.dumps(data, ensure_ascii=False, indent=1),
                                    encoding="utf-8")
 

@@ -616,6 +616,34 @@ ytmgc like --playlist "Nom"   # like tous les titres d'une playlist
 `like` saute les titres déjà likés et marque une pause d'une seconde entre deux
 likes (`--pause`) ; `--essai` compte sans rien toucher.
 
+### Synchro : Apple Music maître
+
+`ytmgc synchro` fait d'Apple Music la référence. À chaque lancement, il
+photographie Music (titres, favoris, playlists des dossiers de familles) et
+compare à la photo de la synchro précédente ; les écarts sont tes changements :
+
+| Dans Apple Music | Reporté |
+|---|---|
+| Titre passé d'une playlist à une autre | rangé là pour de bon (`data/placements.txt`), et sur YouTube Music |
+| Titre retiré d'une playlist sans être mis ailleurs, ou mis dans une seconde | la synchro te demande |
+| Titre supprimé de la bibliothèque | retiré de la bibliothèque YouTube Music, de ses likes, de ses playlists et de la base ; plus rangé nulle part |
+| Playlist créée dans un dossier de famille | ajoutée au plan (`config/playlists.toml`), créée sur YouTube |
+| Playlist renommée (ou son dossier) | renommée dans le plan et sur YouTube |
+| Playlist supprimée | la synchro te demande : la retirer du plan, ou la recréer |
+| Favori ajouté / retiré | like ajouté / retiré sur YouTube Music |
+
+Rien n'est écrit avant ta confirmation. Viennent ensuite les nouveautés de
+YouTube Music, qui reste l'entrée : analyse, classement, application sur
+YouTube (avec aperçu et confirmation), téléchargement, ajout à Music et
+favoris. La première synchro ne fait que prendre la photo. `--essai` montre
+les changements détectés sans rien modifier ; l'ordre des titres dans une
+playlist n'est pas suivi.
+
+```bash
+ytmgc synchro --essai
+ytmgc synchro --cookies-navigateur firefox
+```
+
 `ytmgc absents` liste tout ce qui manque dans Apple Music, bibliothèque
 YouTube et titres likés confondus, rangé par raison : téléchargé mais pas
 encore importé, téléchargement échoué, dans aucune playlist, liké sans être

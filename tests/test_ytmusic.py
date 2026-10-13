@@ -139,12 +139,32 @@ def test_playlist_entries_carry_the_like_status():
     assert (entries[0]["title"], entries[0]["artists"]) == ("Rain", ["Moderat"])
 
 
-def test_like_rates_the_song():
+def test_like_and_unlike_rate_the_song():
     rated = []
 
     class Api(FakeApi):
         def rate_song(self, video_id, rating):
             rated.append((video_id, str(getattr(rating, "value", rating))))
 
-    YouTubeMusicClient("unused", api=Api()).like("a")
-    assert rated == [("a", "LIKE")]
+    client = YouTubeMusicClient("unused", api=Api())
+    client.like("a")
+    client.unlike("b")
+    assert rated == [("a", "LIKE"), ("b", "INDIFFERENT")]
+
+
+def test_remove_from_library_uses_the_entry_tokens():
+    sent = []
+
+    class Api(FakeApi):
+        def edit_song_library_status(self, tokens):
+            sent.append(list(tokens))
+
+    api = Api(library=[
+        {"videoId": "a", "title": "A", "feedbackTokens": {"add": "+a", "remove": "-a"}},
+        {"videoId": "b", "title": "B", "feedbackTokens": {"add": "+b", "remove": "-b"}},
+        {"videoId": "c", "title": "C"},
+    ])
+    client = YouTubeMusicClient("unused", api=api)
+    assert client.remove_from_library(["a", "c", "z"]) == 1
+    assert sent == [["-a"]]
+    assert client.remove_from_library([]) == 0

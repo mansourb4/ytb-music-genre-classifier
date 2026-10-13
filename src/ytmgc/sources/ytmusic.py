@@ -231,15 +231,41 @@ class YouTubeMusicClient:
 
     # ------------------------------------------------------------ écriture
 
-    def like(self, video_id: str) -> None:
-        """Pouce levé : le titre rejoint « Titres likés »."""
+    def _rate(self, video_id: str, status: str) -> None:
         try:
             from ytmusicapi.models.content.enums import LikeStatus
 
-            rating: Any = LikeStatus.LIKE
+            rating: Any = LikeStatus(status)
         except ImportError:  # anciennes versions : la chaîne suffit
-            rating = "LIKE"
+            rating = status
         self._api.rate_song(video_id, rating)
+
+    def like(self, video_id: str) -> None:
+        """Pouce levé : le titre rejoint « Titres likés »."""
+        self._rate(video_id, "LIKE")
+
+    def unlike(self, video_id: str) -> None:
+        """Retire le like (ni pouce levé, ni pouce baissé)."""
+        self._rate(video_id, "INDIFFERENT")
+
+    def remove_from_library(self, video_ids: Iterable[str]) -> int:
+        """Retire des titres de la bibliothèque. Renvoie combien l'ont été.
+
+        YouTube Music ne retire un titre qu'avec le jeton que porte son entrée
+        dans la bibliothèque : on relit donc celle-ci pour les trouver.
+        """
+        wanted = set(video_ids)
+        if not wanted:
+            return 0
+        tokens = [
+            entry["feedbackTokens"]["remove"]
+            for entry in self._api.get_library_songs(limit=None)
+            if entry.get("videoId") in wanted
+            and (entry.get("feedbackTokens") or {}).get("remove")
+        ]
+        if tokens:
+            self._api.edit_song_library_status(tokens)
+        return len(tokens)
 
     def create_playlist(
         self, title: str, description: str, *, privacy: str, video_ids: Iterable[str]

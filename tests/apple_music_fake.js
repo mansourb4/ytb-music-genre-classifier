@@ -115,7 +115,8 @@ function addFile(path) {
 const Music = {
   libraryPlaylists: [{
     fileTracks: collection(
-      () => state.tracks.map((t) => ({ ...t, persistentID: t.pid, location: t.path, _t: t })),
+      () => state.tracks.map((t) => ({ ...t, persistentID: t.pid, location: t.path,
+        favorited: Boolean(t.favorite), loved: Boolean(t.favorite), _t: t })),
       (t) => trackObject(t._t)),
   }],
   add(what) {
