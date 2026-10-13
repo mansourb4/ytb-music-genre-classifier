@@ -455,7 +455,7 @@ def create_app(services: Services) -> FastAPI:
             # Chaque analyse repart de zéro : sans cela, l'aperçu cumulerait les
             # sources des analyses précédentes, alors qu'il doit refléter la
             # sélection en cours.
-            from ytmgc.exclusions import apply_exclusions, excluded_tracks
+            from ytmgc.exclusions import apply_exclusions, excluded_tracks, placed_keys
 
             repository.clear_library()
             job.message = f"Lecture de {len(sources)} source(s) YouTube Music…"
@@ -465,7 +465,8 @@ def create_app(services: Services) -> FastAPI:
             excluded_ids = repository.excluded_playlists()
             if excluded_ids:
                 job.message = f"Lecture des {len(excluded_ids)} playlist(s) exclue(s)…"
-                scope = apply_exclusions(tracks, excluded_tracks(youtube, excluded_ids))
+                scope = apply_exclusions(tracks, excluded_tracks(youtube, excluded_ids),
+                                         placed_keys(config.taxonomy.placements_file))
                 tracks = scope.kept
                 removed = len(scope.removed)
             else:

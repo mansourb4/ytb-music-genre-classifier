@@ -136,3 +136,24 @@ def test_scan_applies_the_saved_exclusions(config, monkeypatch, tmp_path, capsys
     assert cli.main(["scan"]) == 0
     assert [t.video_id for t in repository.all_tracks()] == ["r1"]
     assert "2 titre(s) retiré(s) par 1 playlist(s) exclue(s)" in capsys.readouterr().out
+
+
+def test_a_title_placed_by_hand_survives_an_exclusion(tmp_path):
+    from ytmgc import placements
+    from ytmgc.exclusions import placed_keys
+    from ytmgc.verdicts import track_key
+
+    kept_one = Track("a", "Solo Guembri", ("Abdelkebir Amlil",))
+    dropped = Track("b", "Berceuse", ("Quelqu'un",))
+    aside = Track("c", "Écarté", ("Autre",))
+    book = placements.PlacementBook()
+    book.put(kept_one, "Maghreb · Gnawa")
+    book.put(aside, placements.NOWHERE)
+    path = tmp_path / "placements.txt"
+    placements.save(book, path)
+
+    placed = placed_keys(str(path))
+    assert placed == {track_key(kept_one)}
+    scope = apply_exclusions([kept_one, dropped, aside], [kept_one, dropped, aside], placed)
+    assert scope.kept == [kept_one]
+    assert scope.removed == [dropped, aside]

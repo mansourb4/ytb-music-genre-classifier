@@ -353,7 +353,9 @@ précédentes :
 
 1. **Connecter** le compte.
 2. **Choisir ce qui sera analysé** : bibliothèque, titres likés, n'importe
-   laquelle de tes playlists — et les playlists à **exclure**.
+   laquelle de tes playlists — et les playlists à **exclure**. Un morceau que
+   tu as placé toi-même dans une playlist (`data/placements.txt`) reste
+   analysé même s'il figure dans une playlist exclue.
 3. **Analyser** : lecture des sources, Discogs, Last.fm. Un bandeau fixe
    indique l'avancement, le titre en cours et le temps restant.
 4. **Affiner par le modèle** (facultatif) : Claude juge chaque morceau.
