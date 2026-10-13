@@ -851,6 +851,13 @@ def cmd_apple_music_likes(args: argparse.Namespace, config: Config) -> int:
     print(f"{len(liked)} titre(s) liké(s), dont {len(pids)} présent(s) dans Apple Music.",
           flush=True)
 
+    if args.retirer:
+        result = apple_music.run_favorites(pids, remove=True, dry_run=args.essai,
+                                           on_line=lambda line: print(line, flush=True))
+        verb = "seraient retirés" if args.essai else "retirés"
+        print(f"\n{result.removed} favori(s) {verb}. Synchronise l'iPhone, puis remets-les "
+              "dans l'ordre avec « ytmgc apple-music-likes ».")
+        return 0
     if args.reordonner and not args.essai:
         minutes = round(len(pids) * (args.intervalle + 0.1) / 60)
         print(f"Remise dans l'ordre : environ {minutes} min. Laisse Music ouvert.", flush=True)
@@ -1470,6 +1477,9 @@ def build_parser() -> argparse.ArgumentParser:
                            help="Dossier des fichiers (défaut : %(default)s)")
     likes_cmd.add_argument("--essai", action="store_true",
                            help="Compter ce qui serait fait, sans rien toucher")
+    likes_cmd.add_argument("--retirer", action="store_true",
+                           help="Seulement retirer ces favoris (pour vider l'iPhone avant de "
+                                "les remettre dans l'ordre)")
     likes_cmd.add_argument("--reordonner", action="store_true",
                            help="Refaire tous les favoris, pour qu'Apple Music les montre "
                                 "dans l'ordre des likes de YouTube Music")

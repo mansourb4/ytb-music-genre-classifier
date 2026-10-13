@@ -746,8 +746,10 @@ titres likés sur YouTube Music, reconnus par leur identifiant ou, pour un
 doublon, par le morceau. Apple Music présentant ses favoris du plus récemment
 ajouté au plus ancien, ils sont ajoutés du like le plus ancien au plus récent,
 une seconde d'écart entre deux (`--intervalle`) : la liste suit l'ordre de
-YouTube Music. `--reordonner` refait les favoris déjà posés pour les remettre
-dans cet ordre. `--essai` compte sans rien toucher.
+YouTube Music. Pour remettre dans l'ordre des favoris déjà posés :
+`--retirer` les retire seulement (synchroniser alors l'iPhone, qu'il les
+oublie), puis un lancement normal les remet du plus ancien au plus récent.
+`--essai` compte sans rien toucher.
 
 ## Garanties
 

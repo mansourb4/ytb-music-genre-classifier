@@ -2,8 +2,10 @@
 //
 // Lancé par `ytmgc apple-music-likes` :
 //   osascript -l JavaScript apple_music_favorites.js ENTRÉE
-// ENTRÉE est un JSON { pids: [persistentID…], reorder, interval, dryRun } ;
-// la sortie (stdout), un JSON { favorited, already, gone }.
+// ENTRÉE est un JSON { pids: [persistentID…], reorder, remove, interval,
+// dryRun } ; la sortie (stdout), un JSON { favorited, already, gone, removed }.
+// `remove` ne fait que retirer ces favoris, sans les remettre : pour vider
+// l'iPhone d'abord, avant de les reposer dans l'ordre.
 //
 // `pids` est dans l'ordre des likes de YouTube Music, du plus récent au plus
 // ancien. Apple Music présente ses favoris du plus récemment ajouté au plus
@@ -42,7 +44,7 @@ function run(argv) {
   const input = readJSON(argv[0]);
   const Music = Application('Music');
   const tracks = Music.libraryPlaylists[0].fileTracks;
-  const report = { favorited: 0, already: 0, gone: 0 };
+  const report = { favorited: 0, already: 0, gone: 0, removed: 0 };
 
   // Titres présents, du like le plus ancien au plus récent.
   const ordered = [];
@@ -51,6 +53,17 @@ function run(argv) {
     if (found.length) ordered.push(found[0]);
     else report.gone++;
   });
+
+  if (input.remove) {
+    console.log('Retrait des favoris : ' + ordered.length + ' titre(s)…');
+    ordered.forEach(function (track) {
+      if (isFavorite(track)) {
+        if (!input.dryRun) setFavorite(track, false);
+        report.removed++;
+      }
+    });
+    return JSON.stringify(report);
+  }
 
   if (input.reorder) {
     // Tous retirés d'abord, en une passe : remettre chacun aussitôt après

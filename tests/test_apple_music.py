@@ -165,8 +165,8 @@ def test_state_round_trip(tmp_path):
 
 # ------------------------------------------------------------------ favoris
 
-def _favorites(library, pids, dry_run=False, reorder=False):
-    return apple_music.run_favorites(pids, dry_run=dry_run, reorder=reorder,
+def _favorites(library, pids, dry_run=False, reorder=False, remove=False):
+    return apple_music.run_favorites(pids, dry_run=dry_run, reorder=reorder, remove=remove,
                                      on_line=lambda line: None, popen=library.popen)
 
 
@@ -321,3 +321,16 @@ def test_reading_music_then_spotting_a_hand_move(tmp_path):
     changes = master.compare(before, photo())
     assert changes.moves == {"b": "Jazz · Modal"}
     assert not changes.questions and not changes.deleted
+
+
+def test_remove_then_favorite_again_in_order(tmp_path):
+    library = Library(tmp_path)
+    wanted, plans, present = _setup()
+    known = library.run(plans, wanted, present).known
+    likes = [known["a"], known["b"], known["c"]]
+    _favorites(library, likes[::-1])                       # l'ordre inverse
+
+    assert _favorites(library, likes, remove=True).removed == 3
+    assert _shown(library) == []                           # l'iPhone se vide ici
+    assert _favorites(library, likes).favorited == 3
+    assert _shown(library) == likes
