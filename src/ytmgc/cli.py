@@ -21,6 +21,7 @@ Le pipeline est découpé en étapes reprenables, chacune persistée en base :
     ytmgc apple-music # range ces fichiers dans Apple Music (dossiers, playlists)
     ytmgc like --playlist NOM   # like tous les titres d'une playlist
     ytmgc apple-music-likes     # titres likés → favoris dans Apple Music
+    ytmgc absents    # ce qui manque dans Apple Music, et pourquoi
     ytmgc web        # interface locale : connexion, aperçu, application
 
 `apply` est en mode « à blanc » par défaut : il faut `--execute` pour écrire.
@@ -855,6 +856,37 @@ def cmd_apple_music_likes(args: argparse.Namespace, config: Config) -> int:
     return 0
 
 
+def cmd_absents(args: argparse.Namespace, config: Config) -> int:
+    """Liste tout ce qui manque dans Apple Music : bibliothèque et likés."""
+    from ytmgc import apple_music, download
+    from ytmgc.preview import build_preview
+
+    root = Path(args.dossier).expanduser().resolve()
+    repository = _repository(config)
+    library = {track.video_id: track for track in repository.all_tracks()}
+    _, plans, _ = build_preview(repository, apply_sort_mode(config, args.tri), sort_mode=args.tri)
+    wanted = download.targets(plans, library)
+    print("Lecture des fichiers et des titres likés…", flush=True)
+    present = download.existing(root, download.read_id)
+    liked = [] if args.sans_likes else _youtube(config).playlist_entries("LM")
+    state = apple_music.load_state(root)
+
+    groups = apple_music.absent_titles(library, liked, wanted, present, state.known)
+    total = sum(len(labels) for labels in groups.values())
+    lines = [f"{total} titre(s) absent(s) d'Apple Music, sur {len(library)} titre(s) de la "
+             f"bibliothèque et {len(liked)} liké(s).", ""]
+    for reason, labels in groups.items():
+        lines.append(f"{reason} : {len(labels)}")
+        lines += [f"  {label}" for label in labels]
+        lines.append("")
+    report = "\n".join(lines)
+    print("\n" + report)
+    if root.is_dir():
+        (root / "_absents.txt").write_text(report, encoding="utf-8")
+        print(f"Liste enregistrée dans : {root / '_absents.txt'}")
+    return 0
+
+
 def cmd_web(args: argparse.Namespace, config: Config) -> int:
     """Sert l'interface locale."""
     try:
@@ -1148,6 +1180,17 @@ def build_parser() -> argparse.ArgumentParser:
     likes_cmd.add_argument("--essai", action="store_true",
                            help="Compter ce qui serait fait, sans rien toucher")
     likes_cmd.set_defaults(func=cmd_apple_music_likes)
+
+    absents_cmd = subparsers.add_parser(
+        "absents", help="Lister ce qui manque dans Apple Music (bibliothèque et likés)")
+    absents_cmd.add_argument("--dossier", default="~/Music/Playlists",
+                             help="Dossier des fichiers (défaut : %(default)s)")
+    absents_cmd.add_argument("--tri", default=DEFAULT_SORT_MODE,
+                             choices=[m.key for m in SORT_MODES],
+                             help="Type de tri, comme dans l'aperçu (défaut : %(default)s)")
+    absents_cmd.add_argument("--sans-likes", action="store_true",
+                             help="Ne pas lire les titres likés (hors ligne)")
+    absents_cmd.set_defaults(func=cmd_absents)
 
     web = subparsers.add_parser("web", help="Lancer l'interface locale")
     web.add_argument("--host", default=None, help="Interface d'écoute (défaut : locale uniquement)")

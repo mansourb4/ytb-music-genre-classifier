@@ -612,7 +612,13 @@ ytmgc like --playlist "Nom"   # like tous les titres d'une playlist
 ```
 
 `like` saute les titres déjà likés et marque une pause d'une seconde entre deux
-likes (`--pause`) ; `--essai` compte sans rien toucher. Une relance reprend où
+likes (`--pause`) ; `--essai` compte sans rien toucher.
+
+`ytmgc absents` liste tout ce qui manque dans Apple Music, bibliothèque
+YouTube et titres likés confondus, rangé par raison : téléchargé mais pas
+encore importé, téléchargement échoué, dans aucune playlist, liké sans être
+dans la bibliothèque, retiré de YouTube. La liste est aussi enregistrée dans
+`~/Music/Playlists/_absents.txt`. Une relance reprend où
 la précédente s'est arrêtée.
 
 `enrich` annonce son coût et demande confirmation. `--essai` se limite à une

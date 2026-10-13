@@ -240,3 +240,64 @@ def run_favorites(
     data = _osascript(FAVORITES_SCRIPT, {"pids": pids, "dryRun": dry_run},
                       on_line=on_line, popen=popen)
     return FavoritesResult(data.get("favorited", 0), data.get("already", 0), data.get("gone", 0))
+
+
+# ----------------------------------------------------------------- absents
+
+#: Raisons d'une absence, dans l'ordre où elles sont présentées.
+NOT_IN_MUSIC_YET = "Téléchargé, pas encore dans Apple Music (relance « ytmgc apple-music »)"
+DOWNLOAD_FAILED = "Dans une playlist, mais le téléchargement a échoué"
+IN_NO_PLAYLIST = "Dans aucune playlist (mis en « (aucune) », ou pas classé)"
+LIKED_NOT_IN_LIBRARY = "Liké, mais absent de ta bibliothèque YouTube (jamais analysé)"
+LIKED_REMOVED = "Liké, mais retiré de YouTube (grisé)"
+REASONS = (NOT_IN_MUSIC_YET, DOWNLOAD_FAILED, IN_NO_PLAYLIST, LIKED_NOT_IN_LIBRARY,
+           LIKED_REMOVED)
+
+
+def absent_titles(
+    library: Mapping[str, "Track"],
+    liked: Iterable[dict],
+    wanted: Iterable[str],
+    present: Iterable[str],
+    known: Mapping[str, str],
+) -> dict[str, list[str]]:
+    """Titres de la bibliothèque YouTube et des likés absents d'Apple Music,
+    rangés par raison.
+
+    Un titre compte comme présent s'il est dans Apple Music sous son
+    identifiant, ou si le même morceau y est sous un autre (doublon).
+    """
+    from ytmgc.download import song_key
+
+    wanted, present = set(wanted), set(present)
+    in_music = {song_key(library[v]) for v in known if v in library}
+    reasons: dict[str, list[str]] = {reason: [] for reason in REASONS}
+    seen: set[str] = set()
+
+    def missing(track: "Track") -> bool:
+        return track.video_id not in known and song_key(track) not in in_music
+
+    for video_id, track in library.items():
+        seen.add(video_id)
+        if not missing(track):
+            continue
+        if video_id in wanted:
+            reason = NOT_IN_MUSIC_YET if video_id in present else DOWNLOAD_FAILED
+        else:
+            reason = IN_NO_PLAYLIST
+        reasons[reason].append(track.label())
+
+    for entry in liked:
+        video_id = entry.get("video_id")
+        if not video_id:
+            reasons[LIKED_REMOVED].append(entry.get("label") or "(sans titre)")
+            continue
+        if video_id in seen:
+            continue
+        seen.add(video_id)
+        track = Track(video_id, entry.get("title") or "", tuple(entry.get("artists") or ()))
+        if missing(track):
+            reasons[LIKED_NOT_IN_LIBRARY].append(entry.get("label") or video_id)
+
+    return {reason: sorted(set(labels), key=str.casefold)
+            for reason, labels in reasons.items() if labels}

@@ -223,3 +223,32 @@ def test_liked_titles_are_matched_by_id_then_by_song():
     pids, absent = apple_music.favorite_ids(liked, tracks, known)
     assert pids == ["P1", "P2"]
     assert absent == ["Inconnu – Rien"]
+
+
+def test_absent_titles_are_grouped_by_reason():
+    from ytmgc.models import Track
+
+    library = {
+        "in": Track("in", "Rain", ("Moderat",)),
+        "twin": Track("twin", "rain", ("moderat",)),          # doublon de « in »
+        "todo": Track("todo", "Pas importé", ("A",)),          # fichier là, pas dans Music
+        "fail": Track("fail", "Copain", ("Roméo Elvis",)),     # téléchargement échoué
+        "none": Track("none", "Born 2 Die", ("Moodymann",)),   # dans aucune playlist
+    }
+    liked = [
+        {"video_id": "in", "label": "Moderat – Rain"},
+        {"video_id": "perso", "label": "B – Perso", "title": "Perso", "artists": ["B"]},
+        {"video_id": "perso", "label": "B – Perso", "title": "Perso", "artists": ["B"]},
+        {"video_id": None, "label": "Grisé"},
+    ]
+    groups = apple_music.absent_titles(
+        library, liked, wanted={"in", "todo", "fail"}, present={"in", "todo"},
+        known={"in": "P1"},
+    )
+    assert groups == {
+        apple_music.NOT_IN_MUSIC_YET: ["A – Pas importé"],
+        apple_music.DOWNLOAD_FAILED: ["Roméo Elvis – Copain"],
+        apple_music.IN_NO_PLAYLIST: ["Moodymann – Born 2 Die"],
+        apple_music.LIKED_NOT_IN_LIBRARY: ["B – Perso"],
+        apple_music.LIKED_REMOVED: ["Grisé"],
+    }
