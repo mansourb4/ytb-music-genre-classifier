@@ -233,6 +233,7 @@ class FavoritesResult:
     already: int = 0
     #: Identifiants retenus qui ne sont plus dans la bibliothèque Music.
     gone: int = 0
+    gone_pids: list[str] = field(default_factory=list)
     #: Favoris retirés (option « retirer »).
     removed: int = 0
     #: Réimport : ancien identifiant Music → nouveau.
@@ -257,7 +258,8 @@ def run_favorites(
                "interval": interval, "dryRun": dry_run}
     data = _osascript(FAVORITES_SCRIPT, payload, on_line=on_line, popen=popen)
     return FavoritesResult(data.get("favorited", 0), data.get("already", 0), data.get("gone", 0),
-                           data.get("removed", 0), dict(data.get("reimported") or {}))
+                           list(data.get("gonePids") or ()), data.get("removed", 0),
+                           dict(data.get("reimported") or {}))
 
 
 # ----------------------------------------------------------------- absents

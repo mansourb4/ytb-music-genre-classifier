@@ -937,11 +937,11 @@ def cmd_apple_music_likes(args: argparse.Namespace, config: Config) -> int:
         if args.essai:
             print(f"\nEssai : {len(result.reimported)} titre(s) seraient réimportés.")
             return 0
-        # Nouveaux identifiants Music : à retenir avant toute autre chose.
-        by_pid = {pid: video_id for video_id, pid in state.known.items()}
-        for old, new in result.reimported.items():
-            if old in by_pid:
-                state.known[by_pid[old]] = new
+        # Nouveaux identifiants Music : à retenir avant toute autre chose, pour
+        # chaque identifiant YouTube du titre (les doublons partagent le leur).
+        for video_id, pid in list(state.known.items()):
+            if pid in result.reimported:
+                state.known[video_id] = result.reimported[pid]
         apple_music.save_state(root, state)
         print(f"\n{len(result.reimported)} titre(s) réimporté(s) et remis en favoris. "
               "Retour dans leurs playlists…", flush=True)
@@ -960,12 +960,32 @@ def cmd_apple_music_likes(args: argparse.Namespace, config: Config) -> int:
     result = apple_music.run_favorites(pids, reorder=args.reordonner, interval=args.intervalle,
                                        dry_run=args.essai,
                                        on_line=lambda line: print(line, flush=True))
+    repaired = ""
+    if result.gone_pids and not args.essai:
+        # Identifiants Music périmés (un doublon resté sur l'ancien, par
+        # exemple) : oubliés, le titre est retrouvé par artiste et titre.
+        stale = set(result.gone_pids)
+        forgotten = [v for v, pid in state.known.items() if pid in stale]
+        for video_id in forgotten:
+            del state.known[video_id]
+        apple_music.save_state(root, state)
+        again, _ = apple_music.favorite_ids(liked, tracks, state.known)
+        extra = [pid for pid in again if pid not in set(pids)]
+        if extra:
+            more = apple_music.run_favorites(extra, dry_run=False,
+                                             on_line=lambda line: print(line, flush=True))
+            result.favorited += more.favorited
+            result.already += more.already
+        repaired = (f"  {len(forgotten)} identifiant(s) Apple Music périmé(s) oublié(s) ; "
+                    f"{len(extra)} titre(s) retrouvé(s) par artiste et titre")
     print("\nEssai : rien n'a été modifié. Ce qui serait fait :" if args.essai else "\nTerminé :")
     if args.reordonner:
         print(f"  {result.favorited} favori(s) remis dans l'ordre de YouTube Music")
     else:
         print(f"  {result.favorited} titre(s) mis en favoris, {result.already} l'étaient déjà")
-    if result.gone:
+    if repaired:
+        print(repaired)
+    elif result.gone:
         print(f"  {result.gone} titre(s) retiré(s) de la bibliothèque Music depuis : relance "
               "« ytmgc apple-music »")
     if absent:

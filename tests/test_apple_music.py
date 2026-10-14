@@ -183,6 +183,7 @@ def test_liked_titles_become_favorites(tmp_path):
 
     result = _favorites(library, [known["a"], known["c"], "DISPARU"])
     assert (result.favorited, result.already, result.gone) == (2, 0, 1)
+    assert result.gone_pids == ["DISPARU"]
     favorites = {t["pid"] for t in library.state["tracks"] if t.get("favorite")}
     assert favorites == {known["a"], known["c"]}
 

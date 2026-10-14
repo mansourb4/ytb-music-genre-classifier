@@ -3,7 +3,8 @@
 // Lancé par `ytmgc apple-music-likes` :
 //   osascript -l JavaScript apple_music_favorites.js ENTRÉE
 // ENTRÉE est un JSON { pids: [persistentID…], reorder, remove, interval,
-// dryRun } ; la sortie (stdout), un JSON { favorited, already, gone, removed }.
+// dryRun } ; la sortie (stdout), un JSON { favorited, already, gone, gonePids,
+// removed }.
 // `remove` ne fait que retirer ces favoris, sans les remettre : pour vider
 // l'iPhone d'abord, avant de les reposer dans l'ordre.
 //
@@ -50,14 +51,18 @@ function run(argv) {
   const input = readJSON(argv[0]);
   const Music = Application('Music');
   const tracks = Music.libraryPlaylists[0].fileTracks;
-  const report = { favorited: 0, already: 0, gone: 0, removed: 0 };
+  const report = { favorited: 0, already: 0, gone: 0, gonePids: [], removed: 0 };
 
   // Titres présents, du like le plus ancien au plus récent.
   const ordered = [];
   input.pids.slice().reverse().forEach(function (pid) {
     const found = tracks.whose({ persistentID: pid });
-    if (found.length) ordered.push(found[0]);
-    else report.gone++;
+    if (found.length) {
+      ordered.push(found[0]);
+    } else {
+      report.gone++;
+      report.gonePids.push(pid);
+    }
   });
 
   if (input.reimport) return reimport(Music, ordered, input, report);
