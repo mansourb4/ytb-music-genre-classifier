@@ -812,6 +812,22 @@ def cmd_like(args: argparse.Namespace, config: Config) -> int:
     playlist = matches[0]
     entries = client.playlist_entries(playlist["playlist_id"])
     print(f"Playlist « {playlist['title']} » : {len(entries)} titre(s).", flush=True)
+    if args.verifier:
+        print("Lecture de « Titres likés »…", flush=True)
+        found = likes.check(entries, client.playlist_entries("LM"))
+        print(f"« Titres likés » : {found.liked_total} titre(s).")
+        print(f"Titres disponibles de la playlist : {found.wanted}, dont "
+              f"{found.wanted - len(found.missing)} liké(s) et {len(found.missing)} "
+              "absent(s) de « Titres likés ».")
+        if found.first_rank is not None:
+            print(f"Premier titre de la playlist : rang {found.first_rank + 1} dans "
+                  "« Titres likés ».")
+        print(f"Titres likés hors de l'ordre de la playlist : {found.out_of_order}.")
+        for entry in found.missing[:30]:
+            print(f"  absent : {entry['label']} ({entry['video_id']})")
+        if len(found.missing) > 30:
+            print(f"  … et {len(found.missing) - 30} autre(s).")
+        return 0
 
     def progress(index: int, total: int, entry: dict, error: str | None, step: str) -> None:
         done = "like retiré" if step == "unliked" else "liké"
@@ -1518,6 +1534,8 @@ def build_parser() -> argparse.ArgumentParser:
                                "compris, pour que « Titres likés » suive son ordre")
     like_cmd.add_argument("--limite", type=int, default=0,
                           help="Seulement les N premiers titres de la playlist (pour tester)")
+    like_cmd.add_argument("--verifier", action="store_true",
+                          help="Comparer la playlist et « Titres likés », sans rien toucher")
     like_cmd.set_defaults(func=cmd_like)
 
     likes_cmd = subparsers.add_parser(

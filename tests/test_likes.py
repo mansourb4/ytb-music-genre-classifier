@@ -74,3 +74,12 @@ def test_limit_keeps_the_top_of_the_playlist():
     done = []
     likes.like_all([_entry(v) for v in "abcd"], done.append, limit=2, sleep=lambda _: None)
     assert done == ["b", "a"]
+
+
+def test_check_counts_missing_and_misplaced_titles():
+    playlist = [_entry(v) for v in "abcde"] + [_entry(None), _entry("a")]
+    liked = [_entry(v) for v in ["x", "a", "c", "b", "e"]]
+    found = likes.check(playlist, liked)
+    assert (found.wanted, found.liked_total, found.first_rank) == (5, 5, 1)
+    assert [e["video_id"] for e in found.missing] == ["d"]
+    assert found.out_of_order == 1

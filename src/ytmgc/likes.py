@@ -13,6 +13,7 @@ dé-likés, puis tous re-likés dans cet ordre.
 
 from __future__ import annotations
 
+import bisect
 import time
 from dataclasses import dataclass, field
 from typing import Any, Callable, Iterable
@@ -110,3 +111,50 @@ def like_all(
         if index < total and pause > 0:
             sleep(pause)
     return report
+
+
+@dataclass(slots=True)
+class Check:
+    """Une playlist face à « Titres likés »."""
+
+    #: Titres disponibles de la playlist (sans doublon).
+    wanted: int = 0
+    #: Taille de « Titres likés », telle que l'API la rend.
+    liked_total: int = 0
+    #: Titres de la playlist absents de « Titres likés », dans l'ordre de la playlist.
+    missing: list[dict[str, Any]] = field(default_factory=list)
+    #: Titres présents des deux côtés, mais pas dans le même ordre relatif.
+    out_of_order: int = 0
+    #: Rang, dans « Titres likés », du premier titre de la playlist (0 = tout en haut).
+    first_rank: int | None = None
+
+
+def check(entries: Iterable[dict[str, Any]], liked: Iterable[dict[str, Any]]) -> Check:
+    """Compare une playlist et « Titres likés » (du plus récent au plus ancien)."""
+    result = Check()
+    wanted, seen = [], set()
+    for entry in entries:
+        if entry["video_id"] and entry["video_id"] not in seen:
+            seen.add(entry["video_id"])
+            wanted.append(entry)
+    result.wanted = len(wanted)
+    order = [e["video_id"] for e in liked if e["video_id"]]
+    result.liked_total = len(order)
+    rank = {}
+    for index, video_id in enumerate(order):
+        rank.setdefault(video_id, index)
+    result.missing = [e for e in wanted if e["video_id"] not in rank]
+    present = [rank[e["video_id"]] for e in wanted if e["video_id"] in rank]
+    if present:
+        result.first_rank = present[0]
+    # Dans l'ordre voulu, les rangs croissent : on compte les titres hors de la
+    # plus longue suite croissante, ceux qu'il faudrait déplacer.
+    tails: list[int] = []
+    for value in present:
+        at = bisect.bisect_left(tails, value)
+        if at == len(tails):
+            tails.append(value)
+        else:
+            tails[at] = value
+    result.out_of_order = len(present) - len(tails)
+    return result
