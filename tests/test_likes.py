@@ -190,3 +190,8 @@ def test_a_like_held_by_the_other_version_is_removed_through_it():
     youtube.unlike = unlike
     report, _ = _reorder(youtube, [_entry(v, liked=v == "b") for v in "ab"], waits=(1, 1))
     assert youtube.order[:2] == ["a", "b"] and not report.stuck
+
+
+def test_one_title_out_of_place_does_not_flag_the_others():
+    assert likes._longest_in_order(list("acdeb"), list("abcde")) == set("acde")
+    assert likes._longest_in_order([], list("ab")) == set()

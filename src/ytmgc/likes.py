@@ -194,6 +194,28 @@ def _in_place(top: list[str], done: list[str]) -> int:
     return 0
 
 
+def _longest_in_order(got: list[str], expected: list[str]) -> set[str]:
+    """Les titres de `got` qui forment la plus longue suite dans l'ordre de
+    `expected` : les autres sont ceux à déplacer."""
+    rank = {v: i for i, v in enumerate(expected)}
+    items = [v for v in got if v in rank]
+    tails: list[int] = []  # indice dans items de la fin de chaque suite
+    parent = [-1] * len(items)
+    for i, v in enumerate(items):
+        at = bisect.bisect_left([rank[items[t]] for t in tails], rank[v])
+        parent[i] = tails[at - 1] if at else -1
+        if at == len(tails):
+            tails.append(i)
+        else:
+            tails[at] = i
+    keep: set[str] = set()
+    i = tails[-1] if tails else -1
+    while i >= 0:
+        keep.add(items[i])
+        i = parent[i]
+    return keep
+
+
 def reorder(
     entries: Iterable[dict[str, Any]],
     *,
@@ -362,10 +384,9 @@ def reorder(
             if attempt == len(waits) or got == signature:
                 # Même résultat deux fois : ce n'est plus du hasard, insister
                 # n'y changera rien. On laisse ces titres et on continue.
-                report.misplaced.extend(by_id[v] for v in expected
-                                        if v not in got or got.index(v) != expected.index(v))
-                report.liked += sum(1 for v in got if v in expected
-                                    and got.index(v) == expected.index(v))
+                in_order = _longest_in_order(got, expected)
+                report.misplaced.extend(by_id[v] for v in expected if v not in in_order)
+                report.liked += len(in_order)
                 on_line(f"  lot {start + 1}–{start + len(chunk)} : pas tout à fait en ordre, "
                         "laissé tel quel (détail à la fin).")
                 break
