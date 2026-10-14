@@ -72,7 +72,8 @@ class FakeYouTube:
     faire ; `hidden` : titres likés que « Titres likés » n'affiche jamais.
     """
 
-    def __init__(self, liked=(), drop=(), hidden=()):
+    def __init__(self, liked=(), drop=(), hidden=(), stuck=()):
+        self.stuck = set(stuck)
         self.order = list(liked)
         self.thumbs = set(liked)
         self.drop = set(drop)
@@ -91,7 +92,7 @@ class FakeYouTube:
             self.order.insert(0, video_id)
 
     def unlike(self, video_id):
-        if self._dropped():
+        if self._dropped() or video_id in self.stuck:
             return
         self.thumbs.discard(video_id)
         if video_id in self.order:
@@ -149,3 +150,13 @@ def test_reorder_limit_takes_the_top_of_the_playlist():
     youtube = FakeYouTube(liked=["d", "c"])
     _reorder(youtube, [_entry(v, liked=v in "cd") for v in "abcd"], limit=2)
     assert youtube.order == ["a", "b", "d", "c"]
+
+
+def test_likes_that_never_go_away_are_left_in_place():
+    youtube = FakeYouTube(liked=["c", "b", "x"], stuck={"b"})
+    report, lines = _reorder(youtube, [_entry(v, liked=v in "bc") for v in "abc"],
+                             waits=(1, 1, 1))
+    assert youtube.order == ["a", "c", "b", "x"]
+    assert [(e["video_id"], thumb) for e, thumb in report.stuck] == [("b", True)]
+    assert report.retries == 1 and report.stopped is None
+    assert any("impossibles à retirer" in line for line in lines)

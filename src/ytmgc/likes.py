@@ -177,6 +177,9 @@ class Reorder:
     #: Likés, mais que YouTube Music n'affiche pas dans « Titres likés »
     #: (vidéos qui ne sont pas des morceaux : DJ sets, extraits d'émission…).
     hidden: list[dict[str, Any]] = field(default_factory=list)
+    #: Likes que YouTube refuse de retirer, laissés à leur place, avec le pouce
+    #: tel que YouTube le donne (levé ou non) : (titre, pouce levé).
+    stuck: list[tuple[dict[str, Any], bool]] = field(default_factory=list)
     #: Raison de l'arrêt, si l'ordre n'a pas pu être garanti.
     stopped: str | None = None
 
@@ -245,6 +248,7 @@ def reorder(
     to_unlike = [v for v in ids_left if by_id[v]["liked"]]
     flagged = set(to_unlike)
     to_unlike += [v for v in current if v in left and v not in flagged]
+    previous: list[str] | None = None
     for attempt in range(len(waits) + 1):
         if to_unlike:
             on_line(f"Retrait de {len(to_unlike)} like(s)…")
@@ -258,10 +262,18 @@ def reorder(
         to_unlike = [v for v in liked_ids(None) if v in left]
         if not to_unlike:
             break
-        if attempt == len(waits):
-            report.stopped = (f"{len(to_unlike)} like(s) refusent de partir malgré "
-                              f"{len(waits)} nouveaux essais.")
-            return report
+        if to_unlike == previous or attempt == len(waits):
+            # Les mêmes, encore : ce n'est plus YouTube qui perd des demandes,
+            # ces likes-là ne se retirent pas. Ils restent où ils sont, hors
+            # de l'ordre ; les autres titres passent devant.
+            for video_id in to_unlike:
+                report.stuck.append((by_id[video_id], is_liked(video_id)))
+            on_line(f"{len(to_unlike)} like(s) impossibles à retirer : laissés à leur place, "
+                    "on continue sans eux.")
+            stuck = set(to_unlike)
+            ids_left = [v for v in ids_left if v not in stuck]
+            break
+        previous = to_unlike
         report.retries += 1
         on_line(f"{len(to_unlike)} like(s) toujours là (YouTube a laissé tomber des "
                 f"demandes) : pause de {waits[attempt]:.0f} s, puis nouvel essai.")

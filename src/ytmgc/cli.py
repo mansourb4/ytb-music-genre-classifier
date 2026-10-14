@@ -886,6 +886,12 @@ def _like_reorder(args: argparse.Namespace, client, entries: list[dict]) -> int:
             print(f"  {entry['label']}")
         if len(report.hidden) > 20:
             print(f"  … et {len(report.hidden) - 20} autre(s).")
+    if report.stuck:
+        print(f"{len(report.stuck)} titre(s) dont YouTube refuse de retirer le like, laissés à "
+              "leur place dans « Titres likés », hors de l'ordre :")
+        for entry, thumb in report.stuck:
+            state = "pouce levé" if thumb else "pouce baissé ou neutre d'après YouTube"
+            print(f"  {entry['label']} ({entry['video_id']}) — {state}")
     if report.stopped:
         print(f"Arrêt : {report.stopped} Relance la même commande plus tard : les titres "
               "déjà en place seront gardés.")
