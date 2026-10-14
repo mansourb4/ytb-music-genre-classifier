@@ -991,7 +991,7 @@ def create_app(services: Services) -> FastAPI:
 
         def work(job: Job) -> dict:
             from ytmgc.preview import filter_plans
-            from ytmgc.sync import adopt_matches, diff, managed_by_key
+            from ytmgc.sync import adopt_matches, diff, managed_by_key, with_present
 
             client = services.youtube_factory(config)
             job.message = "Lecture des playlists existantes…"
@@ -1012,6 +1012,7 @@ def create_app(services: Services) -> FastAPI:
                 known=known, names={plan.name: plan.key for plan in plans},
             )
             adopt_matches(remote, (plan.key for plan in plans), repository.remember_playlist)
+            remote = with_present(remote, repository.already_present())
             actions = diff(plans, remote, scoped, untouched=frozenset(request.excluded_playlists))
             job.total = len(actions)
             if not actions:
@@ -1022,6 +1023,7 @@ def create_app(services: Services) -> FastAPI:
             log = apply_actions(
                 actions, plans, client, scoped,
                 dry_run=False, on_created=repository.remember_playlist,
+                on_present=repository.mark_present,
             )
             job.progress = len(actions)
             job.message = f"{len(actions)} action(s) appliquée(s)."

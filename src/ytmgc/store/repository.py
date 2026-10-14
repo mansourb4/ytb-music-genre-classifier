@@ -7,7 +7,7 @@ import json
 import sqlite3
 import threading
 from datetime import datetime, timedelta, timezone
-from typing import Callable, TypeVar
+from typing import Callable, Iterable, TypeVar
 
 from ytmgc.models import Classification, MatchStatus, ReleaseCandidate, Track
 
@@ -324,6 +324,37 @@ class Repository:
             "INSERT INTO meta(key, value) VALUES('excluded_playlists', ?) "
             "ON CONFLICT(key) DO UPDATE SET value = excluded.value",
             (json.dumps(unique),),
+        )
+        self._db.commit()
+
+    # ------------------------------------------------- déjà dans la playlist
+
+    @_locked
+    def already_present(self) -> dict[str, set[str]]:
+        """Playlist YouTube → titres que YouTube dit déjà là, sous un autre
+        identifiant que le leur (voir `RemotePlaylist.present`)."""
+        row = self._db.execute(
+            "SELECT value FROM meta WHERE key = 'already_present'"
+        ).fetchone()
+        if row is None:
+            return {}
+        try:
+            data = json.loads(row["value"])
+        except json.JSONDecodeError:
+            return {}
+        return {str(k): {str(v) for v in values} for k, values in data.items()}
+
+    def mark_present(self, playlist_id: str, video_ids: Iterable[str]) -> None:
+        known = self.already_present()
+        known.setdefault(playlist_id, set()).update(video_ids)
+        self._save_present(known)
+
+    @_locked
+    def _save_present(self, known: dict[str, set[str]]) -> None:
+        self._db.execute(
+            "INSERT INTO meta(key, value) VALUES('already_present', ?) "
+            "ON CONFLICT(key) DO UPDATE SET value = excluded.value",
+            (json.dumps({k: sorted(v) for k, v in known.items()}),),
         )
         self._db.commit()
 

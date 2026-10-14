@@ -59,3 +59,14 @@ def test_managed_playlists_are_remembered_by_key(repository):
     repository.remember_playlist("rock/grunge", "PL1", "Rock — Grunge")
     repository.remember_playlist("rock/grunge", "PL2", "Rock — Grunge")
     assert repository.managed_playlists() == {"rock/grunge": ("PL2", "Rock — Grunge")}
+
+
+def test_titles_already_present_are_kept():
+    from ytmgc.store import Repository, connect
+
+    repository = Repository(connect(":memory:"))
+    assert repository.already_present() == {}
+    repository.mark_present("PL1", ["a"])
+    repository.mark_present("PL1", ["b", "a"])
+    repository.mark_present("PL2", ["c"])
+    assert repository.already_present() == {"PL1": {"a", "b"}, "PL2": {"c"}}

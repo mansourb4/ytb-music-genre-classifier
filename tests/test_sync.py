@@ -199,19 +199,43 @@ def test_existing_playlists_matched_by_name_are_remembered():
     assert remembered == [("plan/jazz-modal", "PL1", "Jazz · Modal")]
 
 
-def test_a_refused_add_is_reported():
+def test_titles_youtube_says_are_already_there_are_remembered():
     from ytmgc import sync
     from ytmgc.config import Config
     from ytmgc.models import Op, SyncAction
 
     class Client:
+        def __init__(self):
+            self.added = []
+
         def add_items(self, playlist_id, video_ids):
-            return "Ce titre figure déjà dans la playlist"
+            if "dup" in video_ids:
+                return "This track is already in the playlist Add anyway"
+            if "bad" in video_ids:
+                return "Erreur inconnue"
+            self.added += list(video_ids)
+            return None
 
         def edit_playlist(self, playlist_id, **kwargs):
             pass
 
-    action = SyncAction(Op.ADD, "k", "Jazz", playlist_id="PL1", video_ids=("a",))
-    log = sync.apply([action], [], Client(), Config(), dry_run=False)
-    assert log[1] == ("    YouTube a refusé l'ajout de 1 titre(s) (a) : "
-                      "Ce titre figure déjà dans la playlist")
+    client, present = Client(), []
+    action = SyncAction(Op.ADD, "k", "Jazz", playlist_id="PL1", video_ids=("a", "dup", "b", "bad"))
+    log = sync.apply([action], [], client, Config(), dry_run=False,
+                     on_present=lambda pid, ids: present.append((pid, ids)))
+    assert client.added == ["a", "b"]
+    assert present == [("PL1", ["dup"])]
+    assert any("dup : déjà dans la playlist" in line for line in log)
+    assert any("refusé l'ajout de bad : Erreur inconnue" in line for line in log)
+
+
+def test_titles_already_there_are_not_proposed_again():
+    from ytmgc import sync
+    from ytmgc.config import Config
+    from ytmgc.models import PlaylistPlan, RemotePlaylist
+
+    plan = PlaylistPlan(key="k", name="Jazz", description="", video_ids=("a", "dup"))
+    remote = {"k": RemotePlaylist("PL1", "Jazz", "", video_ids=("a",))}
+    assert sync.diff([plan], remote, Config())
+    remote = sync.with_present(remote, {"PL1": {"dup"}})
+    assert not [a for a in sync.diff([plan], remote, Config()) if a.op.value == "add"]

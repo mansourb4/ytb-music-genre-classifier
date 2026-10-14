@@ -115,6 +115,9 @@ class RemotePlaylist:
     #: Identifiants d'items nécessaires à la suppression (video_id -> setVideoId).
     set_video_ids: dict[str, str] = field(default_factory=dict)
     thumbnail: str | None = None
+    #: Titres que YouTube dit déjà là, mais qu'il affiche sous un autre
+    #: identifiant (version de remplacement d'un titre indisponible).
+    present: frozenset[str] = frozenset()
 
 
 class Op(str, Enum):

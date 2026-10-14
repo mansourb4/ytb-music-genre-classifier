@@ -159,7 +159,7 @@ def diff(
                 )
             )
 
-        current = set(existing.video_ids)
+        current = set(existing.video_ids) | existing.present
         missing = tuple(v for v in plan.video_ids if v not in current)
         if missing:
             actions.append(
@@ -198,10 +198,47 @@ def _batched(values: tuple[str, ...], size: int) -> Iterable[tuple[str, ...]]:
         yield values[start : start + size]
 
 
-def _refused(log: list[str], reason: str | None, chunk: tuple[str, ...]) -> None:
-    if reason:
-        log.append(f"    YouTube a refusé l'ajout de {len(chunk)} titre(s) "
-                   f"({', '.join(chunk[:5])}{'…' if len(chunk) > 5 else ''}) : {reason}")
+#: Mots par lesquels YouTube dit qu'un titre est déjà dans la playlist.
+_ALREADY = ("already", "déjà")
+
+
+def _add(
+    client: PlaylistClient,
+    playlist_id: str,
+    chunk: tuple[str, ...],
+    log: list[str],
+    on_present: Callable[[str, list[str]], None] | None,
+) -> None:
+    """Ajoute un lot. YouTube refuse tout le lot si un seul titre y est déjà :
+    les titres sont alors repris un par un, et ceux qu'il dit déjà là sont
+    retenus (`on_present`) pour ne plus être proposés."""
+    reason = client.add_items(playlist_id, chunk)
+    if not reason:
+        return
+    if len(chunk) > 1:
+        for video_id in chunk:
+            _add(client, playlist_id, (video_id,), log, on_present)
+        return
+    if any(word in reason.casefold() for word in _ALREADY):
+        log.append(f"    {chunk[0]} : déjà dans la playlist pour YouTube, sous un autre "
+                   "identifiant (retenu, ne sera plus proposé)")
+        if on_present is not None:
+            on_present(playlist_id, list(chunk))
+    else:
+        log.append(f"    YouTube a refusé l'ajout de {chunk[0]} : {reason}")
+
+
+def with_present(
+    remote: dict[str, RemotePlaylist], present: Mapping[str, Collection[str]]
+) -> dict[str, RemotePlaylist]:
+    """Joint aux playlists les titres que YouTube a dits déjà là."""
+    from dataclasses import replace
+
+    return {
+        key: replace(playlist, present=frozenset(present.get(playlist.playlist_id, ())))
+        if present.get(playlist.playlist_id) else playlist
+        for key, playlist in remote.items()
+    }
 
 
 def apply(
@@ -212,6 +249,7 @@ def apply(
     *,
     dry_run: bool = True,
     on_created=None,
+    on_present: Callable[[str, list[str]], None] | None = None,
 ) -> list[str]:
     """Applique les actions. En dry-run, renvoie seulement leur description.
 
@@ -236,14 +274,14 @@ def apply(
                 video_ids=head,
             )
             for chunk in rest:
-                _refused(log, client.add_items(playlist_id, chunk), chunk)
+                _add(client, playlist_id, chunk, log, on_present)
             if on_created is not None:
                 on_created(action.key, playlist_id, action.playlist_name)
 
         elif action.op is Op.ADD:
             assert action.playlist_id is not None
             for chunk in _batched(action.video_ids, batch):
-                _refused(log, client.add_items(action.playlist_id, chunk), chunk)
+                _add(client, action.playlist_id, chunk, log, on_present)
             client.edit_playlist(
                 action.playlist_id, description=descriptions.get(action.key)
             )
