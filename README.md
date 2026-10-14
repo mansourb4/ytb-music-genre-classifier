@@ -620,7 +620,9 @@ playlist vers le haut : son premier titre devient le like le plus récent, et
 likes de la playlist (déjà likés compris) puis les remet dans cet ordre, par
 lots de 25 : YouTube répond « OK » à un like sans toujours l'enregistrer, donc
 chaque lot est vérifié dans « Titres likés », et refait après une pause s'il
-manque un titre. Interrompu, il reprend après les titres déjà en place.
+manque un titre. Il reconnaît un titre affiché sous son autre version (clip au
+lieu d'audio, ou l'inverse), et signale à la fin, sans s'arrêter, ce qu'aucun
+essai n'a pu placer. Interrompu, il reprend après les titres déjà en place.
 `--verifier` compare la playlist et « Titres likés » sans rien toucher ;
 `--limite N` ne prend que ses N premiers titres, pour tester.
 

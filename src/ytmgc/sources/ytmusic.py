@@ -235,13 +235,22 @@ class YouTubeMusicClient:
         ids = [t["videoId"] for t in data.get("tracks") or [] if t.get("videoId")]
         return ids[:limit] if limit else ids
 
-    def is_liked(self, video_id: str) -> bool:
-        """Pouce levé sur ce titre, qu'il figure ou non dans « Titres likés »."""
+    def like_info(self, video_id: str) -> tuple[bool, set[str]]:
+        """Pouce levé sur ce titre, et identifiants de ses versions.
+
+        Un titre existe souvent en version audio et en version clip ;
+        « Titres likés » peut afficher l'une quand on a liké l'autre. Les
+        identifiants rendus sont ceux des deux versions (le titre compris).
+        """
         data = self._api.get_watch_playlist(videoId=video_id, limit=1)
-        for track in data.get("tracks") or []:
-            if track.get("videoId") == video_id:
-                return track.get("likeStatus") == "LIKE"
-        return False
+        tracks = data.get("tracks") or []
+        if not tracks:
+            return False, {video_id}
+        first = tracks[0]
+        versions = [first] + ([first["counterpart"]] if first.get("counterpart") else [])
+        ids = {video_id} | {v.get("videoId") for v in versions if v.get("videoId")}
+        own = next((v for v in versions if v.get("videoId") == video_id), first)
+        return own.get("likeStatus") == "LIKE", ids
 
     # ------------------------------------------------------------ écriture
 

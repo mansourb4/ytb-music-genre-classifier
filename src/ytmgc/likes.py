@@ -160,7 +160,7 @@ def check(entries: Iterable[dict[str, Any]], liked: Iterable[dict[str, Any]]) ->
 BATCH = 25
 #: Pauses (secondes) avant chaque nouvel essai, quand YouTube a laissé tomber
 #: des likes ou des retraits : il répond « OK » sans toujours les enregistrer.
-WAITS = (30.0, 60.0, 120.0, 300.0, 600.0)
+WAITS = (30.0, 60.0, 120.0, 300.0)
 #: Le temps que « Titres likés » prenne en compte les derniers likes.
 SETTLE = 3.0
 
@@ -168,6 +168,7 @@ SETTLE = 3.0
 @dataclass(slots=True)
 class Reorder:
     unliked: int = 0
+    #: Titres placés et vérifiés par ce passage.
     liked: int = 0
     unavailable: int = 0
     #: Déjà en place au départ (reprise d'un passage interrompu).
@@ -180,8 +181,8 @@ class Reorder:
     #: Likes que YouTube refuse de retirer, laissés à leur place, avec le pouce
     #: tel que YouTube le donne (levé ou non) : (titre, pouce levé).
     stuck: list[tuple[dict[str, Any], bool]] = field(default_factory=list)
-    #: Raison de l'arrêt, si l'ordre n'a pas pu être garanti.
-    stopped: str | None = None
+    #: Titres qu'aucun essai n'a réussi à mettre à leur place.
+    misplaced: list[dict[str, Any]] = field(default_factory=list)
 
 
 def _in_place(top: list[str], done: list[str]) -> int:
@@ -199,7 +200,7 @@ def reorder(
     like: Callable[[str], None],
     unlike: Callable[[str], None],
     liked_ids: Callable[[int | None], list[str]],
-    is_liked: Callable[[str], bool],
+    like_info: Callable[[str], tuple[bool, set[str]]],
     limit: int = 0,
     pause: float = 1.0,
     batch: int = BATCH,
@@ -212,10 +213,13 @@ def reorder(
     de « Titres likés », et ainsi de suite.
 
     Les likes de la playlist sont d'abord tous retirés, puis remis du bas vers
-    le haut, par lots de `batch`. Après chaque lot, « Titres likés » est relu :
-    si YouTube a laissé tomber un like (ou un retrait), le lot est défait puis
-    refait après une pause de plus en plus longue. Relancé après une
-    interruption, il garde les titres déjà en place et reprend la suite.
+    le haut, par lots de `batch`. Après chaque lot, le haut de « Titres
+    likés » est relu : si YouTube a laissé tomber un like (ou un retrait), le
+    lot est défait puis refait après une pause. « Titres likés » affiche
+    parfois l'autre version d'un titre (clip au lieu d'audio, ou l'inverse) :
+    `like_info` donne les deux, pour le reconnaître. Ce qu'aucun essai ne met
+    en place est laissé de côté et signalé, sans arrêter le reste. Relancé
+    après une interruption, il garde les titres déjà en place.
     """
     report = Reorder()
     wanted, seen = [], set()
@@ -231,13 +235,28 @@ def reorder(
     ids = [e["video_id"] for e in todo]
     by_id = {e["video_id"]: e for e in todo}
 
+    infos: dict[str, tuple[bool, set[str]]] = {}
+    #: Identifiant affiché dans « Titres likés » → titre de la playlist.
+    shown_as: dict[str, str] = {}
+
+    def info(video_id: str) -> tuple[bool, set[str]]:
+        if video_id not in infos:
+            infos[video_id] = like_info(video_id)
+            for other in infos[video_id][1]:
+                if other != video_id and other not in by_id:
+                    shown_as.setdefault(other, video_id)
+        return infos[video_id]
+
+    def resolve(shown: str) -> str:
+        return shown if shown in by_id else shown_as.get(shown, shown)
+
     def rest(seconds: float) -> None:
         if seconds > 0:
             sleep(seconds)
 
     # Reprise : les titres déjà likés dans l'ordre, en tête, restent.
     current = liked_ids(None)
-    report.kept = _in_place(current, ids)
+    report.kept = _in_place([resolve(v) for v in current], ids)
     if report.kept:
         on_line(f"{report.kept} titre(s) déjà en place en tête de « Titres likés » : "
                 "on reprend après eux.")
@@ -263,15 +282,23 @@ def reorder(
         if not to_unlike:
             break
         if to_unlike == previous or attempt == len(waits):
-            # Les mêmes, encore : ce n'est plus YouTube qui perd des demandes,
-            # ces likes-là ne se retirent pas. Ils restent où ils sont, hors
-            # de l'ordre ; les autres titres passent devant.
+            # Les mêmes, encore : le like porte peut-être sur l'autre version.
             for video_id in to_unlike:
-                report.stuck.append((by_id[video_id], is_liked(video_id)))
-            on_line(f"{len(to_unlike)} like(s) impossibles à retirer : laissés à leur place, "
-                    "on continue sans eux.")
-            stuck = set(to_unlike)
-            ids_left = [v for v in ids_left if v not in stuck]
+                for other in sorted(info(video_id)[1] - {video_id}):
+                    unlike(other)
+                    report.unliked += 1
+                    rest(pause)
+            rest(settle)
+            remaining = [v for v in liked_ids(None) if v in left]
+            if remaining:
+                # Ces likes-là ne se retirent pas : ils restent où ils sont,
+                # hors de l'ordre ; les autres titres passent devant.
+                for video_id in remaining:
+                    report.stuck.append((by_id[video_id], info(video_id)[0]))
+                on_line(f"{len(remaining)} like(s) impossibles à retirer : laissés à leur "
+                        "place, on continue sans eux.")
+                stuck = set(remaining)
+                ids_left = [v for v in ids_left if v not in stuck]
             break
         previous = to_unlike
         report.retries += 1
@@ -280,50 +307,84 @@ def reorder(
         rest(waits[attempt])
 
     # 2. Liker par lots, du bas vers le haut, en vérifiant chaque lot.
+    #
+    # Tout ce qui apparaît au-dessus des likes d'avant le lot vient du lot :
+    # c'est ce « haut » qu'on compare à ce qui était attendu.
+    before = set(liked_ids(None))
     hidden: set[str] = set()
     total = len(ids_left)
 
-    def head(count: int) -> list[str]:
-        return [v for v in liked_ids(count + len(hidden)) if v not in hidden]
+    def head(size: int) -> list[str]:
+        top = liked_ids(2 * size + batch)
+        for index, shown in enumerate(top):
+            if shown in before:
+                return top[:index]
+        return top
 
     for start in range(0, total, batch):
         chunk = ids_left[start:start + batch]
+        mine = set(chunk)
+        signature = None
         for attempt in range(len(waits) + 1):
             for video_id in chunk:
                 like(video_id)
                 rest(pause)
             rest(settle)
-            expect = chunk[::-1]
-            top = head(len(expect) + batch)
-            if top[:len(expect)] != expect:
+
+            def got_from(top: list[str]) -> list[str]:
+                found: list[str] = []
+                for shown in top:
+                    video_id = resolve(shown)
+                    if video_id in mine and video_id not in found:
+                        found.append(video_id)
+                return found
+
+            expected = [v for v in chunk[::-1] if v not in hidden]
+            top = head(len(chunk))
+            if got_from(top) != expected:
                 rest(settle * 3)  # « Titres likés » est parfois en retard
-                top = head(len(expect) + batch)
-            if top[:len(expect)] != expect:
-                # Absents mais likés : YouTube Music ne les montre pas dans
-                # « Titres likés ». On les laisse de côté pour l'ordre.
-                for video_id in expect:
-                    if video_id not in top and is_liked(video_id):
-                        hidden.add(video_id)
-                        report.hidden.append(by_id[video_id])
-                expect = [v for v in expect if v not in hidden]
-                top = [v for v in top if v not in hidden]
-            if top[:len(expect)] == expect:
-                report.liked += len(chunk)
+                top = head(len(chunk))
+            if got_from(top) != expected:
+                # Un titre absent du haut : affiché sous son autre version, ou
+                # liké mais jamais montré dans « Titres likés ».
+                for video_id in expected:
+                    if video_id not in got_from(top):
+                        liked, versions = info(video_id)
+                        if liked and not versions & set(top):
+                            hidden.add(video_id)
+                            report.hidden.append(by_id[video_id])
+                expected = [v for v in chunk[::-1] if v not in hidden]
+            got = got_from(top)
+            before.update(top)
+            if got == expected:
+                report.liked += len(got)
                 break
-            if attempt == len(waits):
-                report.stopped = ("YouTube laisse tomber des likes malgré "
-                                  f"{len(waits)} nouveaux essais.")
-                return report
+            if attempt == len(waits) or got == signature:
+                # Même résultat deux fois : ce n'est plus du hasard, insister
+                # n'y changera rien. On laisse ces titres et on continue.
+                report.misplaced.extend(by_id[v] for v in expected
+                                        if v not in got or got.index(v) != expected.index(v))
+                report.liked += sum(1 for v in got if v in expected
+                                    and got.index(v) == expected.index(v))
+                on_line(f"  lot {start + 1}–{start + len(chunk)} : pas tout à fait en ordre, "
+                        "laissé tel quel (détail à la fin).")
+                break
+            signature = got
             report.retries += 1
-            dropped = [v for v in expect if v not in top]
-            on_line(f"  lot {start + 1}–{start + len(chunk)} : {len(dropped)} like(s) "
-                    f"perdu(s) ou mal placé(s) : on défait le lot, pause de "
-                    f"{waits[attempt]:.0f} s, puis on le refait.")
+            on_line(f"  lot {start + 1}–{start + len(chunk)} : "
+                    f"{len(expected) - len(got)} like(s) perdu(s), ou mal placé(s) : on défait "
+                    f"le lot, pause de {waits[attempt]:.0f} s, puis on le refait.")
+            for shown in top:
+                if resolve(shown) in mine:
+                    unlike(shown)
+                    report.unliked += 1
+                    rest(pause)
             for video_id in chunk:
-                if video_id in top or video_id in hidden:
+                if video_id not in top:
                     unlike(video_id)
                     report.unliked += 1
                     rest(pause)
+            before.difference_update(top)
             rest(waits[attempt])
         on_line(f"  [{start + len(chunk)}/{total}] likés et vérifiés")
     return report

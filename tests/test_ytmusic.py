@@ -170,9 +170,14 @@ def test_remove_from_library_uses_the_entry_tokens():
     assert client.remove_from_library([]) == 0
 
 
-def test_liked_ids_and_like_status():
+def test_liked_ids_and_like_info():
     class Api(FakeApi):
         def get_watch_playlist(self, videoId=None, limit=25):
+            if videoId == "gone":
+                return {"tracks": []}
+            if videoId == "clip":  # la version audio passe devant, le clip en contrepartie
+                return {"tracks": [{"videoId": "audio", "likeStatus": "INDIFFERENT",
+                                    "counterpart": {"videoId": "clip", "likeStatus": "LIKE"}}]}
             status = "LIKE" if videoId == "a" else "INDIFFERENT"
             return {"tracks": [{"videoId": videoId, "likeStatus": status},
                                {"videoId": "z", "likeStatus": "LIKE"}]}
@@ -181,4 +186,7 @@ def test_liked_ids_and_like_status():
     client = YouTubeMusicClient("unused", api=api)
     assert client.liked_ids() == ["a", "b", "c"]
     assert client.liked_ids(2) == ["a", "b"]
-    assert client.is_liked("a") and not client.is_liked("b")
+    assert client.like_info("a") == (True, {"a"})
+    assert client.like_info("b") == (False, {"b"})
+    assert client.like_info("clip") == (True, {"clip", "audio"})
+    assert client.like_info("gone") == (False, {"gone"})

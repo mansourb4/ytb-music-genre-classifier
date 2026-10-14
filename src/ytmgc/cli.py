@@ -871,7 +871,7 @@ def _like_reorder(args: argparse.Namespace, client, entries: list[dict]) -> int:
               "l'ordre de la playlist, par lots vérifiés. Rien n'a été modifié.")
         return 0
     report = likes.reorder(entries, like=client.like, unlike=client.unlike,
-                           liked_ids=client.liked_ids, is_liked=client.is_liked,
+                           liked_ids=client.liked_ids, like_info=client.like_info,
                            limit=args.limite, pause=args.pause,
                            on_line=lambda line: print(line, flush=True))
     placed = report.kept + report.liked
@@ -892,10 +892,10 @@ def _like_reorder(args: argparse.Namespace, client, entries: list[dict]) -> int:
         for entry, thumb in report.stuck:
             state = "pouce levé" if thumb else "pouce baissé ou neutre d'après YouTube"
             print(f"  {entry['label']} ({entry['video_id']}) — {state}")
-    if report.stopped:
-        print(f"Arrêt : {report.stopped} Relance la même commande plus tard : les titres "
-              "déjà en place seront gardés.")
-        return 1
+    if report.misplaced:
+        print(f"{len(report.misplaced)} titre(s) qu'aucun essai n'a mis à leur place :")
+        for entry in report.misplaced:
+            print(f"  {entry['label']} ({entry['video_id']})")
     print("Pour reporter cet ordre dans les favoris d'Apple Music :\n"
           f"  python -m ytmgc apple-music-likes --reimporter --limite {placed}\n"
           "(si tu réordonnes plusieurs playlists, fais-le une fois à la fin, avec la "
