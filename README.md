@@ -614,7 +614,11 @@ ytmgc like --playlist "Nom"   # like tous les titres d'une playlist
 ```
 
 `like` saute les titres déjà likés et marque une pause d'une seconde entre deux
-likes (`--pause`) ; `--essai` compte sans rien toucher.
+likes (`--pause`) ; `--essai` compte sans rien toucher. Il like du bas de la
+playlist vers le haut : son premier titre devient le like le plus récent, et
+« Titres likés » suit l'ordre de la playlist. `--reordonner` retire d'abord les
+likes de la playlist (déjà likés compris) puis les remet dans cet ordre ;
+`--limite N` ne prend que ses N premiers titres, pour tester.
 
 ### Synchro : Apple Music maître
 

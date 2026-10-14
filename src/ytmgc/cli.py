@@ -813,24 +813,41 @@ def cmd_like(args: argparse.Namespace, config: Config) -> int:
     entries = client.playlist_entries(playlist["playlist_id"])
     print(f"Playlist « {playlist['title']} » : {len(entries)} titre(s).", flush=True)
 
-    def progress(index: int, total: int, entry: dict, error: str | None) -> None:
-        state = f"ÉCHEC : {error}" if error else "liké"
+    def progress(index: int, total: int, entry: dict, error: str | None, step: str) -> None:
+        done = "like retiré" if step == "unliked" else "liké"
+        state = f"ÉCHEC : {error}" if error else done
         print(f"  [{index}/{total}] {entry['label']} — {state}", flush=True)
 
-    report = likes.like_all(entries, client.like, pause=args.pause, dry_run=args.essai,
+    report = likes.like_all(entries, client.like, unlike=client.unlike, reorder=args.reordonner,
+                            limit=args.limite, pause=args.pause, dry_run=args.essai,
                             on_progress=progress)
     unavailable = (f", {report.unavailable} indisponible(s) sur YouTube (grisés, "
                    "impossibles à liker)" if report.unavailable else "")
     if args.essai:
-        print(f"Essai : {report.liked} titre(s) à liker, {report.already} déjà liké(s)"
-              f"{unavailable}. Rien n'a été modifié.")
+        if args.reordonner:
+            print(f"Essai : {report.unliked} like(s) seraient retirés puis {report.liked} "
+                  f"titre(s) likés dans l'ordre de la playlist{unavailable}. "
+                  "Rien n'a été modifié.")
+        else:
+            print(f"Essai : {report.liked} titre(s) à liker, {report.already} déjà liké(s)"
+                  f"{unavailable}. Rien n'a été modifié.")
         return 0
-    print(f"\n{report.liked} titre(s) liké(s), {report.already} déjà liké(s), "
-          f"{len(report.failed)} échec(s){unavailable}.")
+    if args.reordonner:
+        print(f"\n{report.unliked} like(s) retiré(s), {report.liked} titre(s) re-liké(s) dans "
+              f"l'ordre de la playlist, {len(report.failed)} échec(s){unavailable}.")
+    else:
+        print(f"\n{report.liked} titre(s) liké(s), {report.already} déjà liké(s), "
+              f"{len(report.failed)} échec(s){unavailable}.")
     if report.stopped:
         print(f"Arrêt après {likes.MAX_CONSECUTIVE_FAILURES} échecs d'affilée : YouTube refuse "
-              "sans doute pour l'instant. Relance plus tard, les titres déjà likés seront sautés.")
+              "sans doute pour l'instant. Relance plus tard la même commande.")
         return 1
+    if args.reordonner and report.liked:
+        print("Ces titres sont maintenant tes likes les plus récents. Pour reporter cet ordre "
+              "dans les favoris d'Apple Music :\n"
+              f"  python -m ytmgc apple-music-likes --reimporter --limite {report.liked}\n"
+              "(si tu réordonnes plusieurs playlists, fais-le une fois à la fin, avec la "
+              "somme de leurs nombres)")
     return 0
 
 
@@ -1496,6 +1513,11 @@ def build_parser() -> argparse.ArgumentParser:
                           help="Compter ce qui serait liké, sans rien toucher")
     like_cmd.add_argument("--pause", type=float, default=1.0,
                           help="Secondes entre deux likes (défaut : %(default)s)")
+    like_cmd.add_argument("--reordonner", action="store_true",
+                          help="Retirer puis remettre les likes de la playlist, déjà likés "
+                               "compris, pour que « Titres likés » suive son ordre")
+    like_cmd.add_argument("--limite", type=int, default=0,
+                          help="Seulement les N premiers titres de la playlist (pour tester)")
     like_cmd.set_defaults(func=cmd_like)
 
     likes_cmd = subparsers.add_parser(
