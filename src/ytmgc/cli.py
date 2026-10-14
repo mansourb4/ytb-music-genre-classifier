@@ -823,8 +823,16 @@ def cmd_like(args: argparse.Namespace, config: Config) -> int:
             print(f"Premier titre de la playlist : rang {found.first_rank + 1} dans "
                   "« Titres likés ».")
         print(f"Titres likés hors de l'ordre de la playlist : {found.out_of_order}.")
+        thumbs = sum(1 for entry in found.missing if entry["liked"])
+        print(f"Parmi les absents, pouce levé d'après la playlist : {thumbs} ; "
+              f"pas de like : {len(found.missing) - thumbs}.")
+        print(f"Absents par tranche de {likes.SLICE} titres, du haut de la playlist vers le bas :")
+        for index, (size, gone) in enumerate(found.missing_by_slice):
+            start = index * likes.SLICE + 1
+            print(f"  titres {start}–{start + size - 1} : {gone} absent(s)")
         for entry in found.missing[:30]:
-            print(f"  absent : {entry['label']} ({entry['video_id']})")
+            thumb = "pouce levé" if entry["liked"] else "pas liké"
+            print(f"  absent ({thumb}) : {entry['label']} ({entry['video_id']})")
         if len(found.missing) > 30:
             print(f"  … et {len(found.missing) - 30} autre(s).")
         return 0

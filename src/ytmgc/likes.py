@@ -127,6 +127,12 @@ class Check:
     out_of_order: int = 0
     #: Rang, dans « Titres likés », du premier titre de la playlist (0 = tout en haut).
     first_rank: int | None = None
+    #: Par tranche de `SLICE` titres de la playlist (de haut en bas) : combien manquent.
+    missing_by_slice: list[tuple[int, int]] = field(default_factory=list)
+
+
+#: Taille des tranches de `Check.missing_by_slice`.
+SLICE = 250
 
 
 def check(entries: Iterable[dict[str, Any]], liked: Iterable[dict[str, Any]]) -> Check:
@@ -144,6 +150,10 @@ def check(entries: Iterable[dict[str, Any]], liked: Iterable[dict[str, Any]]) ->
     for index, video_id in enumerate(order):
         rank.setdefault(video_id, index)
     result.missing = [e for e in wanted if e["video_id"] not in rank]
+    for start in range(0, len(wanted), SLICE):
+        chunk = wanted[start:start + SLICE]
+        result.missing_by_slice.append(
+            (len(chunk), sum(1 for e in chunk if e["video_id"] not in rank)))
     present = [rank[e["video_id"]] for e in wanted if e["video_id"] in rank]
     if present:
         result.first_rank = present[0]

@@ -83,3 +83,4 @@ def test_check_counts_missing_and_misplaced_titles():
     assert (found.wanted, found.liked_total, found.first_rank) == (5, 5, 1)
     assert [e["video_id"] for e in found.missing] == ["d"]
     assert found.out_of_order == 1
+    assert found.missing_by_slice == [(5, 1)]
