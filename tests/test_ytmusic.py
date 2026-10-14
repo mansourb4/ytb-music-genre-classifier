@@ -168,3 +168,17 @@ def test_remove_from_library_uses_the_entry_tokens():
     assert client.remove_from_library(["a", "c", "z"]) == 1
     assert sent == [["-a"]]
     assert client.remove_from_library([]) == 0
+
+
+def test_liked_ids_and_like_status():
+    class Api(FakeApi):
+        def get_watch_playlist(self, videoId=None, limit=25):
+            status = "LIKE" if videoId == "a" else "INDIFFERENT"
+            return {"tracks": [{"videoId": videoId, "likeStatus": status},
+                               {"videoId": "z", "likeStatus": "LIKE"}]}
+
+    api = Api(details={"LM": {"tracks": [{"videoId": v} for v in "abc"] + [{"videoId": None}]}})
+    client = YouTubeMusicClient("unused", api=api)
+    assert client.liked_ids() == ["a", "b", "c"]
+    assert client.liked_ids(2) == ["a", "b"]
+    assert client.is_liked("a") and not client.is_liked("b")

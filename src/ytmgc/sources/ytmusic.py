@@ -229,6 +229,20 @@ class YouTubeMusicClient:
             })
         return entries
 
+    def liked_ids(self, limit: int | None = None) -> list[str]:
+        """« Titres likés », du plus récent au plus ancien (les `limit` premiers)."""
+        data = self._api.get_playlist("LM", limit=limit)
+        ids = [t["videoId"] for t in data.get("tracks") or [] if t.get("videoId")]
+        return ids[:limit] if limit else ids
+
+    def is_liked(self, video_id: str) -> bool:
+        """Pouce levé sur ce titre, qu'il figure ou non dans « Titres likés »."""
+        data = self._api.get_watch_playlist(videoId=video_id, limit=1)
+        for track in data.get("tracks") or []:
+            if track.get("videoId") == video_id:
+                return track.get("likeStatus") == "LIKE"
+        return False
+
     # ------------------------------------------------------------ écriture
 
     def _rate(self, video_id: str, status: str) -> None:

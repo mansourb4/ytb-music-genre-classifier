@@ -48,28 +48,6 @@ def test_titles_removed_from_youtube_are_counted_apart():
     assert done == ["a"] and report.unavailable == 1
 
 
-def test_reorder_unlikes_then_likes_from_the_bottom_up():
-    calls = []
-    steps = []
-    report = likes.like_all(
-        [_entry("a", liked=True), _entry("b"), _entry("c", liked=True), _entry(None)],
-        lambda v: calls.append(("like", v)), unlike=lambda v: calls.append(("unlike", v)),
-        reorder=True, sleep=lambda _: None,
-        on_progress=lambda i, total, entry, error, step: steps.append((i, total, step)))
-    assert calls == [("unlike", "a"), ("unlike", "c"),
-                     ("like", "c"), ("like", "b"), ("like", "a")]
-    assert (report.unliked, report.liked, report.already, report.unavailable) == (2, 3, 0, 1)
-    assert steps[0] == (1, 5, "unliked") and steps[-1] == (5, 5, "liked")
-
-
-def test_reorder_dry_run_and_limit():
-    calls = []
-    report = likes.like_all([_entry("a", liked=True), _entry("b"), _entry("c", liked=True)],
-                            calls.append, unlike=calls.append, reorder=True, limit=2,
-                            dry_run=True)
-    assert calls == [] and (report.unliked, report.liked) == (1, 2)
-
-
 def test_limit_keeps_the_top_of_the_playlist():
     done = []
     likes.like_all([_entry(v) for v in "abcd"], done.append, limit=2, sleep=lambda _: None)
@@ -84,3 +62,90 @@ def test_check_counts_missing_and_misplaced_titles():
     assert [e["video_id"] for e in found.missing] == ["d"]
     assert found.out_of_order == 1
     assert found.missing_by_slice == [(5, 1)]
+
+
+class FakeYouTube:
+    """« Titres likés » du plus récent au plus ancien, qui perd des demandes.
+
+    Un like sur un titre déjà liké ne le déplace pas ; `drop` : numéros des
+    demandes (likes et retraits confondus) que YouTube « accepte » sans rien
+    faire ; `hidden` : titres likés que « Titres likés » n'affiche jamais.
+    """
+
+    def __init__(self, liked=(), drop=(), hidden=()):
+        self.order = list(liked)
+        self.thumbs = set(liked)
+        self.drop = set(drop)
+        self.hidden = set(hidden)
+        self.calls = 0
+
+    def _dropped(self):
+        self.calls += 1
+        return self.calls in self.drop
+
+    def like(self, video_id):
+        if self._dropped() or video_id in self.thumbs:
+            return
+        self.thumbs.add(video_id)
+        if video_id not in self.hidden:
+            self.order.insert(0, video_id)
+
+    def unlike(self, video_id):
+        if self._dropped():
+            return
+        self.thumbs.discard(video_id)
+        if video_id in self.order:
+            self.order.remove(video_id)
+
+    def liked_ids(self, limit=None):
+        return self.order[:limit] if limit else list(self.order)
+
+    def is_liked(self, video_id):
+        return video_id in self.thumbs
+
+
+def _reorder(youtube, entries, **kwargs):
+    lines = []
+    report = likes.reorder(entries, like=youtube.like, unlike=youtube.unlike,
+                           liked_ids=youtube.liked_ids, is_liked=youtube.is_liked,
+                           pause=0, sleep=lambda _: None, on_line=lines.append, **kwargs)
+    return report, lines
+
+
+def test_reorder_puts_the_playlist_order_on_top_despite_dropped_requests():
+    playlist = [_entry(v, liked=v in "bdf") for v in "abcdefgh"] + [_entry(None)]
+    # Likés à l'envers, plus deux titres hors playlist, plus anciens.
+    youtube = FakeYouTube(liked=["b", "d", "f", "x", "y"], drop={2, 5, 9, 14, 15})
+    report, lines = _reorder(youtube, playlist, batch=3)
+    assert youtube.order == list("abcdefgh") + ["x", "y"]
+    assert report.stopped is None and report.retries > 0
+    assert (report.liked, report.unavailable) == (8, 1)
+
+
+def test_reorder_sets_titles_youtube_music_never_shows_aside():
+    youtube = FakeYouTube(hidden={"c"})
+    report, _ = _reorder(youtube, [_entry(v) for v in "abcd"], batch=2)
+    assert youtube.order == ["a", "b", "d"]
+    assert [e["video_id"] for e in report.hidden] == ["c"]
+    assert report.retries == 0 and report.stopped is None
+
+
+def test_reorder_resumes_after_the_titles_already_in_place():
+    # Interrompu : d puis c déjà likés dans l'ordre, a et b pas encore.
+    youtube = FakeYouTube(liked=["c", "d", "a", "z"])
+    report, lines = _reorder(youtube, [_entry(v, liked=v in "acd") for v in "abcd"], batch=10)
+    assert youtube.order == ["a", "b", "c", "d", "z"]
+    assert report.kept == 2 and report.liked == 2
+    assert "2 titre(s) déjà en place" in lines[0]
+
+
+def test_reorder_stops_when_youtube_keeps_dropping():
+    youtube = FakeYouTube(drop=range(1, 1000))
+    report, _ = _reorder(youtube, [_entry(v) for v in "ab"], waits=(1, 1))
+    assert report.stopped and report.liked == 0
+
+
+def test_reorder_limit_takes_the_top_of_the_playlist():
+    youtube = FakeYouTube(liked=["d", "c"])
+    _reorder(youtube, [_entry(v, liked=v in "cd") for v in "abcd"], limit=2)
+    assert youtube.order == ["a", "b", "d", "c"]

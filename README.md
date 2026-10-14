@@ -617,7 +617,11 @@ ytmgc like --playlist "Nom"   # like tous les titres d'une playlist
 likes (`--pause`) ; `--essai` compte sans rien toucher. Il like du bas de la
 playlist vers le haut : son premier titre devient le like le plus récent, et
 « Titres likés » suit l'ordre de la playlist. `--reordonner` retire d'abord les
-likes de la playlist (déjà likés compris) puis les remet dans cet ordre ;
+likes de la playlist (déjà likés compris) puis les remet dans cet ordre, par
+lots de 25 : YouTube répond « OK » à un like sans toujours l'enregistrer, donc
+chaque lot est vérifié dans « Titres likés », et refait après une pause s'il
+manque un titre. Interrompu, il reprend après les titres déjà en place.
+`--verifier` compare la playlist et « Titres likés » sans rien toucher ;
 `--limite N` ne prend que ses N premiers titres, pour tester.
 
 ### Synchro : Apple Music maître
