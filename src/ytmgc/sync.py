@@ -32,7 +32,7 @@ class PlaylistClient(Protocol):
         self, title: str, description: str, *, privacy: str, video_ids: Iterable[str]
     ) -> str: ...
 
-    def add_items(self, playlist_id: str, video_ids: Iterable[str]) -> None: ...
+    def add_items(self, playlist_id: str, video_ids: Iterable[str]) -> str | None: ...
 
     def remove_items(self, playlist_id: str, items: dict[str, str]) -> None: ...
 
@@ -198,6 +198,12 @@ def _batched(values: tuple[str, ...], size: int) -> Iterable[tuple[str, ...]]:
         yield values[start : start + size]
 
 
+def _refused(log: list[str], reason: str | None, chunk: tuple[str, ...]) -> None:
+    if reason:
+        log.append(f"    YouTube a refusé l'ajout de {len(chunk)} titre(s) "
+                   f"({', '.join(chunk[:5])}{'…' if len(chunk) > 5 else ''}) : {reason}")
+
+
 def apply(
     actions: Iterable[SyncAction],
     plans: Iterable[PlaylistPlan],
@@ -230,14 +236,14 @@ def apply(
                 video_ids=head,
             )
             for chunk in rest:
-                client.add_items(playlist_id, chunk)
+                _refused(log, client.add_items(playlist_id, chunk), chunk)
             if on_created is not None:
                 on_created(action.key, playlist_id, action.playlist_name)
 
         elif action.op is Op.ADD:
             assert action.playlist_id is not None
             for chunk in _batched(action.video_ids, batch):
-                client.add_items(action.playlist_id, chunk)
+                _refused(log, client.add_items(action.playlist_id, chunk), chunk)
             client.edit_playlist(
                 action.playlist_id, description=descriptions.get(action.key)
             )

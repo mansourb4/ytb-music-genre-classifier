@@ -27,6 +27,22 @@ SPECIAL_SOURCES = {
 SYSTEM_PLAYLISTS = {"LM", "SE"}
 
 
+def _texts(node: Any) -> list[str]:
+    """Les textes affichables (« runs ») d'une réponse de YouTube."""
+    found: list[str] = []
+    if isinstance(node, dict):
+        for run in node.get("runs") or []:
+            if isinstance(run, dict) and run.get("text"):
+                found.append(run["text"])
+        for key, value in node.items():
+            if key != "runs":
+                found += _texts(value)
+    elif isinstance(node, list):
+        for value in node:
+            found += _texts(value)
+    return found
+
+
 def validate_sources(sources: list[str]) -> list[str]:
     """Vérifie une sélection de sources avant de lancer quoi que ce soit.
 
@@ -301,10 +317,20 @@ class YouTubeMusicClient:
             raise RuntimeError(f"Création de playlist refusée par YouTube Music : {result}")
         return result
 
-    def add_items(self, playlist_id: str, video_ids: Iterable[str]) -> None:
+    def add_items(self, playlist_id: str, video_ids: Iterable[str]) -> str | None:
+        """Ajoute des titres. Renvoie la raison d'un refus de YouTube, sinon None.
+
+        YouTube refuse tout le lot si l'un des titres y est déjà (doublon) :
+        sans ce retour, le refus passerait inaperçu.
+        """
         ids = list(video_ids)
-        if ids:
-            self._api.add_playlist_items(playlist_id, ids, duplicates=False)
+        if not ids:
+            return None
+        response = self._api.add_playlist_items(playlist_id, ids, duplicates=False)
+        if not isinstance(response, dict) or "SUCCEEDED" in str(response.get("status", "")):
+            return None
+        texts = _texts(response.get("actions"))
+        return " ".join(texts) or str(response.get("status") or "refus sans explication")
 
     def remove_items(self, playlist_id: str, items: dict[str, str]) -> None:
         if items:

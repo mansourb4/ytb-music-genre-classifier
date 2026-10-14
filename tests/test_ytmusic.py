@@ -190,3 +190,18 @@ def test_liked_ids_and_like_info():
     assert client.like_info("b") == (False, {"b"})
     assert client.like_info("clip") == (True, {"clip", "audio"})
     assert client.like_info("gone") == (False, {"gone"})
+
+
+def test_add_items_reports_why_youtube_refused():
+    class Api(FakeApi):
+        def add_playlist_items(self, playlist_id, video_ids, duplicates=False):
+            if "dup" in video_ids:
+                return {"status": "STATUS_FAILED", "actions": [{"addToToastAction": {"item": {
+                    "notificationActionRenderer": {"responseText": {"runs": [
+                        {"text": "Ce titre figure déjà dans la playlist"}]}}}}}]}
+            return {"status": "STATUS_SUCCEEDED", "playlistEditResults": []}
+
+    client = YouTubeMusicClient("unused", api=Api())
+    assert client.add_items("PL1", ["a"]) is None
+    assert client.add_items("PL1", ["a", "dup"]) == "Ce titre figure déjà dans la playlist"
+    assert client.add_items("PL1", []) is None

@@ -39,7 +39,7 @@ from pathlib import Path
 from ytmgc import __version__
 from ytmgc.classifier import classify_tracks
 from ytmgc.config import DEFAULT_CONFIG_PATH, Config, load_config
-from ytmgc.models import MatchStatus, Track
+from ytmgc.models import MatchStatus, Op, Track
 from ytmgc.planner import plan_playlists
 from ytmgc.store import Repository, connect
 from ytmgc.sorting import DEFAULT_SORT_MODE, SORT_MODES, apply_sort_mode
@@ -182,6 +182,14 @@ def cmd_apply(args: argparse.Namespace, config: Config) -> int:
     )
     for line in log:
         print(f"  {line}")
+    if getattr(args, "detail", False):
+        labels = {t.video_id: t.label() for t in repository.all_tracks()}
+        print("\nDétail :")
+        for action in actions:
+            if action.op in (Op.ADD, Op.REMOVE) or len(action.video_ids) <= 10:
+                print(f"  {action.summary()}")
+                for video_id in action.video_ids[:30]:
+                    print(f"    {labels.get(video_id, '?')} ({video_id})")
     if not args.execute:
         print(f"\n{len(actions)} action(s) simulée(s). Relance avec --execute pour écrire.")
     else:
@@ -1453,6 +1461,8 @@ def build_parser() -> argparse.ArgumentParser:
     apply_cmd = subparsers.add_parser("apply", help="Synchroniser les playlists sur YouTube Music")
     apply_cmd.add_argument("--tri", default=DEFAULT_SORT_MODE, choices=[m.key for m in SORT_MODES], help=tri_help)
     apply_cmd.add_argument("--execute", action="store_true", help="Écrire réellement (sinon : à blanc)")
+    apply_cmd.add_argument("--detail", action="store_true",
+                           help="Lister les titres de chaque ajout ou retrait")
     apply_cmd.set_defaults(func=cmd_apply)
 
     tags_cmd = subparsers.add_parser(

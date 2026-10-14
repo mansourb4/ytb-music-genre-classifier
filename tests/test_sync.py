@@ -197,3 +197,21 @@ def test_existing_playlists_matched_by_name_are_remembered():
     remembered = []
     adopt_matches(remote, ["plan/jazz-modal"], lambda *row: remembered.append(row))
     assert remembered == [("plan/jazz-modal", "PL1", "Jazz · Modal")]
+
+
+def test_a_refused_add_is_reported():
+    from ytmgc import sync
+    from ytmgc.config import Config
+    from ytmgc.models import Op, SyncAction
+
+    class Client:
+        def add_items(self, playlist_id, video_ids):
+            return "Ce titre figure déjà dans la playlist"
+
+        def edit_playlist(self, playlist_id, **kwargs):
+            pass
+
+    action = SyncAction(Op.ADD, "k", "Jazz", playlist_id="PL1", video_ids=("a",))
+    log = sync.apply([action], [], Client(), Config(), dry_run=False)
+    assert log[1] == ("    YouTube a refusé l'ajout de 1 titre(s) (a) : "
+                      "Ce titre figure déjà dans la playlist")
