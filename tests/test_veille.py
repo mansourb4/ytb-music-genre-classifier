@@ -394,3 +394,35 @@ def test_same_artist():
     assert not nouveautes.same_artist("Damso", "Damso Fan Club")
     assert not nouveautes.same_artist("Miles Davis", "Miles Kane")
     assert not nouveautes.same_artist("", "Miles Davis")
+
+
+def _say(update_id, text):
+    return {"update_id": update_id, "message": {"chat": {"id": int(CHAT)}, "text": text}}
+
+
+def test_proposer_brings_back_a_title_left_out(tmp_path):
+    world = World(tmp_path, [Track("old", "Rain", ("Moderat",))])
+    _run(tmp_path, world)
+    world.liked.insert(0, KOHNDO)
+    _run(tmp_path, world)
+    key = next(iter(nouveautes.load(tmp_path).pending))
+    world.bot.queue = [_tap(1, f"x:{key}")]
+    _run(tmp_path, world)
+    assert "/proposer Faut qu'je tienne" in world.bot.edits[-1][1]
+    assert nouveautes.load(tmp_path).pending == {}
+
+    world.bot.queue = [_say(2, "/proposer  KOHNDO ")]
+    _run(tmp_path, world)
+    _, text, rows = world.bot.sent[-1]
+    assert "Proposé : <b>Rap · FR posé</b>" in text and rows[0][0][0] == "✅ Rap · FR posé"
+    key = next(iter(nouveautes.load(tmp_path).pending))
+    world.bot.queue = [_tap(3, f"c:{key}:{nouveautes.load(tmp_path).names.index('Rap · FR posé')}")]
+    _run(tmp_path, world)
+    placed = placements.load(world.placements_file).get(placements.entry_key(
+        "Kohndo", "Faut qu'je tienne"))
+    assert placed.playlist == "Rap · FR posé" and "k1" in world.apple
+
+    world.bot.queue = [_say(4, "/proposer inconnu"), _say(5, "/proposer")]
+    _run(tmp_path, world)
+    assert "ne contient « inconnu »" in world.bot.sent[-2][1]
+    assert world.bot.sent[-1][1].startswith("Écris par exemple")

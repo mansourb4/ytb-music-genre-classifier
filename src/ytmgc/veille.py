@@ -88,28 +88,60 @@ def check(state: State, s: Services) -> bool:
             fresh.append(track)
 
     if fresh:
-        s.save_tracks(fresh)
-        s.classify(fresh)
-        plans = s.plans()
-        state.names = list(plans)
-        classes = {c.video_id: c for c in s.classifications()}
-        known = {t.video_id: t for t in s.tracks()}
-        for track in fresh:
-            proposal, reason = nouveautes.proposal_for(track.video_id, plans), None
-            if proposal is None:
-                proposal, reason = nouveautes.guess(track, classes.get(track.video_id), plans,
-                                                    known, classes)
-            # Tenu hors playlist jusqu'à ta réponse : rien ne se range sans toi.
-            book.put(track, NOWHERE)
-            pending = Pending(track.video_id, track.artist, track.title,
-                              nouveautes.describe(track, classes.get(track.video_id), proposal,
-                                                  reason),
-                              proposal)
-            state.add(pending)
-            s.log(f"Nouveau like : {track.label()} → proposé : {proposal or 'aucune'}")
-        placements.save(book, s.placements_file)
+        propose(state, s, fresh)
     state.seen.update(t.video_id for t in new)
     return favorites
+
+
+def propose(state: State, s: Services, tracks: list[Track]) -> None:
+    """Analyse ces titres, les tient hors playlist et prépare leur proposition
+    (le message part au tour suivant de la boucle)."""
+    s.save_tracks(tracks)
+    s.classify(tracks)
+    # Un titre déjà tenu hors playlist (« Ne pas ranger ») : les règles ne le
+    # rangent plus ; on lève ce choix le temps de calculer la proposition.
+    book = placements.load(s.placements_file)
+    if any([book.remove(track) for track in tracks]):  # tous, pas seulement le premier
+        placements.save(book, s.placements_file)
+    plans = s.plans()
+    state.names = list(plans)
+    classes = {c.video_id: c for c in s.classifications()}
+    known = {t.video_id: t for t in s.tracks()}
+    for track in tracks:
+        proposal, reason = nouveautes.proposal_for(track.video_id, plans), None
+        if proposal is None:
+            proposal, reason = nouveautes.guess(track, classes.get(track.video_id), plans,
+                                                known, classes)
+        # Tenu hors playlist jusqu'à ta réponse : rien ne se range sans toi.
+        book.put(track, NOWHERE)
+        state.add(Pending(track.video_id, track.artist, track.title,
+                          nouveautes.describe(track, classes.get(track.video_id), proposal,
+                                              reason),
+                          proposal))
+        s.log(f"Proposé : {track.label()} → {proposal or 'aucune'}")
+    placements.save(book, s.placements_file)
+
+
+def repropose(state: State, s: Services, query: str) -> None:
+    """« /proposer miles » : refaire la proposition d'un like récent, pour
+    revenir sur un « Ne pas ranger » ou ranger ailleurs."""
+    wanted = " ".join(query.casefold().split())
+    if not wanted:
+        s.bot.send(s.chat, "Écris par exemple « /proposer miles davis » : je cherche parmi "
+                           f"tes {LOOK} derniers likes.")
+        return
+    waiting = {p.video_id for p in state.pending.values()}
+    found = [t for t in s.liked(LOOK) if wanted in " ".join(t.label().casefold().split())]
+    if not found:
+        s.bot.send(s.chat, f"Aucun de tes {LOOK} derniers likes ne contient « "
+                           f"{escape(query.strip())} ».")
+        return
+    fresh = [t for t in found[:3] if t.video_id not in waiting]
+    if not fresh:
+        s.bot.send(s.chat, "Déjà proposé plus haut : il attend ta réponse.")
+        return
+    propose(state, s, fresh)
+    send_unsent(state, s)
 
 
 def guess_missing(state: State, s: Services) -> None:
@@ -155,7 +187,11 @@ def handle(state: State, s: Services, updates: Iterable[dict]) -> int:
         state.offset = int(update["update_id"]) + 1
         message = update.get("message")
         if message and str(message.get("chat", {}).get("id")) == s.chat:
-            s.bot.send(s.chat, status(state))
+            command, _, rest = (message.get("text") or "").strip().partition(" ")
+            if command.casefold().split("@")[0] in {"/proposer", "/revoir"}:
+                repropose(state, s, rest)
+            else:
+                s.bot.send(s.chat, status(state))
             continue
         query = update.get("callback_query")
         if not query:
@@ -177,7 +213,8 @@ def handle(state: State, s: Services, updates: Iterable[dict]) -> int:
         placements.save(book, s.placements_file)
         s.bot.answer(query["id"], "Noté.")
         if answer.decision == NOWHERE:
-            s.bot.edit(s.chat, pending.message_id, pending.text + "\n\n👌 Laissé hors playlists.")
+            s.bot.edit(s.chat, pending.message_id, pending.text + "\n\n👌 Laissé hors playlists. "
+                       "Pour y revenir : « /proposer " + escape(pending.title[:30]) + " ».")
             del state.pending[answer.key]
             s.log(f"Hors playlists : {_track(pending).label()}")
         else:
@@ -228,6 +265,8 @@ def status(state: State) -> str:
     lines = [f"Veille active. {len(waiting)} titre(s) attendent ton choix, "
              f"{len(working)} en cours de rangement."]
     lines += [f"• {escape(_track(p).label())}" for p in waiting[:10]]
+    lines.append("Pour revoir la proposition d'un like récent : « /proposer » suivi d'un mot "
+                 "du titre ou de l'artiste.")
     return "\n".join(lines)
 
 
