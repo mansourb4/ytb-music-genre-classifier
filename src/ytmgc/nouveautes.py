@@ -220,8 +220,17 @@ def proposal_for(video_id: str, plans: Mapping[str, Iterable[str]]) -> str | Non
     return None
 
 
-def _fold(text: str) -> str:
-    return " ".join(text.casefold().split())
+def _words(name: str) -> frozenset[str]:
+    return frozenset(name.casefold().replace("&", " ").split()) - {"the", "and", "et"}
+
+
+def same_artist(a: str, b: str) -> bool:
+    """Même artiste, ou l'un contenu dans l'autre : « The Miles Davis Quintet »
+    est Miles Davis. Un nom d'un seul mot (« Damso ») doit être identique."""
+    wa, wb = _words(a), _words(b)
+    if not wa or not wb:
+        return False
+    return wa == wb or (len(wb) >= 2 and wb <= wa) or (len(wa) >= 2 and wa <= wb)
 
 
 def guess(
@@ -238,7 +247,7 @@ def guess(
     (playlist, raison), ou (None, None) si rien ne s'en approche.
     """
     members = {name: [v for v in ids if v != track.video_id] for name, ids in plans.items()}
-    artists = {_fold(a) for a in track.artists if a}
+    artists = [a for a in track.artists if a]
 
     def best(score) -> str | None:
         counts = {name: sum(score(v) for v in ids) for name, ids in members.items()}
@@ -246,7 +255,8 @@ def guess(
         return name if name is not None and counts[name] > 0 else None
 
     if artists:
-        name = best(lambda v: v in tracks and bool(artists & {_fold(a) for a in tracks[v].artists}))
+        name = best(lambda v: v in tracks and any(
+            same_artist(mine, theirs) for mine in artists for theirs in tracks[v].artists))
         if name:
             return name, "là où sont ses autres titres"
     if classification is not None and classification.styles:

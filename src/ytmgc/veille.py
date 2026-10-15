@@ -130,9 +130,12 @@ def guess_missing(state: State, s: Services) -> None:
             continue
         pending.proposal = proposal
         pending.text = nouveautes.describe(track, classes.get(pending.video_id), proposal, reason)
+        # Un message modifié ne sonne pas : l'ancien est désactivé, et la
+        # proposition repart dans un nouveau message, qui, lui, se voit.
         if pending.message_id is not None:
-            s.bot.edit(s.chat, pending.message_id, pending.text,
-                       nouveautes.first_buttons(state, key))
+            s.bot.edit(s.chat, pending.message_id,
+                       f"🎵 {nouveautes.escape(track.label())}\n↪︎ Nouvelle proposition plus bas.")
+            pending.message_id = None
         s.log(f"Proposition ajoutée : {track.label()} → {proposal}")
 
 

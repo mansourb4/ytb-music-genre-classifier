@@ -356,7 +356,7 @@ def test_a_title_the_rules_leave_out_still_gets_a_proposal():
     classes = {"m3": Classification("m3", MatchStatus.MATCHED, genres=("Jazz",), styles=("Modal",)),
                "x": Classification("x", MatchStatus.MATCHED, genres=("Jazz",), styles=("Modal",)),
                "r1": Classification("r1", MatchStatus.MATCHED, genres=("Hip Hop",))}
-    miles = Track("new", "It Never Entered My Mind", ("The Miles Davis Quintet", "miles davis"))
+    miles = Track("new", "It Never Entered My Mind", ("The Miles Davis Quintet",))
     assert nouveautes.guess(miles, None, plans, tracks, classes) == (
         "Jazz · Bop & cool nocturne", "là où sont ses autres titres")
 
@@ -379,5 +379,18 @@ def test_a_waiting_title_without_proposal_gets_one_and_its_message_is_updated(tm
     world.db["m9"] = lonely
     _run(tmp_path, world)
     message_id, text, rows = world.bot.edits[-1]
-    assert message_id == 55 and "Proposé : <b>Jazz · Modal</b> (là où sont ses autres titres)" in text
+    assert message_id == 55 and "Nouvelle proposition plus bas" in text and rows is None
+    _, text, rows = world.bot.sent[-1]
+    assert "Proposé : <b>Jazz · Modal</b> (là où sont ses autres titres)" in text
     assert rows[0][0][0] == "✅ Jazz · Modal"
+    assert next(iter(nouveautes.load(tmp_path).pending.values())).message_id == 100 + len(
+        world.bot.sent)
+
+
+def test_same_artist():
+    assert nouveautes.same_artist("The Miles Davis Quintet", "Miles Davis")
+    assert nouveautes.same_artist("Miles Davis", "miles  DAVIS")
+    assert nouveautes.same_artist("Damso", "damso")
+    assert not nouveautes.same_artist("Damso", "Damso Fan Club")
+    assert not nouveautes.same_artist("Miles Davis", "Miles Kane")
+    assert not nouveautes.same_artist("", "Miles Davis")
