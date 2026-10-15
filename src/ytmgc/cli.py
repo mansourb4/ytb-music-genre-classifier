@@ -1124,7 +1124,7 @@ def cmd_veille(args: argparse.Namespace, config: Config) -> int:
     """Veille des likes : proposer sur Telegram, puis ranger et télécharger."""
     import fcntl
 
-    from ytmgc import apple_music, veille
+    from ytmgc import apple_music, download, nouveautes, veille
     from ytmgc.telegram import Bot
 
     if args.desinstaller:
@@ -1180,6 +1180,36 @@ def cmd_veille(args: argparse.Namespace, config: Config) -> int:
     def in_apple(video_id: str) -> bool:
         return video_id in apple_music.load_state(root).known
 
+    ytdlp, ffmpeg = download.find_tool("yt-dlp"), download.find_tool("ffmpeg")
+
+    def preview(pending) -> Path | None:
+        """30 secondes du titre, en m4a, pour l'écouter dans Telegram."""
+        if ytdlp is None:
+            return None
+        import tempfile
+
+        start, end = nouveautes.preview_window(pending.duration)
+        # Hors du dossier Playlists : un extrait oublié n'y serait pas pris
+        # pour un titre téléchargé.
+        folder = Path(tempfile.mkdtemp(prefix="ytmgc-extrait-"))
+        stem = f"extrait-{pending.video_id}"
+        command = [str(ytdlp), "--no-playlist", "--quiet", "--no-warnings", "--no-progress",
+                   "--format", "bestaudio[ext=m4a]/bestaudio",
+                   "--download-sections", f"*{start}-{end}",
+                   "--extract-audio", "--audio-format", "m4a",
+                   "--output", str(folder / (stem + ".%(ext)s"))]
+        if ffmpeg is not None:
+            command += ["--ffmpeg-location", str(ffmpeg)]
+        if args.cookies_navigateur:
+            command += ["--cookies-from-browser", args.cookies_navigateur]
+        command.append(f"https://music.youtube.com/watch?v={pending.video_id}")
+        result = subprocess.run(command, capture_output=True, text=True, timeout=180)
+        clip = folder / f"{stem}.m4a"
+        if result.returncode or not clip.exists():
+            lines = (result.stderr or "").strip().splitlines()
+            raise RuntimeError(lines[-1] if lines else f"yt-dlp a échoué ({result.returncode})")
+        return clip
+
     services = veille.Services(
         liked=youtube.liked_tracks,
         tracks=repository.all_tracks,
@@ -1193,6 +1223,7 @@ def cmd_veille(args: argparse.Namespace, config: Config) -> int:
         bot=Bot(config.telegram.token),
         chat=config.telegram.chat_id,
         log=log,
+        preview=preview,
     )
     log(f"Veille des likes : relecture toutes les {args.intervalle} s"
         + (" (un seul passage)." if args.une_fois else "."))

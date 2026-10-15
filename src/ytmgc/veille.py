@@ -19,6 +19,7 @@ pour que la logique se teste sans réseau.
 
 from __future__ import annotations
 
+import shutil
 import time
 from dataclasses import dataclass
 from pathlib import Path
@@ -61,6 +62,8 @@ class Services:
     bot: Bot
     chat: str
     log: Callable[[str], None] = print
+    #: Extrait audio d'un titre en attente (fichier temporaire), ou None.
+    preview: Callable[[Pending], Path | None] | None = None
 
 
 def _track(pending: Pending) -> Track:
@@ -125,7 +128,7 @@ def propose(state: State, s: Services, tracks: list[Track]) -> None:
         state.add(Pending(track.video_id, track.artist, track.title,
                           nouveautes.describe(track, classes.get(track.video_id), proposal,
                                               reason),
-                          proposal))
+                          proposal, duration=track.duration_s))
         s.log(f"Proposé : {track.label()} → {proposal or 'aucune'}")
     placements.save(book, s.placements_file)
 
@@ -195,9 +198,32 @@ def send_unsent(state: State, s: Services) -> None:
     """Envoie les propositions pas encore parties (Telegram injoignable avant)."""
     for key, pending in state.pending.items():
         if pending.message_id is None:
+            audio = send_preview(pending, s)
             pending.message_id = s.bot.send(s.chat, pending.text,
-                                            nouveautes.first_buttons(state, key))
+                                            nouveautes.first_buttons(state, key), reply_to=audio)
             s.log(f"Proposition envoyée sur Telegram : {_track(pending).label()}")
+
+
+def send_preview(pending: Pending, s: Services) -> int | None:
+    """Envoie l'extrait audio du titre, une seule fois. Un extrait manqué
+    n'empêche jamais la proposition de partir."""
+    if pending.preview_sent or s.preview is None:
+        return None
+    pending.preview_sent = True
+    path = None
+    try:
+        path = s.preview(pending)
+        if path is None:
+            return None
+        return s.bot.send_audio(s.chat, path, title=pending.title, performer=pending.artist)
+    except Exception as exc:  # noqa: BLE001 - l'extrait n'est qu'un plus
+        s.log(f"Extrait audio impossible pour {_track(pending).label()} : {exc}")
+        return None
+    finally:
+        if path is not None:
+            path.unlink(missing_ok=True)
+            if path.parent.name.startswith("ytmgc-extrait-"):
+                shutil.rmtree(path.parent, ignore_errors=True)
 
 
 def handle(state: State, s: Services, updates: Iterable[dict]) -> int:

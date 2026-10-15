@@ -44,6 +44,10 @@ class Pending:
     chosen: str | None = None
     #: Passages de la chaîne sans que le titre arrive dans Apple Music.
     attempts: int = 0
+    #: Durée du titre (secondes), pour prendre l'extrait au bon endroit.
+    duration: int | None = None
+    #: L'extrait audio est parti (ou a été tenté) : pas de second envoi.
+    preview_sent: bool = False
 
 
 @dataclass(slots=True)
@@ -283,3 +287,17 @@ def guess(
         if name:
             return name, "même genre"
     return None, None
+
+
+#: Durée de l'extrait audio envoyé avec chaque proposition.
+PREVIEW_SECONDS = 30
+
+
+def preview_window(duration: int | None) -> tuple[int, int]:
+    """(début, fin) de l'extrait : vers le tiers du morceau, là où il a démarré."""
+    if not duration:
+        return 45, 45 + PREVIEW_SECONDS
+    if duration <= PREVIEW_SECONDS + 10:
+        return 0, duration
+    start = min(int(duration * 0.35), duration - PREVIEW_SECONDS)
+    return start, start + PREVIEW_SECONDS

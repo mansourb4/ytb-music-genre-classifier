@@ -11,6 +11,8 @@ from __future__ import annotations
 import json
 import urllib.error
 import urllib.request
+import uuid
+from pathlib import Path
 from typing import Any, Callable
 
 API = "https://api.telegram.org/bot{token}/{method}"
@@ -46,6 +48,9 @@ class Bot:
         request = urllib.request.Request(
             API.format(token=self._token, method=method), data=body,
             headers={"Content-Type": "application/json"})
+        return self._send(request, method, http_timeout)
+
+    def _send(self, request: urllib.request.Request, method: str, http_timeout: float) -> Any:
         try:
             with self._open(request, http_timeout) as response:
                 data = json.loads(response.read().decode("utf-8"))
@@ -66,11 +71,29 @@ class Bot:
         return self.call("getUpdates", http_timeout=wait + 10, offset=offset, timeout=wait,
                          allowed_updates=["message", "callback_query"]) or []
 
-    def send(self, chat_id: str, text: str, rows: list[list[Button]] | None = None) -> int:
+    def send(self, chat_id: str, text: str, rows: list[list[Button]] | None = None,
+             reply_to: int | None = None) -> int:
         result = self.call("sendMessage", chat_id=chat_id, text=text, parse_mode="HTML",
                            disable_web_page_preview=True,
-                           reply_markup=keyboard(rows) if rows else None)
+                           reply_markup=keyboard(rows) if rows else None,
+                           reply_parameters={"message_id": reply_to} if reply_to else None)
         return int(result["message_id"])
+
+    def send_audio(self, chat_id: str, path: Path, *, title: str = "",
+                   performer: str = "") -> int:
+        """Envoie un fichier son, écoutable dans la conversation."""
+        boundary = uuid.uuid4().hex
+        fields = {"chat_id": chat_id, "title": title, "performer": performer}
+        body = b"".join(
+            f'--{boundary}\r\nContent-Disposition: form-data; name="{name}"\r\n\r\n'
+            f"{value}\r\n".encode() for name, value in fields.items() if value)
+        body += (f'--{boundary}\r\nContent-Disposition: form-data; name="audio"; '
+                 f'filename="{path.name}"\r\nContent-Type: audio/mp4\r\n\r\n').encode()
+        body += path.read_bytes() + f"\r\n--{boundary}--\r\n".encode()
+        request = urllib.request.Request(
+            API.format(token=self._token, method="sendAudio"), data=body,
+            headers={"Content-Type": f"multipart/form-data; boundary={boundary}"})
+        return int(self._send(request, "sendAudio", 120)["message_id"])
 
     def edit(self, chat_id: str, message_id: int, text: str,
              rows: list[list[Button]] | None = None) -> None:

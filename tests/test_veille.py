@@ -19,9 +19,14 @@ class FakeBot:
         self.answers = []
         self.queue = []
 
-    def send(self, chat, text, rows=None):
+    def send(self, chat, text, rows=None, reply_to=None):
         self.sent.append((chat, text, rows))
+        self.replies = getattr(self, "replies", []) + [reply_to]
         return 100 + len(self.sent)
+
+    def send_audio(self, chat, path, title="", performer=""):
+        self.audio = getattr(self, "audio", []) + [(path.read_bytes(), title, performer)]
+        return 900
 
     def edit(self, chat, message_id, text, rows=None):
         self.edits.append((message_id, text, rows))
@@ -305,7 +310,7 @@ def test_a_message_telegram_did_not_take_is_sent_again_on_the_next_turn(tmp_path
     world.liked.insert(0, KOHNDO)
     sent = world.bot.send
 
-    def down(chat, text, rows=None):
+    def down(chat, text, rows=None, reply_to=None):
         raise TelegramError("sendMessage : Telegram injoignable (timed out)")
 
     world.bot.send = down
@@ -484,3 +489,60 @@ def test_verifier_looks_at_the_likes_right_away(tmp_path):
     assert texts[0] == "🔎 Je regarde tes likes…"
     assert texts[1] == "1 nouveau(x) like(s) : les propositions suivent."
     assert "Kohndo" in texts[2]
+
+
+def test_each_proposal_comes_with_an_audio_clip(tmp_path):
+    world = World(tmp_path, [Track("old", "Rain", ("Moderat",))])
+    _run(tmp_path, world)
+    clips = []
+
+    def preview(pending):
+        clips.append((pending.video_id, pending.duration))
+        path = tmp_path / "clip.m4a"
+        path.write_bytes(b"son")
+        return path
+
+    services = world.services()
+    services.preview = preview
+    world.liked.insert(0, Track("k1", "Faut qu'je tienne", ("Kohndo",), duration_s=200))
+    veille.run(tmp_path, services, interval=0, once=True)
+    assert clips == [("k1", 200)]
+    assert world.bot.audio == [(b"son", "Faut qu'je tienne", "Kohndo")]
+    assert world.bot.replies[-1] == 900  # la proposition répond à l'extrait
+    assert not (tmp_path / "clip.m4a").exists()  # le fichier temporaire est effacé
+    veille.run(tmp_path, services, interval=0, once=True)
+    assert len(clips) == 1  # un seul extrait par titre
+
+
+def test_a_failed_clip_never_holds_back_the_proposal(tmp_path):
+    world = World(tmp_path, [Track("old", "Rain", ("Moderat",))])
+    _run(tmp_path, world)
+    services = world.services()
+    services.preview = lambda pending: (_ for _ in ()).throw(RuntimeError("yt-dlp a échoué"))
+    world.liked.insert(0, KOHNDO)
+    veille.run(tmp_path, services, interval=0, once=True)
+    assert "Kohndo" in world.bot.sent[-1][1] and world.bot.replies[-1] is None
+
+
+def test_preview_window():
+    assert nouveautes.preview_window(None) == (45, 75)
+    assert nouveautes.preview_window(30) == (0, 30)
+    assert nouveautes.preview_window(200) == (70, 100)
+    assert nouveautes.preview_window(50) == (17, 47)
+
+
+def test_bot_uploads_an_audio_file(tmp_path):
+    sent = []
+
+    def opener(request, timeout):
+        sent.append((request.full_url, request.headers, request.data))
+        return _Response(json.dumps({"ok": True, "result": {"message_id": 7}}).encode())
+
+    clip = tmp_path / "x.m4a"
+    clip.write_bytes(b"AUDIO")
+    assert Bot("SECRET", opener=opener).send_audio(CHAT, clip, title="Rain",
+                                                  performer="Moderat") == 7
+    url, headers, body = sent[0]
+    assert url.endswith("/sendAudio") and b"AUDIO" in body
+    assert b'name="title"' in body and b"Moderat" in body
+    assert headers["Content-type"].startswith("multipart/form-data; boundary=")

@@ -630,7 +630,7 @@ essai n'a pu placer. Interrompu, il reprend après les titres déjà en place.
 
 `ytmgc veille` tourne en fond sur le Mac. Toutes les 15 minutes, il relit le
 haut de « Titres likés » ; pour chaque titre nouveau, pas encore rangé, il
-t'envoie sur Telegram son genre et la playlist où le mettraient les règles,
+t'envoie sur Telegram un extrait audio de 30 secondes, son genre et la playlist où le mettraient les règles,
 avec quelques voisines, « Autre famille… » et « Ne pas ranger ». Tant que tu
 n'as pas répondu, rien n'est rangé ni téléchargé (le titre est tenu en
 « (aucune) »). Ton choix est retenu comme un déplacement fait à la main, puis
