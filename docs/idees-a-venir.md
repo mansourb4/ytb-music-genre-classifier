@@ -4,6 +4,10 @@ Notées pour plus tard, rien n'est encore construit.
 
 ## Ajouter de nouveaux morceaux depuis le téléphone
 
+Construit sous une autre forme : `ytmgc veille` (voir le README) part d'un
+like et demande sur Telegram où ranger le titre. Ce qui suit reste pour
+mémoire.
+
 - **Geste** : ajouter le titre à la bibliothèque YouTube Music, depuis l'appli.
 - **`ytmgc nouveautes`** : une seule commande qui, pour les seuls titres
   nouveaux, enchaîne analyse, classement (Discogs, Last.fm, jugement par le

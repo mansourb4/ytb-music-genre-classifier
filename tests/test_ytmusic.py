@@ -205,3 +205,15 @@ def test_add_items_reports_why_youtube_refused():
     assert client.add_items("PL1", ["a"]) is None
     assert client.add_items("PL1", ["a", "dup"]) == "Ce titre figure déjà dans la playlist"
     assert client.add_items("PL1", []) is None
+
+
+def test_liked_tracks_reads_the_top_of_liked_music():
+    api = FakeApi(details={"LM": {"tracks": [
+        {"videoId": "a", "title": "Rain", "artists": [{"name": "Moderat"}]},
+        {"videoId": None, "title": "Grisé"},
+        {"videoId": "b", "title": "Solo", "artists": []},
+    ]}})
+    client = YouTubeMusicClient("unused", api=api)
+    assert [t.video_id for t in client.liked_tracks()] == ["a", "b"]
+    assert [t.video_id for t in client.liked_tracks(1)] == ["a"]
+    assert client.liked_tracks()[0].source == "liked"

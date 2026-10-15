@@ -626,6 +626,35 @@ essai n'a pu placer. Interrompu, il reprend après les titres déjà en place.
 `--verifier` compare la playlist et « Titres likés » sans rien toucher ;
 `--limite N` ne prend que ses N premiers titres, pour tester.
 
+### Veille des likes : de ton pouce levé à Apple Music
+
+`ytmgc veille` tourne en fond sur le Mac. Toutes les 15 minutes, il relit le
+haut de « Titres likés » ; pour chaque titre nouveau, pas encore rangé, il
+t'envoie sur Telegram son genre et la playlist où le mettraient les règles,
+avec quelques voisines, « Autre famille… » et « Ne pas ranger ». Tant que tu
+n'as pas répondu, rien n'est rangé ni téléchargé (le titre est tenu en
+« (aucune) »). Ton choix est retenu comme un déplacement fait à la main, puis
+la chaîne tourne : playlist YouTube Music, téléchargement, playlist Apple
+Music, favori. Le message dit ensuite si le titre est bien arrivé. Un titre
+déjà rangé, liké de nouveau, est seulement mis en favori. Écris n'importe
+quoi au bot pour savoir ce qui attend.
+
+Mise en place, une fois :
+
+1. Dans Telegram, `@BotFather` → `/newbot` ; mets le jeton reçu dans `.env`
+   (`TELEGRAM_BOT_TOKEN=`). Il ne doit aller nulle part ailleurs.
+2. `ytmgc telegram` : ouvre ton bot, touche « Démarrer », relance la commande ;
+   elle donne la ligne `TELEGRAM_CHAT_ID=` à ajouter au `.env`. Relancée, elle
+   envoie un message d'essai.
+3. `ytmgc veille --une-fois` pour un premier passage à la main (il retient les
+   likes existants, sans rien proposer), puis `ytmgc veille --installer` :
+   macOS la lance en fond et la relance si besoin. Journal :
+   `~/Library/Logs/ytmgc-veille.log` ; `ytmgc veille --desinstaller` l'arrête.
+
+La veille et `ytmgc synchro` ne rangent jamais en même temps : l'une attend
+que l'autre ait fini. Pour l'iPhone, active dans le Finder « Afficher cet
+iPhone en Wi-Fi » : il se synchronise alors seul, en charge sur le même réseau.
+
 ### Synchro : Apple Music maître
 
 `ytmgc synchro` fait d'Apple Music la référence. À chaque lancement, il

@@ -148,6 +148,13 @@ class YouTubeMusicClient:
         tracks = [_to_track(entry, source) for entry in raw]
         return [track for track in tracks if track is not None]
 
+    def liked_tracks(self, limit: int | None = None) -> list[Track]:
+        """Haut de « Titres likés », du plus récent au plus ancien (tout avec None)."""
+        raw = self._api.get_playlist("LM", limit=limit).get("tracks") or []
+        tracks = [_to_track(entry, "liked") for entry in raw]
+        found = [track for track in tracks if track is not None]
+        return found[:limit] if limit else found
+
     def count_source(self, source: str) -> int | None:
         """Nombre de titres d'une source, sans la lire entièrement quand c'est possible.
 

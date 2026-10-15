@@ -106,3 +106,14 @@ def test_an_empty_value_does_not_hide_anything(tmp_path):
 def test_a_missing_dotenv_file_is_not_an_error(tmp_path, monkeypatch):
     monkeypatch.delenv("DISCOGS_TOKEN", raising=False)
     assert load_config(tmp_path / "absent.toml", dotenv=tmp_path / ".env").discogs.token == ""
+
+
+def test_telegram_settings_come_from_the_dotenv_file(tmp_path, monkeypatch):
+    dotenv = tmp_path / ".env"
+    dotenv.write_text("TELEGRAM_BOT_TOKEN=jeton\nTELEGRAM_CHAT_ID=42\n", encoding="utf-8")
+    monkeypatch.delenv("TELEGRAM_BOT_TOKEN", raising=False)
+    monkeypatch.delenv("TELEGRAM_CHAT_ID", raising=False)
+
+    config = load_config(tmp_path / "absent.toml", dotenv=dotenv)
+
+    assert (config.telegram.token, config.telegram.chat_id) == ("jeton", "42")

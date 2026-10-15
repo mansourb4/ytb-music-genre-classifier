@@ -173,6 +173,19 @@ class WebConfig:
 
 
 @dataclass(slots=True)
+class TelegramConfig:
+    """Bot Telegram de la veille des likes (`ytmgc veille`).
+
+    Ni le jeton ni le chat ne viennent du fichier de configuration : le
+    jeton est un secret, lu dans l'environnement (`TELEGRAM_BOT_TOKEN`), comme
+    le chat qui reçoit les propositions (`TELEGRAM_CHAT_ID`).
+    """
+
+    token: str = ""
+    chat_id: str = ""
+
+
+@dataclass(slots=True)
 class SyncConfig:
     marker: str = DEFAULT_MARKER
     prune: bool = True
@@ -190,6 +203,7 @@ class Config:
     taxonomy: TaxonomyConfig = field(default_factory=TaxonomyConfig)
     sync: SyncConfig = field(default_factory=SyncConfig)
     web: WebConfig = field(default_factory=WebConfig)
+    telegram: TelegramConfig = field(default_factory=TelegramConfig)
 
     def validate(self) -> None:
         if self.taxonomy.axis not in {"style", "mood", "plan"}:
@@ -292,6 +306,8 @@ def load_config(
     config.lastfm.api_key = env.get("LASTFM_API_KEY", "")
     config.claude.api_key = env.get("ANTHROPIC_API_KEY", "")
     config.web.access_token = env.get("YTMGC_ACCESS_TOKEN", "")
+    config.telegram.token = env.get("TELEGRAM_BOT_TOKEN", "")
+    config.telegram.chat_id = env.get("TELEGRAM_CHAT_ID", "")
     if user_agent := env.get("DISCOGS_USER_AGENT"):
         config.discogs.user_agent = user_agent
     if auth_file := env.get("YTMUSIC_AUTH_FILE"):

@@ -34,6 +34,7 @@ import argparse
 import subprocess
 import sys
 import time
+from contextlib import contextmanager
 from pathlib import Path
 
 from ytmgc import __version__
@@ -84,8 +85,6 @@ def cmd_scan(args: argparse.Namespace, config: Config) -> int:
 
 
 def cmd_classify(args: argparse.Namespace, config: Config) -> int:
-    from ytmgc.sources.discogs import DiscogsClient
-
     repository = _repository(config)
     tracks = repository.all_tracks() if args.all else repository.unclassified_tracks()
     if args.limit:
@@ -94,7 +93,6 @@ def cmd_classify(args: argparse.Namespace, config: Config) -> int:
         print("Rien à classer. Lance d'abord `ytmgc scan`, ou utilise --all pour reclasser.")
         return 0
 
-    client = DiscogsClient(config.discogs)
     processed = 0
 
     def progress(track, classification) -> None:
@@ -105,18 +103,24 @@ def cmd_classify(args: argparse.Namespace, config: Config) -> int:
             print(f"  [{processed}/{len(tracks)}] {track.label()} -> "
                   f"{classification.status.value} ({classification.score:.2f}) {detail}")
 
+    print(_classify(tracks, repository, config, progress).line())
+    return 0
+
+
+def _classify(tracks: list[Track], repository: Repository, config: Config, progress=None):
+    """Classe ces titres : Discogs, tags Last.fm si la clé est là, verdicts."""
+    from ytmgc.sources.discogs import DiscogsClient
+
     tag_source = None
     if config.lastfm.enabled and config.lastfm.api_key:
         from ytmgc.sources.lastfm import LastfmClient
 
         tag_source = LastfmClient(config.lastfm)
-
-    stats = classify_tracks(
-        tracks, repository, client, config, progress=progress, tag_source=tag_source,
+    return classify_tracks(
+        tracks, repository, DiscogsClient(config.discogs), config, progress=progress,
+        tag_source=tag_source,
         verdicts=verdicts.load(config.claude.verdicts_file) if config.claude.enabled else None,
     )
-    print(stats.line())
-    return 0
 
 
 def _overrides(repository: Repository, config: Config) -> dict[str, str | None]:
@@ -913,6 +917,195 @@ def _like_reorder(args: argparse.Namespace, client, entries: list[dict]) -> int:
     return 0
 
 
+def cmd_telegram(args: argparse.Namespace, config: Config) -> int:
+    """Relie le bot Telegram de la veille à ton compte, et l'essaie."""
+    from ytmgc.telegram import Bot, TelegramError
+
+    if not config.telegram.token:
+        print("Pas encore de bot. Pour en créer un (2 minutes) :\n"
+              "  1. Dans Telegram, ouvre une conversation avec @BotFather.\n"
+              "  2. Envoie /newbot, donne un nom puis un identifiant finissant par « bot ».\n"
+              "  3. Il répond par un jeton : ajoute la ligne\n"
+              "       TELEGRAM_BOT_TOKEN=<le jeton>\n"
+              "     au fichier .env du projet. Ne le donne à personne, ni ici.\n"
+              "  4. Relance « ytmgc telegram ».")
+        return 1
+    bot = Bot(config.telegram.token)
+    try:
+        me = bot.call("getMe")
+    except TelegramError as exc:
+        print(f"Le bot ne répond pas : {exc}. Vérifie le jeton dans le .env.", file=sys.stderr)
+        return 1
+    name = me.get("username", "ton bot")
+    if not config.telegram.chat_id:
+        chats = {}
+        for update in bot.updates(None, wait=0):
+            chat = (update.get("message") or {}).get("chat") or {}
+            if chat.get("id") is not None:
+                chats[str(chat["id"])] = chat.get("first_name") or chat.get("title") or ""
+        if not chats:
+            print(f"Bot @{name} trouvé. Dans Telegram, ouvre @{name}, touche « Démarrer » "
+                  "(ou envoie /start), puis relance « ytmgc telegram ».")
+            return 1
+        print(f"Bot @{name} trouvé. Ajoute au fichier .env la ligne :")
+        for chat_id, who in chats.items():
+            print(f"  TELEGRAM_CHAT_ID={chat_id}" + (f"    ({who})" if who else ""))
+        print("puis relance « ytmgc telegram » pour un message d'essai.")
+        return 0
+    bot.send(config.telegram.chat_id, "✅ ytmgc est relié à ce chat. Les nouveaux likes "
+             "arriveront ici, avec où les ranger.")
+    print(f"Message d'essai envoyé par @{name}. Lance ensuite « ytmgc veille --installer ».")
+    return 0
+
+
+VEILLE_LABEL = "com.ytmgc.veille"
+
+
+def _veille_paths() -> tuple[Path, Path]:
+    home = Path.home()
+    return (home / "Library" / "LaunchAgents" / f"{VEILLE_LABEL}.plist",
+            home / "Library" / "Logs" / "ytmgc-veille.log")
+
+
+def _launchctl(*arguments: str) -> int:
+    return subprocess.run(["launchctl", *arguments], capture_output=True).returncode
+
+
+def _veille_install(args: argparse.Namespace) -> int:
+    """Fait lancer la veille par macOS à l'ouverture de session, et la relancer
+    si elle s'arrête."""
+    import os
+    import plistlib
+
+    if sys.platform != "darwin":
+        print("La veille s'installe sur le Mac.", file=sys.stderr)
+        return 1
+    plist, logfile = _veille_paths()
+    plist.parent.mkdir(parents=True, exist_ok=True)
+    logfile.parent.mkdir(parents=True, exist_ok=True)
+    command = [sys.executable, "-m", "ytmgc", "veille", "--dossier",
+               str(Path(args.dossier).expanduser().resolve()),
+               "--intervalle", str(args.intervalle),
+               "--cookies-navigateur", args.cookies_navigateur]
+    with plist.open("wb") as handle:
+        plistlib.dump({
+            "Label": VEILLE_LABEL,
+            "ProgramArguments": command,
+            # Le projet : configuration, .env, base et data/ y sont lus.
+            "WorkingDirectory": str(Path.cwd()),
+            "EnvironmentVariables": {
+                "PATH": "/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+                "PYTHONUNBUFFERED": "1",
+            },
+            "RunAtLoad": True,
+            "KeepAlive": True,
+            "ThrottleInterval": 60,
+            "StandardOutPath": str(logfile),
+            "StandardErrorPath": str(logfile),
+        }, handle)
+    domain = f"gui/{os.getuid()}"
+    _launchctl("bootout", f"{domain}/{VEILLE_LABEL}")
+    if _launchctl("bootstrap", domain, str(plist)):
+        print(f"launchctl a refusé {plist}.", file=sys.stderr)
+        return 1
+    print(f"Veille installée : elle tourne maintenant, et repartira à chaque ouverture de "
+          f"session.\nJournal : {logfile}\nPour l'arrêter : ytmgc veille --desinstaller")
+    return 0
+
+
+def _veille_uninstall() -> int:
+    import os
+
+    plist, _ = _veille_paths()
+    _launchctl("bootout", f"gui/{os.getuid()}/{VEILLE_LABEL}")
+    if plist.exists():
+        plist.unlink()
+    print("Veille arrêtée et désinstallée.")
+    return 0
+
+
+def cmd_veille(args: argparse.Namespace, config: Config) -> int:
+    """Veille des likes : proposer sur Telegram, puis ranger et télécharger."""
+    import fcntl
+
+    from ytmgc import apple_music, veille
+    from ytmgc.telegram import Bot
+
+    if args.desinstaller:
+        return _veille_uninstall()
+    if not config.telegram.token or not config.telegram.chat_id:
+        print("Telegram n'est pas encore relié : lance « ytmgc telegram ».", file=sys.stderr)
+        return 1
+    if args.installer:
+        return _veille_install(args)
+    root = Path(args.dossier).expanduser().resolve()
+    root.mkdir(parents=True, exist_ok=True)
+    lock = (root / ".veille.lock").open("w")
+    try:
+        fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
+    except OSError:
+        print("Une veille tourne déjà.", file=sys.stderr)
+        return 1
+
+    repository = _repository(config)
+    youtube = _youtube(config)
+
+    def log(line: str) -> None:
+        print(f"{time.strftime('%Y-%m-%d %H:%M:%S')}  {line}", flush=True)
+
+    def plans() -> dict[str, tuple[str, ...]]:
+        sorted_config = apply_sort_mode(config, DEFAULT_SORT_MODE)
+        found = plan_playlists(repository.classifications(), load_taxonomy(), sorted_config,
+                               _overrides(repository, sorted_config),
+                               artists={t.video_id: t.artists for t in repository.all_tracks()})
+        return {plan.name: plan.video_ids for plan in found}
+
+    def pipeline(full: bool) -> list[str]:
+        with _chain_lock(root):
+            return run_steps(full)
+
+    def run_steps(full: bool) -> list[str]:
+        steps = []
+        if full:
+            steps += [["apply", "--execute"],
+                      ["telecharge", "--dossier", str(root),
+                       "--cookies-navigateur", args.cookies_navigateur],
+                      ["apple-music", "--dossier", str(root)]]
+        steps.append(["apple-music-likes", "--dossier", str(root)])
+        errors = []
+        for step in steps:
+            log(f"→ ytmgc {' '.join(step)}")
+            try:
+                parsed = build_parser().parse_args(step)
+                if parsed.func(parsed, config):
+                    errors.append(f"« {step[0]} » en échec")
+            except Exception as exc:  # noqa: BLE001 - noté, la chaîne continue
+                errors.append(f"« {step[0]} » : {exc}")
+        return errors
+
+    def in_apple(video_id: str) -> bool:
+        return video_id in apple_music.load_state(root).known
+
+    services = veille.Services(
+        liked=youtube.liked_tracks,
+        tracks=repository.all_tracks,
+        save_tracks=repository.upsert_tracks,
+        classify=lambda tracks: _classify(tracks, repository, config),
+        classifications=repository.classifications,
+        plans=plans,
+        placements_file=Path(config.taxonomy.placements_file),
+        pipeline=pipeline,
+        in_apple=in_apple,
+        bot=Bot(config.telegram.token),
+        chat=config.telegram.chat_id,
+        log=log,
+    )
+    log(f"Veille des likes : relecture toutes les {args.intervalle} s"
+        + (" (un seul passage)." if args.une_fois else "."))
+    veille.run(root, services, interval=args.intervalle, once=args.une_fois)
+    return 0
+
+
 def cmd_apple_music_likes(args: argparse.Namespace, config: Config) -> int:
     """Met en favoris dans Apple Music les titres likés sur YouTube Music."""
     from ytmgc import apple_music
@@ -1083,8 +1276,30 @@ def _pick_playlist(names: list[str]) -> str | None:
             return matches[index]
 
 
+@contextmanager
+def _chain_lock(root: Path):
+    """Un seul rangement à la fois : la veille et la synchro touchent aux mêmes
+    playlists, fichiers et bibliothèque Music."""
+    import fcntl
+
+    root.mkdir(parents=True, exist_ok=True)
+    with (root / ".chaine.lock").open("w") as handle:
+        try:
+            fcntl.flock(handle, fcntl.LOCK_EX | fcntl.LOCK_NB)
+        except OSError:
+            print("Un rangement est en cours (veille des likes) : j'attends qu'il finisse…",
+                  flush=True)
+            fcntl.flock(handle, fcntl.LOCK_EX)
+        yield
+
+
 def cmd_synchro(args: argparse.Namespace, config: Config) -> int:
     """Apple Music maître : ses changements reportés partout, puis les nouveautés."""
+    with _chain_lock(Path(args.dossier).expanduser().resolve()):
+        return _synchro(args, config)
+
+
+def _synchro(args: argparse.Namespace, config: Config) -> int:
     from ytmgc import apple_music, master, placements
     from ytmgc.matching.normalize import slugify
     from ytmgc.playlist_plan import load_plan
@@ -1605,6 +1820,26 @@ def build_parser() -> argparse.ArgumentParser:
     like_cmd.add_argument("--verifier", action="store_true",
                           help="Comparer la playlist et « Titres likés », sans rien toucher")
     like_cmd.set_defaults(func=cmd_like)
+
+    telegram_cmd = subparsers.add_parser(
+        "telegram", help="Relier le bot Telegram de la veille des likes, et l'essayer")
+    telegram_cmd.set_defaults(func=cmd_telegram)
+
+    veille_cmd = subparsers.add_parser(
+        "veille", help="Veille des likes : proposer sur Telegram, puis ranger (Mac)")
+    veille_cmd.add_argument("--dossier", default="~/Music/Playlists",
+                            help="Dossier des fichiers (défaut : %(default)s)")
+    veille_cmd.add_argument("--intervalle", type=int, default=900,
+                            help="Secondes entre deux relectures des likes (défaut : %(default)s)")
+    veille_cmd.add_argument("--cookies-navigateur", default="firefox",
+                            help="Navigateur des cookies YouTube (défaut : %(default)s)")
+    veille_cmd.add_argument("--une-fois", action="store_true",
+                            help="Un seul passage, sans rester en veille (pour essayer)")
+    veille_cmd.add_argument("--installer", action="store_true",
+                            help="La faire tourner en fond, relancée par macOS")
+    veille_cmd.add_argument("--desinstaller", action="store_true",
+                            help="L'arrêter et ne plus la relancer")
+    veille_cmd.set_defaults(func=cmd_veille)
 
     likes_cmd = subparsers.add_parser(
         "apple-music-likes", help="Mettre en favoris dans Apple Music les titres likés (Mac)")
