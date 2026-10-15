@@ -113,6 +113,7 @@ def send_unsent(state: State, s: Services) -> None:
         if pending.message_id is None:
             pending.message_id = s.bot.send(s.chat, pending.text,
                                             nouveautes.first_buttons(state, key))
+            s.log(f"Proposition envoyée sur Telegram : {_track(pending).label()}")
 
 
 def handle(state: State, s: Services, updates: Iterable[dict]) -> int:
@@ -213,9 +214,8 @@ def run(
     last_check = None
     while True:
         try:
-            updates = s.bot.updates(state.offset, wait=0 if once else wait)
-            handle(state, s, updates)
-            nouveautes.save(root, state)
+            # D'abord les likes et les messages en souffrance : au démarrage,
+            # rien n'attend la fin de l'écoute de Telegram.
             favorites = checked = False
             if last_check is None or clock() - last_check >= interval:
                 favorites, checked = check(state, s), True
@@ -228,6 +228,11 @@ def run(
             send_unsent(state, s)
             nouveautes.save(root, state)
             finish(state, s, favorites, checked)
+            nouveautes.save(root, state)
+            # Puis l'écoute : les boutons touchés répondent tout de suite.
+            if handle(state, s, s.bot.updates(state.offset, wait=0 if once else wait)):
+                nouveautes.save(root, state)
+                finish(state, s, False, checked=False)
             nouveautes.save(root, state)
         except Exception as exc:  # noqa: BLE001 - la veille ne doit jamais mourir
             if once:
