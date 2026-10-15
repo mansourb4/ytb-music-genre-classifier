@@ -968,8 +968,31 @@ def _veille_paths() -> tuple[Path, Path]:
             home / "Library" / "Logs" / "ytmgc-veille.log")
 
 
-def _launchctl(*arguments: str) -> int:
-    return subprocess.run(["launchctl", *arguments], capture_output=True).returncode
+def _launchctl(*arguments: str) -> subprocess.CompletedProcess:
+    return subprocess.run(["launchctl", *arguments], capture_output=True, text=True)
+
+
+def _veille_restart(domain: str, plist: Path, *, sleep=time.sleep, attempts: int = 10) -> str | None:
+    """Arrête la veille en place puis lance la nouvelle. Rend l'erreur, ou None.
+
+    `bootout` rend la main avant que l'arrêt soit fini : un `bootstrap`
+    aussitôt après est refusé (« Input/output error »). On attend donc que
+    launchd ait oublié l'ancienne, puis on réessaie quelques secondes.
+    """
+    service = f"{domain}/{VEILLE_LABEL}"
+    _launchctl("bootout", service)
+    for _ in range(attempts):
+        if _launchctl("print", service).returncode != 0:
+            break
+        sleep(1)
+    error = ""
+    for _ in range(attempts):
+        result = _launchctl("bootstrap", domain, str(plist))
+        if result.returncode == 0:
+            return None
+        error = (result.stderr or result.stdout).strip()
+        sleep(1)
+    return error or "refus sans explication"
 
 
 def _veille_install(args: argparse.Namespace) -> int:
@@ -1004,10 +1027,9 @@ def _veille_install(args: argparse.Namespace) -> int:
             "StandardOutPath": str(logfile),
             "StandardErrorPath": str(logfile),
         }, handle)
-    domain = f"gui/{os.getuid()}"
-    _launchctl("bootout", f"{domain}/{VEILLE_LABEL}")
-    if _launchctl("bootstrap", domain, str(plist)):
-        print(f"launchctl a refusé {plist}.", file=sys.stderr)
+    error = _veille_restart(f"gui/{os.getuid()}", plist)
+    if error:
+        print(f"launchctl a refusé {plist} : {error}", file=sys.stderr)
         return 1
     print(f"Veille installée : elle tourne maintenant, et repartira à chaque ouverture de "
           f"session.\nJournal : {logfile}\nPour l'arrêter : ytmgc veille --desinstaller")

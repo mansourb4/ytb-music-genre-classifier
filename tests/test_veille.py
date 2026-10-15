@@ -317,3 +317,29 @@ def test_a_message_telegram_did_not_take_is_sent_again_on_the_next_turn(tmp_path
     veille.run(tmp_path, services, interval=10_000, once=True)
     assert len(world.bot.sent) == 1 and "Kohndo" in world.bot.sent[0][1]
     assert next(iter(nouveautes.load(tmp_path).pending.values())).message_id == 101
+
+
+def test_restart_waits_for_launchd_to_let_go_of_the_old_veille(monkeypatch, tmp_path):
+    import subprocess
+
+    from ytmgc import cli
+
+    calls, state = [], {"loaded": 3, "refusals": 1}
+
+    def launchctl(*arguments):
+        calls.append(arguments[0])
+        if arguments[0] == "print":
+            state["loaded"] -= 1
+            return subprocess.CompletedProcess(arguments, 0 if state["loaded"] > 0 else 113)
+        if arguments[0] == "bootstrap" and state["refusals"]:
+            state["refusals"] -= 1
+            return subprocess.CompletedProcess(arguments, 5, "", "Bootstrap failed: 5: Input/output error")
+        return subprocess.CompletedProcess(arguments, 0, "", "")
+
+    monkeypatch.setattr(cli, "_launchctl", launchctl)
+    assert cli._veille_restart("gui/501", tmp_path / "x.plist", sleep=lambda _: None) is None
+    assert calls == ["bootout", "print", "print", "print", "bootstrap", "bootstrap"]
+
+    state.update(loaded=0, refusals=99)
+    error = cli._veille_restart("gui/501", tmp_path / "x.plist", sleep=lambda _: None, attempts=2)
+    assert error == "Bootstrap failed: 5: Input/output error"
