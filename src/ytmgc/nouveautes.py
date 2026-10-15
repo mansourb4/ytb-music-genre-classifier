@@ -69,6 +69,8 @@ class State:
     #: Ni l'un ni l'autre n'est enregistré.
     check_now: bool = False
     last_found: int = 0
+    #: Ce que le dernier passage a fait de chaque nouveau like (pour « /verifier »).
+    last_report: list[str] = field(default_factory=list)
 
     @property
     def started(self) -> bool:

@@ -487,7 +487,8 @@ def test_verifier_looks_at_the_likes_right_away(tmp_path):
         veille.run(tmp_path, world.services(), interval=3600, clock=lambda: 0.0, sleep=sleep)
     texts = [text for _, text, _ in world.bot.sent]
     assert texts[0] == "🔎 Je regarde tes likes…"
-    assert texts[1] == "1 nouveau(x) like(s) : les propositions suivent."
+    assert texts[1] == ("1 nouveau(x) like(s) :\n"
+                        "• Kohndo – Faut qu'je tienne : proposition ci-dessous.")
     assert "Kohndo" in texts[2]
 
 
@@ -546,3 +547,21 @@ def test_bot_uploads_an_audio_file(tmp_path):
     assert url.endswith("/sendAudio") and b"AUDIO" in body
     assert b'name="title"' in body and b"Moderat" in body
     assert headers["Content-type"].startswith("multipart/form-data; boundary=")
+
+
+def test_verifier_says_what_became_of_a_like_already_placed(tmp_path):
+    world = World(tmp_path, [Track("x", "Autre", ("Quelqu'un",))])
+    _run(tmp_path, world)
+    held = Track("h", "Tenu", ("Personne",))
+    book = placements.load(world.placements_file)
+    book.put(held, nouveautes.NOWHERE)
+    placements.save(book, world.placements_file)
+    world.liked[:0] = [Track("old", "Rain", ("Moderat",)), held]
+    state = nouveautes.load(tmp_path)
+    veille.check(state, world.services())
+    assert state.last_report == [
+        "• Moderat – Rain : déjà dans <b>Jazz · Modal</b>, mis en favori.",
+        "• Personne – Tenu : tenu hors playlists (« (aucune) »), mis en favori. "
+        "Pour le ranger : /proposer Tenu",
+    ]
+    assert world.bot.sent == []

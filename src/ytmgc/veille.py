@@ -79,6 +79,7 @@ def check(state: State, s: Services) -> bool:
     guess_missing(state, s)
     new = [t for t in s.liked(LOOK) if t.video_id not in state.seen]
     state.last_found = len(new)
+    state.last_report = []
     s.log(f"Relecture des likes : {len(new)} nouveau(x).")
     if not new:
         return False
@@ -87,16 +88,27 @@ def check(state: State, s: Services) -> bool:
     state.names = list(plans)
     book = placements.load(s.placements_file)
     known = {t.video_id: t for t in s.tracks()}
-    planned = {v for ids in plans.values() for v in ids}
-    songs = {song_key(known[v]) for v in planned if v in known}
+    where = {v: name for name, ids in plans.items() for v in ids}
+    songs = {song_key(known[v]): name for v, name in where.items() if v in known}
     fresh, favorites = [], False
     for track in new:
-        if (track.video_id in planned or song_key(track) in songs
-                or book.get(placements.entry_key(track.artist, track.title)) is not None):
-            s.log(f"Déjà rangé : {track.label()} (mis en favori)")
+        placed = book.get(placements.entry_key(track.artist, track.title))
+        playlist = where.get(track.video_id) or songs.get(song_key(track))
+        label = escape(track.label())
+        if playlist:
+            s.log(f"Déjà rangé : {track.label()} dans {playlist} (mis en favori)")
+            state.last_report.append(f"• {label} : déjà dans <b>{escape(playlist)}</b>, "
+                                     "mis en favori.")
+            favorites = True
+        elif placed is not None:
+            s.log(f"Hors playlists : {track.label()} (mis en favori)")
+            state.last_report.append(
+                f"• {label} : tenu hors playlists (« (aucune) »), mis en favori. Pour le "
+                f"ranger : /proposer {escape(track.title[:30])}")
             favorites = True
         else:
             fresh.append(track)
+            state.last_report.append(f"• {label} : proposition ci-dessous.")
 
     if fresh:
         propose(state, s, fresh)
@@ -360,9 +372,9 @@ def run(
             if asked or last_check is None or clock() - last_check >= interval:
                 favorites, checked = check(state, s), True
                 if asked:
-                    found = state.last_found
-                    s.bot.send(s.chat, "Rien de nouveau dans tes likes." if not found else
-                               f"{found} nouveau(x) like(s) : les propositions suivent.")
+                    s.bot.send(s.chat, "\n".join(
+                        [f"{state.last_found} nouveau(x) like(s) :"] + state.last_report)
+                        if state.last_found else "Rien de nouveau dans tes likes.")
                 last_check = clock()
                 state.checked_at = time.strftime("%Y-%m-%d %H:%M:%S")
                 state.error = None
