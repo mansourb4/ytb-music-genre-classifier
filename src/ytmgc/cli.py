@@ -1024,6 +1024,79 @@ def _veille_uninstall() -> int:
     return 0
 
 
+def _plan_map(repository: Repository, config: Config) -> dict[str, tuple[str, ...]]:
+    """Le plan : nom de playlist → titres, dans l'ordre du plan."""
+    sorted_config = apply_sort_mode(config, DEFAULT_SORT_MODE)
+    found = plan_playlists(repository.classifications(), load_taxonomy(), sorted_config,
+                           _overrides(repository, sorted_config),
+                           artists={t.video_id: t.artists for t in repository.all_tracks()})
+    return {plan.name: plan.video_ids for plan in found}
+
+
+def _veille_status(args: argparse.Namespace, config: Config) -> int:
+    """Où en est la veille, et pourquoi un like n'a (pas encore) rien donné."""
+    import os
+
+    from ytmgc import nouveautes, placements
+    from ytmgc.download import song_key
+
+    plist, logfile = _veille_paths()
+    print("== Veille ==")
+    if plist.exists():
+        info = subprocess.run(["launchctl", "print", f"gui/{os.getuid()}/{VEILLE_LABEL}"],
+                              capture_output=True, text=True)
+        lines = [line.strip() for line in info.stdout.splitlines()
+                 if line.strip().startswith(("state =", "last exit code", "pid ="))]
+        print("Installée. " + ("; ".join(lines) if lines else "launchd ne la connaît pas : "
+                               "relance « ytmgc veille --installer »."))
+    else:
+        print("Pas installée en fond (« ytmgc veille --installer »).")
+    print("Telegram : " + ("jeton présent" if config.telegram.token else "JETON ABSENT du .env")
+          + ", " + (f"chat {config.telegram.chat_id}" if config.telegram.chat_id
+                    else "CHAT ABSENT du .env (« ytmgc telegram »)"))
+
+    root = Path(args.dossier).expanduser().resolve()
+    state = nouveautes.load(root)
+    if not state.started:
+        print("Elle n'a encore jamais relu tes likes : le premier passage les retient "
+              "tous, sans rien proposer.")
+    else:
+        waiting = sum(1 for p in state.pending.values() if not p.chosen)
+        print(f"Likes retenus : {len(state.seen)}. Dernière relecture : "
+              f"{state.checked_at or 'inconnue'}. En attente de ta réponse : {waiting}.")
+    if state.error:
+        print(f"Dernière erreur : {state.error}")
+
+    print("\n== Tes 5 derniers likes ==")
+    repository = _repository(config)
+    plan = _plan_map(repository, config)
+    planned = {v for ids in plan.values() for v in ids}
+    known = {t.video_id: t for t in repository.all_tracks()}
+    songs = {song_key(known[v]) for v in planned if v in known}
+    book = placements.load(config.taxonomy.placements_file)
+    pending = {p.video_id for p in state.pending.values()}
+    for track in _youtube(config).liked_tracks(5):
+        placed = book.get(placements.entry_key(track.artist, track.title))
+        if track.video_id in pending:
+            why = "proposé, attend ta réponse sur Telegram"
+        elif track.video_id in planned or song_key(track) in songs:
+            why = "déjà rangé : seulement mis en favori, sans message"
+        elif placed is not None and placed.nowhere:
+            why = "« (aucune) » : tenu hors playlists, sans message"
+        elif track.video_id not in state.seen:
+            why = ("pas encore relu : il sera proposé au prochain passage"
+                   if state.started else "la veille n'a encore jamais tourné")
+        else:
+            why = "liké avant le premier passage de la veille : pas proposé"
+        print(f"  {track.label()} — {why}")
+
+    if logfile.exists():
+        print(f"\n== Fin du journal ({logfile}) ==")
+        for line in logfile.read_text(encoding="utf-8", errors="replace").splitlines()[-15:]:
+            print(f"  {line}")
+    return 0
+
+
 def cmd_veille(args: argparse.Namespace, config: Config) -> int:
     """Veille des likes : proposer sur Telegram, puis ranger et télécharger."""
     import fcntl
@@ -1033,6 +1106,8 @@ def cmd_veille(args: argparse.Namespace, config: Config) -> int:
 
     if args.desinstaller:
         return _veille_uninstall()
+    if args.etat:
+        return _veille_status(args, config)
     if not config.telegram.token or not config.telegram.chat_id:
         print("Telegram n'est pas encore relié : lance « ytmgc telegram ».", file=sys.stderr)
         return 1
@@ -1054,11 +1129,7 @@ def cmd_veille(args: argparse.Namespace, config: Config) -> int:
         print(f"{time.strftime('%Y-%m-%d %H:%M:%S')}  {line}", flush=True)
 
     def plans() -> dict[str, tuple[str, ...]]:
-        sorted_config = apply_sort_mode(config, DEFAULT_SORT_MODE)
-        found = plan_playlists(repository.classifications(), load_taxonomy(), sorted_config,
-                               _overrides(repository, sorted_config),
-                               artists={t.video_id: t.artists for t in repository.all_tracks()})
-        return {plan.name: plan.video_ids for plan in found}
+        return _plan_map(repository, config)
 
     def pipeline(full: bool) -> list[str]:
         with _chain_lock(root):
@@ -1839,6 +1910,8 @@ def build_parser() -> argparse.ArgumentParser:
                             help="La faire tourner en fond, relancée par macOS")
     veille_cmd.add_argument("--desinstaller", action="store_true",
                             help="L'arrêter et ne plus la relancer")
+    veille_cmd.add_argument("--etat", action="store_true",
+                            help="Où en est-elle, et que sont devenus tes derniers likes")
     veille_cmd.set_defaults(func=cmd_veille)
 
     likes_cmd = subparsers.add_parser(

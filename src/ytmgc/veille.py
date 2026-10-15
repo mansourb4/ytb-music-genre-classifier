@@ -67,6 +67,7 @@ def check(state: State, s: Services) -> bool:
         s.log(f"Premier passage : {len(state.seen)} like(s) existants, laissés tels quels.")
         return False
     new = [t for t in s.liked(LOOK) if t.video_id not in state.seen]
+    s.log(f"Relecture des likes : {len(new)} nouveau(x).")
     if not new:
         return False
 
@@ -220,6 +221,8 @@ def run(
             if last_check is None or clock() - last_check >= interval:
                 favorites, checked = check(state, s), True
                 last_check = clock()
+                state.checked_at = time.strftime("%Y-%m-%d %H:%M:%S")
+                state.error = None
                 nouveautes.save(root, state)
             finish(state, s, favorites, checked)
             nouveautes.save(root, state)
@@ -227,6 +230,11 @@ def run(
             if once:
                 raise
             s.log(f"Erreur : {exc}. Nouvel essai dans une minute.")
+            state.error = f"{time.strftime('%Y-%m-%d %H:%M:%S')} : {exc}"
+            try:
+                nouveautes.save(root, state)
+            except OSError:
+                pass
             sleep(60)
         if once:
             return

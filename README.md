@@ -651,6 +651,10 @@ Mise en place, une fois :
    macOS la lance en fond et la relance si besoin. Journal :
    `~/Library/Logs/ytmgc-veille.log` ; `ytmgc veille --desinstaller` l'arrête.
 
+Un like resté sans message ? `ytmgc veille --etat` dit si la veille tourne,
+quand elle a relu les likes pour la dernière fois, sa dernière erreur, ce que
+sont devenus tes 5 derniers likes, et la fin du journal.
+
 La veille et `ytmgc synchro` ne rangent jamais en même temps : l'une attend
 que l'autre ait fini. Pour l'iPhone, active dans le Finder « Afficher cet
 iPhone en Wi-Fi » : il se synchronise alors seul, en charge sur le même réseau.

@@ -267,3 +267,33 @@ def test_bot_sends_buttons_and_hides_its_token_on_errors():
 def test_playlist_names_are_escaped_for_telegram():
     text = nouveautes.describe(Track("v", "Kiss & Tell", ("A",)), None, "Soul · R&B posés")
     assert "Kiss &amp; Tell" in text and "Soul · R&amp;B posés" in text
+
+
+def test_etat_explains_what_became_of_the_last_likes(tmp_path, monkeypatch, capsys):
+    from ytmgc import cli
+    from ytmgc.config import Config
+    from ytmgc.store import Repository, connect
+
+    repository = Repository(connect(":memory:"))
+    monkeypatch.setattr(cli, "_repository", lambda _config: repository)
+    monkeypatch.setattr(cli, "_plan_map", lambda _repo, _config: {"Jazz · Modal": ("old",)})
+    monkeypatch.setattr(cli, "_veille_paths", lambda: (tmp_path / "absent.plist",
+                                                       tmp_path / "absent.log"))
+
+    class YouTube:
+        def liked_tracks(self, limit):
+            return [KOHNDO, Track("old", "Rain", ("Moderat",)), Track("x", "Avant", ("Q",))]
+
+    monkeypatch.setattr(cli, "_youtube", lambda _config: YouTube())
+    nouveautes.save(tmp_path, nouveautes.State(seen={"old", "x"}, checked_at="2026-10-15 10:00"))
+    config = Config()
+    config.taxonomy.placements_file = str(tmp_path / "placements.txt")
+
+    args = cli.build_parser().parse_args(["veille", "--etat", "--dossier", str(tmp_path)])
+    assert args.func(args, config) == 0
+    out = capsys.readouterr().out
+    assert "Pas installée en fond" in out and "JETON ABSENT" in out
+    assert "Dernière relecture : 2026-10-15 10:00" in out
+    assert "Faut qu'je tienne — pas encore relu" in out
+    assert "Rain — déjà rangé" in out
+    assert "Avant — liké avant le premier passage" in out

@@ -54,6 +54,9 @@ class State:
     offset: int | None = None
     #: Noms des playlists du plan, dans l'ordre auquel renvoient les boutons.
     names: list[str] = field(default_factory=list)
+    #: Dernière relecture des likes réussie, et dernière erreur (diagnostic).
+    checked_at: str | None = None
+    error: str | None = None
 
     @property
     def started(self) -> bool:
@@ -77,6 +80,8 @@ def load(root: Path) -> State:
         next_id=int(data.get("suivant") or 1),
         offset=data.get("offset"),
         names=list(data.get("playlists") or ()),
+        checked_at=data.get("relu_le"),
+        error=data.get("erreur"),
     )
 
 
@@ -88,6 +93,8 @@ def save(root: Path, state: State) -> None:
         "suivant": state.next_id,
         "offset": state.offset,
         "playlists": state.names,
+        "relu_le": state.checked_at,
+        "erreur": state.error,
     }
     path = root / STATE_FILE
     temporary = path.with_suffix(".tmp")
