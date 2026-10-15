@@ -66,6 +66,7 @@ def check(state: State, s: Services) -> bool:
         state.seen = {t.video_id for t in s.liked(None)}
         s.log(f"Premier passage : {len(state.seen)} like(s) existants, laissés tels quels.")
         return False
+    guess_missing(state, s)
     new = [t for t in s.liked(LOOK) if t.video_id not in state.seen]
     s.log(f"Relecture des likes : {len(new)} nouveau(x).")
     if not new:
@@ -91,20 +92,48 @@ def check(state: State, s: Services) -> bool:
         s.classify(fresh)
         plans = s.plans()
         state.names = list(plans)
-        ids = {t.video_id for t in fresh}
-        classes = {c.video_id: c for c in s.classifications() if c.video_id in ids}
+        classes = {c.video_id: c for c in s.classifications()}
+        known = {t.video_id: t for t in s.tracks()}
         for track in fresh:
-            proposal = nouveautes.proposal_for(track.video_id, plans)
+            proposal, reason = nouveautes.proposal_for(track.video_id, plans), None
+            if proposal is None:
+                proposal, reason = nouveautes.guess(track, classes.get(track.video_id), plans,
+                                                    known, classes)
             # Tenu hors playlist jusqu'à ta réponse : rien ne se range sans toi.
             book.put(track, NOWHERE)
             pending = Pending(track.video_id, track.artist, track.title,
-                              nouveautes.describe(track, classes.get(track.video_id), proposal),
+                              nouveautes.describe(track, classes.get(track.video_id), proposal,
+                                                  reason),
                               proposal)
             state.add(pending)
             s.log(f"Nouveau like : {track.label()} → proposé : {proposal or 'aucune'}")
         placements.save(book, s.placements_file)
     state.seen.update(t.video_id for t in new)
     return favorites
+
+
+def guess_missing(state: State, s: Services) -> None:
+    """Une proposition pour les titres en attente qui n'en avaient pas (envoyés
+    avant que la veille sache deviner) : le message est mis à jour."""
+    waiting = {k: p for k, p in state.pending.items() if p.proposal is None and not p.chosen}
+    if not waiting:
+        return
+    plans = s.plans()
+    state.names = list(plans)
+    classes = {c.video_id: c for c in s.classifications()}
+    known = {t.video_id: t for t in s.tracks()}
+    for key, pending in waiting.items():
+        track = known.get(pending.video_id) or _track(pending)
+        proposal, reason = nouveautes.guess(track, classes.get(pending.video_id), plans,
+                                            known, classes)
+        if proposal is None:
+            continue
+        pending.proposal = proposal
+        pending.text = nouveautes.describe(track, classes.get(pending.video_id), proposal, reason)
+        if pending.message_id is not None:
+            s.bot.edit(s.chat, pending.message_id, pending.text,
+                       nouveautes.first_buttons(state, key))
+        s.log(f"Proposition ajoutée : {track.label()} → {proposal}")
 
 
 def send_unsent(state: State, s: Services) -> None:

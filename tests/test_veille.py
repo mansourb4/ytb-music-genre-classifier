@@ -343,3 +343,41 @@ def test_restart_waits_for_launchd_to_let_go_of_the_old_veille(monkeypatch, tmp_
     state.update(loaded=0, refusals=99)
     error = cli._veille_restart("gui/501", tmp_path / "x.plist", sleep=lambda _: None, attempts=2)
     assert error == "Bootstrap failed: 5: Input/output error"
+
+
+def test_a_title_the_rules_leave_out_still_gets_a_proposal():
+    plans = {"Jazz · Bop & cool nocturne": ["m1", "m2"], "Jazz · Modal": ["m3", "x"],
+             "Rap · FR posé": ["r1"]}
+    tracks = {"m1": Track("m1", "So What", ("Miles Davis",)),
+              "m2": Track("m2", "Blue in Green", ("Miles Davis", "Bill Evans")),
+              "m3": Track("m3", "Naima", ("John Coltrane",)),
+              "x": Track("x", "Impressions", ("John Coltrane",)),
+              "r1": Track("r1", "Rap", ("Kohndo",))}
+    classes = {"m3": Classification("m3", MatchStatus.MATCHED, genres=("Jazz",), styles=("Modal",)),
+               "x": Classification("x", MatchStatus.MATCHED, genres=("Jazz",), styles=("Modal",)),
+               "r1": Classification("r1", MatchStatus.MATCHED, genres=("Hip Hop",))}
+    miles = Track("new", "It Never Entered My Mind", ("The Miles Davis Quintet", "miles davis"))
+    assert nouveautes.guess(miles, None, plans, tracks, classes) == (
+        "Jazz · Bop & cool nocturne", "là où sont ses autres titres")
+
+    stranger = Track("s", "Inconnu", ("Personne",))
+    modal = Classification("s", MatchStatus.MATCHED, genres=("Jazz",), styles=("Modal", "Hard Bop"))
+    assert nouveautes.guess(stranger, modal, plans, tracks, classes) == ("Jazz · Modal",
+                                                                       "styles proches")
+    rap = Classification("s", MatchStatus.MATCHED, genres=("Hip Hop",), styles=("Trap",))
+    assert nouveautes.guess(stranger, rap, plans, tracks, classes) == ("Rap · FR posé", "même genre")
+    assert nouveautes.guess(stranger, None, plans, tracks, classes) == (None, None)
+
+
+def test_a_waiting_title_without_proposal_gets_one_and_its_message_is_updated(tmp_path):
+    world = World(tmp_path, [Track("old", "Rain", ("Moderat",))])
+    _run(tmp_path, world)
+    lonely = Track("m9", "Lonely", ("Moderat",))
+    state = nouveautes.load(tmp_path)
+    state.add(nouveautes.Pending("m9", "Moderat", "Lonely", "texte", None, 55))
+    nouveautes.save(tmp_path, state)
+    world.db["m9"] = lonely
+    _run(tmp_path, world)
+    message_id, text, rows = world.bot.edits[-1]
+    assert message_id == 55 and "Proposé : <b>Jazz · Modal</b> (là où sont ses autres titres)" in text
+    assert rows[0][0][0] == "✅ Jazz · Modal"

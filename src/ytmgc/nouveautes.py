@@ -123,7 +123,8 @@ def escape(text: str) -> str:
     return html.escape(text, quote=False)
 
 
-def describe(track: Track, classification: Classification | None, proposal: str | None) -> str:
+def describe(track: Track, classification: Classification | None, proposal: str | None,
+             reason: str | None = None) -> str:
     lines = [f"🎵 <b>{escape(track.label())}</b>"]
     if track.album:
         lines.append(f"Album : {escape(track.album)}")
@@ -136,7 +137,8 @@ def describe(track: Track, classification: Classification | None, proposal: str 
         elif classification.tags:
             lines.append(f"Tags : {escape(', '.join(classification.tags[:5]))}")
     if proposal:
-        lines.append(f"Proposé : <b>{escape(proposal)}</b>")
+        why = f" ({escape(reason)})" if reason else ""
+        lines.append(f"Proposé : <b>{escape(proposal)}</b>{why}")
     else:
         lines.append("Les règles ne le rangent nulle part : choisis une famille.")
     return "\n".join(lines)
@@ -216,3 +218,45 @@ def proposal_for(video_id: str, plans: Mapping[str, Iterable[str]]) -> str | Non
         if video_id in ids:
             return name
     return None
+
+
+def _fold(text: str) -> str:
+    return " ".join(text.casefold().split())
+
+
+def guess(
+    track: Track,
+    classification: Classification | None,
+    plans: Mapping[str, Iterable[str]],
+    tracks: Mapping[str, Track],
+    classes: Mapping[str, Classification],
+) -> tuple[str | None, str | None]:
+    """Une playlist pour un titre que les règles ne rangent nulle part.
+
+    Dans l'ordre : là où sont la plupart des titres du même artiste ; sinon là
+    où sont le plus de titres aux mêmes styles ; sinon aux mêmes genres. Rend
+    (playlist, raison), ou (None, None) si rien ne s'en approche.
+    """
+    members = {name: [v for v in ids if v != track.video_id] for name, ids in plans.items()}
+    artists = {_fold(a) for a in track.artists if a}
+
+    def best(score) -> str | None:
+        counts = {name: sum(score(v) for v in ids) for name, ids in members.items()}
+        name = max(counts, key=lambda n: counts[n], default=None)
+        return name if name is not None and counts[name] > 0 else None
+
+    if artists:
+        name = best(lambda v: v in tracks and bool(artists & {_fold(a) for a in tracks[v].artists}))
+        if name:
+            return name, "là où sont ses autres titres"
+    if classification is not None and classification.styles:
+        styles = set(classification.styles)
+        name = best(lambda v: len(styles & set(classes[v].styles)) if v in classes else 0)
+        if name:
+            return name, "styles proches"
+    if classification is not None and classification.genres:
+        genres = set(classification.genres)
+        name = best(lambda v: v in classes and bool(genres & set(classes[v].genres)))
+        if name:
+            return name, "même genre"
+    return None, None
