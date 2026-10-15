@@ -27,13 +27,20 @@ from typing import Callable, Iterable, Mapping
 from ytmgc import nouveautes, placements
 from ytmgc.download import song_key
 from ytmgc.models import Classification, Track
-from ytmgc.nouveautes import NOWHERE, Pending, State, escape
+from ytmgc.nouveautes import IGNORE, NOWHERE, Pending, State, escape
 from ytmgc.telegram import Bot
 
 #: Titres relus en haut de « Titres likés » à chaque passage.
 LOOK = 200
 #: Essais de la chaîne pour un titre choisi, avant d'abandonner.
 MAX_ATTEMPTS = 3
+#: Le menu « / » du bot dans Telegram.
+COMMANDS = [
+    {"command": "verifier", "description": "Regarder tout de suite les nouveaux likes"},
+    {"command": "proposer", "description": "Revoir la proposition d'un like (ex. /proposer miles)"},
+    {"command": "ignores", "description": "Les propositions ignorées pour l'instant"},
+    {"command": "etat", "description": "Ce qui attend ta réponse"},
+]
 
 
 @dataclass
@@ -68,6 +75,7 @@ def check(state: State, s: Services) -> bool:
         return False
     guess_missing(state, s)
     new = [t for t in s.liked(LOOK) if t.video_id not in state.seen]
+    state.last_found = len(new)
     s.log(f"Relecture des likes : {len(new)} nouveau(x).")
     if not new:
         return False
@@ -140,8 +148,20 @@ def repropose(state: State, s: Services, query: str) -> None:
     if not fresh:
         s.bot.send(s.chat, "Déjà proposé plus haut : il attend ta réponse.")
         return
+    for track in fresh:
+        state.ignored.pop(track.video_id, None)
     propose(state, s, fresh)
     send_unsent(state, s)
+
+
+def list_ignored(state: State, s: Services) -> None:
+    if not state.ignored:
+        s.bot.send(s.chat, "Aucune proposition ignorée.")
+        return
+    lines = [f"{len(state.ignored)} proposition(s) ignorée(s) pour l'instant :"]
+    lines += [f"• {escape(label)}" for label in list(state.ignored.values())[:30]]
+    lines.append("Pour en revoir une : « /proposer » suivi d'un mot du titre ou de l'artiste.")
+    s.bot.send(s.chat, "\n".join(lines))
 
 
 def guess_missing(state: State, s: Services) -> None:
@@ -188,8 +208,14 @@ def handle(state: State, s: Services, updates: Iterable[dict]) -> int:
         message = update.get("message")
         if message and str(message.get("chat", {}).get("id")) == s.chat:
             command, _, rest = (message.get("text") or "").strip().partition(" ")
-            if command.casefold().split("@")[0] in {"/proposer", "/revoir"}:
+            command = command.casefold().split("@")[0]
+            if command in {"/proposer", "/revoir"}:
                 repropose(state, s, rest)
+            elif command in {"/verifier", "/vérifier"}:
+                state.check_now = True
+                s.bot.send(s.chat, "🔎 Je regarde tes likes…")
+            elif command in {"/ignores", "/ignorés"}:
+                list_ignored(state, s)
             else:
                 s.bot.send(s.chat, status(state))
             continue
@@ -207,6 +233,16 @@ def handle(state: State, s: Services, updates: Iterable[dict]) -> int:
         if answer.rows is not None:
             s.bot.edit(s.chat, pending.message_id, pending.text, answer.rows)
             s.bot.answer(query["id"])
+            continue
+        if answer.decision == IGNORE:
+            # Ni rangé ni écarté : il reste tenu hors playlist, et revient
+            # avec « /proposer ».
+            s.bot.answer(query["id"], "Mis de côté.")
+            s.bot.edit(s.chat, pending.message_id, pending.text + "\n\n⏸ Ignoré pour l'instant. "
+                       "Pour le revoir : « /proposer " + escape(pending.title[:30]) + " ».")
+            state.ignored[pending.video_id] = _track(pending).label()
+            del state.pending[answer.key]
+            s.log(f"Ignoré pour l'instant : {_track(pending).label()}")
             continue
         book = placements.load(s.placements_file)
         book.put(_track(pending), answer.decision)
@@ -265,8 +301,10 @@ def status(state: State) -> str:
     lines = [f"Veille active. {len(waiting)} titre(s) attendent ton choix, "
              f"{len(working)} en cours de rangement."]
     lines += [f"• {escape(_track(p).label())}" for p in waiting[:10]]
-    lines.append("Pour revoir la proposition d'un like récent : « /proposer » suivi d'un mot "
-                 "du titre ou de l'artiste.")
+    if state.ignored:
+        lines.append(f"{len(state.ignored)} proposition(s) ignorée(s) : /ignores pour les voir.")
+    lines.append("/verifier : regarder tout de suite si de nouveaux titres ont été likés.\n"
+                 "/proposer miles : revoir la proposition d'un like récent.")
     return "\n".join(lines)
 
 
@@ -283,13 +321,22 @@ def run(
     """La boucle. `once` : un seul passage, sans attendre (pour essayer)."""
     state = nouveautes.load(root)
     last_check = None
+    try:
+        s.bot.call("setMyCommands", commands=COMMANDS)
+    except Exception:  # noqa: BLE001 - le menu n'est qu'un confort
+        pass
     while True:
         try:
             # D'abord les likes et les messages en souffrance : au démarrage,
             # rien n'attend la fin de l'écoute de Telegram.
             favorites = checked = False
-            if last_check is None or clock() - last_check >= interval:
+            asked, state.check_now = state.check_now, False
+            if asked or last_check is None or clock() - last_check >= interval:
                 favorites, checked = check(state, s), True
+                if asked:
+                    found = state.last_found
+                    s.bot.send(s.chat, "Rien de nouveau dans tes likes." if not found else
+                               f"{found} nouveau(x) like(s) : les propositions suivent.")
                 last_check = clock()
                 state.checked_at = time.strftime("%Y-%m-%d %H:%M:%S")
                 state.error = None

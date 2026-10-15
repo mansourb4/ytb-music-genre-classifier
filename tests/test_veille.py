@@ -426,3 +426,61 @@ def test_proposer_brings_back_a_title_left_out(tmp_path):
     _run(tmp_path, world)
     assert "ne contient « inconnu »" in world.bot.sent[-2][1]
     assert world.bot.sent[-1][1].startswith("Écris par exemple")
+
+
+def test_ignorer_sets_a_proposal_aside_until_it_is_called_back(tmp_path):
+    world = World(tmp_path, [Track("old", "Rain", ("Moderat",))])
+    _run(tmp_path, world)
+    world.liked.insert(0, KOHNDO)
+    _run(tmp_path, world)
+    rows = world.bot.sent[-1][2]
+    assert rows[-1] == [("⏸ Ignorer pour l'instant", "i:1")]
+
+    world.bot.queue = [_tap(1, "i:1")]
+    _run(tmp_path, world)
+    assert "⏸ Ignoré pour l'instant" in world.bot.edits[-1][1] and world.runs == []
+    state = nouveautes.load(tmp_path)
+    assert state.pending == {} and state.ignored == {"k1": "Kohndo – Faut qu'je tienne"}
+    # Toujours tenu hors playlist : rien ne se range ni ne se télécharge.
+    held = placements.load(world.placements_file).get(placements.entry_key(
+        "Kohndo", "Faut qu'je tienne"))
+    assert held.nowhere
+
+    world.bot.queue = [_say(2, "/ignores")]
+    _run(tmp_path, world)
+    assert "• Kohndo – Faut qu'je tienne" in world.bot.sent[-1][1]
+
+    world.bot.queue = [_say(3, "/proposer kohndo")]
+    _run(tmp_path, world)
+    assert "Proposé : <b>Rap · FR posé</b>" in world.bot.sent[-1][1]
+    assert nouveautes.load(tmp_path).ignored == {}
+
+
+class _Stop(BaseException):
+    pass
+
+
+def test_verifier_looks_at_the_likes_right_away(tmp_path):
+    world = World(tmp_path, [Track("old", "Rain", ("Moderat",))])
+    _run(tmp_path, world)  # premier passage : les likes existants
+    calls = []
+
+    def updates(offset, wait=0):
+        calls.append(wait)
+        if len(calls) == 1:
+            # Pendant l'écoute : un like arrive, puis tu demandes « /verifier ».
+            world.liked.insert(0, KOHNDO)
+            return [_say(1, "/verifier")]
+        raise RuntimeError("fin de l'essai")
+
+    def sleep(seconds):
+        raise _Stop()
+
+    world.bot.updates = updates
+    with pytest.raises(_Stop):
+        # Relecture toutes les heures : seule la demande peut la déclencher.
+        veille.run(tmp_path, world.services(), interval=3600, clock=lambda: 0.0, sleep=sleep)
+    texts = [text for _, text, _ in world.bot.sent]
+    assert texts[0] == "🔎 Je regarde tes likes…"
+    assert texts[1] == "1 nouveau(x) like(s) : les propositions suivent."
+    assert "Kohndo" in texts[2]

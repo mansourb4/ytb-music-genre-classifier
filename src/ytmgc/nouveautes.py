@@ -25,6 +25,8 @@ from ytmgc.telegram import Button
 
 STATE_FILE = ".nouveautes.json"
 NOWHERE = "(aucune)"
+#: Réponse « Ignorer pour l'instant » : ni rangé, ni écarté pour de bon.
+IGNORE = "(ignorer)"
 #: Voisines proposées en plus de la playlist retenue par les règles.
 NEIGHBOURS = 3
 
@@ -57,6 +59,12 @@ class State:
     #: Dernière relecture des likes réussie, et dernière erreur (diagnostic).
     checked_at: str | None = None
     error: str | None = None
+    #: Propositions ignorées pour l'instant : identifiant YouTube → titre.
+    ignored: dict[str, str] = field(default_factory=dict)
+    #: Relecture demandée (« /verifier ») ; nouveaux likes du dernier passage.
+    #: Ni l'un ni l'autre n'est enregistré.
+    check_now: bool = False
+    last_found: int = 0
 
     @property
     def started(self) -> bool:
@@ -82,6 +90,7 @@ def load(root: Path) -> State:
         names=list(data.get("playlists") or ()),
         checked_at=data.get("relu_le"),
         error=data.get("erreur"),
+        ignored=dict(data.get("ignores") or {}),
     )
 
 
@@ -95,6 +104,7 @@ def save(root: Path, state: State) -> None:
         "playlists": state.names,
         "relu_le": state.checked_at,
         "erreur": state.error,
+        "ignores": state.ignored,
     }
     path = root / STATE_FILE
     temporary = path.with_suffix(".tmp")
@@ -161,6 +171,7 @@ def first_buttons(state: State, key: str) -> list[list[Button]]:
         rows.append([("Autre famille…", f"f:{key}"), ("Ne pas ranger", f"x:{key}")])
     else:
         rows += family_buttons(state, key)
+    rows.append([("⏸ Ignorer pour l'instant", f"i:{key}")])
     return rows
 
 
@@ -201,6 +212,8 @@ def interpret(state: State, data: str) -> Answer | None:
             return Answer(key, decision=state.names[int(arg)])
         if kind == "x":
             return Answer(key, decision=NOWHERE)
+        if kind == "i":
+            return Answer(key, decision=IGNORE)
         if kind == "f":
             return Answer(key, rows=family_buttons(state, key))
         if kind == "g":

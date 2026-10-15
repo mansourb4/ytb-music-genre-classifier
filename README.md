@@ -637,9 +637,14 @@ n'as pas répondu, rien n'est rangé ni téléchargé (le titre est tenu en
 la chaîne tourne : playlist YouTube Music, téléchargement, playlist Apple
 Music, favori. Le message dit ensuite si le titre est bien arrivé. Un titre
 déjà rangé, liké de nouveau, est seulement mis en favori. Écris n'importe
-quoi au bot pour savoir ce qui attend ; « /proposer miles » refait la
-proposition d'un like récent (pour revenir sur un « Ne pas ranger », ou
-ranger ailleurs).
+quoi au bot pour savoir ce qui attend. Commandes, aussi dans le menu « / »
+du bot :
+
+- `/verifier` : relire tes likes tout de suite, sans attendre le passage suivant ;
+- `/proposer miles` : refaire la proposition d'un like récent (pour revenir sur
+  un « Ne pas ranger », une proposition ignorée, ou ranger ailleurs) ;
+- `/ignores` : les propositions mises de côté par « ⏸ Ignorer pour l'instant »,
+  qui laisse le titre hors playlist sans trancher.
 
 Mise en place, une fois :
 
