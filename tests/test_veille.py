@@ -297,3 +297,23 @@ def test_etat_explains_what_became_of_the_last_likes(tmp_path, monkeypatch, caps
     assert "Faut qu'je tienne — pas encore relu" in out
     assert "Rain — déjà rangé" in out
     assert "Avant — liké avant le premier passage" in out
+
+
+def test_a_message_telegram_did_not_take_is_sent_again_on_the_next_turn(tmp_path):
+    world = World(tmp_path, [Track("old", "Rain", ("Moderat",))])
+    _run(tmp_path, world)
+    world.liked.insert(0, KOHNDO)
+    sent = world.bot.send
+
+    def down(chat, text, rows=None):
+        raise TelegramError("sendMessage : Telegram injoignable (timed out)")
+
+    world.bot.send = down
+    with pytest.raises(TelegramError):
+        _run(tmp_path, world)
+    # Le titre est retenu, son message pas encore parti ; aucun nouveau like ensuite.
+    world.bot.send = sent
+    services = world.services()
+    veille.run(tmp_path, services, interval=10_000, once=True)
+    assert len(world.bot.sent) == 1 and "Kohndo" in world.bot.sent[0][1]
+    assert next(iter(nouveautes.load(tmp_path).pending.values())).message_id == 101

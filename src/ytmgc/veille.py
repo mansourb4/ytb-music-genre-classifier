@@ -104,7 +104,6 @@ def check(state: State, s: Services) -> bool:
             s.log(f"Nouveau like : {track.label()} → proposé : {proposal or 'aucune'}")
         placements.save(book, s.placements_file)
     state.seen.update(t.video_id for t in new)
-    send_unsent(state, s)
     return favorites
 
 
@@ -224,6 +223,10 @@ def run(
                 state.checked_at = time.strftime("%Y-%m-%d %H:%M:%S")
                 state.error = None
                 nouveautes.save(root, state)
+            # À chaque tour, pas seulement quand un like arrive : un message
+            # que Telegram n'a pas pris (réseau coupé) repart dès que possible.
+            send_unsent(state, s)
+            nouveautes.save(root, state)
             finish(state, s, favorites, checked)
             nouveautes.save(root, state)
         except Exception as exc:  # noqa: BLE001 - la veille ne doit jamais mourir

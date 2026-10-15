@@ -307,7 +307,8 @@ def load_config(
     config.claude.api_key = env.get("ANTHROPIC_API_KEY", "")
     config.web.access_token = env.get("YTMGC_ACCESS_TOKEN", "")
     config.telegram.token = env.get("TELEGRAM_BOT_TOKEN", "")
-    config.telegram.chat_id = env.get("TELEGRAM_CHAT_ID", "")
+    # Seul le numéro compte : un nom recopié à sa suite (« 123  (Denzel) ») est ignoré.
+    config.telegram.chat_id = (env.get("TELEGRAM_CHAT_ID", "").split() or [""])[0]
     if user_agent := env.get("DISCOGS_USER_AGENT"):
         config.discogs.user_agent = user_agent
     if auth_file := env.get("YTMUSIC_AUTH_FILE"):

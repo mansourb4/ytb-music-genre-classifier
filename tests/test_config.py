@@ -117,3 +117,11 @@ def test_telegram_settings_come_from_the_dotenv_file(tmp_path, monkeypatch):
     config = load_config(tmp_path / "absent.toml", dotenv=dotenv)
 
     assert (config.telegram.token, config.telegram.chat_id) == ("jeton", "42")
+
+
+def test_a_name_copied_after_the_chat_id_is_ignored(tmp_path, monkeypatch):
+    dotenv = tmp_path / ".env"
+    dotenv.write_text("TELEGRAM_CHAT_ID=1138328213    (Denzel)\n", encoding="utf-8")
+    monkeypatch.delenv("TELEGRAM_CHAT_ID", raising=False)
+
+    assert load_config(tmp_path / "absent.toml", dotenv=dotenv).telegram.chat_id == "1138328213"

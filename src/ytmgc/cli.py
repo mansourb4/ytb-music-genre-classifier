@@ -947,9 +947,10 @@ def cmd_telegram(args: argparse.Namespace, config: Config) -> int:
             print(f"Bot @{name} trouvé. Dans Telegram, ouvre @{name}, touche « Démarrer » "
                   "(ou envoie /start), puis relance « ytmgc telegram ».")
             return 1
-        print(f"Bot @{name} trouvé. Ajoute au fichier .env la ligne :")
         for chat_id, who in chats.items():
-            print(f"  TELEGRAM_CHAT_ID={chat_id}" + (f"    ({who})" if who else ""))
+            print(f"Bot @{name} trouvé" + (f", conversation avec {who}" if who else "")
+                  + ". Ajoute au fichier .env cette ligne, telle quelle :")
+            print(f"TELEGRAM_CHAT_ID={chat_id}")
         print("puis relance « ytmgc telegram » pour un message d'essai.")
         return 0
     bot.send(config.telegram.chat_id, "✅ ytmgc est relié à ce chat. Les nouveaux likes "
